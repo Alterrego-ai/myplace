@@ -183,7 +183,7 @@ color: var(--text, #1a2332);
 .hero {
 position: relative;
 width: 100%;
-height: 220px;
+height: 200px;
 overflow: hidden;
 border-radius: 0;
 }
@@ -236,7 +236,7 @@ z-index: 3;
 .identity {
 position: relative;
 padding: 0 20px 0;
-margin-top: -50px;
+margin-top: -40px;
 display: flex;
 align-items: flex-end;
 gap: 14px;
@@ -244,9 +244,9 @@ z-index: 2;
 }
 
 .logo-wrap {
-width: 100px;
-height: 100px;
-border-radius: 22px;
+width: 80px;
+height: 80px;
+border-radius: 18px;
 background: var(--bg-card);
 box-shadow: 0 4px 20px rgba(0,0,0,0.15);
 overflow: hidden;
@@ -275,7 +275,7 @@ padding: 10px 20px 8px;
 }
 
 .merchant-name {
-font-size: 24px;
+font-size: 20px;
 font-weight: 700;
 color: var(--text);
 line-height: 1.2;
@@ -286,7 +286,7 @@ letter-spacing: -0.02em;
 display: flex;
 align-items: center;
 gap: 8px;
-margin-top: 12px;
+margin-top: 0;
 flex-wrap: wrap;
 }
 
@@ -294,17 +294,19 @@ flex-wrap: wrap;
 display: inline-flex;
 align-items: center;
 gap: 5px;
-font-size: 13px;
+font-size: 12px;
 font-weight: 600;
-padding: 7px 12px;
+padding: 5px 10px;
 border-radius: 20px;
 cursor: pointer;
 transition: var(--transition);
+border: 1px solid transparent;
 }
 
 .status-pill.open {
 color: var(--open-color);
-background: var(--open-bg);
+background: transparent;
+border-color: var(--open-color);
 }
 
 .status-pill.closed {
