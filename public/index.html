@@ -341,9 +341,10 @@ animation: pulse-green 2s infinite;
 }
 
 .hours-preview {
-font-size: 12px;
+font-size: 11px;
 color: var(--text-tertiary);
-font-weight: 500;
+font-weight: 400;
+opacity: 0.7;
 }
 
 .address-row {
@@ -662,7 +663,7 @@ color: var(--primary);
 /* ── CTAs ── */
 .ctas {
 display: grid;
-grid-template-columns: repeat(3, 1fr);
+grid-template-columns: repeat(4, 1fr);
 gap: 0;
 padding: 0 12px;
 margin-top: -10px;
@@ -954,11 +955,6 @@ margin: 20px 20px 0;
       </div>
     </div>
   </div>
-  <div class="address-row" onclick="openAddressSheet()" style="cursor:pointer;">
-    15 Rue Vauban · 69006 Lyon
-    <svg style="margin-left:auto;opacity:0.5;" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg>
-  </div>
-
 </div>
 
 <!-- CTAs -->
@@ -987,6 +983,14 @@ margin: 20px 20px 0;
       </svg>
     </div>
     <span class="cta-label">Partager</span>
+  </button>
+  <button class="cta-btn" onclick="openAddressSheet()">
+    <div class="cta-icon">
+      <svg viewBox="0 0 640 640" fill="currentColor">
+        <path d="M320 24C214.8 24 128 110.8 128 216C128 348 296 580 310.4 599.2C314.4 604.8 320 608 320 608C320 608 325.6 604.8 329.6 599.2C344 580 512 348 512 216C512 110.8 425.2 24 320 24zM320 296C275.8 296 240 260.2 240 216C240 171.8 275.8 136 320 136C364.2 136 400 171.8 400 216C400 260.2 364.2 296 320 296z"/>
+      </svg>
+    </div>
+    <span class="cta-label">Adresse</span>
   </button>
 </div>
 
