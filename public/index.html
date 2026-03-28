@@ -773,11 +773,15 @@ backdrop-filter: blur(12px);
 box-shadow: 0 -4px 20px rgba(0,0,0,0.06);
 }
 
-/* Desktop: sticky inside phone-screen */
+/* Desktop: absolute inside phone-screen (outside phone-scroll) */
 @media (min-width: 769px) {
   .bottom-bar {
-    position: sticky;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
     max-width: 100%;
+    border-radius: 0 0 42px 42px;
   }
 }
 
@@ -1047,6 +1051,9 @@ margin: 20px 20px 0;
 
 <!-- BOTTOM BAR -->
 
+      </div><!-- /phone-scroll -->
+
+<!-- BOTTOM BAR (outside phone-scroll, fixed in phone-screen) -->
 <nav class="bottom-bar">
   <a href="#" class="nav-item active">
     <svg viewBox="0 0 640 640" fill="currentColor">
@@ -1075,8 +1082,6 @@ margin: 20px 20px 0;
     <span class="nav-label">Plus</span>
   </a>
 </nav>
-
-      </div><!-- /phone-scroll -->
 
 <!-- OVERLAY -->
 
