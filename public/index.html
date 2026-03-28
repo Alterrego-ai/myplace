@@ -395,7 +395,7 @@ gap: 2px;
 color: #f5a623;
 }
 
-.avis-stars svg { width: 12px; height: 12px; fill: currentColor; }
+.avis-stars svg { width: 14px; height: 14px; fill: currentColor; }
 
 .avis-score {
 font-size: 13px;
@@ -409,8 +409,15 @@ color: var(--text-tertiary);
 font-weight: 400;
 }
 
-.avis-cta {
+.avis-right {
 margin-left: auto;
+display: flex;
+flex-direction: column;
+align-items: flex-end;
+gap: 2px;
+}
+
+.avis-cta {
 font-size: 11px;
 font-weight: 600;
 color: var(--primary);
@@ -1019,8 +1026,10 @@ margin: 20px 20px 0;
       <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
     </div>
     <span class="avis-score">4,7</span>
-    <span class="avis-count">· 284 avis</span>
-    <span class="avis-cta">Laisser un avis</span>
+    <div class="avis-right">
+      <span class="avis-count">284 avis</span>
+      <span class="avis-cta">Laisser un avis</span>
+    </div>
   </a>
 
     <div class="socials-grid">
