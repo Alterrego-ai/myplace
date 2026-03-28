@@ -7,7 +7,7 @@
 <meta name="theme-color" content="#3D6B8C">
 <title>Sauf Imprévu — Bar à vins · Lyon</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
   :root {
     --primary: #3D6B8C;
@@ -20,7 +20,7 @@
     --shadow: 0 2px 20px rgba(0,0,0,0.08);
     --shadow-md: 0 8px 40px rgba(0,0,0,0.12);
     --transition: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-    --font: 'Plus Jakarta Sans', sans-serif;
+    --font: -apple-system, BlinkMacSystemFont, 'Inter', 'SF Pro Display', 'Segoe UI', sans-serif;
   }
 
 [data-theme=“light”], :root {
@@ -126,7 +126,7 @@ color: var(--text, #1a2332);
 }
 .phone-screen::-webkit-scrollbar { display: none; }
 
-/* Force light theme inside phone on desktop */
+/* Default to light theme inside phone on desktop */
 @media (min-width: 769px) {
   .phone-screen {
     --bg: #f7f8fa;
@@ -140,6 +140,19 @@ color: var(--text, #1a2332);
     --open-bg: #e8f7f2;
     --closed-color: #c0392b;
     --closed-bg: #fdecea;
+  }
+  [data-theme="dark"] .phone-screen {
+    --bg: #0f1923;
+    --bg-card: #1a2636;
+    --bg-subtle: #212f3f;
+    --text: #eef2f7;
+    --text-secondary: #8fa3bb;
+    --text-tertiary: #5a7288;
+    --border: rgba(255,255,255,0.07);
+    --open-color: #3dbf87;
+    --open-bg: rgba(61,191,135,0.12);
+    --closed-color: #e05c4b;
+    --closed-bg: rgba(224,92,75,0.12);
   }
 }
 
@@ -167,7 +180,7 @@ color: var(--text, #1a2332);
 .hero {
 position: relative;
 width: 100%;
-height: 280px;
+height: 220px;
 overflow: hidden;
 border-radius: 0;
 }
@@ -204,7 +217,7 @@ rgba(15,25,35,0.5) 100%
 .identity {
 position: relative;
 padding: 0 20px 0;
-margin-top: -40px;
+margin-top: -50px;
 display: flex;
 align-items: flex-end;
 gap: 14px;
@@ -212,9 +225,9 @@ z-index: 2;
 }
 
 .logo-wrap {
-width: 80px;
-height: 80px;
-border-radius: 18px;
+width: 100px;
+height: 100px;
+border-radius: 22px;
 background: var(–bg-card);
 box-shadow: 0 4px 20px rgba(0,0,0,0.15);
 overflow: hidden;
