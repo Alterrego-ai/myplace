@@ -874,6 +874,54 @@ transition: var(--transition);
 .theme-toggle { background: rgba(26,38,54,0.92); color: #fff; }
 }
 
+.hero-status {
+position: absolute;
+top: 16px;
+right: 16px;
+z-index: 50;
+display: inline-flex;
+align-items: center;
+gap: 6px;
+padding: 6px 14px;
+border-radius: 20px;
+font-size: 12px;
+font-weight: 700;
+background: rgba(255,255,255,0.92);
+backdrop-filter: blur(8px);
+color: var(--open-color);
+box-shadow: 0 2px 12px rgba(0,0,0,0.15);
+}
+
+.hero-status.open { color: #2d9c6e; }
+.hero-status.closed { color: #c0392b; }
+
+.hero-status .status-dot {
+width: 7px;
+height: 7px;
+border-radius: 50%;
+background: currentColor;
+animation: pulse-green 2s infinite;
+}
+
+.hero-status.closed .status-dot { animation: none; }
+
+[data-theme="dark"] .hero-status {
+background: rgba(26,38,54,0.92);
+}
+
+.hours-toggle {
+display: flex;
+align-items: center;
+gap: 4px;
+background: none;
+border: none;
+cursor: pointer;
+padding: 0;
+color: var(--text-secondary);
+font-size: 13px;
+font-weight: 500;
+}
+
 /* ── SPACER ── */
 .spacer { height: 100px; }
 
@@ -921,6 +969,10 @@ margin: 20px 20px 0;
       <circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
     </svg>
   </button>
+  <div class="hero-status open">
+    <span class="status-dot"></span>
+    Ouvert
+  </div>
 </div>
 
 <!-- IDENTITY + STATUS -->
@@ -930,16 +982,12 @@ margin: 20px 20px 0;
     <img src="https://ciss-media-dev.s3.fr-par.scw.cloud/pointofsales/47408/15-vauban-brc-187.png" alt="Logo Sauf Imprévu" />
   </div>
   <div class="identity-right">
-    <div class="status-row">
-      <button class="status-pill open" onclick="toggleHours()" aria-expanded="false">
-        <span class="status-dot"></span>
-        Ouvert
-        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
-          <polyline points="6 9 12 15 18 9"/>
-        </svg>
-      </button>
-      <span class="hours-preview">Jusqu'à 01h00</span>
-    </div>
+    <button class="hours-toggle" onclick="toggleHours()" aria-expanded="false">
+      <span class="hours-today">Jusqu'à 01h00</span>
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+        <polyline points="6 9 12 15 18 9"/>
+      </svg>
+    </button>
   </div>
 </div>
 
@@ -1212,7 +1260,7 @@ margin: 20px 20px 0;
   // Hours drawer
   function toggleHours() {
     const drawer = document.getElementById('hoursDrawer');
-    const btn = document.querySelector('.status-pill');
+    const btn = document.querySelector('.hours-toggle');
     const rest = document.getElementById('hoursRest');
     const today = document.querySelector('.hours-row.today');
     const isOpen = drawer.classList.toggle('open');
