@@ -7,7 +7,7 @@
 <meta name="theme-color" content="#3D6B8C">
 <title>Sauf Imprévu — Bar à vins · Lyon</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400&display=swap" rel="stylesheet">
 <style>
   :root {
     --primary: #3D6B8C;
@@ -20,7 +20,7 @@
     --shadow: 0 2px 20px rgba(0,0,0,0.08);
     --shadow-md: 0 8px 40px rgba(0,0,0,0.12);
     --transition: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-    --font: -apple-system, BlinkMacSystemFont, 'Inter', 'SF Pro Display', 'Segoe UI', sans-serif;
+    --font: 'Plus Jakarta Sans', sans-serif;
   }
 
 [data-theme=“light”], :root {
@@ -74,135 +74,118 @@
 html { font-size: 16px; scroll-behavior: smooth; }
 
 body {
-font-family: var(--font);
-background: var(--bg);
-color: var(--text);
+font-family: var(–font);
+background: #1a1a2e;
+color: var(–text);
 min-height: 100dvh;
+display: flex;
+align-items: flex-start;
+justify-content: center;
+padding: 40px 20px 40px;
 -webkit-font-smoothing: antialiased;
-margin: 0;
 }
 
-/* ── Phone frame (desktop only) ── */
 .phone-shell {
-display: flex;
-flex-direction: column;
-align-items: center;
-justify-content: flex-start;
-min-height: 100vh;
-background: #f0ece4;
-padding: 30px 20px;
+position: relative;
+width: 393px;
+flex-shrink: 0;
 }
+
+/* Cadre téléphone */
 .phone-frame {
 position: relative;
-width: 375px;
-height: 812px;
-border-radius: 50px;
-background: #1a1a1a;
-padding: 12px;
+width: 393px;
+border-radius: 54px;
+background: #111;
 box-shadow:
-  0 0 0 1px rgba(0,0,0,0.1),
-  0 20px 60px rgba(0,0,0,0.15),
-  0 4px 20px rgba(0,0,0,0.1);
-transform: scale(0.8);
-transform-origin: top center;
+0 0 0 1px #333,
+0 0 0 3px #1a1a1a,
+0 0 0 4px #444,
+0 50px 100px rgba(0,0,0,0.6),
+0 20px 40px rgba(0,0,0,0.4);
+overflow: hidden;
+padding: 14px 4px;
 }
+
+/* Boutons latéraux */
 .phone-frame::before {
-content: '';
+content: ‘’;
 position: absolute;
-top: 12px; left: 50%;
-transform: translateX(-50%);
-width: 126px; height: 34px;
-background: #1a1a1a;
-border-radius: 0 0 20px 20px;
+left: -5px;
+top: 100px;
+width: 4px;
+height: 36px;
+background: #2a2a2a;
+border-radius: 3px 0 0 3px;
+box-shadow: 0 50px 0 #2a2a2a, 0 100px 0 #2a2a2a;
+}
+
+.phone-frame::after {
+content: ‘’;
+position: absolute;
+right: -5px;
+top: 130px;
+width: 4px;
+height: 70px;
+background: #2a2a2a;
+border-radius: 0 3px 3px 0;
+}
+
+/* Dynamic island */
+.dynamic-island {
+width: 120px;
+height: 34px;
+background: #000;
+border-radius: 20px;
+margin: 0 auto 10px;
+position: relative;
 z-index: 10;
 }
+
 .phone-screen {
-position: relative;
-width: 100%;
-height: 100%;
-border-radius: 42px;
+border-radius: 44px;
 overflow: hidden;
-background: var(--bg, #f7f8fa);
-color: var(--text, #1a2332);
-}
-.phone-scroll {
-width: 100%;
-height: 100%;
+background: var(–bg);
+position: relative;
+max-height: 820px;
 overflow-y: auto;
-overflow-x: hidden;
-border-radius: 42px;
--webkit-overflow-scrolling: touch;
-}
-.phone-scroll::-webkit-scrollbar { display: none; }
-
-/* Default to light theme inside phone on desktop */
-@media (min-width: 769px) {
-  .phone-screen {
-    --bg: #f7f8fa;
-    --bg-card: #ffffff;
-    --bg-subtle: #f0f3f7;
-    --text: #1a2332;
-    --text-secondary: #5a6a7e;
-    --text-tertiary: #8a9ab0;
-    --border: rgba(0,0,0,0.07);
-    --open-color: #2d9c6e;
-    --open-bg: #e8f7f2;
-    --closed-color: #c0392b;
-    --closed-bg: #fdecea;
-  }
-  [data-theme="dark"] .phone-screen {
-    --bg: #0f1923;
-    --bg-card: #1a2636;
-    --bg-subtle: #212f3f;
-    --text: #eef2f7;
-    --text-secondary: #8fa3bb;
-    --text-tertiary: #5a7288;
-    --border: rgba(255,255,255,0.07);
-    --open-color: #3dbf87;
-    --open-bg: rgba(61,191,135,0.12);
-    --closed-color: #e05c4b;
-    --closed-bg: rgba(224,92,75,0.12);
-  }
+scrollbar-width: none;
 }
 
-/* ── Mobile: no frame ── */
-@media (max-width: 768px) {
-  .phone-shell {
-    display: contents;
-  }
-  .phone-frame {
-    all: unset;
-  }
-  .phone-frame::before {
-    display: none;
-  }
-  .phone-screen {
-    all: unset;
-    display: block;
-    max-width: 600px;
-    margin: 0 auto;
-    min-height: 100dvh;
-  }
-  .phone-scroll {
-    all: unset;
-    display: block;
-  }
+.phone-screen::-webkit-scrollbar { display: none; }
+
+/* Reflet écran */
+.phone-screen::before {
+content: ‘’;
+position: absolute;
+top: 0;
+left: 0;
+right: 0;
+height: 200px;
+background: linear-gradient(135deg, rgba(255,255,255,0.06) 0%, transparent 60%);
+z-index: 200;
+pointer-events: none;
+border-radius: 44px 44px 0 0;
+}
+
+/* Label sous le téléphone */
+.phone-label {
+text-align: center;
+margin-top: 24px;
+font-family: var(–font);
+font-size: 12px;
+font-weight: 500;
+color: rgba(255,255,255,0.3);
+letter-spacing: 0.08em;
+text-transform: uppercase;
 }
 
 /* ── HERO ── */
 .hero {
 position: relative;
 width: 100%;
-height: 200px;
+height: 240px;
 overflow: hidden;
-border-radius: 0;
-}
-
-/* On desktop, clip the hero top corners to match phone screen */
-@media (min-width: 769px) {
-  .hero {
-    border-radius: 42px 42px 0 0;
-  }
 }
 
 .hero-img {
@@ -226,27 +209,11 @@ rgba(15,25,35,0.5) 100%
 
 .hero-btn:active { transform: scale(0.93); }
 
-/* ── TYPE BADGE (overlay in hero) ── */
-.type-badge {
-position: absolute;
-bottom: 12px;
-right: 12px;
-font-size: 11px;
-font-weight: 600;
-letter-spacing: 0.04em;
-color: #fff;
-background: rgba(0,0,0,0.55);
-backdrop-filter: blur(8px);
-padding: 5px 12px;
-border-radius: 20px;
-z-index: 3;
-}
-
-/* ── LOGO + STATUS ROW ── */
+/* ── LOGO OVERLAP ── */
 .identity {
 position: relative;
 padding: 0 20px 0;
-margin-top: -50px;
+margin-top: -40px;
 display: flex;
 align-items: flex-end;
 gap: 14px;
@@ -254,14 +221,14 @@ z-index: 2;
 }
 
 .logo-wrap {
-width: 100px;
-height: 100px;
-border-radius: 22px;
-background: var(--bg-card);
+width: 80px;
+height: 80px;
+border-radius: 18px;
+background: var(–bg-card);
 box-shadow: 0 4px 20px rgba(0,0,0,0.15);
 overflow: hidden;
 flex-shrink: 0;
-border: 3px solid var(--bg-card);
+border: 3px solid var(–bg-card);
 }
 
 .logo-wrap img {
@@ -271,23 +238,33 @@ object-fit: cover;
 padding: 0;
 }
 
-.identity-right {
-flex: 1;
+.identity-tag {
 padding-bottom: 8px;
 display: flex;
 align-items: center;
-justify-content: flex-end;
+gap: 6px;
+}
+
+.type-badge {
+font-size: 11px;
+font-weight: 600;
+letter-spacing: 0.06em;
+color: var(–bg-card);
+background: var(–primary);
+padding: 3px 10px;
+border-radius: 20px;
+opacity: 0.95;
 }
 
 /* ── INFO BLOCK ── */
 .info {
-padding: 16px 20px 8px;
+padding: 14px 20px 8px;
 }
 
 .merchant-name {
-font-size: 20px;
+font-size: 24px;
 font-weight: 700;
-color: var(--text);
+color: var(–text);
 line-height: 1.2;
 letter-spacing: -0.02em;
 }
@@ -296,7 +273,7 @@ letter-spacing: -0.02em;
 display: flex;
 align-items: center;
 gap: 8px;
-margin-top: 0;
+margin-top: 12px;
 flex-wrap: wrap;
 }
 
@@ -304,24 +281,22 @@ flex-wrap: wrap;
 display: inline-flex;
 align-items: center;
 gap: 5px;
-font-size: 12px;
+font-size: 13px;
 font-weight: 600;
-padding: 5px 10px;
+padding: 7px 12px;
 border-radius: 20px;
 cursor: pointer;
-transition: var(--transition);
-border: 1px solid transparent;
+transition: var(–transition);
 }
 
 .status-pill.open {
-color: var(--open-color);
-background: transparent;
-border-color: var(--open-color);
+color: var(–open-color);
+background: var(–open-bg);
 }
 
 .status-pill.closed {
-color: var(--closed-color);
-background: var(--closed-bg);
+color: var(–closed-color);
+background: var(–closed-bg);
 }
 
 .status-dot {
@@ -342,7 +317,7 @@ animation: pulse-green 2s infinite;
 
 .hours-preview {
 font-size: 12px;
-color: var(--text-tertiary);
+color: var(–text-tertiary);
 font-weight: 500;
 }
 
@@ -350,9 +325,9 @@ font-weight: 500;
 display: flex;
 align-items: center;
 gap: 8px;
-margin-top: 6px;
+margin-top: 10px;
 font-size: 14px;
-color: var(--primary);
+color: var(–primary);
 font-weight: 500;
 transition: opacity 0.15s;
 min-height: 44px;
@@ -361,7 +336,7 @@ min-height: 44px;
 
 .address-row svg {
 flex-shrink: 0;
-color: var(--primary);
+color: var(–primary);
 opacity: 0.7;
 }
 
@@ -370,14 +345,14 @@ opacity: 0.7;
 display: flex;
 align-items: center;
 gap: 8px;
-margin-top: 6px;
-padding: 12px 16px;
-background: var(--bg-subtle);
-border-radius: var(--radius-sm);
+margin-top: 10px;
+padding: 14px 16px;
+background: var(–bg-subtle);
+border-radius: var(–radius-sm);
 cursor: pointer;
 text-decoration: none;
-transition: var(--transition);
-border: 1px solid var(--border);
+transition: var(–transition);
+border: 1px solid var(–border);
 }
 
 .avis-band:active { opacity: 0.8; }
@@ -393,12 +368,12 @@ color: #f5a623;
 .avis-score {
 font-size: 14px;
 font-weight: 700;
-color: var(--text);
+color: var(–text);
 }
 
 .avis-count {
 font-size: 13px;
-color: var(--text-tertiary);
+color: var(–text-tertiary);
 font-weight: 400;
 }
 
@@ -409,7 +384,7 @@ align-items: center;
 gap: 4px;
 font-size: 11px;
 font-weight: 600;
-color: var(--text-tertiary);
+color: var(–text-tertiary);
 }
 
 .avis-source svg { width: 14px; height: 14px; }
@@ -438,7 +413,7 @@ left: 50%;
 transform: translateX(-50%) translateY(100%);
 width: 100%;
 max-width: 430px;
-background: var(--bg-card);
+background: var(–bg-card);
 border-radius: 24px 24px 0 0;
 z-index: 201;
 padding: 0 0 max(24px, env(safe-area-inset-bottom));
@@ -450,23 +425,10 @@ box-shadow: 0 -8px 40px rgba(0,0,0,0.2);
 transform: translateX(-50%) translateY(0);
 }
 
-/* Desktop: constrain sheet inside phone-screen */
-@media (min-width: 769px) {
-  .sheet-overlay {
-    position: absolute;
-    border-radius: 42px;
-  }
-  .bottom-sheet {
-    position: absolute;
-    max-width: 100%;
-    border-radius: 24px 24px 40px 40px;
-  }
-}
-
 .sheet-handle {
 width: 36px;
 height: 4px;
-background: var(--border);
+background: var(–border);
 border-radius: 2px;
 margin: 12px auto 16px;
 }
@@ -476,16 +438,16 @@ font-size: 12px;
 font-weight: 600;
 letter-spacing: 0.06em;
 text-transform: uppercase;
-color: var(--text-tertiary);
+color: var(–text-tertiary);
 padding: 0 20px 12px;
 }
 
 .sheet-address {
 font-size: 14px;
 font-weight: 600;
-color: var(--text);
+color: var(–text);
 padding: 0 20px 16px;
-border-bottom: 1px solid var(--border);
+border-bottom: 1px solid var(–border);
 }
 
 .sheet-actions {
@@ -500,18 +462,18 @@ display: flex;
 align-items: center;
 gap: 16px;
 padding: 16px 12px;
-border-radius: var(--radius-sm);
+border-radius: var(–radius-sm);
 text-decoration: none;
-color: var(--text);
+color: var(–text);
 cursor: pointer;
 border: none;
 background: none;
 width: 100%;
-font-family: var(--font);
-transition: var(--transition);
+font-family: var(–font);
+transition: var(–transition);
 }
 
-.sheet-action:active { background: var(--bg-subtle); }
+.sheet-action:active { background: var(–bg-subtle); }
 
 .sheet-action-icon {
 width: 48px;
@@ -527,25 +489,25 @@ flex-shrink: 0;
 .sheet-action-icon.apple { background: #f0f0f5; }
 .sheet-action-icon.google { background: #e8f0fe; }
 .sheet-action-icon.waze { background: #e8f7ef; }
-.sheet-action-icon.copy { background: var(--bg-subtle); }
+.sheet-action-icon.copy { background: var(–bg-subtle); }
 
 .sheet-action-text { text-align: left; }
 
 .sheet-action-label {
 font-size: 16px;
 font-weight: 600;
-color: var(--text);
+color: var(–text);
 }
 
 .sheet-action-sub {
 font-size: 13px;
-color: var(--text-tertiary);
+color: var(–text-tertiary);
 font-weight: 400;
 }
 
 .sheet-action-arrow {
 margin-left: auto;
-color: var(--text-tertiary);
+color: var(–text-tertiary);
 }
 
 .sheet-cancel {
@@ -554,14 +516,14 @@ padding: 14px;
 text-align: center;
 font-size: 15px;
 font-weight: 600;
-color: var(--primary);
+color: var(–primary);
 cursor: pointer;
 border: none;
-background: var(--bg-subtle);
-border-radius: var(--radius-sm);
+background: var(–bg-subtle);
+border-radius: var(–radius-sm);
 width: calc(100% - 24px);
-font-family: var(--font);
-transition: var(--transition);
+font-family: var(–font);
+transition: var(–transition);
 }
 
 .sheet-cancel:active { opacity: 0.7; }
@@ -588,8 +550,8 @@ content: ‘’;
 display: inline-block;
 width: 8px;
 height: 8px;
-border-right: 2px solid var(--primary);
-border-bottom: 2px solid var(--primary);
+border-right: 2px solid var(–primary);
+border-bottom: 2px solid var(–primary);
 transform: rotate(45deg);
 margin-left: auto;
 transition: transform 0.25s ease;
@@ -612,8 +574,8 @@ max-height: 300px;
 }
 
 .hours-inner {
-background: var(--bg-subtle);
-border-radius: var(--radius-sm);
+background: var(–bg-subtle);
+border-radius: var(–radius-sm);
 padding: 12px 14px;
 margin-top: 10px;
 }
@@ -624,37 +586,37 @@ justify-content: space-between;
 align-items: center;
 padding: 5px 0;
 font-size: 13px;
-border-bottom: 1px solid var(--border);
+border-bottom: 1px solid var(–border);
 }
 
 .hours-row:last-child { border-bottom: none; }
 
 .hours-row.today .day-name {
 font-weight: 700;
-color: var(--primary);
+color: var(–primary);
 }
 
-.day-name { color: var(--text-secondary); font-weight: 500; }
-.day-hours { color: var(--text); font-weight: 500; }
-.day-closed { color: var(--text-tertiary); font-style: italic; }
+.day-name { color: var(–text-secondary); font-weight: 500; }
+.day-hours { color: var(–text); font-weight: 500; }
+.day-closed { color: var(–text-tertiary); font-style: italic; }
 
 /* ── CTAs ── */
 .ctas {
 display: grid;
-grid-template-columns: repeat(3, 1fr);
+grid-template-columns: repeat(4, 1fr);
 gap: 0;
-padding: 0 12px;
+padding: 4px 12px 0;
 }
 
 .cta-btn {
 display: flex;
 flex-direction: column;
 align-items: center;
-gap: 8px;
-padding: 14px 4px;
+gap: 10px;
+padding: 20px 4px;
 cursor: pointer;
 text-decoration: none;
-color: var(--primary);
+color: var(–primary);
 transition: opacity 0.15s;
 background: none;
 border: none;
@@ -671,12 +633,12 @@ align-items: center;
 justify-content: center;
 }
 
-.cta-icon svg { width: 34px; height: 34px; stroke-width: 1.8; }
+.cta-icon svg { width: 28px; height: 28px; stroke-width: 1.8; }
 
 .cta-label {
 font-size: 11px;
 font-weight: 600;
-color: var(--text-secondary);
+color: var(–text-secondary);
 letter-spacing: 0.01em;
 }
 
@@ -699,13 +661,13 @@ font-size: 12px;
 font-weight: 600;
 letter-spacing: 0.06em;
 text-transform: uppercase;
-color: var(--text-tertiary);
+color: var(–text-tertiary);
 }
 
 .section-more {
 font-size: 12px;
 font-weight: 600;
-color: var(--primary);
+color: var(–primary);
 text-decoration: none;
 opacity: 0.8;
 }
@@ -730,12 +692,12 @@ display: flex;
 align-items: center;
 gap: 8px;
 padding: 12px 16px;
-background: var(--bg-card);
-border: 1px solid var(--border);
-border-radius: var(--radius-sm);
+background: var(–bg-card);
+border: 1px solid var(–border);
+border-radius: var(–radius-sm);
 text-decoration: none;
-transition: var(--transition);
-box-shadow: var(--shadow);
+transition: var(–transition);
+box-shadow: var(–shadow);
 }
 
 .social-item:active { transform: scale(0.96); }
@@ -750,35 +712,25 @@ flex-shrink: 0;
 .social-name {
 font-size: 13px;
 font-weight: 600;
-color: var(--text-secondary);
+color: var(–text-secondary);
 }
 
 /* ── BOTTOM BAR ── */
 .bottom-bar {
-position: fixed;
+position: sticky;
 bottom: 0;
 left: 0;
 right: 0;
 width: 100%;
-max-width: 600px;
-margin: 0 auto;
-background: var(--bg-card);
-border-top: 1px solid var(--border);
+background: var(–bg-card);
+border-top: 1px solid var(–border);
 display: flex;
 align-items: center;
 justify-content: space-around;
-padding: 12px 0 max(18px, env(safe-area-inset-bottom));
+padding: 12px 0 18px;
 z-index: 100;
 backdrop-filter: blur(12px);
 box-shadow: 0 -4px 20px rgba(0,0,0,0.06);
-}
-
-/* Desktop: sticky inside phone-screen */
-@media (min-width: 769px) {
-  .bottom-bar {
-    position: sticky;
-    max-width: 100%;
-  }
 }
 
 .nav-item {
@@ -790,13 +742,13 @@ padding: 6px 16px;
 cursor: pointer;
 border: none;
 background: none;
-color: var(--text-tertiary);
-transition: var(--transition);
-border-radius: var(--radius-sm);
+color: var(–text-tertiary);
+transition: var(–transition);
+border-radius: var(–radius-sm);
 text-decoration: none;
 }
 
-.nav-item.active { color: var(--primary); }
+.nav-item.active { color: var(–primary); }
 
 .nav-item svg { width: 24px; height: 24px; display: block; }
 
@@ -810,7 +762,7 @@ letter-spacing: 0.02em;
 width: 4px;
 height: 4px;
 border-radius: 50%;
-background: var(--primary);
+background: var(–primary);
 margin-top: -2px;
 }
 
@@ -830,9 +782,9 @@ cursor: pointer;
 display: flex;
 align-items: center;
 justify-content: center;
-color: var(--primary);
+color: var(–primary);
 box-shadow: 0 2px 12px rgba(0,0,0,0.15);
-transition: var(--transition);
+transition: var(–transition);
 }
 
 [data-theme=“dark”] .theme-toggle,
@@ -864,7 +816,7 @@ to { opacity: 1; transform: translateY(0); }
 /* ── DIVIDER ── */
 .divider {
 height: 1px;
-background: var(--border);
+background: var(–border);
 margin: 20px 20px 0;
 }
 </style>
@@ -873,39 +825,32 @@ margin: 20px 20px 0;
 <body>
 <div class="phone-shell">
   <div class="phone-frame">
-    <div class="phone-screen">
-      <div class="phone-scroll">
+    <div class="dynamic-island"></div>
+    <div class="phone-screen" id="phoneScreen">
+
+<!-- THEME TOGGLE -->
+
+<button class="theme-toggle" onclick="toggleTheme()" aria-label="Changer le thème" style="position:absolute;">
+  <svg id="theme-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
+  </svg>
+</button>
 
 <!-- HERO -->
 
 <div class="hero fade-up">
   <img class="hero-img" src="https://ciss-test-bucket-int.s3.fr-par.scw.cloud/pointofsales/47408/15-vauban-brc-194.png" alt="Sauf Imprévu Bar à vins" />
   <div class="hero-overlay"></div>
-  <span class="type-badge">Bar à vins · Restaurant</span>
-  <button class="theme-toggle" onclick="toggleTheme()" aria-label="Changer le thème">
-    <svg id="theme-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-      <circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
-    </svg>
-  </button>
 </div>
 
-<!-- IDENTITY + STATUS -->
+<!-- IDENTITY -->
 
 <div class="identity fade-up">
   <div class="logo-wrap">
     <img src="https://ciss-media-dev.s3.fr-par.scw.cloud/pointofsales/47408/15-vauban-brc-187.png" alt="Logo Sauf Imprévu" />
   </div>
-  <div class="identity-right">
-    <div class="status-row">
-      <button class="status-pill open" onclick="toggleHours()" aria-expanded="false">
-        <span class="status-dot"></span>
-        Ouvert
-        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
-          <polyline points="6 9 12 15 18 9"/>
-        </svg>
-      </button>
-      <span class="hours-preview">Jusqu'à 01h00</span>
-    </div>
+  <div class="identity-tag">
+    <span class="type-badge">Bar à vins · Restaurant</span>
   </div>
 </div>
 
@@ -913,6 +858,16 @@ margin: 20px 20px 0;
 
 <div class="info fade-up">
   <h1 class="merchant-name">Sauf Imprévu Bar à vins</h1>
+  <div class="status-row">
+    <button class="status-pill open" onclick="toggleHours()" aria-expanded="false">
+      <span class="status-dot"></span>
+      Ouvert
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+        <polyline points="6 9 12 15 18 9"/>
+      </svg>
+    </button>
+    <span class="hours-preview">Jusqu'à 01h00</span>
+  </div>
   <!-- HOURS DRAWER -->
   <div class="hours-drawer" id="hoursDrawer">
     <div class="hours-inner">
@@ -957,24 +912,33 @@ margin: 20px 20px 0;
 <div class="ctas fade-up">
   <a href="tel:+33437243979" class="cta-btn">
     <div class="cta-icon">
-      <svg viewBox="0 0 640 640" fill="currentColor">
-        <path d="M176.8 74.9C204.1 65.8 233.8 78.8 245.7 104.9L285.4 192.2C296 215.6 289.4 243.2 269.4 259.3L245.2 278.6C270.7 328.6 310.7 370 359.6 397.4L380.8 370.8C396.9 350.7 424.5 344.1 447.9 354.8L535.2 394.5C561.4 406.4 574.3 436.1 565.2 463.4C544.5 525.7 481.5 579.6 404.3 566C230.6 535.4 104.7 409.5 74.1 235.8C60.5 158.6 114.5 95.7 176.7 74.9zM202 124.8C200.3 121 196 119.1 192 120.4C146.8 135.5 112.9 179 121.5 227.4C148.6 381.2 258.9 491.6 412.7 518.7C461.1 527.2 504.6 493.4 519.7 448.2C521 444.2 519.1 439.9 515.3 438.2L428 398.4C424.6 396.9 420.6 397.8 418.3 400.7L384.8 442.6C377.8 451.3 365.8 454.1 355.8 449.3C283.3 414.9 225.3 355 193.4 281.1C189.1 271.2 192 259.6 200.4 252.9L239.3 221.8C242.2 219.5 243.2 215.5 241.6 212.1L201.9 124.7z"/>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.61 3.38 2 2 0 0 1 3.58 1h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.56a16 16 0 0 0 5.52 5.52l1.62-1.62a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/>
       </svg>
     </div>
     <span class="cta-label">Appeler</span>
   </a>
   <a href="sms:+33437243979" class="cta-btn">
     <div class="cta-icon">
-      <svg viewBox="0 0 640 640" fill="currentColor">
-        <path d="M267.7 576.9L267.7 576.9L359.6 512L480 512C533 512 576 469 576 416L576 192C576 139 533 96 480 96L160 96C107 96 64 139 64 192L64 416C64 469 107 512 160 512L192 512L192 584C192 593 197 601.2 205 605.3C213 609.4 222.6 608.8 229.9 603.6L267.7 576.9zM359.6 464C349.7 464 340 467.1 331.9 472.8C303.3 493 272.6 514.6 240 537.7L240 488C240 485.2 239.5 482.4 238.6 479.9C235.3 470.6 226.4 464 216 464L160 464C133.5 464 112 442.5 112 416L112 192C112 165.5 133.5 144 160 144L480 144C506.5 144 528 165.5 528 192L528 416C528 442.5 506.5 464 480 464L359.6 464zM184 272C170.7 272 160 282.7 160 296C160 309.3 170.7 320 184 320L312 320C325.3 320 336 309.3 336 296C336 282.7 325.3 272 312 272L184 272zM408 272C394.7 272 384 282.7 384 296C384 309.3 394.7 320 408 320L456 320C469.3 320 480 309.3 480 296C480 282.7 469.3 272 456 272L408 272zM184 368C170.7 368 160 378.7 160 392C160 405.3 170.7 416 184 416L232 416C245.3 416 256 405.3 256 392C256 378.7 245.3 368 232 368L184 368zM328 368C314.7 368 304 378.7 304 392C304 405.3 314.7 416 328 416L456 416C469.3 416 480 405.3 480 392C480 378.7 469.3 368 456 368L328 368z"/>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
       </svg>
     </div>
-    <span class="cta-label">Discuter</span>
+    <span class="cta-label">Message</span>
+  </a>
+  <a href="https://maps.google.com/?q=46+Rue+de+Vauban,+69006+Lyon" target="_blank" class="cta-btn">
+    <div class="cta-icon">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+        <polygon points="3 11 22 2 13 21 11 13 3 11"/>
+      </svg>
+    </div>
+    <span class="cta-label">Y aller</span>
   </a>
   <button class="cta-btn" onclick="handleShare()">
     <div class="cta-icon">
-      <svg viewBox="0 0 640 640" fill="currentColor">
-        <path d="M496 160C496 133.5 474.5 112 448 112C421.5 112 400 133.5 400 160C400 186.5 421.5 208 448 208C474.5 208 496 186.5 496 160zM544 160C544 213 501 256 448 256C420.6 256 395.9 244.5 378.4 226.1L252.9 295.8C254.9 303.5 256 311.6 256 320C256 328.4 254.9 336.5 252.9 344.2L378.4 413.9C395.9 395.5 420.6 384 448 384C501 384 544 427 544 480C544 533 501 576 448 576C395 576 352 533 352 480C352 471.7 353.1 463.5 355.1 455.8L229.6 386.1C212.1 404.5 187.4 416 160 416C107 416 64 373 64 320C64 267 107 224 160 224C187.4 224 212.1 235.5 229.6 253.9L355.1 184.2C353.1 176.5 352 168.4 352 160C352 107 395 64 448 64C501 64 544 107 544 160zM208 320C208 293.5 186.5 272 160 272C133.5 272 112 293.5 112 320C112 346.5 133.5 368 160 368C186.5 368 208 346.5 208 320zM448 528C474.5 528 496 506.5 496 480C496 453.5 474.5 432 448 432C421.5 432 400 453.5 400 480C400 506.5 421.5 528 448 528z"/>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/>
+        <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/>
       </svg>
     </div>
     <span class="cta-label">Partager</span>
@@ -1076,8 +1040,6 @@ margin: 20px 20px 0;
   </a>
 </nav>
 
-      </div><!-- /phone-scroll -->
-
 <!-- OVERLAY -->
 
 <div class="sheet-overlay" id="sheetOverlay" onclick="closeAddressSheet()"></div>
@@ -1124,8 +1086,12 @@ margin: 20px 20px 0;
   <button class="sheet-cancel" onclick="closeAddressSheet()">Annuler</button>
 </div>
 
-    </div><!-- /phone-screen -->
+```
+</div><!-- /phone-screen -->
+```
+
   </div><!-- /phone-frame -->
+  <div class="phone-label">Boostore · vCard V1</div>
 </div><!-- /phone-shell -->
 
 <script>

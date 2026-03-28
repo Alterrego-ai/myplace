@@ -121,19 +121,13 @@ position: relative;
 width: 100%;
 height: 100%;
 border-radius: 42px;
-overflow: hidden;
-background: var(--bg, #f7f8fa);
-color: var(--text, #1a2332);
-}
-.phone-scroll {
-width: 100%;
-height: 100%;
 overflow-y: auto;
 overflow-x: hidden;
-border-radius: 42px;
+background: var(--bg, #f7f8fa);
+color: var(--text, #1a2332);
 -webkit-overflow-scrolling: touch;
 }
-.phone-scroll::-webkit-scrollbar { display: none; }
+.phone-screen::-webkit-scrollbar { display: none; }
 
 /* Default to light theme inside phone on desktop */
 @media (min-width: 769px) {
@@ -183,17 +177,13 @@ border-radius: 42px;
     margin: 0 auto;
     min-height: 100dvh;
   }
-  .phone-scroll {
-    all: unset;
-    display: block;
-  }
 }
 
 /* ── HERO ── */
 .hero {
 position: relative;
 width: 100%;
-height: 200px;
+height: 220px;
 overflow: hidden;
 border-radius: 0;
 }
@@ -226,23 +216,7 @@ rgba(15,25,35,0.5) 100%
 
 .hero-btn:active { transform: scale(0.93); }
 
-/* ── TYPE BADGE (overlay in hero) ── */
-.type-badge {
-position: absolute;
-bottom: 12px;
-right: 12px;
-font-size: 11px;
-font-weight: 600;
-letter-spacing: 0.04em;
-color: #fff;
-background: rgba(0,0,0,0.55);
-backdrop-filter: blur(8px);
-padding: 5px 12px;
-border-radius: 20px;
-z-index: 3;
-}
-
-/* ── LOGO + STATUS ROW ── */
+/* ── LOGO OVERLAP ── */
 .identity {
 position: relative;
 padding: 0 20px 0;
@@ -271,21 +245,31 @@ object-fit: cover;
 padding: 0;
 }
 
-.identity-right {
-flex: 1;
+.identity-tag {
 padding-bottom: 8px;
 display: flex;
 align-items: center;
-justify-content: flex-end;
+gap: 6px;
+}
+
+.type-badge {
+font-size: 11px;
+font-weight: 600;
+letter-spacing: 0.06em;
+color: var(--bg-card);
+background: var(--primary);
+padding: 3px 10px;
+border-radius: 20px;
+opacity: 0.95;
 }
 
 /* ── INFO BLOCK ── */
 .info {
-padding: 16px 20px 8px;
+padding: 14px 20px 8px;
 }
 
 .merchant-name {
-font-size: 20px;
+font-size: 24px;
 font-weight: 700;
 color: var(--text);
 line-height: 1.2;
@@ -296,7 +280,7 @@ letter-spacing: -0.02em;
 display: flex;
 align-items: center;
 gap: 8px;
-margin-top: 0;
+margin-top: 12px;
 flex-wrap: wrap;
 }
 
@@ -304,19 +288,17 @@ flex-wrap: wrap;
 display: inline-flex;
 align-items: center;
 gap: 5px;
-font-size: 12px;
+font-size: 13px;
 font-weight: 600;
-padding: 5px 10px;
+padding: 7px 12px;
 border-radius: 20px;
 cursor: pointer;
 transition: var(--transition);
-border: 1px solid transparent;
 }
 
 .status-pill.open {
 color: var(--open-color);
-background: transparent;
-border-color: var(--open-color);
+background: var(--open-bg);
 }
 
 .status-pill.closed {
@@ -350,7 +332,7 @@ font-weight: 500;
 display: flex;
 align-items: center;
 gap: 8px;
-margin-top: 6px;
+margin-top: 10px;
 font-size: 14px;
 color: var(--primary);
 font-weight: 500;
@@ -370,8 +352,8 @@ opacity: 0.7;
 display: flex;
 align-items: center;
 gap: 8px;
-margin-top: 6px;
-padding: 12px 16px;
+margin-top: 10px;
+padding: 14px 16px;
 background: var(--bg-subtle);
 border-radius: var(--radius-sm);
 cursor: pointer;
@@ -641,17 +623,17 @@ color: var(--primary);
 /* ── CTAs ── */
 .ctas {
 display: grid;
-grid-template-columns: repeat(3, 1fr);
+grid-template-columns: repeat(4, 1fr);
 gap: 0;
-padding: 0 12px;
+padding: 4px 12px 0;
 }
 
 .cta-btn {
 display: flex;
 flex-direction: column;
 align-items: center;
-gap: 8px;
-padding: 14px 4px;
+gap: 10px;
+padding: 20px 4px;
 cursor: pointer;
 text-decoration: none;
 color: var(--primary);
@@ -671,7 +653,7 @@ align-items: center;
 justify-content: center;
 }
 
-.cta-icon svg { width: 34px; height: 34px; stroke-width: 1.8; }
+.cta-icon svg { width: 28px; height: 28px; stroke-width: 1.8; }
 
 .cta-label {
 font-size: 11px;
@@ -755,30 +737,20 @@ color: var(--text-secondary);
 
 /* ── BOTTOM BAR ── */
 .bottom-bar {
-position: fixed;
+position: sticky;
 bottom: 0;
 left: 0;
 right: 0;
 width: 100%;
-max-width: 600px;
-margin: 0 auto;
 background: var(--bg-card);
 border-top: 1px solid var(--border);
 display: flex;
 align-items: center;
 justify-content: space-around;
-padding: 12px 0 max(18px, env(safe-area-inset-bottom));
+padding: 12px 0 18px;
 z-index: 100;
 backdrop-filter: blur(12px);
 box-shadow: 0 -4px 20px rgba(0,0,0,0.06);
-}
-
-/* Desktop: sticky inside phone-screen */
-@media (min-width: 769px) {
-  .bottom-bar {
-    position: sticky;
-    max-width: 100%;
-  }
 }
 
 .nav-item {
@@ -874,14 +846,12 @@ margin: 20px 20px 0;
 <div class="phone-shell">
   <div class="phone-frame">
     <div class="phone-screen">
-      <div class="phone-scroll">
 
 <!-- HERO -->
 
 <div class="hero fade-up">
   <img class="hero-img" src="https://ciss-test-bucket-int.s3.fr-par.scw.cloud/pointofsales/47408/15-vauban-brc-194.png" alt="Sauf Imprévu Bar à vins" />
   <div class="hero-overlay"></div>
-  <span class="type-badge">Bar à vins · Restaurant</span>
   <button class="theme-toggle" onclick="toggleTheme()" aria-label="Changer le thème">
     <svg id="theme-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
       <circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
@@ -889,23 +859,14 @@ margin: 20px 20px 0;
   </button>
 </div>
 
-<!-- IDENTITY + STATUS -->
+<!-- IDENTITY -->
 
 <div class="identity fade-up">
   <div class="logo-wrap">
     <img src="https://ciss-media-dev.s3.fr-par.scw.cloud/pointofsales/47408/15-vauban-brc-187.png" alt="Logo Sauf Imprévu" />
   </div>
-  <div class="identity-right">
-    <div class="status-row">
-      <button class="status-pill open" onclick="toggleHours()" aria-expanded="false">
-        <span class="status-dot"></span>
-        Ouvert
-        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
-          <polyline points="6 9 12 15 18 9"/>
-        </svg>
-      </button>
-      <span class="hours-preview">Jusqu'à 01h00</span>
-    </div>
+  <div class="identity-tag">
+    <span class="type-badge">Bar à vins · Restaurant</span>
   </div>
 </div>
 
@@ -913,6 +874,16 @@ margin: 20px 20px 0;
 
 <div class="info fade-up">
   <h1 class="merchant-name">Sauf Imprévu Bar à vins</h1>
+  <div class="status-row">
+    <button class="status-pill open" onclick="toggleHours()" aria-expanded="false">
+      <span class="status-dot"></span>
+      Ouvert
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+        <polyline points="6 9 12 15 18 9"/>
+      </svg>
+    </button>
+    <span class="hours-preview">Jusqu'à 01h00</span>
+  </div>
   <!-- HOURS DRAWER -->
   <div class="hours-drawer" id="hoursDrawer">
     <div class="hours-inner">
@@ -966,15 +937,15 @@ margin: 20px 20px 0;
   <a href="sms:+33437243979" class="cta-btn">
     <div class="cta-icon">
       <svg viewBox="0 0 640 640" fill="currentColor">
-        <path d="M267.7 576.9L267.7 576.9L359.6 512L480 512C533 512 576 469 576 416L576 192C576 139 533 96 480 96L160 96C107 96 64 139 64 192L64 416C64 469 107 512 160 512L192 512L192 584C192 593 197 601.2 205 605.3C213 609.4 222.6 608.8 229.9 603.6L267.7 576.9zM359.6 464C349.7 464 340 467.1 331.9 472.8C303.3 493 272.6 514.6 240 537.7L240 488C240 485.2 239.5 482.4 238.6 479.9C235.3 470.6 226.4 464 216 464L160 464C133.5 464 112 442.5 112 416L112 192C112 165.5 133.5 144 160 144L480 144C506.5 144 528 165.5 528 192L528 416C528 442.5 506.5 464 480 464L359.6 464zM184 272C170.7 272 160 282.7 160 296C160 309.3 170.7 320 184 320L312 320C325.3 320 336 309.3 336 296C336 282.7 325.3 272 312 272L184 272zM408 272C394.7 272 384 282.7 384 296C384 309.3 394.7 320 408 320L456 320C469.3 320 480 309.3 480 296C480 282.7 469.3 272 456 272L408 272zM184 368C170.7 368 160 378.7 160 392C160 405.3 170.7 416 184 416L232 416C245.3 416 256 405.3 256 392C256 378.7 245.3 368 232 368L184 368zM328 368C314.7 368 304 378.7 304 392C304 405.3 314.7 416 328 416L456 416C469.3 416 480 405.3 480 392C480 378.7 469.3 368 456 368L328 368z"/>
+        <path d="M208 96C131.1 96 64 149.5 64 224c0 38.4 18.4 69.5 46.4 95.4C99.2 337.6 82.4 373.6 80 384c18.4-4.8 54.4-16 86.4-35.2C181.6 352 194.4 352 208 352c76.8 0 144-53.5 144-128S284.8 96 208 96zM208 304c-11.2 0-22.4-1.6-33.6-4.8l-8-2.4-7.2 4.8c-16 10.4-35.2 19.2-52.8 25.6 4.8-12.8 8-27.2 8.8-40l1.6-11.2-8.8-8C92.8 253.6 80 232.8 80 224c0-50.4 52.8-96 128-96s128 45.6 128 96S333.6 304 208 304zM432 160c76.8 0 144 53.5 144 128 0 29.6-12.8 57.6-35.2 80l-8.8 8 1.6 11.2c.8 12.8 4 27.2 8.8 40-17.6-6.4-36.8-15.2-52.8-25.6l-7.2-4.8-8 2.4c-11.2 3.2-22.4 4.8-33.6 4.8-40 0-76.8-16-104-40 4.8 0 9.6 .8 14.4 .8 89.6 0 164-60.8 176-142.4C536.8 188.8 488 160 432 160z"/>
       </svg>
     </div>
-    <span class="cta-label">Discuter</span>
+    <span class="cta-label">Écrire</span>
   </a>
   <button class="cta-btn" onclick="handleShare()">
     <div class="cta-icon">
       <svg viewBox="0 0 640 640" fill="currentColor">
-        <path d="M496 160C496 133.5 474.5 112 448 112C421.5 112 400 133.5 400 160C400 186.5 421.5 208 448 208C474.5 208 496 186.5 496 160zM544 160C544 213 501 256 448 256C420.6 256 395.9 244.5 378.4 226.1L252.9 295.8C254.9 303.5 256 311.6 256 320C256 328.4 254.9 336.5 252.9 344.2L378.4 413.9C395.9 395.5 420.6 384 448 384C501 384 544 427 544 480C544 533 501 576 448 576C395 576 352 533 352 480C352 471.7 353.1 463.5 355.1 455.8L229.6 386.1C212.1 404.5 187.4 416 160 416C107 416 64 373 64 320C64 267 107 224 160 224C187.4 224 212.1 235.5 229.6 253.9L355.1 184.2C353.1 176.5 352 168.4 352 160C352 107 395 64 448 64C501 64 544 107 544 160zM208 320C208 293.5 186.5 272 160 272C133.5 272 112 293.5 112 320C112 346.5 133.5 368 160 368C186.5 368 208 346.5 208 320zM448 528C474.5 528 496 506.5 496 480C496 453.5 474.5 432 448 432C421.5 432 400 453.5 400 480C400 506.5 421.5 528 448 528z"/>
+        <path d="M403.8 65.8C411.4 59.5 421.1 56 431.1 56c26.5 0 48 21.5 48 48c0 10-3.5 19.7-9.8 27.2L344.7 274.5C340.3 279.9 333.6 283 326.5 283L192 283c-17.7 0-32-14.3-32-32s14.3-32 32-32l121.2 0L403.8 65.8zM431.1 8c-19.6 0-38.6 6.8-53.8 19.3L275.4 118.5C260 105.2 240.1 96 218 96L64 96C28.7 96 0 124.7 0 160L0 544c0 35.3 28.7 64 64 64l384 0c35.3 0 64-28.7 64-64l0-207.4c0-17.7-14.3-32-32-32s-32 14.3-32 32L448 544 64 544 64 160l154 0c8.8 0 16 7.2 16 16l0 0c0 1.7-.3 3.4-.7 5L120.7 320.6c-6.5 8-8 19-3.8 28.3s13 15.1 23.1 15.1l186.5 0c13.5 0 26.3-5.9 35-16.1L479.1 200.5C503 171.6 516 135 516 97.1L516 96c0-48.6-39.4-88-88-88l2.9 0z"/>
       </svg>
     </div>
     <span class="cta-label">Partager</span>
@@ -1075,8 +1046,6 @@ margin: 20px 20px 0;
     <span class="nav-label">Plus</span>
   </a>
 </nav>
-
-      </div><!-- /phone-scroll -->
 
 <!-- OVERLAY -->
 

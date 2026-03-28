@@ -1,0 +1,121 @@
+// prisma/schema.prisma
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ─────────────────────────────────────────
+// AUTH
+// ─────────────────────────────────────────
+
+model User {
+  id        Int      @id @default(autoincrement())
+  email     String   @unique
+  password  String   // bcrypt
+  role      Role     @default(STAFF)
+  createdAt DateTime @default(now())
+}
+
+enum Role {
+  ADMIN
+  STAFF
+}
+
+// ─────────────────────────────────────────
+// STRUCTURE CARTE
+// ─────────────────────────────────────────
+
+model Restaurant {
+  id         Int        @id @default(autoincrement())
+  name       String
+  slug       String     @unique   // URL : /menu/le-bistrot-dore
+  tagline    String?
+  categories Category[]
+  families   Family[]
+}
+
+model Family {
+  id           Int        @id @default(autoincrement())
+  name         String                         // "Cuisine", "Boissons"
+  order        Int
+  imageUrl     String?
+  restaurantId Int
+  restaurant   Restaurant @relation(fields: [restaurantId], references: [id])
+  categories   Category[]
+}
+
+model Category {
+  id           Int        @id @default(autoincrement())
+  name         String
+  order        Int
+  visible      Boolean    @default(true)
+  imageUrl     String?                        // photo d'ambiance
+  familyId     Int?                           // nullable = sans famille
+  family       Family?    @relation(fields: [familyId], references: [id])
+  restaurantId Int
+  restaurant   Restaurant @relation(fields: [restaurantId], references: [id])
+  items        Item[]
+}
+
+model Item {
+  id          Int       @id @default(autoincrement())
+  name        String
+  description String?
+  price       Float
+  available   Boolean   @default(true)
+  imageUrl    String?                         // photo du plat
+  categoryId  Int
+  category    Category  @relation(fields: [categoryId], references: [id])
+  tags        ItemTag[]
+}
+
+// ─────────────────────────────────────────
+// TAGS
+// ─────────────────────────────────────────
+
+// 7 catégories de tags
+// ALLERGEN      → 14 allergènes réglementaires EU (Règlement 1169/2011)
+// PRODUCT_TYPE  → régimes, qualité, préparation
+// BEVERAGE      → alcool, pétillant, vin naturel...
+// CERTIFICATION → Halal, Casher (certification requise)
+// ORIGIN        → local, AOC, AOP, IGP, circuit court...
+// OFFER         → menu midi, happy hour, suggestion...
+// HIGHLIGHT     → nouveau, signature, coup de cœur, saison
+
+enum TagCategory {
+  ALLERGEN
+  PRODUCT_TYPE
+  BEVERAGE
+  CERTIFICATION
+  ORIGIN
+  OFFER
+  HIGHLIGHT
+}
+
+model Tag {
+  id           Int         @id @default(autoincrement())
+  name         String      @unique
+  slug         String      @unique
+  category     TagCategory
+  icon         String?                         // emoji
+  color        String?                         // hex badge
+  isSystem     Boolean     @default(false)     // non supprimable
+  systemRole   String?                         // "filter"|"view"|"badge"|"schedule"
+  note         String?                         // ex: "Non protéique" pour sulfites
+  description  String?                         // description complète allergène
+  items        ItemTag[]
+}
+
+model ItemTag {
+  itemId Int
+  tagId  Int
+  item   Item @relation(fields: [itemId], references: [id], onDelete: Cascade)
+  tag    Tag  @relation(fields: [tagId], references: [id], onDelete: Cascade)
+
+  @@id([itemId, tagId])
+}

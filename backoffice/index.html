@@ -1,0 +1,2929 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="theme-color" content="#3d5a80">
+    <link rel="manifest" href="manifest.json">
+    <title>Sauf Imprévu — Back Office</title>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html, body {
+            font-family: 'DM Sans', sans-serif;
+            background-color: #f0f3f8;
+            color: #1a2332;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        body {
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Header */
+        header {
+            background-color: #ffffff;
+            border-bottom: 1px solid #dde3ec;
+            padding: 1rem 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-shrink: 0;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
+        }
+
+        .header-logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            letter-spacing: 0.15em;
+            color: #3d5a80;
+            text-transform: uppercase;
+        }
+
+        .header-nav {
+            display: flex;
+            gap: 2rem;
+            flex: 1;
+            margin-left: 3rem;
+        }
+
+        .nav-tab {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 500;
+            color: #8a9bb0;
+            padding: 0.5rem 1rem;
+            border-bottom: 3px solid transparent;
+            transition: all 0.2s ease;
+            font-family: 'DM Sans', sans-serif;
+        }
+
+        .nav-tab:hover {
+            color: #5c8db8;
+        }
+
+        .nav-tab.active {
+            color: #3d5a80;
+            border-bottom-color: #5c8db8;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .settings-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 1.5rem;
+            color: #8a9bb0;
+            transition: color 0.2s ease;
+        }
+
+        .settings-btn:hover {
+            color: #5c8db8;
+        }
+
+        /* Main content */
+        main {
+            flex: 1;
+            overflow: hidden;
+            display: flex;
+        }
+
+        .section {
+            flex: 1;
+            display: none;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .section.active {
+            display: flex;
+        }
+
+        /* Settings Modal */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(26, 35, 50, 0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal {
+            background-color: #ffffff;
+            border-radius: 8px;
+            padding: 2rem;
+            max-width: 500px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 25px rgba(0, 0, 0, 0.15);
+        }
+
+        .modal-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1.5rem;
+        }
+
+        .modal-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #1a2332;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 1.5rem;
+            color: #8a9bb0;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: #4a5568;
+            margin-bottom: 0.5rem;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #dde3ec;
+            border-radius: 4px;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 1rem;
+            color: #1a2332;
+            transition: border-color 0.2s ease;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #5c8db8;
+            box-shadow: 0 0 0 3px rgba(92, 141, 184, 0.1);
+        }
+
+        .api-status {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.875rem;
+            color: #8a9bb0;
+        }
+
+        .status-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background-color: #dde3ec;
+        }
+
+        .status-dot.connected {
+            background-color: #4ade80;
+        }
+
+        .status-dot.disconnected {
+            background-color: #ef4444;
+        }
+
+        /* Buttons */
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 4px;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn-primary {
+            background-color: #5c8db8;
+            color: #ffffff;
+        }
+
+        .btn-primary:hover {
+            background-color: #3d5a80;
+        }
+
+        .btn-secondary {
+            background-color: #f0f3f8;
+            color: #3d5a80;
+            border: 1px solid #dde3ec;
+        }
+
+        .btn-secondary:hover {
+            background-color: #dde3ec;
+        }
+
+        .btn-danger {
+            background-color: #ef4444;
+            color: #ffffff;
+        }
+
+        .btn-danger:hover {
+            background-color: #dc2626;
+        }
+
+        .btn-sm {
+            padding: 0.5rem 1rem;
+            font-size: 0.875rem;
+        }
+
+        .btn-icon {
+            width: 40px;
+            height: 40px;
+            padding: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 4px;
+            background-color: #f0f3f8;
+            color: #3d5a80;
+            border: 1px solid #dde3ec;
+        }
+
+        .btn-icon:hover {
+            background-color: #dde3ec;
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+            justify-content: flex-end;
+        }
+
+        /* Toast Notifications */
+        .toast-container {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            z-index: 2000;
+            max-width: 400px;
+        }
+
+        .toast {
+            background-color: #ffffff;
+            border-left: 4px solid #5c8db8;
+            padding: 1rem 1.5rem;
+            border-radius: 4px;
+            margin-top: 1rem;
+            box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+            animation: slideIn 0.3s ease;
+        }
+
+        .toast.error {
+            border-left-color: #ef4444;
+        }
+
+        .toast.success {
+            border-left-color: #4ade80;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(400px);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        /* CARTE Section */
+        .carte-container {
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .carte-subtabs {
+            display: flex;
+            gap: 2rem;
+            padding: 0 2rem;
+            border-bottom: 1px solid #dde3ec;
+            background-color: #ffffff;
+            flex-shrink: 0;
+        }
+
+        .subtab-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 1rem 0;
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: #8a9bb0;
+            border-bottom: 3px solid transparent;
+            transition: all 0.2s ease;
+            font-family: 'DM Sans', sans-serif;
+        }
+
+        .subtab-btn:hover {
+            color: #5c8db8;
+        }
+
+        .subtab-btn.active {
+            color: #3d5a80;
+            border-bottom-color: #5c8db8;
+        }
+
+        .carte-content {
+            flex: 1;
+            overflow-y: auto;
+            padding: 2rem;
+        }
+
+        /* KPI Bar */
+        .kpi-bar {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .kpi-card {
+            background-color: #ffffff;
+            border: 1px solid #dde3ec;
+            border-radius: 8px;
+            padding: 1.5rem;
+            text-align: center;
+        }
+
+        .kpi-label {
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            color: #8a9bb0;
+            margin-bottom: 0.5rem;
+            letter-spacing: 0.05em;
+        }
+
+        .kpi-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #3d5a80;
+        }
+
+        /* Family Filter Pills */
+        .family-filter {
+            display: flex;
+            gap: 0.75rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .filter-pill {
+            padding: 0.5rem 1.25rem;
+            border: 1px solid #dde3ec;
+            border-radius: 20px;
+            background-color: #ffffff;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: #4a5568;
+            transition: all 0.2s ease;
+        }
+
+        .filter-pill:hover {
+            border-color: #5c8db8;
+            color: #5c8db8;
+        }
+
+        .filter-pill.active {
+            background-color: #5c8db8;
+            border-color: #5c8db8;
+            color: #ffffff;
+        }
+
+        /* Category Cards */
+        .category-grid {
+            display: grid;
+            gap: 2rem;
+        }
+
+        .category-card {
+            background-color: #ffffff;
+            border: 1px solid #dde3ec;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .category-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid #dde3ec;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .category-title-section {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            flex: 1;
+        }
+
+        .category-name {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #1a2332;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .badge-family {
+            background-color: #f0f3f8;
+            color: #3d5a80;
+        }
+
+        .badge-visible {
+            background-color: #d1fae5;
+            color: #065f46;
+        }
+
+        .badge-hidden {
+            background-color: #fee2e2;
+            color: #7f1d1d;
+        }
+
+        .category-controls {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .category-body {
+            padding: 1.5rem;
+        }
+
+        .items-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .item-row {
+            padding: 1rem;
+            background-color: #f0f3f8;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            justify-content: space-between;
+        }
+
+        .item-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .item-name {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #1a2332;
+            margin-bottom: 0.25rem;
+        }
+
+        .item-description {
+            font-size: 0.875rem;
+            color: #8a9bb0;
+            margin-bottom: 0.5rem;
+        }
+
+        .item-tags {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+            margin-bottom: 0.5rem;
+        }
+
+        .tag-pill {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 500;
+            background-color: #e0e7ff;
+            color: #4c1d95;
+        }
+
+        .item-price {
+            font-size: 1rem;
+            font-weight: 700;
+            color: #3d5a80;
+        }
+
+        .item-controls {
+            display: flex;
+            gap: 0.5rem;
+            flex-shrink: 0;
+        }
+
+        .toggle-switch {
+            position: relative;
+            width: 48px;
+            height: 28px;
+            background-color: #dde3ec;
+            border-radius: 14px;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+            border: none;
+            padding: 0;
+        }
+
+        .toggle-switch.active {
+            background-color: #4ade80;
+        }
+
+        .toggle-switch::after {
+            content: '';
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            width: 24px;
+            height: 24px;
+            background-color: #ffffff;
+            border-radius: 12px;
+            transition: left 0.2s ease;
+        }
+
+        .toggle-switch.active::after {
+            left: 22px;
+        }
+
+        .add-item-btn {
+            margin-top: 1rem;
+            width: 100%;
+        }
+
+        .expandable-section {
+            cursor: pointer;
+        }
+
+        .expandable-header {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .expand-icon {
+            display: inline-block;
+            transition: transform 0.2s ease;
+        }
+
+        .expandable-section.collapsed .expand-icon {
+            transform: rotate(-90deg);
+        }
+
+        /* Organisation View */
+        .organisation-container {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+
+        .family-section {
+            background-color: #ffffff;
+            border: 1px solid #dde3ec;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .family-header {
+            padding: 1.5rem;
+            background-color: #f0f3f8;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .family-name {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #1a2332;
+        }
+
+        .family-controls {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .category-list {
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .category-item {
+            padding: 1rem;
+            background-color: #f0f3f8;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .category-item-name {
+            font-weight: 500;
+            color: #1a2332;
+        }
+
+        .reorder-controls {
+            display: flex;
+            gap: 0.25rem;
+        }
+
+        /* Tags View */
+        .tags-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .tag-group {
+            background-color: #ffffff;
+            border: 1px solid #dde3ec;
+            border-radius: 8px;
+            padding: 1.5rem;
+        }
+
+        .tag-group-title {
+            font-size: 0.875rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            color: #8a9bb0;
+            margin-bottom: 1rem;
+            letter-spacing: 0.05em;
+        }
+
+        .tags-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .tag-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0.75rem;
+            background-color: #f0f3f8;
+            border-radius: 4px;
+        }
+
+        .tag-item-name {
+            font-weight: 500;
+            color: #1a2332;
+        }
+
+        .tag-count {
+            font-size: 0.875rem;
+            color: #8a9bb0;
+            background-color: #ffffff;
+            padding: 0.25rem 0.75rem;
+            border-radius: 12px;
+        }
+
+        .allergen-card {
+            background-color: #fee2e2;
+            border: 1px solid #fecaca;
+            border-radius: 8px;
+            padding: 1.5rem;
+            text-align: center;
+        }
+
+        .allergen-icon {
+            font-size: 2.5rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .allergen-name {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #7f1d1d;
+            margin-bottom: 0.5rem;
+        }
+
+        .allergen-description {
+            font-size: 0.875rem;
+            color: #991b1b;
+            margin-bottom: 1rem;
+        }
+
+        /* Item Modal */
+        .modal-section-title {
+            font-size: 0.875rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            color: #8a9bb0;
+            margin: 1.5rem 0 1rem 0;
+            letter-spacing: 0.05em;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1rem;
+            border-bottom: 1px solid #dde3ec;
+        }
+
+        .tab-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 0.75rem 0;
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: #8a9bb0;
+            border-bottom: 2px solid transparent;
+            transition: all 0.2s ease;
+            font-family: 'DM Sans', sans-serif;
+        }
+
+        .tab-btn:hover {
+            color: #5c8db8;
+        }
+
+        .tab-btn.active {
+            color: #3d5a80;
+            border-bottom-color: #5c8db8;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .photo-preview {
+            width: 100%;
+            height: 200px;
+            background-color: #f0f3f8;
+            border: 2px dashed #dde3ec;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1rem;
+        }
+
+        .photo-preview img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 2px;
+        }
+
+        .photo-preview.empty {
+            color: #8a9bb0;
+        }
+
+        .tag-picker {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .tag-group-picker {
+            border: 1px solid #dde3ec;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .tag-group-header {
+            background-color: #f0f3f8;
+            padding: 0.75rem 1rem;
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: #3d5a80;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .tag-group-picker.allergen .tag-group-header {
+            background-color: #fee2e2;
+            color: #7f1d1d;
+        }
+
+        .tag-group-content {
+            padding: 1rem;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+        }
+
+        .tag-group-content.hidden {
+            display: none;
+        }
+
+        .tag-checkbox {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            background-color: #f0f3f8;
+            cursor: pointer;
+            user-select: none;
+            border: 2px solid transparent;
+            transition: all 0.2s ease;
+        }
+
+        .tag-checkbox input {
+            cursor: pointer;
+        }
+
+        .tag-checkbox.selected {
+            background-color: #e0e7ff;
+            border-color: #5c8db8;
+        }
+
+        .allergen-detail {
+            background-color: #fee2e2;
+            border: 1px solid #fecaca;
+            border-radius: 4px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .allergen-detail-name {
+            font-weight: 600;
+            color: #7f1d1d;
+            margin-bottom: 0.25rem;
+        }
+
+        .allergen-detail-desc {
+            font-size: 0.875rem;
+            color: #991b1b;
+        }
+
+        /* RÉSERVATIONS Section */
+        .reservations-container {
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .reservations-content {
+            flex: 1;
+            overflow-y: auto;
+            padding: 2rem;
+        }
+
+        .date-navigator {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 2rem;
+            margin-bottom: 2rem;
+            padding: 1.5rem;
+            background-color: #ffffff;
+            border-radius: 8px;
+            border: 1px solid #dde3ec;
+        }
+
+        .date-display {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #1a2332;
+            min-width: 200px;
+            text-align: center;
+        }
+
+        .service-filter {
+            display: flex;
+            gap: 0.75rem;
+            margin-bottom: 2rem;
+        }
+
+        .service-pill {
+            padding: 0.5rem 1.25rem;
+            border: 1px solid #dde3ec;
+            border-radius: 20px;
+            background-color: #ffffff;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: #4a5568;
+            transition: all 0.2s ease;
+        }
+
+        .service-pill:hover {
+            border-color: #5c8db8;
+            color: #5c8db8;
+        }
+
+        .service-pill.active {
+            background-color: #5c8db8;
+            border-color: #5c8db8;
+            color: #ffffff;
+        }
+
+        .stats-bar {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background-color: #ffffff;
+            border: 1px solid #dde3ec;
+            border-radius: 8px;
+            padding: 1.5rem;
+            text-align: center;
+        }
+
+        .stat-label {
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            color: #8a9bb0;
+            margin-bottom: 0.5rem;
+            letter-spacing: 0.05em;
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #3d5a80;
+        }
+
+        .reservation-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .reservation-card {
+            background-color: #ffffff;
+            border: 1px solid #dde3ec;
+            border-radius: 8px;
+            padding: 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .reservation-info {
+            flex: 1;
+        }
+
+        .reservation-name {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #1a2332;
+            margin-bottom: 0.5rem;
+        }
+
+        .reservation-details {
+            display: grid;
+            grid-template-columns: auto auto auto;
+            gap: 2rem;
+            font-size: 0.875rem;
+            color: #8a9bb0;
+        }
+
+        .reservation-detail {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .reservation-detail-label {
+            font-weight: 600;
+            color: #4a5568;
+        }
+
+        .reservation-notes {
+            margin-top: 0.75rem;
+            padding-top: 0.75rem;
+            border-top: 1px solid #dde3ec;
+            font-size: 0.875rem;
+            color: #8a9bb0;
+            font-style: italic;
+        }
+
+        .add-reservation-form {
+            background-color: #ffffff;
+            border: 1px solid #dde3ec;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .form-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .form-title {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #1a2332;
+        }
+
+        .form-toggle {
+            font-size: 1.5rem;
+            color: #8a9bb0;
+            transition: transform 0.2s ease;
+        }
+
+        .add-reservation-form.collapsed .form-content {
+            display: none;
+        }
+
+        .add-reservation-form.collapsed .form-toggle {
+            transform: rotate(-90deg);
+        }
+
+        .form-content {
+            margin-top: 1.5rem;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+
+        .form-group-full {
+            grid-column: 1 / -1;
+        }
+
+        .form-actions {
+            grid-column: 1 / -1;
+            display: flex;
+            gap: 1rem;
+            justify-content: flex-end;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            header {
+                padding: 1rem;
+            }
+
+            .header-logo {
+                font-size: 1.25rem;
+            }
+
+            .header-nav {
+                margin-left: 1.5rem;
+                gap: 1rem;
+            }
+
+            .nav-tab {
+                font-size: 0.9rem;
+                padding: 0.5rem 0.75rem;
+            }
+
+            .carte-content,
+            .reservations-content {
+                padding: 1rem;
+            }
+
+            .kpi-bar {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .tags-container {
+                grid-template-columns: 1fr;
+            }
+
+            .date-navigator {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .reservation-details {
+                grid-template-columns: auto;
+                gap: 0.75rem;
+            }
+
+            .family-filter,
+            .service-filter {
+                gap: 0.5rem;
+            }
+
+            .filter-pill,
+            .service-pill {
+                font-size: 0.8rem;
+                padding: 0.4rem 1rem;
+            }
+
+            .modal {
+                width: 95%;
+            }
+
+            .toast-container {
+                width: calc(100% - 2rem);
+                left: 1rem;
+                right: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-logo"><img src="logo-bleu.png" alt="Sauf Imprévu" style="height:32px;"></div>
+        <nav class="header-nav">
+            <button class="nav-tab active" data-section="carte">Carte</button>
+            <button class="nav-tab" data-section="reservations">Réservations</button>
+        </nav>
+        <div class="header-actions">
+            <button class="settings-btn" id="settingsBtn">⚙️</button>
+        </div>
+    </header>
+
+    <main>
+        <!-- CARTE Section -->
+        <section class="section active carte-container" id="carteSection">
+            <div class="carte-subtabs">
+                <button class="subtab-btn active" data-subtab="carte">Carte</button>
+                <button class="subtab-btn" data-subtab="organisation">Organisation</button>
+                <button class="subtab-btn" data-subtab="tags">Tags</button>
+            </div>
+            <div class="carte-content">
+                <!-- Carte Subtab -->
+                <div id="carteSubtab" class="carte-subtab-content">
+                    <div class="kpi-bar">
+                        <div class="kpi-card">
+                            <div class="kpi-label">Familles</div>
+                            <div class="kpi-value" id="kpiFamily">0</div>
+                        </div>
+                        <div class="kpi-card">
+                            <div class="kpi-label">Catégories</div>
+                            <div class="kpi-value" id="kpiCategory">0</div>
+                        </div>
+                        <div class="kpi-card">
+                            <div class="kpi-label">Plats</div>
+                            <div class="kpi-value" id="kpiItem">0</div>
+                        </div>
+                        <div class="kpi-card">
+                            <div class="kpi-label">Prix Moyen</div>
+                            <div class="kpi-value" id="kpiPrice">-</div>
+                        </div>
+                    </div>
+                    <div class="family-filter" id="familyFilter"></div>
+                    <div class="category-grid" id="categoryGrid"></div>
+                </div>
+
+                <!-- Organisation Subtab -->
+                <div id="organisationSubtab" class="carte-subtab-content" style="display: none;">
+                    <div class="organisation-container" id="organisationContainer"></div>
+                    <button class="btn btn-primary" id="addFamilyBtn" style="margin-top: 1rem;">+ Ajouter une famille</button>
+                </div>
+
+                <!-- Tags Subtab -->
+                <div id="tagsSubtab" class="carte-subtab-content" style="display: none;">
+                    <div class="tags-container" id="tagsContainer"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- RÉSERVATIONS Section -->
+        <section class="section reservations-container" id="reservationsSection">
+            <div class="reservations-content">
+                <div class="date-navigator">
+                    <button class="btn btn-secondary btn-sm" id="prevDayBtn">← Jour précédent</button>
+                    <div class="date-display" id="dateDisplay">2024-01-01</div>
+                    <button class="btn btn-secondary btn-sm" id="nextDayBtn">Jour suivant →</button>
+                </div>
+
+                <div class="service-filter">
+                    <button class="service-pill active" data-service="all">Tous</button>
+                    <button class="service-pill" data-service="midi">Midi</button>
+                    <button class="service-pill" data-service="soir">Soir</button>
+                </div>
+
+                <div class="stats-bar">
+                    <div class="stat-card">
+                        <div class="stat-label">Réservations</div>
+                        <div class="stat-value" id="statReservations">0</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Couverts</div>
+                        <div class="stat-value" id="statCovers">0</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Capacité Restante</div>
+                        <div class="stat-value" id="statCapacity">42</div>
+                    </div>
+                </div>
+
+                <div class="add-reservation-form">
+                    <div class="form-header" id="addFormHeader">
+                        <div class="form-title">+ Ajouter une réservation</div>
+                        <div class="form-toggle">▼</div>
+                    </div>
+                    <div class="form-content">
+                        <div class="form-group">
+                            <label class="form-label">Nom</label>
+                            <input type="text" class="form-input" id="addResaNom" placeholder="Nom du client">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Téléphone</label>
+                            <input type="tel" class="form-input" id="addResaTel" placeholder="+33 6 XX XX XX XX">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Date</label>
+                            <input type="date" class="form-input" id="addResaDate">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Heure</label>
+                            <input type="time" class="form-input" id="addResaHeure">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Couverts</label>
+                            <input type="number" class="form-input" id="addResaCouverts" placeholder="2" min="1">
+                        </div>
+                        <div class="form-group form-group-full">
+                            <label class="form-label">Notes</label>
+                            <input type="text" class="form-input" id="addResaNotes" placeholder="Allergies, régimes, etc.">
+                        </div>
+                        <div class="form-actions">
+                            <button class="btn btn-secondary" id="cancelAddResaBtn">Annuler</button>
+                            <button class="btn btn-primary" id="submitAddResaBtn">Ajouter</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="reservation-list" id="reservationList"></div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Settings Modal -->
+    <div class="modal-overlay" id="settingsModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h2 class="modal-title">Paramètres</h2>
+                <button class="modal-close" id="closeSettingsBtn">✕</button>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">URL API Réservation</label>
+                <input type="url" class="form-input" id="resaUrlInput" placeholder="https://xxx.up.railway.app">
+                <div class="api-status" id="resaStatus">
+                    <div class="status-dot disconnected"></div>
+                    <span>Non configuré</span>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">URL API Carte</label>
+                <input type="url" class="form-input" id="carteUrlInput" placeholder="" value="">
+                <small style="color: #8a9bb0;">Laissez vide pour utiliser le domaine courant</small>
+                <div class="api-status" id="carteStatus">
+                    <div class="status-dot disconnected"></div>
+                    <span>Non configuré</span>
+                </div>
+            </div>
+
+            <div class="modal-actions">
+                <button class="btn btn-secondary" id="closeSettingsBtn2">Fermer</button>
+                <button class="btn btn-primary" id="saveSettingsBtn">Enregistrer</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Item Modal -->
+    <div class="modal-overlay" id="itemModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h2 class="modal-title" id="itemModalTitle">Nouvel élément</h2>
+                <button class="modal-close" id="closeItemModalBtn">✕</button>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Nom</label>
+                <input type="text" class="form-input" id="itemName" placeholder="Nom du plat">
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Description</label>
+                <input type="text" class="form-input" id="itemDescription" placeholder="Description courte">
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Prix (€)</label>
+                <input type="number" class="form-input" id="itemPrice" placeholder="12.50" step="0.01" min="0">
+            </div>
+
+            <div class="modal-section-title">Photo</div>
+            <div class="tabs">
+                <button class="tab-btn active" data-tab="upload">Importer</button>
+                <button class="tab-btn" data-tab="url">URL</button>
+            </div>
+
+            <div class="tab-content active" id="uploadTab">
+                <input type="file" class="form-input" id="itemPhoto" accept="image/*" style="padding: 0; border: none; margin-bottom: 1rem;">
+                <div class="photo-preview empty" id="photoPreview">Aucune image</div>
+            </div>
+
+            <div class="tab-content" id="urlTab">
+                <div class="form-group">
+                    <label class="form-label">URL de l'image</label>
+                    <input type="url" class="form-input" id="itemPhotoUrl" placeholder="https://...">
+                </div>
+            </div>
+
+            <div class="modal-section-title">Tags</div>
+            <div class="tag-picker" id="tagPicker"></div>
+
+            <div class="modal-actions">
+                <button class="btn btn-secondary" id="cancelItemBtn">Annuler</button>
+                <button class="btn btn-primary" id="submitItemBtn">Enregistrer</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Category Modal -->
+    <div class="modal-overlay" id="categoryModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h2 class="modal-title" id="categoryModalTitle">Nouvelle catégorie</h2>
+                <button class="modal-close" id="closeCategoryModalBtn">✕</button>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Nom</label>
+                <input type="text" class="form-input" id="categoryName" placeholder="Nom de la catégorie">
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Famille</label>
+                <select class="form-input" id="categoryFamily">
+                    <option value="">Sélectionner une famille</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Visible</label>
+                <div style="display: flex; gap: 1rem;">
+                    <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
+                        <input type="radio" name="categoryVisibility" value="true" checked>
+                        Oui
+                    </label>
+                    <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
+                        <input type="radio" name="categoryVisibility" value="false">
+                        Non
+                    </label>
+                </div>
+            </div>
+
+            <div class="modal-section-title">Photo</div>
+            <div class="photo-preview empty" id="categoryPhotoPreview">Aucune image</div>
+            <input type="file" class="form-input" id="categoryPhoto" accept="image/*" style="padding: 0; border: none; margin-bottom: 1rem;">
+
+            <div class="modal-actions">
+                <button class="btn btn-secondary" id="cancelCategoryBtn">Annuler</button>
+                <button class="btn btn-primary" id="submitCategoryBtn">Enregistrer</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Family Modal -->
+    <div class="modal-overlay" id="familyModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h2 class="modal-title" id="familyModalTitle">Nouvelle famille</h2>
+                <button class="modal-close" id="closeFamilyModalBtn">✕</button>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Nom</label>
+                <input type="text" class="form-input" id="familyName" placeholder="Nom de la famille">
+            </div>
+
+            <div class="modal-section-title">Photo</div>
+            <div class="photo-preview empty" id="familyPhotoPreview">Aucune image</div>
+            <input type="file" class="form-input" id="familyPhoto" accept="image/*" style="padding: 0; border: none; margin-bottom: 1rem;">
+
+            <div class="modal-actions">
+                <button class="btn btn-secondary" id="cancelFamilyBtn">Annuler</button>
+                <button class="btn btn-primary" id="submitFamilyBtn">Enregistrer</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Container -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <script>
+        // ============================================================================
+        // CONFIG & STORAGE
+        // ============================================================================
+
+        const CONFIG_KEY = 'sauf-imprevu-config';
+
+        function getConfig() {
+            const saved = localStorage.getItem(CONFIG_KEY);
+            return saved ? JSON.parse(saved) : { carteUrl: '', resaUrl: 'https://sauf-imprevu-reservations-production.up.railway.app' };
+        }
+
+        function saveConfig(config) {
+            localStorage.setItem(CONFIG_KEY, JSON.stringify(config));
+        }
+
+        // ============================================================================
+        // API HELPERS
+        // ============================================================================
+
+        async function carteApi(endpoint, options = {}) {
+            const config = getConfig();
+            const base = config.carteUrl || '';
+            const url = `${base}/api${endpoint}`;
+
+            try {
+                const response = await fetch(url, {
+                    headers: { 'Content-Type': 'application/json', ...options.headers },
+                    ...options
+                });
+                if (!response.ok) {
+                    const error = await response.text();
+                    throw new Error(error || `HTTP ${response.status}`);
+                }
+                return await response.json();
+            } catch (err) {
+                showToast(`Erreur Carte: ${err.message}`, 'error');
+                throw err;
+            }
+        }
+
+        async function resaApi(endpoint, options = {}) {
+            const config = getConfig();
+            if (!config.resaUrl) {
+                throw new Error('URL Réservation non configurée');
+            }
+
+            try {
+                const response = await fetch(`${config.resaUrl}${endpoint}`, {
+                    headers: { 'Content-Type': 'application/json', ...options.headers },
+                    ...options
+                });
+                if (!response.ok) {
+                    const error = await response.text();
+                    throw new Error(error || `HTTP ${response.status}`);
+                }
+                return await response.json();
+            } catch (err) {
+                showToast(`Erreur Réservation: ${err.message}`, 'error');
+                throw err;
+            }
+        }
+
+        // ============================================================================
+        // TOAST NOTIFICATIONS
+        // ============================================================================
+
+        function showToast(message, type = 'success') {
+            const container = document.getElementById('toastContainer');
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            toast.textContent = message;
+            container.appendChild(toast);
+
+            setTimeout(() => {
+                toast.remove();
+            }, 3000);
+        }
+
+        // ============================================================================
+        // CART STATE
+        // ============================================================================
+
+        const carteState = {
+            restaurantId: null,
+            families: [],
+            categories: [],
+            items: [],
+            tags: [],
+            tagLookup: {},
+            selectedFamily: null,
+            currentEditingItem: null,
+            currentEditingCategory: null,
+            currentEditingCategoryId: null,
+            currentEditingFamily: null,
+            selectedTags: []
+        };
+
+        // ============================================================================
+        // NAVIGATION
+        // ============================================================================
+
+        document.querySelectorAll('.nav-tab').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const section = btn.dataset.section;
+
+                document.querySelectorAll('.nav-tab').forEach(b => b.classList.remove('active'));
+                document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+
+                btn.classList.add('active');
+                document.getElementById(`${section}Section`).classList.add('active');
+
+                if (section === 'carte') {
+                    loadCarteData();
+                } else if (section === 'reservations') {
+                    loadReservations();
+                }
+            });
+        });
+
+        document.querySelectorAll('.subtab-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const subtab = btn.dataset.subtab;
+                const parent = btn.closest('.carte-subtabs').parentElement;
+
+                document.querySelectorAll('.subtab-btn').forEach(b => b.classList.remove('active'));
+                document.querySelectorAll('.carte-subtab-content').forEach(s => s.style.display = 'none');
+
+                btn.classList.add('active');
+                document.getElementById(`${subtab}Subtab`).style.display = 'block';
+
+                if (subtab === 'organisation') {
+                    renderOrganisation();
+                } else if (subtab === 'tags') {
+                    renderTags();
+                }
+            });
+        });
+
+        // ============================================================================
+        // SETTINGS
+        // ============================================================================
+
+        const settingsBtn = document.getElementById('settingsBtn');
+        const settingsModal = document.getElementById('settingsModal');
+        const closeSettingsBtn = document.getElementById('closeSettingsBtn');
+        const closeSettingsBtn2 = document.getElementById('closeSettingsBtn2');
+        const saveSettingsBtn = document.getElementById('saveSettingsBtn');
+        const resaUrlInput = document.getElementById('resaUrlInput');
+        const carteUrlInput = document.getElementById('carteUrlInput');
+
+        settingsBtn.addEventListener('click', () => {
+            const config = getConfig();
+            resaUrlInput.value = config.resaUrl || '';
+            carteUrlInput.value = config.carteUrl || '';
+            settingsModal.classList.add('active');
+            checkApiConnections();
+        });
+
+        closeSettingsBtn.addEventListener('click', () => settingsModal.classList.remove('active'));
+        closeSettingsBtn2.addEventListener('click', () => settingsModal.classList.remove('active'));
+
+        saveSettingsBtn.addEventListener('click', () => {
+            const config = {
+                resaUrl: resaUrlInput.value.trim(),
+                carteUrl: carteUrlInput.value.trim()
+            };
+            saveConfig(config);
+            settingsModal.classList.remove('active');
+            showToast('Paramètres enregistrés');
+            loadCarteData();
+            loadReservations();
+        });
+
+        async function checkApiConnections() {
+            try {
+                await carteApi('/restaurants');
+                const dot = document.getElementById('carteStatus').querySelector('.status-dot');
+                dot.classList.remove('disconnected');
+                dot.classList.add('connected');
+                document.getElementById('carteStatus').innerHTML = '<div class="status-dot connected"></div><span>Connecté</span>';
+            } catch (err) {
+                document.getElementById('carteStatus').innerHTML = '<div class="status-dot disconnected"></div><span>Erreur</span>';
+            }
+
+            try {
+                await resaApi('/reservations?date=2024-01-01');
+                document.getElementById('resaStatus').innerHTML = '<div class="status-dot connected"></div><span>Connecté</span>';
+            } catch (err) {
+                document.getElementById('resaStatus').innerHTML = '<div class="status-dot disconnected"></div><span>Erreur</span>';
+            }
+        }
+
+        // ============================================================================
+        // CARTE - DATA LOADING
+        // ============================================================================
+
+        async function loadCarteData() {
+            try {
+                const restaurants = await carteApi('/restaurants');
+                if (restaurants.data && restaurants.data.length > 0) {
+                    carteState.restaurantId = restaurants.data[0].id;
+
+                    const [families, categories, items, tags] = await Promise.all([
+                        carteApi(`/families?restaurant_id=${carteState.restaurantId}`),
+                        carteApi(`/categories?restaurant_id=${carteState.restaurantId}`),
+                        carteApi(`/items?restaurant_id=${carteState.restaurantId}`),
+                        carteApi('/tags')
+                    ]);
+
+                    carteState.families = families.data || [];
+                    carteState.categories = categories.data || [];
+                    carteState.items = items.data || [];
+                    carteState.tags = tags.data || [];
+
+                    carteState.tagLookup = {};
+                    carteState.tags.forEach(tag => {
+                        carteState.tagLookup[tag.id] = tag;
+                    });
+
+                    updateCarteUI();
+                }
+            } catch (err) {
+                console.error('Failed to load carte data:', err);
+            }
+        }
+
+        function updateCarteUI() {
+            updateKPI();
+            renderFamilyFilter();
+            renderCategoryCards();
+        }
+
+        function updateKPI() {
+            const prices = carteState.items.map(i => i.price || 0).filter(p => p > 0);
+            const avgPrice = prices.length > 0 ? (prices.reduce((a, b) => a + b, 0) / prices.length).toFixed(2) : '-';
+
+            document.getElementById('kpiFamily').textContent = carteState.families.length;
+            document.getElementById('kpiCategory').textContent = carteState.categories.length;
+            document.getElementById('kpiItem').textContent = carteState.items.length;
+            document.getElementById('kpiPrice').textContent = avgPrice === '-' ? '-' : `${avgPrice}€`;
+        }
+
+        function renderFamilyFilter() {
+            const container = document.getElementById('familyFilter');
+            container.innerHTML = '';
+
+            const allBtn = document.createElement('button');
+            allBtn.className = 'filter-pill active';
+            allBtn.textContent = 'Tous';
+            allBtn.addEventListener('click', () => {
+                carteState.selectedFamily = null;
+                renderFamilyFilter();
+                renderCategoryCards();
+            });
+            container.appendChild(allBtn);
+
+            carteState.families.forEach(family => {
+                const btn = document.createElement('button');
+                btn.className = 'filter-pill';
+                if (carteState.selectedFamily === family.id) btn.classList.add('active');
+                btn.textContent = family.name;
+                btn.addEventListener('click', () => {
+                    carteState.selectedFamily = family.id;
+                    renderFamilyFilter();
+                    renderCategoryCards();
+                });
+                container.appendChild(btn);
+            });
+        }
+
+        function renderCategoryCards() {
+            const container = document.getElementById('categoryGrid');
+            container.innerHTML = '';
+
+            const filteredCategories = carteState.selectedFamily
+                ? carteState.categories.filter(c => c.family_id === carteState.selectedFamily)
+                : carteState.categories;
+
+            filteredCategories.forEach(category => {
+                const family = carteState.families.find(f => f.id === category.family_id);
+                const items = carteState.items.filter(i => i.category_id === category.id);
+
+                const card = document.createElement('div');
+                card.className = 'category-card expandable-section';
+
+                const headerDiv = document.createElement('div');
+                headerDiv.className = 'category-header';
+
+                const titleSection = document.createElement('div');
+                titleSection.className = 'category-title-section';
+
+                const titleBtn = document.createElement('div');
+                titleBtn.className = 'expandable-header';
+                titleBtn.style.cursor = 'pointer';
+                titleBtn.innerHTML = `<span class="expand-icon">▶</span> <span class="category-name">${category.name}</span>`;
+
+                titleSection.appendChild(titleBtn);
+
+                if (family) {
+                    const familyBadge = document.createElement('span');
+                    familyBadge.className = 'badge badge-family';
+                    familyBadge.textContent = family.name;
+                    titleSection.appendChild(familyBadge);
+                }
+
+                if (category.is_visible) {
+                    const visibleBadge = document.createElement('span');
+                    visibleBadge.className = 'badge badge-visible';
+                    visibleBadge.textContent = 'Visible';
+                    titleSection.appendChild(visibleBadge);
+                } else {
+                    const hiddenBadge = document.createElement('span');
+                    hiddenBadge.className = 'badge badge-hidden';
+                    hiddenBadge.textContent = 'Caché';
+                    titleSection.appendChild(hiddenBadge);
+                }
+
+                headerDiv.appendChild(titleSection);
+
+                const controls = document.createElement('div');
+                controls.className = 'category-controls';
+
+                const editBtn = document.createElement('button');
+                editBtn.className = 'btn-icon';
+                editBtn.textContent = '✏️';
+                editBtn.addEventListener('click', () => openCategoryModal(category));
+                controls.appendChild(editBtn);
+
+                const deleteBtn = document.createElement('button');
+                deleteBtn.className = 'btn-icon';
+                deleteBtn.textContent = '🗑️';
+                deleteBtn.addEventListener('click', async () => {
+                    if (confirm('Supprimer cette catégorie?')) {
+                        try {
+                            await carteApi(`/categories/${category.id}`, { method: 'DELETE' });
+                            loadCarteData();
+                            showToast('Catégorie supprimée');
+                        } catch (err) {
+                            showToast('Erreur lors de la suppression', 'error');
+                        }
+                    }
+                });
+                controls.appendChild(deleteBtn);
+
+                headerDiv.appendChild(controls);
+                card.appendChild(headerDiv);
+
+                const bodyDiv = document.createElement('div');
+                bodyDiv.className = 'category-body';
+
+                const itemsList = document.createElement('div');
+                itemsList.className = 'items-list';
+
+                items.forEach(item => {
+                    const itemRow = document.createElement('div');
+                    itemRow.className = 'item-row';
+
+                    const info = document.createElement('div');
+                    info.className = 'item-info';
+
+                    const name = document.createElement('div');
+                    name.className = 'item-name';
+                    name.textContent = item.name;
+                    info.appendChild(name);
+
+                    if (item.description) {
+                        const desc = document.createElement('div');
+                        desc.className = 'item-description';
+                        desc.textContent = item.description;
+                        info.appendChild(desc);
+                    }
+
+                    if (item.tags && item.tags.length > 0) {
+                        const tagsDiv = document.createElement('div');
+                        tagsDiv.className = 'item-tags';
+                        item.tags.forEach(tagId => {
+                            const tag = carteState.tagLookup[tagId];
+                            if (tag) {
+                                const pill = document.createElement('span');
+                                pill.className = 'tag-pill';
+                                pill.textContent = tag.name;
+                                tagsDiv.appendChild(pill);
+                            }
+                        });
+                        info.appendChild(tagsDiv);
+                    }
+
+                    const price = document.createElement('div');
+                    price.className = 'item-price';
+                    price.textContent = `${item.price}€`;
+                    info.appendChild(price);
+
+                    itemRow.appendChild(info);
+
+                    const controls = document.createElement('div');
+                    controls.className = 'item-controls';
+
+                    const toggleBtn = document.createElement('button');
+                    toggleBtn.className = 'toggle-switch';
+                    if (item.is_available) toggleBtn.classList.add('active');
+                    toggleBtn.addEventListener('click', async () => {
+                        try {
+                            await carteApi(`/items/${item.id}/toggle`, { method: 'PUT' });
+                            loadCarteData();
+                        } catch (err) {
+                            showToast('Erreur lors de la modification', 'error');
+                        }
+                    });
+                    controls.appendChild(toggleBtn);
+
+                    const editBtn = document.createElement('button');
+                    editBtn.className = 'btn-icon';
+                    editBtn.textContent = '✏️';
+                    editBtn.addEventListener('click', () => openItemModal(item));
+                    controls.appendChild(editBtn);
+
+                    const deleteBtn = document.createElement('button');
+                    deleteBtn.className = 'btn-icon';
+                    deleteBtn.textContent = '🗑️';
+                    deleteBtn.addEventListener('click', async () => {
+                        if (confirm('Supprimer ce plat?')) {
+                            try {
+                                await carteApi(`/items/${item.id}`, { method: 'DELETE' });
+                                loadCarteData();
+                                showToast('Plat supprimé');
+                            } catch (err) {
+                                showToast('Erreur lors de la suppression', 'error');
+                            }
+                        }
+                    });
+                    controls.appendChild(deleteBtn);
+
+                    itemRow.appendChild(controls);
+                    itemsList.appendChild(itemRow);
+                });
+
+                bodyDiv.appendChild(itemsList);
+
+                const addItemBtn = document.createElement('button');
+                addItemBtn.className = 'btn btn-primary add-item-btn';
+                addItemBtn.textContent = '+ Ajouter un plat';
+                addItemBtn.addEventListener('click', () => {
+                    openItemModal(null, category.id);
+                });
+                bodyDiv.appendChild(addItemBtn);
+
+                card.appendChild(bodyDiv);
+
+                titleBtn.addEventListener('click', () => {
+                    card.classList.toggle('collapsed');
+                    if (card.classList.contains('collapsed')) {
+                        bodyDiv.style.display = 'none';
+                    } else {
+                        bodyDiv.style.display = 'block';
+                    }
+                });
+
+                container.appendChild(card);
+            });
+        }
+
+        // ============================================================================
+        // ITEM MODAL
+        // ============================================================================
+
+        const itemModal = document.getElementById('itemModal');
+        const itemModalTitle = document.getElementById('itemModalTitle');
+        const closeItemModalBtn = document.getElementById('closeItemModalBtn');
+        const itemName = document.getElementById('itemName');
+        const itemDescription = document.getElementById('itemDescription');
+        const itemPrice = document.getElementById('itemPrice');
+        const itemPhoto = document.getElementById('itemPhoto');
+        const itemPhotoUrl = document.getElementById('itemPhotoUrl');
+        const photoPreview = document.getElementById('photoPreview');
+        const tagPicker = document.getElementById('tagPicker');
+        const cancelItemBtn = document.getElementById('cancelItemBtn');
+        const submitItemBtn = document.getElementById('submitItemBtn');
+
+        let currentEditingItem = null;
+        let currentItemCategoryId = null;
+
+        itemPhoto.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = (event) => {
+                    photoPreview.innerHTML = `<img src="${event.target.result}">`;
+                    photoPreview.classList.remove('empty');
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        document.querySelectorAll('.tab-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const tab = btn.dataset.tab;
+                document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+                document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+                btn.classList.add('active');
+                document.getElementById(`${tab}Tab`).classList.add('active');
+            });
+        });
+
+        function openItemModal(item = null, categoryId = null) {
+            currentEditingItem = item;
+            currentItemCategoryId = categoryId;
+
+            if (item) {
+                itemModalTitle.textContent = 'Modifier le plat';
+                itemName.value = item.name || '';
+                itemDescription.value = item.description || '';
+                itemPrice.value = item.price || '';
+                carteState.selectedTags = item.tags || [];
+
+                if (item.photo_url) {
+                    photoPreview.innerHTML = `<img src="${item.photo_url}">`;
+                    photoPreview.classList.remove('empty');
+                    itemPhotoUrl.value = item.photo_url;
+                } else {
+                    photoPreview.innerHTML = 'Aucune image';
+                    photoPreview.classList.add('empty');
+                }
+            } else {
+                itemModalTitle.textContent = 'Nouvel élément';
+                itemName.value = '';
+                itemDescription.value = '';
+                itemPrice.value = '';
+                itemPhoto.value = '';
+                itemPhotoUrl.value = '';
+                carteState.selectedTags = [];
+                photoPreview.innerHTML = 'Aucune image';
+                photoPreview.classList.add('empty');
+            }
+
+            renderTagPicker();
+            itemModal.classList.add('active');
+        }
+
+        function renderTagPicker() {
+            tagPicker.innerHTML = '';
+
+            const tagGroups = {};
+            carteState.tags.forEach(tag => {
+                if (!tagGroups[tag.category]) {
+                    tagGroups[tag.category] = [];
+                }
+                tagGroups[tag.category].push(tag);
+            });
+
+            Object.entries(tagGroups).forEach(([category, tags]) => {
+                const groupDiv = document.createElement('div');
+                groupDiv.className = 'tag-group-picker';
+                if (category === 'ALLERGEN') groupDiv.classList.add('allergen');
+
+                const header = document.createElement('div');
+                header.className = 'tag-group-header';
+                header.textContent = category;
+                groupDiv.appendChild(header);
+
+                const content = document.createElement('div');
+                content.className = 'tag-group-content';
+
+                if (category === 'ALLERGEN') {
+                    tags.forEach(tag => {
+                        const tagDiv = document.createElement('div');
+                        tagDiv.className = 'allergen-detail';
+
+                        const name = document.createElement('div');
+                        name.className = 'allergen-detail-name';
+                        name.textContent = tag.name;
+                        tagDiv.appendChild(name);
+
+                        if (tag.description) {
+                            const desc = document.createElement('div');
+                            desc.className = 'allergen-detail-desc';
+                            desc.textContent = tag.description;
+                            tagDiv.appendChild(desc);
+                        }
+
+                        const checkbox = document.createElement('input');
+                        checkbox.type = 'checkbox';
+                        checkbox.value = tag.id;
+                        checkbox.checked = carteState.selectedTags.includes(tag.id);
+                        checkbox.addEventListener('change', () => {
+                            if (checkbox.checked) {
+                                if (!carteState.selectedTags.includes(tag.id)) {
+                                    carteState.selectedTags.push(tag.id);
+                                }
+                            } else {
+                                carteState.selectedTags = carteState.selectedTags.filter(id => id !== tag.id);
+                            }
+                        });
+
+                        tagDiv.style.display = 'flex';
+                        tagDiv.style.alignItems = 'center';
+                        tagDiv.style.gap = '0.5rem';
+                        tagDiv.style.marginBottom = '0.5rem';
+                        tagDiv.appendChild(checkbox);
+
+                        content.appendChild(tagDiv);
+                    });
+                } else {
+                    tags.forEach(tag => {
+                        const label = document.createElement('label');
+                        label.className = 'tag-checkbox';
+                        if (carteState.selectedTags.includes(tag.id)) label.classList.add('selected');
+
+                        const checkbox = document.createElement('input');
+                        checkbox.type = 'checkbox';
+                        checkbox.value = tag.id;
+                        checkbox.checked = carteState.selectedTags.includes(tag.id);
+                        checkbox.addEventListener('change', () => {
+                            if (checkbox.checked) {
+                                if (!carteState.selectedTags.includes(tag.id)) {
+                                    carteState.selectedTags.push(tag.id);
+                                }
+                            } else {
+                                carteState.selectedTags = carteState.selectedTags.filter(id => id !== tag.id);
+                            }
+                            if (checkbox.checked) {
+                                label.classList.add('selected');
+                            } else {
+                                label.classList.remove('selected');
+                            }
+                        });
+
+                        label.appendChild(checkbox);
+                        label.appendChild(document.createTextNode(tag.name));
+                        content.appendChild(label);
+                    });
+                }
+
+                groupDiv.appendChild(content);
+
+                header.addEventListener('click', () => {
+                    content.classList.toggle('hidden');
+                });
+
+                tagPicker.appendChild(groupDiv);
+            });
+        }
+
+        closeItemModalBtn.addEventListener('click', () => itemModal.classList.remove('active'));
+
+        cancelItemBtn.addEventListener('click', () => itemModal.classList.remove('active'));
+
+        submitItemBtn.addEventListener('click', async () => {
+            const name = itemName.value.trim();
+            const description = itemDescription.value.trim();
+            const price = parseFloat(itemPrice.value);
+
+            if (!name || !price) {
+                showToast('Remplissez tous les champs', 'error');
+                return;
+            }
+
+            let photoUrl = itemPhotoUrl.value.trim();
+
+            if (itemPhoto.files.length > 0) {
+                const formData = new FormData();
+                formData.append('file', itemPhoto.files[0]);
+                try {
+                    const uploadRes = await carteApi('/upload', {
+                        method: 'POST',
+                        body: formData,
+                        headers: {}
+                    });
+                    photoUrl = uploadRes.url || photoUrl;
+                } catch (err) {
+                    showToast('Erreur lors de l\'upload', 'error');
+                    return;
+                }
+            }
+
+            const itemData = {
+                name,
+                description,
+                price,
+                photo_url: photoUrl,
+                tags: carteState.selectedTags,
+                category_id: currentItemCategoryId || currentEditingItem.category_id,
+                restaurant_id: carteState.restaurantId
+            };
+
+            try {
+                if (currentEditingItem) {
+                    await carteApi(`/items/${currentEditingItem.id}`, {
+                        method: 'PUT',
+                        body: JSON.stringify(itemData)
+                    });
+                    showToast('Plat modifié');
+                } else {
+                    await carteApi('/items', {
+                        method: 'POST',
+                        body: JSON.stringify(itemData)
+                    });
+                    showToast('Plat créé');
+                }
+                itemModal.classList.remove('active');
+                loadCarteData();
+            } catch (err) {
+                showToast('Erreur lors de l\'enregistrement', 'error');
+            }
+        });
+
+        // ============================================================================
+        // CATEGORY MODAL
+        // ============================================================================
+
+        const categoryModal = document.getElementById('categoryModal');
+        const categoryModalTitle = document.getElementById('categoryModalTitle');
+        const closeCategoryModalBtn = document.getElementById('closeCategoryModalBtn');
+        const categoryName = document.getElementById('categoryName');
+        const categoryFamily = document.getElementById('categoryFamily');
+        const categoryPhoto = document.getElementById('categoryPhoto');
+        const categoryPhotoPreview = document.getElementById('categoryPhotoPreview');
+        const cancelCategoryBtn = document.getElementById('cancelCategoryBtn');
+        const submitCategoryBtn = document.getElementById('submitCategoryBtn');
+
+        let currentEditingCategoryData = null;
+
+        categoryPhoto.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = (event) => {
+                    categoryPhotoPreview.innerHTML = `<img src="${event.target.result}">`;
+                    categoryPhotoPreview.classList.remove('empty');
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        function openCategoryModal(category = null) {
+            currentEditingCategoryData = category;
+
+            if (category) {
+                categoryModalTitle.textContent = 'Modifier la catégorie';
+                categoryName.value = category.name || '';
+                categoryFamily.value = category.family_id || '';
+
+                if (category.photo_url) {
+                    categoryPhotoPreview.innerHTML = `<img src="${category.photo_url}">`;
+                    categoryPhotoPreview.classList.remove('empty');
+                } else {
+                    categoryPhotoPreview.innerHTML = 'Aucune image';
+                    categoryPhotoPreview.classList.add('empty');
+                }
+
+                const visibilityRadios = document.querySelectorAll('input[name="categoryVisibility"]');
+                visibilityRadios.forEach(radio => {
+                    radio.checked = (radio.value === 'true') === category.is_visible;
+                });
+            } else {
+                categoryModalTitle.textContent = 'Nouvelle catégorie';
+                categoryName.value = '';
+                categoryFamily.value = '';
+                categoryPhoto.value = '';
+                categoryPhotoPreview.innerHTML = 'Aucune image';
+                categoryPhotoPreview.classList.add('empty');
+
+                const visibilityRadios = document.querySelectorAll('input[name="categoryVisibility"]');
+                visibilityRadios[0].checked = true;
+            }
+
+            updateCategoryFamilySelect();
+            categoryModal.classList.add('active');
+        }
+
+        function updateCategoryFamilySelect() {
+            categoryFamily.innerHTML = '<option value="">Sélectionner une famille</option>';
+            carteState.families.forEach(family => {
+                const option = document.createElement('option');
+                option.value = family.id;
+                option.textContent = family.name;
+                categoryFamily.appendChild(option);
+            });
+        }
+
+        closeCategoryModalBtn.addEventListener('click', () => categoryModal.classList.remove('active'));
+        cancelCategoryBtn.addEventListener('click', () => categoryModal.classList.remove('active'));
+
+        submitCategoryBtn.addEventListener('click', async () => {
+            const name = categoryName.value.trim();
+            const familyId = categoryFamily.value;
+            const visibilityRadio = document.querySelector('input[name="categoryVisibility"]:checked');
+            const isVisible = visibilityRadio.value === 'true';
+
+            if (!name || !familyId) {
+                showToast('Remplissez tous les champs', 'error');
+                return;
+            }
+
+            let photoUrl = '';
+            if (currentEditingCategoryData && currentEditingCategoryData.photo_url) {
+                photoUrl = currentEditingCategoryData.photo_url;
+            }
+
+            if (categoryPhoto.files.length > 0) {
+                const formData = new FormData();
+                formData.append('file', categoryPhoto.files[0]);
+                try {
+                    const uploadRes = await carteApi('/upload', {
+                        method: 'POST',
+                        body: formData,
+                        headers: {}
+                    });
+                    photoUrl = uploadRes.url || photoUrl;
+                } catch (err) {
+                    showToast('Erreur lors de l\'upload', 'error');
+                    return;
+                }
+            }
+
+            const categoryData = {
+                name,
+                family_id: familyId,
+                photo_url: photoUrl,
+                is_visible: isVisible,
+                restaurant_id: carteState.restaurantId
+            };
+
+            try {
+                if (currentEditingCategoryData) {
+                    await carteApi(`/categories/${currentEditingCategoryData.id}`, {
+                        method: 'PUT',
+                        body: JSON.stringify(categoryData)
+                    });
+                    showToast('Catégorie modifiée');
+                } else {
+                    await carteApi('/categories', {
+                        method: 'POST',
+                        body: JSON.stringify(categoryData)
+                    });
+                    showToast('Catégorie créée');
+                }
+                categoryModal.classList.remove('active');
+                loadCarteData();
+            } catch (err) {
+                showToast('Erreur lors de l\'enregistrement', 'error');
+            }
+        });
+
+        // ============================================================================
+        // FAMILY MODAL
+        // ============================================================================
+
+        const familyModal = document.getElementById('familyModal');
+        const familyModalTitle = document.getElementById('familyModalTitle');
+        const closeFamilyModalBtn = document.getElementById('closeFamilyModalBtn');
+        const familyName = document.getElementById('familyName');
+        const familyPhoto = document.getElementById('familyPhoto');
+        const familyPhotoPreview = document.getElementById('familyPhotoPreview');
+        const cancelFamilyBtn = document.getElementById('cancelFamilyBtn');
+        const submitFamilyBtn = document.getElementById('submitFamilyBtn');
+        const addFamilyBtn = document.getElementById('addFamilyBtn');
+
+        let currentEditingFamilyData = null;
+
+        familyPhoto.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = (event) => {
+                    familyPhotoPreview.innerHTML = `<img src="${event.target.result}">`;
+                    familyPhotoPreview.classList.remove('empty');
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        function openFamilyModal(family = null) {
+            currentEditingFamilyData = family;
+
+            if (family) {
+                familyModalTitle.textContent = 'Modifier la famille';
+                familyName.value = family.name || '';
+
+                if (family.photo_url) {
+                    familyPhotoPreview.innerHTML = `<img src="${family.photo_url}">`;
+                    familyPhotoPreview.classList.remove('empty');
+                } else {
+                    familyPhotoPreview.innerHTML = 'Aucune image';
+                    familyPhotoPreview.classList.add('empty');
+                }
+            } else {
+                familyModalTitle.textContent = 'Nouvelle famille';
+                familyName.value = '';
+                familyPhoto.value = '';
+                familyPhotoPreview.innerHTML = 'Aucune image';
+                familyPhotoPreview.classList.add('empty');
+            }
+
+            familyModal.classList.add('active');
+        }
+
+        closeFamilyModalBtn.addEventListener('click', () => familyModal.classList.remove('active'));
+        cancelFamilyBtn.addEventListener('click', () => familyModal.classList.remove('active'));
+        addFamilyBtn.addEventListener('click', () => openFamilyModal(null));
+
+        submitFamilyBtn.addEventListener('click', async () => {
+            const name = familyName.value.trim();
+
+            if (!name) {
+                showToast('Remplissez le nom de la famille', 'error');
+                return;
+            }
+
+            let photoUrl = '';
+            if (currentEditingFamilyData && currentEditingFamilyData.photo_url) {
+                photoUrl = currentEditingFamilyData.photo_url;
+            }
+
+            if (familyPhoto.files.length > 0) {
+                const formData = new FormData();
+                formData.append('file', familyPhoto.files[0]);
+                try {
+                    const uploadRes = await carteApi('/upload', {
+                        method: 'POST',
+                        body: formData,
+                        headers: {}
+                    });
+                    photoUrl = uploadRes.url || photoUrl;
+                } catch (err) {
+                    showToast('Erreur lors de l\'upload', 'error');
+                    return;
+                }
+            }
+
+            const familyData = {
+                name,
+                photo_url: photoUrl,
+                restaurant_id: carteState.restaurantId
+            };
+
+            try {
+                if (currentEditingFamilyData) {
+                    await carteApi(`/families/${currentEditingFamilyData.id}`, {
+                        method: 'PUT',
+                        body: JSON.stringify(familyData)
+                    });
+                    showToast('Famille modifiée');
+                } else {
+                    await carteApi('/families', {
+                        method: 'POST',
+                        body: JSON.stringify(familyData)
+                    });
+                    showToast('Famille créée');
+                }
+                familyModal.classList.remove('active');
+                loadCarteData();
+            } catch (err) {
+                showToast('Erreur lors de l\'enregistrement', 'error');
+            }
+        });
+
+        // ============================================================================
+        // ORGANISATION VIEW
+        // ============================================================================
+
+        function renderOrganisation() {
+            const container = document.getElementById('organisationContainer');
+            container.innerHTML = '';
+
+            carteState.families.forEach((family, index) => {
+                const section = document.createElement('div');
+                section.className = 'family-section';
+
+                const header = document.createElement('div');
+                header.className = 'family-header';
+
+                const nameDiv = document.createElement('div');
+                nameDiv.className = 'family-name';
+                nameDiv.textContent = family.name;
+                header.appendChild(nameDiv);
+
+                const controls = document.createElement('div');
+                controls.className = 'family-controls';
+
+                const upBtn = document.createElement('button');
+                upBtn.className = 'btn-icon';
+                upBtn.textContent = '⬆️';
+                upBtn.disabled = index === 0;
+                upBtn.addEventListener('click', async () => {
+                    if (index > 0) {
+                        const swapId = carteState.families[index - 1].id;
+                        try {
+                            await carteApi('/families/reorder', {
+                                method: 'PUT',
+                                body: JSON.stringify({ family_id: family.id, swap_with_id: swapId })
+                            });
+                            loadCarteData();
+                        } catch (err) {
+                            showToast('Erreur lors du réordonnancement', 'error');
+                        }
+                    }
+                });
+                controls.appendChild(upBtn);
+
+                const downBtn = document.createElement('button');
+                downBtn.className = 'btn-icon';
+                downBtn.textContent = '⬇️';
+                downBtn.disabled = index === carteState.families.length - 1;
+                downBtn.addEventListener('click', async () => {
+                    if (index < carteState.families.length - 1) {
+                        const swapId = carteState.families[index + 1].id;
+                        try {
+                            await carteApi('/families/reorder', {
+                                method: 'PUT',
+                                body: JSON.stringify({ family_id: family.id, swap_with_id: swapId })
+                            });
+                            loadCarteData();
+                        } catch (err) {
+                            showToast('Erreur lors du réordonnancement', 'error');
+                        }
+                    }
+                });
+                controls.appendChild(downBtn);
+
+                const editBtn = document.createElement('button');
+                editBtn.className = 'btn-icon';
+                editBtn.textContent = '✏️';
+                editBtn.addEventListener('click', () => openFamilyModal(family));
+                controls.appendChild(editBtn);
+
+                const deleteBtn = document.createElement('button');
+                deleteBtn.className = 'btn-icon';
+                deleteBtn.textContent = '🗑️';
+                deleteBtn.addEventListener('click', async () => {
+                    if (confirm('Supprimer cette famille?')) {
+                        try {
+                            await carteApi(`/families/${family.id}`, { method: 'DELETE' });
+                            loadCarteData();
+                            showToast('Famille supprimée');
+                        } catch (err) {
+                            showToast('Erreur lors de la suppression', 'error');
+                        }
+                    }
+                });
+                controls.appendChild(deleteBtn);
+
+                const addCatBtn = document.createElement('button');
+                addCatBtn.className = 'btn-icon';
+                addCatBtn.textContent = '+';
+                addCatBtn.addEventListener('click', () => {
+                    currentItemCategoryId = null;
+                    currentEditingCategoryData = null;
+                    categoryName.value = '';
+                    categoryFamily.value = family.id;
+                    updateCategoryFamilySelect();
+                    categoryPhotoPreview.innerHTML = 'Aucune image';
+                    categoryPhotoPreview.classList.add('empty');
+                    categoryPhoto.value = '';
+                    document.querySelector('input[name="categoryVisibility"]').checked = true;
+                    categoryModal.classList.add('active');
+                });
+                controls.appendChild(addCatBtn);
+
+                header.appendChild(controls);
+                section.appendChild(header);
+
+                const categoryList = document.createElement('div');
+                categoryList.className = 'category-list';
+
+                const familyCategories = carteState.categories.filter(c => c.family_id === family.id);
+
+                familyCategories.forEach((category, catIndex) => {
+                    const item = document.createElement('div');
+                    item.className = 'category-item';
+
+                    const name = document.createElement('div');
+                    name.className = 'category-item-name';
+                    name.textContent = category.name;
+                    item.appendChild(name);
+
+                    const reorderControls = document.createElement('div');
+                    reorderControls.className = 'reorder-controls';
+
+                    const upBtn = document.createElement('button');
+                    upBtn.className = 'btn-icon';
+                    upBtn.textContent = '⬆️';
+                    upBtn.disabled = catIndex === 0;
+                    upBtn.addEventListener('click', async () => {
+                        if (catIndex > 0) {
+                            const swapId = familyCategories[catIndex - 1].id;
+                            try {
+                                await carteApi('/categories/reorder', {
+                                    method: 'PUT',
+                                    body: JSON.stringify({ category_id: category.id, swap_with_id: swapId })
+                                });
+                                loadCarteData();
+                            } catch (err) {
+                                showToast('Erreur lors du réordonnancement', 'error');
+                            }
+                        }
+                    });
+                    reorderControls.appendChild(upBtn);
+
+                    const downBtn = document.createElement('button');
+                    downBtn.className = 'btn-icon';
+                    downBtn.textContent = '⬇️';
+                    downBtn.disabled = catIndex === familyCategories.length - 1;
+                    downBtn.addEventListener('click', async () => {
+                        if (catIndex < familyCategories.length - 1) {
+                            const swapId = familyCategories[catIndex + 1].id;
+                            try {
+                                await carteApi('/categories/reorder', {
+                                    method: 'PUT',
+                                    body: JSON.stringify({ category_id: category.id, swap_with_id: swapId })
+                                });
+                                loadCarteData();
+                            } catch (err) {
+                                showToast('Erreur lors du réordonnancement', 'error');
+                            }
+                        }
+                    });
+                    reorderControls.appendChild(downBtn);
+
+                    item.appendChild(reorderControls);
+                    categoryList.appendChild(item);
+                });
+
+                section.appendChild(categoryList);
+                container.appendChild(section);
+            });
+        }
+
+        // ============================================================================
+        // TAGS VIEW
+        // ============================================================================
+
+        function renderTags() {
+            const container = document.getElementById('tagsContainer');
+            container.innerHTML = '';
+
+            const tagGroups = {};
+            carteState.tags.forEach(tag => {
+                if (!tagGroups[tag.category]) {
+                    tagGroups[tag.category] = [];
+                }
+                tagGroups[tag.category].push(tag);
+            });
+
+            const categoryOrder = ['ALLERGEN', 'PRODUCT_TYPE', 'BEVERAGE', 'CERTIFICATION', 'ORIGIN', 'OFFER', 'HIGHLIGHT'];
+
+            categoryOrder.forEach(category => {
+                if (!tagGroups[category]) return;
+
+                const group = document.createElement('div');
+                group.className = 'tag-group';
+
+                const title = document.createElement('div');
+                title.className = 'tag-group-title';
+                title.textContent = category;
+                group.appendChild(title);
+
+                if (category === 'ALLERGEN') {
+                    const tagsList = document.createElement('div');
+                    tagsList.className = 'tags-list';
+
+                    tagGroups[category].forEach(tag => {
+                        const tagItem = document.createElement('div');
+                        tagItem.className = 'allergen-card';
+
+                        const icon = document.createElement('div');
+                        icon.className = 'allergen-icon';
+                        icon.textContent = '⚠️';
+                        tagItem.appendChild(icon);
+
+                        const name = document.createElement('div');
+                        name.className = 'allergen-name';
+                        name.textContent = tag.name;
+                        tagItem.appendChild(name);
+
+                        if (tag.description) {
+                            const desc = document.createElement('div');
+                            desc.className = 'allergen-description';
+                            desc.textContent = tag.description;
+                            tagItem.appendChild(desc);
+                        }
+
+                        const count = carteState.items.filter(i => i.tags && i.tags.includes(tag.id)).length;
+                        const usage = document.createElement('div');
+                        usage.className = 'tag-count';
+                        usage.textContent = `${count} plat${count !== 1 ? 's' : ''}`;
+                        tagItem.appendChild(usage);
+
+                        tagsList.appendChild(tagItem);
+                    });
+
+                    group.appendChild(tagsList);
+                } else {
+                    const tagsList = document.createElement('div');
+                    tagsList.className = 'tags-list';
+
+                    tagGroups[category].forEach(tag => {
+                        const tagItem = document.createElement('div');
+                        tagItem.className = 'tag-item';
+
+                        const name = document.createElement('div');
+                        name.className = 'tag-item-name';
+                        name.textContent = tag.name;
+                        tagItem.appendChild(name);
+
+                        const count = carteState.items.filter(i => i.tags && i.tags.includes(tag.id)).length;
+                        const usage = document.createElement('div');
+                        usage.className = 'tag-count';
+                        usage.textContent = `${count}`;
+                        tagItem.appendChild(usage);
+
+                        tagsList.appendChild(tagItem);
+                    });
+
+                    group.appendChild(tagsList);
+                }
+
+                container.appendChild(group);
+            });
+        }
+
+        // ============================================================================
+        // RÉSERVATIONS - DATA & UI
+        // ============================================================================
+
+        let currentDate = new Date();
+        currentDate.setHours(0, 0, 0, 0);
+        let currentService = 'all';
+
+        function formatDate(date) {
+            const year = date.getFullYear();
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const day = String(date.getDate()).padStart(2, '0');
+            return `${year}-${month}-${day}`;
+        }
+
+        function formatDateDisplay(date) {
+            const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+            return date.toLocaleDateString('fr-FR', options);
+        }
+
+        const prevDayBtn = document.getElementById('prevDayBtn');
+        const nextDayBtn = document.getElementById('nextDayBtn');
+        const dateDisplay = document.getElementById('dateDisplay');
+
+        prevDayBtn.addEventListener('click', () => {
+            currentDate.setDate(currentDate.getDate() - 1);
+            loadReservations();
+        });
+
+        nextDayBtn.addEventListener('click', () => {
+            currentDate.setDate(currentDate.getDate() + 1);
+            loadReservations();
+        });
+
+        document.querySelectorAll('.service-pill').forEach(pill => {
+            pill.addEventListener('click', () => {
+                document.querySelectorAll('.service-pill').forEach(p => p.classList.remove('active'));
+                pill.classList.add('active');
+                currentService = pill.dataset.service;
+                loadReservations();
+            });
+        });
+
+        const addFormHeader = document.getElementById('addFormHeader');
+        const addResaNom = document.getElementById('addResaNom');
+        const addResaTel = document.getElementById('addResaTel');
+        const addResaDate = document.getElementById('addResaDate');
+        const addResaHeure = document.getElementById('addResaHeure');
+        const addResaCouverts = document.getElementById('addResaCouverts');
+        const addResaNotes = document.getElementById('addResaNotes');
+        const cancelAddResaBtn = document.getElementById('cancelAddResaBtn');
+        const submitAddResaBtn = document.getElementById('submitAddResaBtn');
+        const addReservationForm = document.querySelector('.add-reservation-form');
+
+        addFormHeader.addEventListener('click', () => {
+            addReservationForm.classList.toggle('collapsed');
+        });
+
+        cancelAddResaBtn.addEventListener('click', () => {
+            addReservationForm.classList.add('collapsed');
+            addResaNom.value = '';
+            addResaTel.value = '';
+            addResaDate.value = '';
+            addResaHeure.value = '';
+            addResaCouverts.value = '';
+            addResaNotes.value = '';
+        });
+
+        submitAddResaBtn.addEventListener('click', async () => {
+            const nom = addResaNom.value.trim();
+            const tel = addResaTel.value.trim();
+            const date = addResaDate.value;
+            const heure = addResaHeure.value;
+            const couverts = parseInt(addResaCouverts.value);
+            const notes = addResaNotes.value.trim();
+
+            if (!nom || !tel || !date || !heure || !couverts) {
+                showToast('Remplissez tous les champs obligatoires', 'error');
+                return;
+            }
+
+            const resaData = {
+                nom,
+                telephone: tel,
+                date,
+                heure,
+                couverts,
+                notes
+            };
+
+            try {
+                await resaApi('/reservations', {
+                    method: 'POST',
+                    body: JSON.stringify(resaData)
+                });
+                showToast('Réservation ajoutée');
+                addReservationForm.classList.add('collapsed');
+                addResaNom.value = '';
+                addResaTel.value = '';
+                addResaDate.value = '';
+                addResaHeure.value = '';
+                addResaCouverts.value = '';
+                addResaNotes.value = '';
+                loadReservations();
+            } catch (err) {
+                showToast('Erreur lors de l\'ajout', 'error');
+            }
+        });
+
+        async function loadReservations() {
+            dateDisplay.textContent = formatDateDisplay(currentDate);
+            addResaDate.value = formatDate(currentDate);
+
+            try {
+                const reservations = await resaApi(`/reservations?date=${formatDate(currentDate)}`);
+                const list = reservations.data || reservations || [];
+
+                let filtered = list;
+                if (currentService === 'midi') {
+                    filtered = list.filter(r => {
+                        const hour = parseInt(r.heure.split(':')[0]);
+                        return hour >= 11 && hour < 17;
+                    });
+                } else if (currentService === 'soir') {
+                    filtered = list.filter(r => {
+                        const hour = parseInt(r.heure.split(':')[0]);
+                        return hour >= 17;
+                    });
+                }
+
+                updateReservationStats(filtered);
+                renderReservationList(filtered);
+            } catch (err) {
+                console.error('Failed to load reservations:', err);
+            }
+        }
+
+        function updateReservationStats(reservations) {
+            const totalCovers = reservations.reduce((sum, r) => sum + (r.couverts || 0), 0);
+            const capacity = 42;
+            const remaining = capacity - totalCovers;
+
+            document.getElementById('statReservations').textContent = reservations.length;
+            document.getElementById('statCovers').textContent = totalCovers;
+            document.getElementById('statCapacity').textContent = Math.max(0, remaining);
+        }
+
+        function renderReservationList(reservations) {
+            const container = document.getElementById('reservationList');
+            container.innerHTML = '';
+
+            if (reservations.length === 0) {
+                const empty = document.createElement('div');
+                empty.style.textAlign = 'center';
+                empty.style.color = '#8a9bb0';
+                empty.style.padding = '2rem';
+                empty.textContent = 'Aucune réservation';
+                container.appendChild(empty);
+                return;
+            }
+
+            reservations.sort((a, b) => {
+                return a.heure.localeCompare(b.heure);
+            });
+
+            reservations.forEach(resa => {
+                const card = document.createElement('div');
+                card.className = 'reservation-card';
+
+                const info = document.createElement('div');
+                info.className = 'reservation-info';
+
+                const name = document.createElement('div');
+                name.className = 'reservation-name';
+                name.textContent = resa.nom;
+                info.appendChild(name);
+
+                const details = document.createElement('div');
+                details.className = 'reservation-details';
+
+                const telDiv = document.createElement('div');
+                telDiv.className = 'reservation-detail';
+                telDiv.innerHTML = `<span class="reservation-detail-label">Tél:</span> ${resa.telephone}`;
+                details.appendChild(telDiv);
+
+                const timeDiv = document.createElement('div');
+                timeDiv.className = 'reservation-detail';
+                timeDiv.innerHTML = `<span class="reservation-detail-label">Heure:</span> ${resa.heure}`;
+                details.appendChild(timeDiv);
+
+                const coversDiv = document.createElement('div');
+                coversDiv.className = 'reservation-detail';
+                coversDiv.innerHTML = `<span class="reservation-detail-label">Couverts:</span> ${resa.couverts}`;
+                details.appendChild(coversDiv);
+
+                info.appendChild(details);
+
+                if (resa.notes) {
+                    const notes = document.createElement('div');
+                    notes.className = 'reservation-notes';
+                    notes.textContent = resa.notes;
+                    info.appendChild(notes);
+                }
+
+                card.appendChild(info);
+
+                const deleteBtn = document.createElement('button');
+                deleteBtn.className = 'btn btn-danger btn-sm';
+                deleteBtn.textContent = 'Supprimer';
+                deleteBtn.addEventListener('click', async () => {
+                    if (confirm('Supprimer cette réservation?')) {
+                        try {
+                            await resaApi(`/reservations/${resa.id}`, { method: 'DELETE' });
+                            loadReservations();
+                            showToast('Réservation supprimée');
+                        } catch (err) {
+                            showToast('Erreur lors de la suppression', 'error');
+                        }
+                    }
+                });
+                card.appendChild(deleteBtn);
+
+                container.appendChild(card);
+            });
+        }
+
+        // ============================================================================
+        // SERVICE WORKER
+        // ============================================================================
+
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('sw.js').catch(err => {
+                console.log('Service worker registration failed:', err);
+            });
+        }
+
+        // ============================================================================
+        // INITIALIZATION
+        // ============================================================================
+
+        window.addEventListener('load', () => {
+            const config = getConfig();
+            if (config.resaUrl || config.carteUrl) {
+                resaUrlInput.value = config.resaUrl || '';
+                carteUrlInput.value = config.carteUrl || '';
+            }
+            loadCarteData();
+        });
+    </script>
+</body>
+</html>

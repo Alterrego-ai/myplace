@@ -1,0 +1,38 @@
+{
+  "name": "Sauf Imprévu — Back Office",
+  "short_name": "SI BackOffice",
+  "start_url": "/backoffice",
+  "display": "standalone",
+  "background_color": "#f0f3f8",
+  "theme_color": "#3d5a80",
+  "scope": "/backoffice/",
+  "icons": [
+    {
+      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'><rect fill='%233d5a80' width='192' height='192'/><text x='50%' y='50%' font-size='80' font-weight='bold' text-anchor='middle' dominant-baseline='central' fill='white' font-family='Arial'>SI</text></svg>",
+      "sizes": "192x192",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><rect fill='%233d5a80' width='512' height='512'/><text x='50%' y='50%' font-size='280' font-weight='bold' text-anchor='middle' dominant-baseline='central' fill='white' font-family='Arial'>SI</text></svg>",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'><rect fill='%235c8db8' width='192' height='192'/><text x='50%' y='50%' font-size='80' font-weight='bold' text-anchor='middle' dominant-baseline='central' fill='white' font-family='Arial'>SI</text></svg>",
+      "sizes": "192x192",
+      "type": "image/svg+xml",
+      "purpose": "maskable"
+    }
+  ],
+  "categories": ["productivity", "business"],
+  "screenshots": [
+    {
+      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 540 720'><rect fill='%23f0f3f8' width='540' height='720'/><text x='20' y='40' font-size='24' font-weight='bold' fill='%233d5a80' font-family='Arial'>Sauf Imprévu</text></svg>",
+      "sizes": "540x720",
+      "type": "image/svg+xml",
+      "form_factor": "narrow"
+    }
+  ]
+}

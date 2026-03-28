@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<vxml version="2.1">
+  <form>
+    <transfer name="callTransfer" dest="sip:+33482532880@sip.rtc.elevenlabs.io:5060" bridge="true">
+      <filled>
+        <if cond="callTransfer == 'busy' || callTransfer == 'noanswer'">
+          <prompt>
+            Le service de réservation est momentanément indisponible. Veuillez réessayer dans quelques instants.
+          </prompt>
+        </if>
+      </filled>
+    </transfer>
+  </form>
+</vxml>

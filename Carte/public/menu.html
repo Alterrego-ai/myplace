@@ -1,0 +1,1654 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Menu - Sauf Imprévu</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..146,100..900;1,9..146,100..900&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --text: #111827;
+      --text-mid: #6b7280;
+      --text-light: #9ca3af;
+      --border: #e5e7eb;
+      --border-light: #f3f4f6;
+      --bg: #ffffff;
+      --bg-alt: #f9fafb;
+      --primary: #3d5a80;
+      --primary-light: #e8edf4;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html, body {
+      font-family: 'DM Sans', system-ui, -apple-system, sans-serif;
+      color: var(--text);
+      background: var(--bg);
+      line-height: 1.5;
+    }
+
+    body {
+      overflow-x: hidden;
+    }
+
+    .container {
+      max-width: 600px;
+      margin: 0 auto;
+      background: var(--bg);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Header */
+    .header {
+      padding: 36px 24px 16px;
+      background: var(--bg);
+      text-align: center;
+    }
+
+    .header-content {
+      margin-bottom: 12px;
+    }
+
+    .restaurant-tagline {
+      font-size: 11px;
+      letter-spacing: 3px;
+      color: var(--text-light);
+      text-transform: uppercase;
+      margin-bottom: 8px;
+      font-weight: 500;
+    }
+
+    .restaurant-name {
+      font-size: 26px;
+      font-weight: 700;
+      color: var(--text);
+      letter-spacing: -0.5px;
+    }
+
+    .mode-toggle {
+      display: inline-flex;
+      background: var(--bg-alt);
+      border: 1.5px solid var(--border);
+      border-radius: 10px;
+      overflow: hidden;
+      margin-top: 12px;
+    }
+
+    .toggle-btn {
+      width: 42px;
+      height: 42px;
+      border: none;
+      background: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 15px;
+      transition: all 0.15s;
+      color: var(--text-light);
+    }
+
+    .toggle-btn:hover {
+      color: var(--text-mid);
+    }
+
+    .toggle-btn.active {
+      background: var(--text);
+      color: #fff;
+    }
+
+    /* Search Bar */
+    .search-section {
+      padding: 18px 20px 0;
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .search-input {
+      flex: 1;
+      padding: 10px 12px 10px 32px;
+      border: 1.5px solid var(--border);
+      border-radius: 10px;
+      font-family: inherit;
+      font-size: 14px;
+      color: var(--text);
+      background: var(--bg-alt);
+      transition: border-color 0.15s;
+    }
+
+    .search-input::placeholder {
+      color: var(--text-light);
+    }
+
+    .search-input:focus {
+      outline: none;
+      border-color: var(--primary);
+    }
+
+    .search-wrapper {
+      flex: 1;
+      position: relative;
+    }
+
+    .search-icon {
+      position: absolute;
+      left: 11px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 14px;
+      color: var(--text-light);
+      pointer-events: none;
+    }
+
+    .filter-btn {
+      width: 42px;
+      height: 42px;
+      border: 1.5px solid var(--border);
+      background: var(--bg-alt);
+      border-radius: 10px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      position: relative;
+      transition: all 0.15s;
+      flex-shrink: 0;
+      color: var(--text-mid);
+    }
+
+    .filter-btn:hover {
+      border-color: var(--primary);
+      color: var(--primary);
+    }
+
+    .filter-btn.has-filters {
+      border-color: var(--primary);
+      background: var(--primary-light);
+      color: var(--primary);
+    }
+
+    .filter-badge {
+      position: absolute;
+      top: -5px;
+      right: -5px;
+      background: var(--primary);
+      color: white;
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 9px;
+      font-weight: 700;
+    }
+
+    /* Active Filters Chips */
+    .active-filters {
+      padding: 10px 20px 0;
+      display: flex;
+      gap: 5px;
+      flex-wrap: wrap;
+    }
+
+    .active-filters:empty {
+      display: none;
+    }
+
+    .filter-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 3px 8px;
+      border-radius: 5px;
+      font-size: 11px;
+      font-weight: 600;
+      border: none;
+      cursor: pointer;
+      font-family: 'DM Sans', system-ui;
+    }
+
+    .filter-chip-remove {
+      cursor: pointer;
+      font-weight: 700;
+    }
+
+    /* Navigation Mode */
+    .nav-mode {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .families-scroll {
+      padding: 18px 20px 0;
+      display: flex;
+      gap: 8px;
+      justify-content: center;
+      flex-wrap: wrap;
+      flex-shrink: 0;
+    }
+
+    .family-pill {
+      padding: 9px 24px;
+      border: none;
+      background: var(--bg-alt);
+      border-radius: 24px;
+      cursor: pointer;
+      white-space: nowrap;
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text-mid);
+      transition: all 0.18s;
+      flex-shrink: 0;
+      font-family: 'DM Sans', system-ui;
+    }
+
+    .family-pill:hover {
+      background: var(--border-light);
+    }
+
+    .family-pill.active {
+      background: var(--text);
+      color: #fff;
+      box-shadow: 0 2px 8px rgba(17,24,39,0.15);
+    }
+
+    .categories-tabs {
+      padding: 14px 20px 0;
+      display: flex;
+      gap: 0;
+      border-bottom: 1px solid var(--border-light);
+      overflow-x: auto;
+      scroll-behavior: smooth;
+      flex-shrink: 0;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+    }
+
+    .categories-tabs::-webkit-scrollbar {
+      display: none;
+    }
+
+    .category-tab {
+      padding: 6px 14px 10px;
+      border: none;
+      background: none;
+      cursor: pointer;
+      font-size: 12px;
+      font-weight: 400;
+      color: var(--text-light);
+      border-bottom: 2px solid transparent;
+      transition: all 0.15s;
+      white-space: nowrap;
+      flex-shrink: 0;
+      margin-bottom: -1px;
+      font-family: 'DM Sans', system-ui;
+    }
+
+    .category-tab:hover {
+      color: var(--text);
+    }
+
+    .category-tab.active {
+      color: var(--text);
+      font-weight: 700;
+      border-bottom-color: var(--text);
+    }
+
+    .items-grid {
+      flex: 1;
+      padding: 14px 20px 120px;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .items-grid-cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 10px;
+    }
+
+    .item-card {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+      cursor: pointer;
+      transition: all 0.18s;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+      padding: 14px 16px;
+    }
+
+    .item-card:hover {
+      border-color: rgba(61,90,128,0.4);
+      box-shadow: 0 4px 16px rgba(61,90,128,0.1);
+    }
+
+    .item-card.unavailable {
+      opacity: 0.5;
+      pointer-events: none;
+    }
+
+    .item-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 8px;
+      margin-bottom: 4px;
+    }
+
+    .item-name {
+      font-weight: 600;
+      font-size: 15px;
+      color: var(--text);
+      flex: 1;
+      line-height: 1.3;
+    }
+
+    .item-price {
+      font-weight: 700;
+      font-size: 15px;
+      color: var(--primary);
+      flex-shrink: 0;
+    }
+
+    .item-tag {
+      font-style: italic;
+      color: var(--text-light);
+      font-size: 11px;
+      display: block;
+      margin-bottom: 4px;
+    }
+
+    .item-description {
+      font-size: 12px;
+      color: var(--text-light);
+      font-style: italic;
+      margin-bottom: 6px;
+      line-height: 1.4;
+    }
+
+    .item-allergens {
+      display: flex;
+      gap: 4px;
+      flex-wrap: wrap;
+      margin-top: 6px;
+    }
+
+    .allergen-icon {
+      display: inline-flex;
+      align-items: center;
+      gap: 3px;
+      font-size: 11px;
+      padding: 2px 6px;
+      border-radius: 4px;
+      background: var(--border-light);
+      color: var(--text-light);
+    }
+
+    .unavailable-badge {
+      display: inline-block;
+      padding: 2px 8px;
+      background: var(--border-light);
+      color: var(--text-light);
+      border-radius: 3px;
+      font-size: 11px;
+      font-weight: 600;
+      margin-top: 6px;
+    }
+
+    /* Paper Menu Mode */
+    .paper-mode {
+      flex: 1;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .paper-mode-inner {
+      padding: 0 24px 120px;
+    }
+
+    /* Sticky family nav for paper mode */
+    .paper-families-nav {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      background: rgba(255,255,255,0.96);
+      backdrop-filter: blur(8px);
+      border-bottom: 1px solid var(--border-light);
+      padding: 10px 20px;
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .paper-family-btn {
+      padding: 8px 22px;
+      border-radius: 24px;
+      border: none;
+      background: var(--text);
+      color: #fff;
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: 600;
+      font-family: 'DM Sans', system-ui;
+      transition: opacity 0.15s;
+    }
+
+    .paper-family-btn:hover {
+      opacity: 0.75;
+    }
+
+    .family-section {
+      margin-bottom: 0;
+    }
+
+    .family-separator {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 28px 0 20px;
+    }
+
+    .family-separator::before,
+    .family-separator::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--border-light);
+    }
+
+    .family-separator-text {
+      font-size: 11px;
+      letter-spacing: 3px;
+      color: var(--text-light);
+      text-transform: uppercase;
+      font-weight: 600;
+      flex-shrink: 0;
+    }
+
+    .category-section {
+      margin-bottom: 32px;
+      scroll-margin-top: 60px;
+    }
+
+    .category-section-title {
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 2px;
+      letter-spacing: -0.3px;
+    }
+
+    .category-section-accent {
+      width: 28px;
+      height: 2px;
+      background: var(--primary);
+      border-radius: 2px;
+      margin-bottom: 8px;
+    }
+
+    .paper-item {
+      padding: 15px 0;
+      border-bottom: 1px solid var(--border-light);
+      cursor: pointer;
+    }
+
+    .paper-item-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 12px;
+    }
+
+    .paper-item-info {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .paper-item-name-row {
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .paper-item-name {
+      font-weight: 600;
+      font-size: 15px;
+      color: var(--text);
+      line-height: 1.3;
+    }
+
+    .paper-item-highlight {
+      font-size: 11px;
+      color: var(--text-light);
+      font-style: italic;
+    }
+
+    .paper-item-price {
+      font-weight: 700;
+      font-size: 15px;
+      color: var(--primary);
+      flex-shrink: 0;
+    }
+
+    .paper-item-description {
+      font-size: 13px;
+      color: var(--text-light);
+      font-style: italic;
+      margin-top: 3px;
+      line-height: 1.4;
+    }
+
+    .paper-item-allergens {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px;
+      margin-top: 6px;
+    }
+
+    .paper-allergen {
+      display: inline-flex;
+      align-items: center;
+      gap: 3px;
+      font-size: 11px;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-weight: 500;
+      color: var(--text-light);
+      background: var(--border-light);
+    }
+
+    .paper-item-tag {
+      font-style: italic;
+      color: var(--text-light);
+      font-size: 11px;
+    }
+
+    /* Filter Panel - Bottom Sheet */
+    .filter-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.2);
+      z-index: 199;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s;
+    }
+
+    .filter-overlay.open {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .filter-panel {
+      position: fixed;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%) translateY(100%);
+      width: 100%;
+      max-width: 640px;
+      background: var(--bg);
+      border-radius: 20px 20px 0 0;
+      z-index: 200;
+      max-height: 80vh;
+      overflow-y: auto;
+      transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: 0 -4px 30px rgba(0, 0, 0, 0.1);
+      padding: 20px 20px 40px;
+    }
+
+    .filter-panel.open {
+      transform: translateX(-50%) translateY(0);
+    }
+
+    .filter-handle {
+      width: 36px;
+      height: 4px;
+      background: var(--border);
+      border-radius: 2px;
+      margin: 0 auto 20px;
+    }
+
+    .filter-panel-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .filter-panel-title {
+      font-size: 17px;
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    .filter-reset-btn {
+      font-size: 12px;
+      color: var(--primary);
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-weight: 600;
+      font-family: 'DM Sans', system-ui;
+    }
+
+    .filter-section {
+      margin-bottom: 24px;
+    }
+
+    .filter-section-title {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--text-light);
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      margin-bottom: 4px;
+    }
+
+    .filter-section-desc {
+      font-size: 12px;
+      color: var(--text-light);
+      margin-bottom: 12px;
+    }
+
+    .allergen-grid,
+    .tag-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 7px;
+    }
+
+    .allergen-toggle,
+    .tag-toggle {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 7px 12px;
+      border: 1.5px solid var(--border);
+      background: var(--bg-alt);
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.15s;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-mid);
+      font-family: 'DM Sans', system-ui;
+    }
+
+    .allergen-toggle:hover,
+    .tag-toggle:hover {
+      border-color: var(--primary);
+    }
+
+    .allergen-toggle.checked,
+    .tag-toggle.checked {
+      border-color: rgba(61,90,128,0.3);
+      color: var(--primary);
+      background: var(--primary-light);
+    }
+
+    .allergen-toggle .allergen-toggle-checkbox,
+    .tag-toggle .tag-toggle-checkbox {
+      display: none;
+    }
+
+    .allergen-icon-large {
+      font-size: 14px;
+      flex-shrink: 0;
+    }
+
+    .filter-apply-btn {
+      margin-top: 28px;
+      width: 100%;
+      padding: 14px;
+      background: var(--text);
+      border: none;
+      border-radius: 12px;
+      color: #fff;
+      font-size: 15px;
+      font-weight: 600;
+      font-family: 'DM Sans', system-ui;
+      cursor: pointer;
+    }
+
+    .close-filter-btn {
+      display: none;
+    }
+
+    /* Footer */
+    .footer {
+      position: fixed;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 100%;
+      max-width: 640px;
+      background: rgba(255,255,255,0.97);
+      backdrop-filter: blur(10px);
+      border-top: 1px solid var(--border-light);
+      padding: 10px 20px 18px;
+      text-align: center;
+      z-index: 90;
+    }
+
+    .footer-text {
+      font-size: 10px;
+      color: var(--text-light);
+      line-height: 1.5;
+    }
+
+    .footer-filter-btn {
+      display: none;
+    }
+
+    /* Item Detail Modal */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 150;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.2s;
+    }
+
+    .modal-overlay.open {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .modal-content {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: var(--bg);
+      border-radius: 12px 12px 0 0;
+      z-index: 160;
+      max-height: 80vh;
+      overflow-y: auto;
+      transform: translateY(100%);
+      transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .modal-overlay.open ~ .modal-content {
+      transform: translateY(0);
+    }
+
+    .modal-content.open {
+      transform: translateY(0);
+    }
+
+    .modal-body {
+      padding: 24px 20px 100px;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 16px;
+    }
+
+    .modal-title {
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    .modal-close {
+      width: 32px;
+      height: 32px;
+      border: none;
+      background: var(--bg-alt);
+      border-radius: 6px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      color: var(--text-mid);
+    }
+
+    .modal-close:hover {
+      background: var(--border-light);
+    }
+
+    .modal-description {
+      font-size: 14px;
+      color: var(--text-mid);
+      line-height: 1.6;
+      margin-bottom: 16px;
+      font-style: italic;
+    }
+
+    .modal-tags {
+      margin-bottom: 16px;
+    }
+
+    .modal-tags-title {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-light);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 8px;
+    }
+
+    .modal-tags-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .modal-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 10px;
+      border-radius: 16px;
+      font-size: 12px;
+      font-weight: 500;
+    }
+
+    .modal-tag-icon {
+      width: 16px;
+      height: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 10px;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    /* Loading state */
+    .loading {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 40px 20px;
+      color: var(--text-mid);
+      font-size: 14px;
+    }
+
+    /* Empty state */
+    .empty-state {
+      padding: 40px 20px;
+      text-align: center;
+      color: var(--text-mid);
+      font-size: 14px;
+    }
+
+    @media (max-width: 600px) {
+      .container {
+        border-radius: 0;
+      }
+
+      .filter-panel,
+      .modal-content {
+        border-radius: 12px 12px 0 0;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <div class="header-content">
+        <div class="restaurant-tagline" id="restaurantTagline">Restaurant</div>
+        <div class="restaurant-name" id="restaurantName">Sauf Imprévu</div>
+      </div>
+      <div class="mode-toggle">
+        <button class="toggle-btn active" id="navModeBtn" title="Navigation">⊞</button>
+        <button class="toggle-btn" id="paperModeBtn" title="Carte">☰</button>
+      </div>
+    </div>
+
+    <div class="search-section">
+      <div class="search-wrapper">
+        <span class="search-icon">🔍</span>
+        <input
+          type="text"
+          class="search-input"
+          id="searchInput"
+          placeholder="Rechercher…"
+        >
+      </div>
+      <button class="filter-btn" id="filterOpenBtn" title="Filtres">
+        ⚙
+        <span class="filter-badge hidden" id="filterBadge">0</span>
+      </button>
+    </div>
+
+    <div class="active-filters" id="activeFiltersContainer"></div>
+
+    <!-- Navigation Mode Content -->
+    <div class="nav-mode" id="navMode">
+      <div class="families-scroll" id="familiesScroll"></div>
+      <div class="categories-tabs" id="categoriesTabs"></div>
+      <div class="items-grid" id="itemsGrid"></div>
+    </div>
+
+    <!-- Paper Menu Mode Content -->
+    <div class="paper-mode hidden" id="paperMode"></div>
+  </div>
+
+  <!-- Filter Overlay -->
+  <div class="filter-overlay" id="filterOverlay"></div>
+
+  <!-- Filter Panel -->
+  <div class="filter-panel" id="filterPanel">
+    <div class="filter-handle"></div>
+    <div class="filter-panel-header">
+      <span class="filter-panel-title">Filtres</span>
+      <button class="filter-reset-btn hidden" id="filterResetBtn">Réinitialiser</button>
+    </div>
+
+    <div class="filter-section">
+      <div class="filter-section-title">Exclure les allergènes</div>
+      <div class="filter-section-desc">Les plats contenant ces allergènes seront masqués.</div>
+      <div class="allergen-grid" id="allergenGrid"></div>
+    </div>
+
+    <div class="filter-section">
+      <div class="filter-section-title">Afficher uniquement</div>
+      <div class="filter-section-desc">Seuls les plats correspondants seront affichés.</div>
+      <div class="tag-grid" id="tagGrid"></div>
+    </div>
+
+    <button class="filter-apply-btn" id="filterCloseBtn">Voir les résultats</button>
+  </div>
+
+  <!-- Item Detail Modal -->
+  <div class="modal-overlay" id="modalOverlay"></div>
+  <div class="modal-content" id="modalContent">
+    <div class="modal-body">
+      <div class="modal-header">
+        <div class="modal-title" id="modalTitle"></div>
+        <button class="modal-close" id="modalCloseBtn">✕</button>
+      </div>
+      <div class="modal-description" id="modalDescription"></div>
+      <div class="modal-tags" id="modalTagsContainer"></div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <div class="footer">
+    <div class="footer-text">
+      Allergènes indiqués à titre indicatif — en cas de doute, demandez à votre serveur.
+    </div>
+  </div>
+
+  <script>
+    // State management
+    const state = {
+      mode: 'navigation', // 'navigation' or 'paper'
+      selectedFamily: null,
+      selectedCategory: null,
+      searchQuery: '',
+      excludedAllergens: new Set(),
+      includedTags: new Set(),
+      data: {
+        restaurant: {},
+        families: [],
+        categories: [],
+        items: [],
+        tags: []
+      },
+      tagsBySlug: {},
+      allergenTags: []
+    };
+
+    // Allergen icon map
+    const allergenIcons = {
+      'arachides': '🥜',
+      'fruits-a-coque': '🌰',
+      'lait': '🥛',
+      'œufs': '🥚',
+      'poisson': '🐟',
+      'crustaces': '🦐',
+      'sesame': '🌱',
+      'moutarde': '🟡',
+      'sulfites': '⚗️',
+      'gluten': '🌾',
+      'celeri': '🥬',
+      'soja': '🫘',
+      'noix': '🌳',
+      'autre': '⚠️'
+    };
+
+    // API call
+    async function fetchMenuData() {
+      try {
+        const response = await fetch('/api/menu/sauf-imprevu');
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+        state.data = await response.json();
+
+        // Build tag lookup
+        state.data.tags.forEach(tag => {
+          state.tagsBySlug[tag.slug] = tag;
+        });
+
+        // Identify allergen tags
+        state.allergenTags = state.data.tags.filter(tag => tag.category === 'allergen');
+
+        render();
+      } catch (error) {
+        console.error('Error fetching menu:', error);
+        document.getElementById('itemsGrid').innerHTML = '<div class="empty-state">Erreur de chargement du menu</div>';
+      }
+    }
+
+    // Render functions
+    function render() {
+      renderHeader();
+      renderNavigationMode();
+      renderPaperMode();
+      renderFilterPanel();
+      updateFilterBadges();
+    }
+
+    function renderHeader() {
+      document.getElementById('restaurantName').textContent = state.data.restaurant.name || 'Sauf Imprévu';
+      document.getElementById('restaurantTagline').textContent = state.data.restaurant.tagline || 'Restaurant';
+    }
+
+    function renderNavigationMode() {
+      renderFamilies();
+      renderCategories();
+      renderItems();
+    }
+
+    function renderFamilies() {
+      const container = document.getElementById('familiesScroll');
+      container.innerHTML = '';
+
+      state.data.families.forEach(family => {
+        const btn = document.createElement('button');
+        btn.className = 'family-pill';
+        if (state.selectedFamily === family.id) btn.classList.add('active');
+        btn.textContent = family.name;
+        btn.addEventListener('click', () => {
+          state.selectedFamily = family.id;
+          state.selectedCategory = null;
+          renderNavigationMode();
+        });
+        container.appendChild(btn);
+      });
+    }
+
+    function renderCategories() {
+      const container = document.getElementById('categoriesTabs');
+      container.innerHTML = '';
+
+      const categories = state.selectedFamily
+        ? state.data.categories.filter(c => c.family_id === state.selectedFamily)
+        : state.data.categories;
+
+      categories.forEach(category => {
+        const btn = document.createElement('button');
+        btn.className = 'category-tab';
+        if (state.selectedCategory === category.id) btn.classList.add('active');
+        btn.textContent = category.name;
+        btn.addEventListener('click', () => {
+          state.selectedCategory = category.id;
+          renderItems();
+        });
+        container.appendChild(btn);
+      });
+    }
+
+    function renderItems() {
+      const container = document.getElementById('itemsGrid');
+      let items = state.data.items;
+
+      // Filter by family
+      if (state.selectedFamily) {
+        const familyCategoryIds = state.data.categories
+          .filter(c => c.family_id === state.selectedFamily)
+          .map(c => c.id);
+        items = items.filter(i => familyCategoryIds.includes(i.category_id));
+      }
+
+      // Filter by category
+      if (state.selectedCategory) {
+        items = items.filter(i => i.category_id === state.selectedCategory);
+      }
+
+      // Filter by availability
+      items = items.filter(i => i.available === 1 || i.available === true);
+
+      // Apply search and filters
+      items = items.filter(item => applyFilters(item));
+
+      // Apply search query
+      if (state.searchQuery) {
+        const query = state.searchQuery.toLowerCase();
+        items = items.filter(item =>
+          item.name.toLowerCase().includes(query) ||
+          (item.description && item.description.toLowerCase().includes(query))
+        );
+      }
+
+      if (items.length === 0) {
+        container.innerHTML = '<div class="empty-state"><div style="font-size:32px;margin-bottom:12px">🍽️</div>Aucun plat disponible</div>';
+        return;
+      }
+
+      container.innerHTML = '<div class="items-grid-cards">' + items.map(item => renderItemCard(item)).join('') + '</div>';
+      container.querySelectorAll('.item-card').forEach((el, idx) => {
+        el.addEventListener('click', () => showItemDetail(items[idx]));
+      });
+    }
+
+    function renderItemCard(item) {
+      const tags = (item.tag_slugs || '').split(',').filter(s => s.trim());
+      const highlightTag = tags.find(slug => {
+        const tag = state.tagsBySlug[slug];
+        return tag && tag.category === 'highlight';
+      });
+
+      const allergenTags = tags.filter(slug => {
+        const tag = state.tagsBySlug[slug];
+        return tag && tag.category === 'allergen';
+      });
+
+      let highlightHTML = '';
+      if (highlightTag) {
+        const t = state.tagsBySlug[highlightTag];
+        highlightHTML = `<span class="item-tag">${escapeHtml(t.name)}</span>`;
+      }
+
+      let allergenHTML = '';
+      if (allergenTags.length > 0) {
+        allergenHTML = '<div class="item-allergens">' +
+          allergenTags.map(slug => {
+            const tag = state.tagsBySlug[slug];
+            const icon = allergenIcons[slug] || '⚠️';
+            const isExcluded = state.excludedAllergens.has(slug);
+            const style = isExcluded
+              ? `color:${tag.color || 'var(--text-light)'};background:${tag.bg || 'var(--border-light)'};border:1px solid ${(tag.color || '#999') + '30'}`
+              : '';
+            return `<span class="allergen-icon" title="${escapeHtml(tag.name)}" ${style ? `style="${style}"` : ''}>${icon}</span>`;
+          }).join('') +
+          '</div>';
+      }
+
+      const price = formatPrice(item.price);
+
+      return `
+        <div class="item-card" data-item-id="${item.id}">
+          <div class="item-header">
+            <div style="flex:1;min-width:0">
+              <span class="item-name">${escapeHtml(item.name)}</span>
+              ${highlightHTML}
+            </div>
+            <div class="item-price">${price}</div>
+          </div>
+          ${item.description ? `<div class="item-description">${escapeHtml(item.description)}</div>` : ''}
+          ${allergenHTML}
+        </div>
+      `;
+    }
+
+    function renderPaperMode() {
+      const container = document.getElementById('paperMode');
+      let html = '';
+
+      // Sticky family nav
+      html += '<div class="paper-families-nav">';
+      state.data.families.forEach(f => {
+        html += `<button class="paper-family-btn" data-family-id="${f.id}">${escapeHtml(f.name)}</button>`;
+      });
+      html += '</div>';
+
+      html += '<div class="paper-mode-inner">';
+
+      let hasContent = false;
+
+      state.data.families.forEach(family => {
+        const familyCategoryIds = state.data.categories
+          .filter(c => c.family_id === family.id)
+          .map(c => c.id);
+
+        const categories = state.data.categories.filter(c => familyCategoryIds.includes(c.id));
+        let familyHasItems = false;
+
+        let familyHTML = '';
+        categories.forEach(category => {
+          let categoryItems = state.data.items.filter(i =>
+            i.category_id === category.id &&
+            (i.available === 1 || i.available === true) &&
+            applyFilters(i)
+          );
+
+          if (state.searchQuery) {
+            const query = state.searchQuery.toLowerCase();
+            categoryItems = categoryItems.filter(item =>
+              item.name.toLowerCase().includes(query) ||
+              (item.description && item.description.toLowerCase().includes(query))
+            );
+          }
+
+          if (categoryItems.length === 0) return;
+          familyHasItems = true;
+
+          familyHTML += `<div class="category-section" data-cat-id="${category.id}">`;
+          familyHTML += `<div class="category-section-title">${escapeHtml(category.name)}</div>`;
+          familyHTML += `<div class="category-section-accent"></div>`;
+
+          categoryItems.forEach(item => {
+            const tags = (item.tag_slugs || '').split(',').filter(s => s.trim());
+            const highlightTag = tags.find(slug => {
+              const t = state.tagsBySlug[slug];
+              return t && t.category === 'highlight';
+            });
+            const allergenTags = tags.filter(slug => {
+              const t = state.tagsBySlug[slug];
+              return t && t.category === 'allergen';
+            });
+
+            let highlightHTML = '';
+            if (highlightTag) {
+              highlightHTML = `<span class="paper-item-highlight">${escapeHtml(state.tagsBySlug[highlightTag].name)}</span>`;
+            }
+
+            let allergenHTML = '';
+            if (allergenTags.length > 0) {
+              allergenHTML = '<div class="paper-item-allergens">' +
+                allergenTags.map(slug => {
+                  const t = state.tagsBySlug[slug];
+                  const icon = allergenIcons[slug] || '⚠️';
+                  return `<span class="paper-allergen" title="${escapeHtml(t.name)}">${icon}</span>`;
+                }).join('') + '</div>';
+            }
+
+            const price = formatPrice(item.price);
+
+            familyHTML += `<div class="paper-item" data-item-id="${item.id}">`;
+            familyHTML += `<div class="paper-item-header">`;
+            familyHTML += `<div class="paper-item-info">`;
+            familyHTML += `<div class="paper-item-name-row"><span class="paper-item-name">${escapeHtml(item.name)}</span>${highlightHTML}</div>`;
+            if (item.description) {
+              familyHTML += `<div class="paper-item-description">${escapeHtml(item.description)}</div>`;
+            }
+            familyHTML += allergenHTML;
+            familyHTML += `</div>`;
+            familyHTML += `<span class="paper-item-price">${price}</span>`;
+            familyHTML += `</div>`;
+            familyHTML += `</div>`;
+          });
+
+          familyHTML += `</div>`;
+        });
+
+        if (familyHasItems) {
+          hasContent = true;
+          html += `<div class="family-section">`;
+          html += `<div class="family-separator"><span class="family-separator-text">${escapeHtml(family.name)}</span></div>`;
+          html += familyHTML;
+          html += `</div>`;
+        }
+      });
+
+      if (!hasContent) {
+        html += '<div class="empty-state"><div style="font-size:32px;margin-bottom:12px">🍽️</div>Aucun plat ne correspond à vos filtres.</div>';
+      }
+
+      html += '</div>';
+      container.innerHTML = html;
+
+      // Event listeners for paper items
+      container.querySelectorAll('.paper-item').forEach(el => {
+        el.addEventListener('click', () => {
+          const itemId = parseInt(el.dataset.itemId);
+          const item = state.data.items.find(i => i.id === itemId);
+          if (item) showItemDetail(item);
+        });
+      });
+
+      // Event listeners for paper family nav
+      container.querySelectorAll('.paper-family-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const familyId = parseInt(btn.dataset.familyId);
+          const familyCatIds = state.data.categories
+            .filter(c => c.family_id === familyId)
+            .map(c => c.id);
+          const firstCat = container.querySelector(`[data-cat-id="${familyCatIds[0]}"]`);
+          if (firstCat) firstCat.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        });
+      });
+    }
+
+    function renderFilterPanel() {
+      renderAllergenGrid();
+      renderTagGrid();
+    }
+
+    function renderAllergenGrid() {
+      const container = document.getElementById('allergenGrid');
+      container.innerHTML = '';
+
+      state.allergenTags.forEach(tag => {
+        const btn = document.createElement('button');
+        btn.className = 'allergen-toggle';
+        const isActive = state.excludedAllergens.has(tag.slug);
+        if (isActive) btn.classList.add('checked');
+
+        const icon = allergenIcons[tag.slug] || '⚠️';
+        btn.innerHTML = `<span class="allergen-icon-large">${icon}</span> ${escapeHtml(tag.name)}${isActive ? ' <span style="font-size:14px">×</span>' : ''}`;
+
+        if (isActive && tag.color) {
+          btn.style.color = tag.color;
+          btn.style.background = tag.bg || 'var(--primary-light)';
+          btn.style.borderColor = (tag.color || '') + '50';
+        }
+
+        btn.addEventListener('click', () => {
+          if (state.excludedAllergens.has(tag.slug)) {
+            state.excludedAllergens.delete(tag.slug);
+          } else {
+            state.excludedAllergens.add(tag.slug);
+          }
+          updateActiveFilters();
+          renderNavigationMode();
+          renderPaperMode();
+          renderAllergenGrid();
+          updateFilterBadges();
+          updateResetButton();
+        });
+
+        container.appendChild(btn);
+      });
+    }
+
+    function renderTagGrid() {
+      const container = document.getElementById('tagGrid');
+      container.innerHTML = '';
+
+      const commonTags = ['vegan', 'vegetarien', 'sans-gluten', 'sans-lactose', 'sans-alcool', 'fait-maison', 'local', 'bio'];
+      const tagsToShow = state.data.tags.filter(tag =>
+        commonTags.includes(tag.slug) && tag.category !== 'allergen'
+      );
+
+      tagsToShow.forEach(tag => {
+        const btn = document.createElement('button');
+        btn.className = 'tag-toggle';
+        const isActive = state.includedTags.has(tag.slug);
+        if (isActive) btn.classList.add('checked');
+
+        const icon = tag.icon || '🏷️';
+        btn.innerHTML = `${icon} ${escapeHtml(tag.name)}${isActive ? ' <span style="font-size:14px">×</span>' : ''}`;
+
+        if (isActive && tag.color) {
+          btn.style.color = tag.color;
+          btn.style.background = tag.bg || 'var(--primary-light)';
+          btn.style.borderColor = (tag.color || '') + '50';
+        }
+
+        btn.addEventListener('click', () => {
+          if (state.includedTags.has(tag.slug)) {
+            state.includedTags.delete(tag.slug);
+          } else {
+            state.includedTags.add(tag.slug);
+          }
+          updateActiveFilters();
+          renderNavigationMode();
+          renderPaperMode();
+          renderTagGrid();
+          updateFilterBadges();
+          updateResetButton();
+        });
+
+        container.appendChild(btn);
+      });
+    }
+
+    function updateActiveFilters() {
+      const container = document.getElementById('activeFiltersContainer');
+      const filters = [];
+
+      state.excludedAllergens.forEach(slug => {
+        const tag = state.tagsBySlug[slug];
+        if (tag) {
+          filters.push({ name: tag.name, slug });
+        }
+      });
+
+      state.includedTags.forEach(slug => {
+        const tag = state.tagsBySlug[slug];
+        if (tag) {
+          filters.push({ name: tag.name, slug });
+        }
+      });
+
+      if (filters.length === 0) {
+        container.innerHTML = '';
+        return;
+      }
+
+      container.innerHTML = filters.map(filter => {
+        const tag = state.tagsBySlug[filter.slug];
+        const bg = tag?.bg || 'var(--primary-light)';
+        const color = tag?.color || 'var(--primary)';
+        const icon = tag?.icon || '';
+        const isAllergen = state.excludedAllergens.has(filter.slug);
+        return `<button class="filter-chip" style="background:${bg};color:${color}" data-slug="${filter.slug}">
+          ${icon} ${isAllergen ? 'Sans ' : ''}${escapeHtml(filter.name)} ×
+        </button>`;
+      }).join('');
+
+      container.querySelectorAll('.filter-chip').forEach(el => {
+        el.addEventListener('click', () => {
+          const slug = el.dataset.slug;
+          state.excludedAllergens.delete(slug);
+          state.includedTags.delete(slug);
+          updateActiveFilters();
+          renderNavigationMode();
+          renderPaperMode();
+          renderAllergenGrid();
+          renderTagGrid();
+          updateFilterBadges();
+        });
+      });
+    }
+
+    function updateFilterBadges() {
+      const count = state.excludedAllergens.size + state.includedTags.size;
+      const badge = document.getElementById('filterBadge');
+      const filterBtn = document.getElementById('filterOpenBtn');
+
+      if (count === 0) {
+        badge.classList.add('hidden');
+        filterBtn.classList.remove('has-filters');
+      } else {
+        badge.textContent = count;
+        badge.classList.remove('hidden');
+        filterBtn.classList.add('has-filters');
+      }
+    }
+
+    function updateResetButton() {
+      const count = state.excludedAllergens.size + state.includedTags.size;
+      const btn = document.getElementById('filterResetBtn');
+      if (count > 0) {
+        btn.classList.remove('hidden');
+        btn.textContent = `Réinitialiser (${count})`;
+      } else {
+        btn.classList.add('hidden');
+      }
+    }
+
+    function applyFilters(item) {
+      const tags = (item.tag_slugs || '').split(',').filter(s => s.trim());
+
+      // Check excluded allergens
+      for (const allergen of state.excludedAllergens) {
+        if (tags.includes(allergen)) return false;
+      }
+
+      // Check included tags
+      if (state.includedTags.size > 0) {
+        for (const tagSlug of state.includedTags) {
+          if (!tags.includes(tagSlug)) return false;
+        }
+      }
+
+      return true;
+    }
+
+    function showItemDetail(item) {
+      const tags = (item.tag_slugs || '').split(',').filter(s => s.trim());
+      const tagObjects = tags.map(slug => state.tagsBySlug[slug]).filter(Boolean);
+
+      document.getElementById('modalTitle').textContent = item.name;
+      document.getElementById('modalDescription').textContent = item.description || '';
+
+      const tagsContainer = document.getElementById('modalTagsContainer');
+      if (tagObjects.length > 0) {
+        const tagsHTML = `
+          <div class="modal-tags">
+            <div class="modal-tags-title">Caractéristiques</div>
+            <div class="modal-tags-list">
+              ${tagObjects.map(tag => {
+                const icon = tag.icon || '🏷️';
+                const bgColor = tag.bg || 'var(--border-light)';
+                const textColor = tag.color || 'var(--text)';
+                return `
+                  <div class="modal-tag" style="background: ${bgColor}; color: ${textColor};">
+                    <span class="modal-tag-icon">${icon}</span>
+                    <span>${escapeHtml(tag.name)}</span>
+                  </div>
+                `;
+              }).join('')}
+            </div>
+          </div>
+        `;
+        tagsContainer.innerHTML = tagsHTML;
+      } else {
+        tagsContainer.innerHTML = '';
+      }
+
+      const overlay = document.getElementById('modalOverlay');
+      const modal = document.getElementById('modalContent');
+      overlay.classList.add('open');
+      modal.classList.add('open');
+    }
+
+    function closeModal() {
+      document.getElementById('modalOverlay').classList.remove('open');
+      document.getElementById('modalContent').classList.remove('open');
+    }
+
+    function formatPrice(price) {
+      if (price === null || price === undefined) return '';
+      const num = parseFloat(price);
+      return (num.toFixed(2).replace('.', ',')) + ' €';
+    }
+
+    function generateDots(name, price) {
+      const totalLength = 50;
+      const usedLength = name.length + price.length;
+      const dotsCount = Math.max(1, totalLength - usedLength);
+      return '.'.repeat(dotsCount);
+    }
+
+    function escapeHtml(text) {
+      const map = {
+        '&': '&amp;',
+        '<': '&lt;',
+        '>': '&gt;',
+        '"': '&quot;',
+        "'": '&#039;'
+      };
+      return text.replace(/[&<>"']/g, m => map[m]);
+    }
+
+    // Event listeners
+    document.getElementById('navModeBtn').addEventListener('click', () => {
+      state.mode = 'navigation';
+      document.getElementById('navMode').classList.remove('hidden');
+      document.getElementById('paperMode').classList.add('hidden');
+      document.getElementById('navModeBtn').classList.add('active');
+      document.getElementById('paperModeBtn').classList.remove('active');
+    });
+
+    document.getElementById('paperModeBtn').addEventListener('click', () => {
+      state.mode = 'paper';
+      document.getElementById('navMode').classList.add('hidden');
+      document.getElementById('paperMode').classList.remove('hidden');
+      document.getElementById('navModeBtn').classList.remove('active');
+      document.getElementById('paperModeBtn').classList.add('active');
+    });
+
+    document.getElementById('searchInput').addEventListener('input', (e) => {
+      state.searchQuery = e.target.value;
+      renderNavigationMode();
+      renderPaperMode();
+    });
+
+    function openFilterPanel() {
+      document.getElementById('filterPanel').classList.add('open');
+      document.getElementById('filterOverlay').classList.add('open');
+      updateResetButton();
+    }
+
+    function closeFilterPanel() {
+      document.getElementById('filterPanel').classList.remove('open');
+      document.getElementById('filterOverlay').classList.remove('open');
+    }
+
+    document.getElementById('filterOpenBtn').addEventListener('click', openFilterPanel);
+    document.getElementById('filterOverlay').addEventListener('click', closeFilterPanel);
+    document.getElementById('filterCloseBtn').addEventListener('click', closeFilterPanel);
+
+    document.getElementById('filterResetBtn').addEventListener('click', () => {
+      state.excludedAllergens.clear();
+      state.includedTags.clear();
+      updateActiveFilters();
+      renderNavigationMode();
+      renderPaperMode();
+      renderAllergenGrid();
+      renderTagGrid();
+      updateFilterBadges();
+      updateResetButton();
+    });
+
+    document.getElementById('modalOverlay').addEventListener('click', closeModal);
+    document.getElementById('modalCloseBtn').addEventListener('click', closeModal);
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        closeModal();
+        closeFilterPanel();
+      }
+    });
+
+    // Initialize
+    fetchMenuData();
+  </script>
+</body>
+</html>
