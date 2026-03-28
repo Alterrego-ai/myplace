@@ -89,41 +89,59 @@ flex-direction: column;
 align-items: center;
 justify-content: center;
 min-height: 100vh;
-background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
-padding: 40px 20px;
+background: #f0ece4;
+padding: 60px 20px;
 }
 .phone-frame {
 position: relative;
 width: 390px;
 height: 844px;
 border-radius: 52px;
-background: #000;
-padding: 14px;
+background: #1a1a1a;
+padding: 12px;
 box-shadow:
-  0 0 0 2px #333,
-  0 40px 80px rgba(0,0,0,0.5),
-  inset 0 0 4px rgba(255,255,255,0.05);
+  0 0 0 1px rgba(0,0,0,0.1),
+  0 20px 60px rgba(0,0,0,0.15),
+  0 4px 20px rgba(0,0,0,0.1);
 }
 .phone-frame::before {
 content: '';
 position: absolute;
-top: 0; left: 50%;
+top: 12px; left: 50%;
 transform: translateX(-50%);
 width: 126px; height: 34px;
-background: #000;
+background: #1a1a1a;
 border-radius: 0 0 20px 20px;
 z-index: 10;
 }
 .phone-screen {
 width: 100%;
 height: 100%;
-border-radius: 40px;
+border-radius: 42px;
 overflow-y: auto;
 overflow-x: hidden;
-background: var(--bg);
+background: var(--bg, #f7f8fa);
+color: var(--text, #1a2332);
 -webkit-overflow-scrolling: touch;
 }
 .phone-screen::-webkit-scrollbar { display: none; }
+
+/* Force light theme inside phone on desktop */
+@media (min-width: 769px) {
+  .phone-screen {
+    --bg: #f7f8fa;
+    --bg-card: #ffffff;
+    --bg-subtle: #f0f3f7;
+    --text: #1a2332;
+    --text-secondary: #5a6a7e;
+    --text-tertiary: #8a9ab0;
+    --border: rgba(0,0,0,0.07);
+    --open-color: #2d9c6e;
+    --open-bg: #e8f7f2;
+    --closed-color: #c0392b;
+    --closed-bg: #fdecea;
+  }
+}
 
 /* ── Mobile: no frame ── */
 @media (max-width: 768px) {
