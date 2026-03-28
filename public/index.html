@@ -87,10 +87,10 @@ margin: 0;
 display: flex;
 flex-direction: column;
 align-items: center;
-justify-content: center;
+justify-content: flex-start;
 min-height: 100vh;
 background: #f0ece4;
-padding: 60px 20px;
+padding: 30px 20px;
 }
 .phone-frame {
 position: relative;
@@ -103,6 +103,8 @@ box-shadow:
   0 0 0 1px rgba(0,0,0,0.1),
   0 20px 60px rgba(0,0,0,0.15),
   0 4px 20px rgba(0,0,0,0.1);
+transform: scale(0.75);
+transform-origin: top center;
 }
 .phone-frame::before {
 content: '';
