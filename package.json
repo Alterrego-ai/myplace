@@ -1,0 +1,8 @@
+{
+  "name": "myplace",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "start": "npx serve public -s -l tcp://0.0.0.0:${PORT:-3000}"
+  }
+}
