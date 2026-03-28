@@ -75,109 +75,12 @@ html { font-size: 16px; scroll-behavior: smooth; }
 
 body {
 font-family: var(–font);
-background: #1a1a2e;
+background: var(–bg);
 color: var(–text);
 min-height: 100dvh;
-display: flex;
-align-items: flex-start;
-justify-content: center;
-padding: 40px 20px 40px;
 -webkit-font-smoothing: antialiased;
-}
-
-.phone-shell {
-position: relative;
-width: 393px;
-flex-shrink: 0;
-}
-
-/* Cadre téléphone */
-.phone-frame {
-position: relative;
-width: 393px;
-border-radius: 54px;
-background: #111;
-box-shadow:
-0 0 0 1px #333,
-0 0 0 3px #1a1a1a,
-0 0 0 4px #444,
-0 50px 100px rgba(0,0,0,0.6),
-0 20px 40px rgba(0,0,0,0.4);
-overflow: hidden;
-padding: 14px 4px;
-}
-
-/* Boutons latéraux */
-.phone-frame::before {
-content: ‘’;
-position: absolute;
-left: -5px;
-top: 100px;
-width: 4px;
-height: 36px;
-background: #2a2a2a;
-border-radius: 3px 0 0 3px;
-box-shadow: 0 50px 0 #2a2a2a, 0 100px 0 #2a2a2a;
-}
-
-.phone-frame::after {
-content: ‘’;
-position: absolute;
-right: -5px;
-top: 130px;
-width: 4px;
-height: 70px;
-background: #2a2a2a;
-border-radius: 0 3px 3px 0;
-}
-
-/* Dynamic island */
-.dynamic-island {
-width: 120px;
-height: 34px;
-background: #000;
-border-radius: 20px;
-margin: 0 auto 10px;
-position: relative;
-z-index: 10;
-}
-
-.phone-screen {
-border-radius: 44px;
-overflow: hidden;
-background: var(–bg);
-position: relative;
-max-height: 820px;
-overflow-y: auto;
-scrollbar-width: none;
-}
-
-.phone-screen::-webkit-scrollbar { display: none; }
-
-/* Reflet écran */
-.phone-screen::before {
-content: ‘’;
-position: absolute;
-top: 0;
-left: 0;
-right: 0;
-height: 200px;
-background: linear-gradient(135deg, rgba(255,255,255,0.06) 0%, transparent 60%);
-z-index: 200;
-pointer-events: none;
-border-radius: 44px 44px 0 0;
-}
-
-/* Label sous le téléphone */
-.phone-label {
-text-align: center;
-margin-top: 24px;
-font-family: var(–font);
-font-size: 12px;
-font-weight: 500;
-color: rgba(255,255,255,0.3);
-letter-spacing: 0.08em;
-text-transform: uppercase;
+margin: 0 auto;
+max-width: 600px;
 }
 
 /* ── HERO ── */
@@ -823,11 +726,6 @@ margin: 20px 20px 0;
 
 </head>
 <body>
-<div class="phone-shell">
-  <div class="phone-frame">
-    <div class="dynamic-island"></div>
-    <div class="phone-screen" id="phoneScreen">
-
 <!-- THEME TOGGLE -->
 
 <button class="theme-toggle" onclick="toggleTheme()" aria-label="Changer le thème" style="position:absolute;">
@@ -1086,13 +984,6 @@ margin: 20px 20px 0;
   <button class="sheet-cancel" onclick="closeAddressSheet()">Annuler</button>
 </div>
 
-```
-</div><!-- /phone-screen -->
-```
-
-  </div><!-- /phone-frame -->
-  <div class="phone-label">Boostore · vCard V1</div>
-</div><!-- /phone-shell -->
 
 <script>
   // Theme
