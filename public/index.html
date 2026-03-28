@@ -94,16 +94,16 @@ padding: 30px 20px;
 }
 .phone-frame {
 position: relative;
-width: 390px;
-height: 844px;
-border-radius: 52px;
+width: 375px;
+height: 812px;
+border-radius: 50px;
 background: #1a1a1a;
 padding: 12px;
 box-shadow:
   0 0 0 1px rgba(0,0,0,0.1),
   0 20px 60px rgba(0,0,0,0.15),
   0 4px 20px rgba(0,0,0,0.1);
-transform: scale(0.75);
+transform: scale(0.8);
 transform-origin: top center;
 }
 .phone-frame::before {
@@ -117,6 +117,7 @@ border-radius: 0 0 20px 20px;
 z-index: 10;
 }
 .phone-screen {
+position: relative;
 width: 100%;
 height: 100%;
 border-radius: 42px;
@@ -429,6 +430,19 @@ box-shadow: 0 -8px 40px rgba(0,0,0,0.2);
 
 .bottom-sheet.visible {
 transform: translateX(-50%) translateY(0);
+}
+
+/* Desktop: constrain sheet inside phone-screen */
+@media (min-width: 769px) {
+  .sheet-overlay {
+    position: absolute;
+    border-radius: 42px;
+  }
+  .bottom-sheet {
+    position: absolute;
+    max-width: 100%;
+    border-radius: 24px 24px 40px 40px;
+  }
 }
 
 .sheet-handle {
