@@ -103,8 +103,8 @@ box-shadow:
   0 0 0 1px rgba(0,0,0,0.1),
   0 20px 60px rgba(0,0,0,0.15),
   0 4px 20px rgba(0,0,0,0.1);
-transform: scale(0.8);
 transform-origin: top center;
+/* scale dynamique défini par JS */
 }
 .phone-frame::before {
 content: '';
@@ -1147,6 +1147,21 @@ margin: 20px 20px 0;
 </div><!-- /phone-shell -->
 
 <script>
+  // Phone frame : scale dynamique à 90% de la hauteur viewport
+  (function() {
+    const frame = document.querySelector('.phone-frame');
+    if (!frame) return;
+    function scalePhone() {
+      if (window.innerWidth <= 768) { frame.style.transform = ''; return; }
+      const targetH = window.innerHeight * 0.9;
+      const frameH = 812 + 24; // height + padding
+      const s = Math.min(targetH / frameH, 1);
+      frame.style.transform = 'scale(' + s + ')';
+    }
+    scalePhone();
+    window.addEventListener('resize', scalePhone);
+  })();
+
   // Theme
   function getSystemTheme() {
     return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
