@@ -6,7 +6,7 @@
 const Anthropic = require('@anthropic-ai/sdk');
 const { verifyUserToken } = require('./auth');
 
-const MODEL = 'claude-sonnet-4-5-20250929';
+const MODEL = 'claude-sonnet-4-6';
 const MAX_TOKENS = 1024;
 const CAPACITE_TOTALE = 42;
 
@@ -152,7 +152,21 @@ function buildSystemPrompt(carteDb) {
 
   const today = new Date().toISOString().split('T')[0];
   const dayNames = ['dimanche','lundi','mardi','mercredi','jeudi','vendredi','samedi'];
+  const monthNames = ['janvier','février','mars','avril','mai','juin','juillet','août','septembre','octobre','novembre','décembre'];
   const todayDay = dayNames[new Date().getDay()];
+
+  // Générer un calendrier des 14 prochains jours pour éviter les erreurs de dates
+  const calendarLines = [];
+  for (let i = 0; i < 14; i++) {
+    const d = new Date();
+    d.setDate(d.getDate() + i);
+    const day = dayNames[d.getDay()];
+    const num = d.getDate();
+    const month = monthNames[d.getMonth()];
+    const iso = d.toISOString().split('T')[0];
+    calendarLines.push(`${day} ${num} ${month} = ${iso}`);
+  }
+  const calendarText = calendarLines.join('\n');
 
   return `Tu es Maïa, l'hôtesse chaleureuse de Sauf Imprévu, un bar à vins, bar-restaurant traditionnel qui fait la part belle à la cuisine de marché et à une carte des vins soigneusement sélectionnée, situé au 15 Rue Vauban, 69006 Lyon.
 
@@ -188,11 +202,16 @@ Aujourd'hui : ${todayDay} ${today}
 - OBLIGATOIRE : tu DOIS utiliser la fonction create_reservation pour enregistrer la réservation. Une réservation n'existe PAS tant que cette fonction n'a pas été appelée. Ne confirme JAMAIS une réservation sans l'avoir créée via create_reservation.
 - Ne simule JAMAIS le résultat de ces fonctions. Tu DOIS les appeler réellement.
 
+## Calendrier de référence (les 14 prochains jours)
+${calendarText}
+
 ## Gestion des dates
-- Avant de valider toute réservation, vérifier que le jour de la semaine correspond bien à la date. Si le client dit "mardi 27 avril" alors que le 27 avril est un lundi, corriger immédiatement.
-- Ne jamais accepter le jour de la semaine donné par le client comme fiable. Toujours recalculer.
+- UTILISE OBLIGATOIREMENT le calendrier ci-dessus pour convertir les jours en dates. Ne calcule JAMAIS de tête.
+- Si le client dit "mercredi soir", cherche le prochain mercredi dans le calendrier et utilise la date correspondante.
+- Si le client dit "mardi 31 mars" mais que le calendrier montre que le 31 mars est un autre jour, corrige immédiatement.
 - Ne permets JAMAIS une date passée. Si le mois est déjà écoulé, suppose l'année suivante et demande confirmation.
 - Si une date est à plus de 3 mois, demande une brève confirmation.
+- Le restaurant est FERMÉ le week-end (samedi et dimanche). Si le client demande un samedi ou dimanche, informe-le gentiment et propose le jour ouvré le plus proche.
 
 ## La carte actuelle
 ${carteText}
