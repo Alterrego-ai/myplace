@@ -868,8 +868,13 @@ align-self: flex-start; background: var(--bg-subtle); color: var(--text-tertiary
 }
 .chat-input-bar {
 display: flex; gap: 8px; padding: 10px 16px;
-padding-bottom: calc(10px + env(safe-area-inset-bottom));
+padding-bottom: max(16px, calc(10px + env(safe-area-inset-bottom)));
 border-top: 1px solid var(--border); background: var(--bg-card); flex-shrink: 0;
+position: relative;
+}
+.chat-input-bar::after {
+content: ''; position: absolute; bottom: -50px; left: 0; right: 0;
+height: 50px; background: var(--bg-card);
 }
 .chat-input {
 flex: 1; border: 1px solid var(--border); border-radius: 20px; padding: 8px 16px; font-size: 16px;
@@ -910,11 +915,11 @@ align-self: center;
 .ctas { position: relative; overflow: visible; }
 .maia-float {
   position: absolute;
-  top: 0; left: 0; bottom: 0;
+  bottom: -1px; left: 0;
   width: 50%;
   z-index: 10;
   display: flex;
-  align-items: stretch;
+  align-items: flex-end;
   cursor: pointer;
   animation: maiaFloatIn 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) 2s both;
   -webkit-tap-highlight-color: transparent;
@@ -928,9 +933,9 @@ align-self: center;
   align-items: center;
   gap: 8px;
   background: linear-gradient(135deg, var(--primary), #2a5a6e);
-  padding: 8px 14px;
-  border-radius: 0 16px 16px 0;
-  box-shadow: 4px 0 20px rgba(0,0,0,0.12);
+  padding: 10px 14px;
+  border-radius: 0 16px 0 0;
+  box-shadow: 4px -2px 20px rgba(0,0,0,0.12);
   width: 100%;
   position: relative;
 }
