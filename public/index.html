@@ -77,7 +77,7 @@ body[data-theme=”dark”] {
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-html { font-size: 16px; scroll-behavior: smooth; background: var(--bg); min-height: 100%; }
+html { font-size: 16px; scroll-behavior: smooth; background: var(--bg-card, #ffffff); min-height: 100%; }
 
 body {
 font-family: var(--font);
@@ -838,7 +838,7 @@ justify-content: center; transition: background 0.15s;
 display: flex; flex-direction: column; flex: 1; min-height: 0;
 }
 .chat-messages {
-flex: 1; overflow-y: auto; padding: 12px 16px; display: flex; flex-direction: column; gap: 10px;
+flex: 1; overflow-y: auto; padding: 10px 10px; display: flex; flex-direction: column; gap: 10px;
 -webkit-overflow-scrolling: touch; overscroll-behavior: contain;
 }
 .chat-messages::-webkit-scrollbar { display: none; }
@@ -907,33 +907,31 @@ align-self: center;
 .admin-menu-overlay.visible { display: block; }
 
 /* ── Floating Maïa (overlay sur zone CTA) ── */
-.ctas { position: relative; }
+.ctas { position: relative; overflow: visible; }
 .maia-float {
   position: absolute;
-  top: 0; left: 0;
+  top: 0; left: 0; bottom: 0;
   width: 50%;
-  height: 100%;
   z-index: 10;
   display: flex;
-  align-items: center;
-  justify-content: center;
+  align-items: stretch;
   cursor: pointer;
-  animation: maiaFloatIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) 1.2s both;
+  animation: maiaFloatIn 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) 2s both;
   -webkit-tap-highlight-color: transparent;
 }
 @keyframes maiaFloatIn {
-  from { opacity: 0; transform: translateX(-20px) scale(0.9); }
-  to { opacity: 1; transform: translateX(0) scale(1); }
+  from { opacity: 0; transform: translateX(-30px); }
+  to { opacity: 1; transform: translateX(0); }
 }
 .maia-float-inner {
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 8px;
   background: linear-gradient(135deg, var(--primary), #2a5a6e);
-  padding: 8px 12px;
-  border-radius: 16px;
-  box-shadow: 0 4px 20px rgba(0,0,0,0.15);
-  max-width: 100%;
+  padding: 8px 14px;
+  border-radius: 0 16px 16px 0;
+  box-shadow: 4px 0 20px rgba(0,0,0,0.12);
+  width: 100%;
   position: relative;
 }
 .maia-float-avatar {
@@ -987,8 +985,8 @@ align-self: center;
 .maia-float.dismissed { display: none; }
 
 .chat-welcome {
-text-align: center; padding: 16px 14px 8px; color: var(--text-tertiary);
-display: flex; flex-direction: column; gap: 12px;
+text-align: center; padding: 10px 4px 8px; color: var(--text-tertiary);
+display: flex; flex-direction: column; gap: 10px;
 }
 .chat-welcome-top { text-align: center; padding: 4px 0; }
 .chat-welcome-top h4 { font-size: 15px; font-weight: 700; color: var(--text); margin: 0 0 4px; }
@@ -996,7 +994,7 @@ display: flex; flex-direction: column; gap: 12px;
 
 /* Zone ouverte */
 .zone-open {
-  background: var(--bg-card); border-radius: 14px; padding: 10px;
+  background: var(--bg-card); border-radius: 14px; padding: 8px;
   box-shadow: 0 2px 10px rgba(0,0,0,0.05);
 }
 .cta-main {
@@ -1017,7 +1015,7 @@ display: flex; flex-direction: column; gap: 12px;
 
 /* Zone premium */
 .zone-premium {
-  background: var(--bg-card); border-radius: 14px; padding: 12px;
+  background: var(--bg-card); border-radius: 14px; padding: 10px;
   box-shadow: 0 2px 10px rgba(0,0,0,0.05);
 }
 .zone-premium.unlocked { border: 1.5px solid rgba(200,169,110,0.3); }
