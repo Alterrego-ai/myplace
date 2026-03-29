@@ -1347,6 +1347,14 @@ justify-content: space-around;
 padding: 5px 0 env(safe-area-inset-bottom, 0px);
 z-index: 100;
 }
+.bottom-bar::after {
+content: '';
+position: absolute;
+left: -50vw; right: -50vw;
+top: 0; height: 200px;
+background: inherit;
+z-index: -1;
+}
 
 /* Desktop: absolute inside phone-screen (outside phone-scroll) */
 @media (min-width: 769px) {
@@ -2016,7 +2024,8 @@ margin: 20px 20px 0;
       darkStyle.textContent =
         'html { background: #1a2636 !important; }' +
         'body, .phone-screen, .phone-scroll { background: #0f1923 !important; color: #eef2f7 !important; }' +
-        '.spacer, .bottom-bar, .bottom-bar::after { background: #1a2636 !important; }' +
+        '.spacer { background: #0f1923 !important; }' +
+        '.bottom-bar, .bottom-bar::after { background: #1a2636 !important; }' +
         '.logo-wrap, .section, .user-row, .google-row { background: #1a2636 !important; }' +
         '.info, .identity, .ctas { color: #eef2f7 !important; }' +
         '.merchant-name, .address-text, h2, h3 { color: #eef2f7 !important; }' +
