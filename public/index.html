@@ -1473,9 +1473,12 @@ margin: 20px 20px 0;
 <!-- BOTTOM SHEET CHAT -->
 <div class="bottom-sheet" id="chatSheet">
   <div class="sheet-handle"></div>
-  <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 16px 0;">
-    <span style="font-size:14px;font-weight:700;color:var(--text);">Maïa</span>
-    <button onclick="closeAllSheets()" style="background:none;border:none;font-size:22px;color:var(--text-tertiary);cursor:pointer;padding:0 4px;">&times;</button>
+  <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 16px 0;">
+    <div style="display:flex;align-items:center;gap:8px;">
+      <img src="/img/maia.png" alt="Maïa" style="width:32px;height:32px;border-radius:50%;object-fit:cover;">
+      <span style="font-size:16px;font-weight:700;color:var(--text);">Maïa</span>
+    </div>
+    <button onclick="closeAllSheets()" style="background:none;border:none;font-size:28px;color:var(--text-tertiary);cursor:pointer;padding:4px 8px;line-height:1;">&times;</button>
   </div>
   <div class="chat-container">
     <div class="chat-messages" id="chatMessages">
@@ -1585,6 +1588,10 @@ margin: 20px 20px 0;
     document.getElementById('shareSheet').classList.remove('visible');
     var pwaGuide = document.getElementById('pwaGuideSheet');
     if (pwaGuide) pwaGuide.classList.remove('visible');
+    var chatSheet = document.getElementById('chatSheet');
+    if (chatSheet) chatSheet.classList.remove('visible');
+    var profileSheet = document.getElementById('profileSheet');
+    if (profileSheet) profileSheet.classList.remove('visible');
   }
 
   // Share
