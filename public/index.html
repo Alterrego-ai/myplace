@@ -1223,15 +1223,29 @@ margin: 20px 20px 0;
 
 <div class="bottom-sheet" id="hoursSheet">
   <div class="sheet-handle"></div>
-  <div style="font-size:16px;font-weight:700;color:var(--text);margin-bottom:12px;">Nos horaires</div>
-  <div style="background:var(--bg-subtle);border-radius:var(--radius-sm);padding:4px 14px;">
-    <div class="hours-row today"><span class="day-name">Mercredi</span><span class="day-hours">16h30 – 01h00</span></div>
-    <div class="hours-row"><span class="day-name">Lundi</span><span class="day-hours">16h30 – 00h00</span></div>
-    <div class="hours-row"><span class="day-name">Mardi</span><span class="day-hours">16h30 – 00h00</span></div>
-    <div class="hours-row"><span class="day-name">Jeudi</span><span class="day-hours">16h30 – 01h00</span></div>
-    <div class="hours-row"><span class="day-name">Vendredi</span><span class="day-hours">16h30 – 01h00</span></div>
-    <div class="hours-row"><span class="day-name">Samedi</span><span class="day-closed">Fermé</span></div>
-    <div class="hours-row"><span class="day-name">Dimanche</span><span class="day-closed">Fermé</span></div>
+  <div style="padding:0 20px;">
+
+    <!-- Aujourd'hui en vedette -->
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px;">
+      <div style="width:4px;height:40px;border-radius:2px;background:var(--primary);"></div>
+      <div>
+        <div style="font-size:11px;font-weight:600;color:var(--primary);letter-spacing:0.03em;margin-bottom:2px;">Aujourd'hui · Mercredi</div>
+        <div style="font-size:20px;font-weight:700;color:var(--text);letter-spacing:-0.02em;">16h30 – 01h00</div>
+      </div>
+    </div>
+
+    <!-- Semaine -->
+    <div style="font-size:11px;font-weight:600;color:var(--text-tertiary);margin-bottom:8px;letter-spacing:0.03em;">Cette semaine</div>
+    <div style="background:var(--bg-subtle);border-radius:var(--radius-sm);padding:2px 14px;">
+      <div class="hours-row"><span class="day-name">Lundi</span><span class="day-hours">16h30 – 00h00</span></div>
+      <div class="hours-row"><span class="day-name">Mardi</span><span class="day-hours">16h30 – 00h00</span></div>
+      <div class="hours-row"><span class="day-name">Mercredi</span><span class="day-hours">16h30 – 01h00</span></div>
+      <div class="hours-row"><span class="day-name">Jeudi</span><span class="day-hours">16h30 – 01h00</span></div>
+      <div class="hours-row"><span class="day-name">Vendredi</span><span class="day-hours">16h30 – 01h00</span></div>
+      <div class="hours-row"><span class="day-name">Samedi</span><span class="day-closed">Fermé</span></div>
+      <div class="hours-row"><span class="day-name">Dimanche</span><span class="day-closed">Fermé</span></div>
+    </div>
+
   </div>
   <button class="sheet-cancel" onclick="closeAllSheets()">Fermer</button>
 </div>
