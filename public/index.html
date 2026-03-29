@@ -805,7 +805,8 @@ color: var(--text-secondary);
 /* ── AUTH AVATARS ── */
 .auth-avatar-nav {
 width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
-background: var(--primary); color: #fff; font-size: 11px; font-weight: 700; overflow: hidden;
+background: var(--bg-subtle); color: var(--text-secondary); font-size: 11px; font-weight: 700; overflow: hidden;
+border: 1.5px solid var(--border);
 }
 .auth-avatar-nav img { width: 100%; height: 100%; object-fit: cover; border-radius: 50%; }
 .auth-avatar-large {
@@ -1637,9 +1638,26 @@ margin: 20px 20px 0;
     } catch(e) { return null; }
   }
 
-  function getUserInitials(name) {
-    if (!name) return '?';
-    return name.split(' ').map(function(w) { return w[0]; }).join('').toUpperCase().slice(0, 2);
+  function getUserInitials(user) {
+    // 1. Si on a un nom complet → initiales Prénom + Nom
+    if (user.name && user.name.trim().includes(' ')) {
+      var parts = user.name.trim().split(/\s+/);
+      return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
+    }
+    // 2. Si on a un nom simple → 1ère lettre
+    if (user.name && user.name.trim()) {
+      return user.name.trim()[0].toUpperCase();
+    }
+    // 3. Fallback email : prenom.nom@... ou prenomnom@...
+    if (user.email) {
+      var local = user.email.split('@')[0];
+      var emailParts = local.split(/[.\-_]/);
+      if (emailParts.length >= 2) {
+        return (emailParts[0][0] + emailParts[1][0]).toUpperCase();
+      }
+      return local[0].toUpperCase();
+    }
+    return '?';
   }
 
   // Retourne le HTML intérieur d'un avatar : <img> si photo, sinon les initiales
@@ -1656,7 +1674,7 @@ margin: 20px 20px 0;
     if (!navMoi) { console.warn('navMoi not found'); return; }
 
     if (user) {
-      var initials = getUserInitials(user.name);
+      var initials = getUserInitials(user);
 
       // ── Bloc "Nous rejoindre" → Profil connecté ──
       if (compteBlock) compteBlock.innerHTML =
@@ -1704,7 +1722,7 @@ margin: 20px 20px 0;
   function openProfileSheet() {
     var user = getStoredUser();
     if (!user) return;
-    var initials = getUserInitials(user.name);
+    var initials = getUserInitials(user);
     var sheet = document.getElementById('profileSheet');
     var content = document.getElementById('profileSheetContent');
     content.innerHTML =
