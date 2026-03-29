@@ -2017,13 +2017,21 @@ margin: 20px 20px 0;
 
     fetch(SSO_SERVER + '/api/chat', {
       method: 'POST',
+      mode: 'cors',
       headers: {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer ' + user._token,
       },
       body: JSON.stringify({ message: text }),
     })
-    .then(function(res) { return res.json(); })
+    .then(function(res) {
+      if (!res.ok) {
+        return res.text().then(function(t) {
+          try { return JSON.parse(t); } catch(e) { return { error: 'Erreur serveur (' + res.status + ')' }; }
+        });
+      }
+      return res.json();
+    })
     .then(function(data) {
       typing.remove();
       if (data.error) {
@@ -2034,8 +2042,8 @@ margin: 20px 20px 0;
     })
     .catch(function(err) {
       typing.remove();
-      appendChatBubble('Désolé, une erreur est survenue. Réessayez.', 'assistant');
-      console.error('Chat error:', err);
+      appendChatBubble('Erreur de connexion au serveur. Vérifiez votre réseau.', 'assistant');
+      console.error('Chat fetch error:', err.message || err);
     })
     .finally(function() {
       chatBusy = false;
