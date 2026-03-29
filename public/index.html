@@ -1819,20 +1819,38 @@ margin: 20px 20px 0;
   }
 
   function ssoLogout() {
+    // 1. Déconnexion locale immédiate
     localStorage.removeItem(SSO_KEY);
     closeAllSheets();
     updateAuthUI(null);
-    // Desktop : logout dans un popup silencieux, Mobile : redirect
-    if (isDesktop) {
-      var logoutWin = window.open(getSSOLogoutUrl(), 'sso_logout', 'width=1,height=1,left=-100,top=-100');
-      if (logoutWin) setTimeout(function() { logoutWin.close(); }, 3000);
-    } else {
-      window.location.href = getSSOLogoutUrl();
+
+    // 2. Logout serveur mySafe en arrière-plan (ne bloque pas l'utilisateur)
+    // On utilise un iframe caché pour éviter de quitter la page
+    try {
+      var iframe = document.createElement('iframe');
+      iframe.style.display = 'none';
+      iframe.src = getSSOLogoutUrl();
+      document.body.appendChild(iframe);
+      setTimeout(function() { iframe.remove(); }, 5000);
+    } catch(e) {
+      console.warn('SSO server logout failed:', e);
     }
   }
 
   // ── Init SSO : vérifier le hash au retour ou le localStorage ──
   (function initSSO() {
+    // 0. Migration : supprimer les vieux tokens sans champ "name"
+    try {
+      var old = localStorage.getItem(SSO_KEY);
+      if (old) {
+        var parsed = JSON.parse(old);
+        if (!parsed.name) {
+          localStorage.removeItem(SSO_KEY);
+          console.log('SSO: ancien token sans name supprimé, reconnexion nécessaire');
+        }
+      }
+    } catch(e) {}
+
     // 1. Vérifier si on revient du SSO avec un token en hash
     var hash = window.location.hash;
     if (hash && hash.includes('auth=')) {
