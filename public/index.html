@@ -1370,6 +1370,44 @@ margin: 20px 20px 0;
   <button class="sheet-cancel" onclick="closeAllSheets()">Annuler</button>
 </div>
 
+<!-- BOTTOM SHEET PWA GUIDE -->
+
+<div class="bottom-sheet" id="pwaGuideSheet">
+  <div class="sheet-handle"></div>
+  <div style="padding:0 20px;">
+    <div style="font-size:16px;font-weight:700;color:var(--text);margin-bottom:4px;">Ajouter à l'écran d'accueil</div>
+    <div style="font-size:12px;color:var(--text-tertiary);margin-bottom:16px;">Accédez à Sauf Imprévu en un tap, comme une app</div>
+
+    <div style="display:flex;flex-direction:column;gap:12px;">
+      <!-- Étape 1 -->
+      <div style="display:flex;align-items:flex-start;gap:12px;">
+        <div style="width:28px;height:28px;border-radius:50%;background:var(--primary);color:#fff;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;flex-shrink:0;">1</div>
+        <div>
+          <div style="font-size:13px;font-weight:600;color:var(--text);">Tapez sur <strong>⋯</strong> ou <svg style="display:inline-block;vertical-align:middle;width:16px;height:16px;" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12v8a2 2 0 002 2h12a2 2 0 002-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg></div>
+          <div style="font-size:11px;color:var(--text-tertiary);margin-top:2px;">En bas de votre navigateur Safari</div>
+        </div>
+      </div>
+      <!-- Étape 2 -->
+      <div style="display:flex;align-items:flex-start;gap:12px;">
+        <div style="width:28px;height:28px;border-radius:50%;background:var(--primary);color:#fff;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;flex-shrink:0;">2</div>
+        <div>
+          <div style="font-size:13px;font-weight:600;color:var(--text);">Choisissez <strong>Partager...</strong></div>
+          <div style="font-size:11px;color:var(--text-tertiary);margin-top:2px;">Si pas visible directement dans le menu</div>
+        </div>
+      </div>
+      <!-- Étape 3 -->
+      <div style="display:flex;align-items:flex-start;gap:12px;">
+        <div style="width:28px;height:28px;border-radius:50%;background:var(--primary);color:#fff;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;flex-shrink:0;">3</div>
+        <div>
+          <div style="font-size:13px;font-weight:600;color:var(--text);">Tapez <strong>Sur l'écran d'accueil</strong></div>
+          <div style="font-size:11px;color:var(--text-tertiary);margin-top:2px;">Puis confirmez en haut à droite</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <button class="sheet-cancel" onclick="closeAllSheets()">Compris</button>
+</div>
+
     </div><!-- /phone-screen -->
   </div><!-- /phone-frame -->
 </div><!-- /phone-shell -->
@@ -1453,6 +1491,8 @@ margin: 20px 20px 0;
     document.getElementById('addressSheet').classList.remove('visible');
     document.getElementById('hoursSheet').classList.remove('visible');
     document.getElementById('shareSheet').classList.remove('visible');
+    var pwaGuide = document.getElementById('pwaGuideSheet');
+    if (pwaGuide) pwaGuide.classList.remove('visible');
   }
 
   // Share
@@ -1489,10 +1529,10 @@ margin: 20px 20px 0;
 
   function showPwaInstructions() {
     closeAllSheets();
-    // Petit délai pour laisser la sheet se fermer
     setTimeout(function() {
-      alert('Tapez sur le bouton Partager (↑) en bas de Safari, puis "Sur l\'écran d\'accueil"');
-    }, 400);
+      document.getElementById('sheetOverlay').classList.add('visible');
+      document.getElementById('pwaGuideSheet').classList.add('visible');
+    }, 350);
   }
 
 
@@ -1578,9 +1618,7 @@ margin: 20px 20px 0;
         btn.style.display = 'none';
       } else {
         title.textContent = 'Installer Sauf Imprévu';
-        text.innerHTML = 'Tapez sur '
-          + '<svg class="pwa-icon-inline" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12v8a2 2 0 002 2h12a2 2 0 002-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg>'
-          + ' <strong>Partager</strong> en bas de Safari, puis <strong>Sur l\'écran d\'accueil</strong>.';
+        text.innerHTML = 'Dans Safari, tapez sur <strong>⋯</strong> (en bas) puis <strong>Partager</strong>, et enfin <strong>Sur l\'écran d\'accueil</strong>.';
         btn.style.display = 'none';
       }
       banner.classList.add('visible');
