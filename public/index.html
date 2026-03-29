@@ -802,17 +802,22 @@ color: var(--text-secondary);
 }
 
 /* ── CHAT ── */
+#chatSheet {
+max-height: 75vh;
+max-height: 75dvh;
+overflow: hidden;
+}
 .chat-container {
-display: flex; flex-direction: column; height: 60vh; max-height: 500px;
+display: flex; flex-direction: column; height: 55vh; height: 55dvh; max-height: 450px;
 }
 .chat-messages {
 flex: 1; overflow-y: auto; padding: 12px 16px; display: flex; flex-direction: column; gap: 10px;
--webkit-overflow-scrolling: touch;
+-webkit-overflow-scrolling: touch; overscroll-behavior: contain;
 }
 .chat-messages::-webkit-scrollbar { display: none; }
 .chat-bubble {
 max-width: 85%; padding: 10px 14px; border-radius: 16px; font-size: 14px; line-height: 1.5;
-word-wrap: break-word; animation: chatFadeIn 0.2s ease;
+word-wrap: break-word; animation: chatFadeIn 0.2s ease; flex-shrink: 0;
 }
 @keyframes chatFadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
 .chat-bubble.user {
@@ -826,15 +831,18 @@ align-self: flex-start; background: var(--bg-subtle); color: var(--text-tertiary
 }
 .chat-input-bar {
 display: flex; gap: 8px; padding: 10px 16px; border-top: 1px solid var(--border); background: var(--bg-card);
+flex-shrink: 0;
 }
 .chat-input {
-flex: 1; border: 1px solid var(--border); border-radius: 20px; padding: 8px 16px; font-size: 14px;
+flex: 1; border: 1px solid var(--border); border-radius: 20px; padding: 8px 16px; font-size: 16px;
 font-family: var(--font); background: var(--bg); color: var(--text); outline: none; resize: none;
+-webkit-appearance: none;
 }
 .chat-input:focus { border-color: var(--primary); }
 .chat-send {
 width: 36px; height: 36px; border-radius: 50%; border: none; background: var(--primary); color: #fff;
 display: flex; align-items: center; justify-content: center; cursor: pointer; flex-shrink: 0;
+align-self: center;
 }
 .chat-send:disabled { opacity: 0.4; cursor: not-allowed; }
 .chat-welcome {
@@ -1456,7 +1464,7 @@ margin: 20px 20px 0;
 </div>
 
 <!-- BOTTOM SHEET CHAT -->
-<div class="bottom-sheet" id="chatSheet" style="max-height:80vh;">
+<div class="bottom-sheet" id="chatSheet">
   <div class="sheet-handle"></div>
   <div class="chat-container">
     <div class="chat-messages" id="chatMessages">
@@ -1961,7 +1969,10 @@ margin: 20px 20px 0;
     }
     document.getElementById('sheetOverlay').classList.add('visible');
     document.getElementById('chatSheet').classList.add('visible');
-    document.getElementById('chatInput').focus();
+    // Focus sur desktop uniquement (évite le clavier qui pousse la vue sur mobile)
+    if (isDesktop) {
+      setTimeout(function() { document.getElementById('chatInput').focus(); }, 400);
+    }
   }
 
   // Envoi avec Enter
