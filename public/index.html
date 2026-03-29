@@ -986,6 +986,30 @@ align-self: center;
 .maia-float-close:active { background: var(--bg-subtle); }
 .maia-float.dismissed { display: none; }
 
+/* Mini-fab Maïa (après dismiss du float) */
+.maia-mini-fab {
+  display: none;
+  position: fixed;
+  bottom: 80px; right: 14px;
+  width: 48px; height: 48px;
+  border-radius: 50%;
+  cursor: pointer;
+  z-index: 800;
+  box-shadow: 0 3px 14px rgba(0,0,0,0.18);
+  animation: maiaMiniFabIn 0.4s ease both;
+  -webkit-tap-highlight-color: transparent;
+  overflow: hidden;
+  border: 2px solid var(--bg-card);
+}
+.maia-mini-fab img {
+  width: 100%; height: 100%; object-fit: cover;
+}
+.maia-mini-fab.visible { display: block; }
+@keyframes maiaMiniFabIn {
+  from { opacity: 0; transform: scale(0.5); }
+  to { opacity: 1; transform: scale(1); }
+}
+
 .chat-welcome {
 text-align: center; padding: 10px 4px 8px; color: var(--text-tertiary);
 display: flex; flex-direction: column; gap: 10px;
@@ -1667,6 +1691,11 @@ margin: 20px 20px 0;
   <button class="sheet-cancel" onclick="closeAllSheets()">Fermer</button>
 </div>
 
+<!-- Mini-fab Maïa (après dismiss du floating) -->
+<div class="maia-mini-fab" id="maiaMiniFab" onclick="openChat()">
+  <img src="/img/maia.png" alt="Maïa">
+</div>
+
 <!-- BOTTOM SHEET CHAT -->
 <div class="bottom-sheet" id="chatSheet">
   <div class="sheet-handle"></div>
@@ -2277,6 +2306,8 @@ margin: 20px 20px 0;
     document.body.style.overflow = 'hidden';
     var fab = document.getElementById('maiaFloat');
     if (fab && !fab.classList.contains('dismissed')) fab.style.visibility = 'hidden';
+    var mini = document.getElementById('maiaMiniFab');
+    if (mini) mini.classList.remove('visible');
     if (isDesktop && isLogged) {
       setTimeout(function() { chatInput.focus(); }, 400);
     }
@@ -2286,12 +2317,17 @@ margin: 20px 20px 0;
     var fab = document.getElementById('maiaFloat');
     if (fab) fab.classList.add('dismissed');
     sessionStorage.setItem('maiaFloatDismissed', '1');
+    // Afficher le mini-fab
+    var mini = document.getElementById('maiaMiniFab');
+    if (mini) mini.classList.add('visible');
   }
 
   // Restaurer l'état dismiss au chargement
   if (sessionStorage.getItem('maiaFloatDismissed') === '1') {
     var fab = document.getElementById('maiaFloat');
     if (fab) fab.classList.add('dismissed');
+    var mini = document.getElementById('maiaMiniFab');
+    if (mini) mini.classList.add('visible');
   }
 
   function buildWelcomeHTML() {
@@ -2354,6 +2390,8 @@ margin: 20px 20px 0;
     document.body.style.overflow = '';
     var fab = document.getElementById('maiaFloat');
     if (fab && !fab.classList.contains('dismissed')) fab.style.visibility = '';
+    var mini = document.getElementById('maiaMiniFab');
+    if (mini && sessionStorage.getItem('maiaFloatDismissed') === '1') mini.classList.add('visible');
     // Vider la conversation et réafficher le welcome
     var messages = document.getElementById('chatMessages');
     messages.innerHTML = buildWelcomeHTML();
