@@ -1003,7 +1003,35 @@ align-self: center;
 .maia-float-close:active { background: var(--bg-subtle); }
 .maia-float.dismissed { display: none; }
 
-/* Mini-fab Maïa — pastille notification en haut à droite du logo */
+/* ── ACTE 1 : Disparition spirale du float vers le logo ── */
+.maia-float.genie-out {
+  animation: genieOut 0.8s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  pointer-events: none;
+}
+@keyframes genieOut {
+  0%   { opacity: 1; transform: scale(1) rotate(0deg); }
+  40%  { opacity: 0.8; transform: scale(0.6) rotate(90deg) translateY(-40px); }
+  70%  { opacity: 0.4; transform: scale(0.2) rotate(270deg) translateY(-120px) translateX(-60px); }
+  100% { opacity: 0; transform: scale(0.05) rotate(540deg) translateY(-200px) translateX(-100px); }
+}
+
+/* Flash doré sur le logo quand Maïa est absorbée */
+.logo-wrap.absorbed::after {
+  content: '';
+  position: absolute; inset: -4px;
+  border-radius: 14px;
+  background: radial-gradient(circle, rgba(200,169,110,0.6), transparent 70%);
+  animation: logoAbsorb 0.6s ease-out forwards;
+  pointer-events: none;
+  z-index: 5;
+}
+@keyframes logoAbsorb {
+  0%   { opacity: 0; transform: scale(0.8); }
+  40%  { opacity: 1; transform: scale(1.1); }
+  100% { opacity: 0; transform: scale(1.3); }
+}
+
+/* ── ACTE 2 : Mini-fab pastille + respiration ── */
 .maia-mini-fab {
   display: none;
   position: absolute;
@@ -1013,7 +1041,6 @@ align-self: center;
   cursor: pointer;
   z-index: 800;
   box-shadow: 0 2px 10px rgba(0,0,0,0.3);
-  animation: maiaMiniFabIn 0.4s ease both;
   -webkit-tap-highlight-color: transparent;
   overflow: hidden;
   border: 2px solid var(--bg-card);
@@ -1022,17 +1049,92 @@ align-self: center;
 .maia-mini-fab img {
   width: 100%; height: 100%; object-fit: cover;
 }
-.maia-mini-fab.visible { display: block; }
-@keyframes maiaMiniFabIn {
-  from { opacity: 0; transform: scale(0.5); }
-  to { opacity: 1; transform: scale(1); }
+.maia-mini-fab.visible {
+  display: block;
+  animation: genieArrive 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) both;
 }
-@keyframes maiaPulse {
+/* Respiration douce — le génie dort */
+.maia-mini-fab.breathing {
+  animation: maiaBreathing 3s ease-in-out infinite;
+}
+@keyframes genieArrive {
+  0%   { opacity: 0; transform: scale(0) rotate(-180deg); }
+  60%  { opacity: 1; transform: scale(1.2) rotate(20deg); }
+  100% { opacity: 1; transform: scale(1) rotate(0deg); }
+}
+@keyframes maiaBreathing {
   0%, 100% { transform: scale(1); box-shadow: 0 2px 10px rgba(0,0,0,0.3); }
-  50% { transform: scale(1.25); box-shadow: 0 0 12px rgba(61,107,140,0.6); }
+  50%      { transform: scale(1.08); box-shadow: 0 2px 14px rgba(200,169,110,0.4); }
 }
-.maia-mini-fab.pulse {
-  animation: maiaPulse 0.7s ease 2;
+
+/* Halo doré autour du logo — le génie vit dedans */
+.logo-wrap.has-genie {
+  box-shadow: 0 4px 20px rgba(0,0,0,0.15), 0 0 0 0 rgba(200,169,110,0);
+  animation: logoGlow 4s ease-in-out infinite;
+}
+@keyframes logoGlow {
+  0%, 100% { box-shadow: 0 4px 20px rgba(0,0,0,0.15), 0 0 0 0 rgba(200,169,110,0); }
+  50%      { box-shadow: 0 4px 20px rgba(0,0,0,0.15), 0 0 12px 2px rgba(200,169,110,0.25); }
+}
+
+/* ── ACTE 3 : Bulle texte réapparition ── */
+.maia-bubble {
+  position: absolute;
+  top: -8px; left: 110%;
+  white-space: nowrap;
+  background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+  color: #fff;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 6px 12px;
+  border-radius: 12px 12px 12px 4px;
+  box-shadow: 0 3px 12px rgba(0,0,0,0.2);
+  z-index: 801;
+  pointer-events: none;
+  animation: bubbleIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+.maia-bubble::before {
+  content: '';
+  position: absolute; left: -5px; bottom: 6px;
+  width: 0; height: 0;
+  border-top: 5px solid transparent;
+  border-bottom: 5px solid transparent;
+  border-right: 6px solid var(--primary);
+}
+.maia-bubble.out {
+  animation: bubbleOut 0.3s ease-in forwards;
+}
+@keyframes bubbleIn {
+  0%   { opacity: 0; transform: translateX(-10px) scale(0.8); }
+  100% { opacity: 1; transform: translateX(0) scale(1); }
+}
+@keyframes bubbleOut {
+  0%   { opacity: 1; transform: translateX(0) scale(1); }
+  100% { opacity: 0; transform: translateX(-10px) scale(0.8); }
+}
+
+/* ── ACTE 4 : Réveil — explosion ouverture ── */
+.maia-mini-fab.waking {
+  animation: genieWake 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+@keyframes genieWake {
+  0%   { transform: scale(1); }
+  30%  { transform: scale(1.4); }
+  60%  { transform: scale(0.8); box-shadow: 0 0 20px rgba(200,169,110,0.6); }
+  100% { transform: scale(0); opacity: 0; }
+}
+.logo-wrap.genie-release::after {
+  content: '';
+  position: absolute; inset: -8px;
+  border-radius: 50%;
+  border: 2px solid rgba(200,169,110,0.5);
+  animation: genieRipple 0.8s ease-out forwards;
+  pointer-events: none;
+  z-index: 5;
+}
+@keyframes genieRipple {
+  0%   { transform: scale(0.5); opacity: 1; }
+  100% { transform: scale(2.5); opacity: 0; }
 }
 
 .chat-welcome {
@@ -2358,27 +2460,134 @@ margin: 20px 20px 0;
     var fab = document.getElementById('maiaFloat');
     if (fab && !fab.classList.contains('dismissed')) fab.style.visibility = 'hidden';
     var mini = document.getElementById('maiaMiniFab');
-    if (mini) mini.classList.remove('visible');
+    if (mini) { mini.classList.remove('visible', 'breathing', 'waking'); }
+    var logo = document.getElementById('logoWrap');
+    if (logo) { logo.classList.remove('has-genie', 'genie-release'); }
+    // Stopper les bulles
+    if (typeof genieBubbleTimer !== 'undefined' && genieBubbleTimer) {
+      clearInterval(genieBubbleTimer); genieBubbleTimer = null;
+    }
     if (isDesktop && isLogged) {
       setTimeout(function() { chatInput.focus(); }, 400);
     }
   }
 
+  // ═══ GÉNIE MAÏA — 4 actes ═══
+
+  var genieBubbleMessages = [
+    'Je suis là si besoin !',
+    'Une table ce soir ?',
+    'Un conseil vin ? 🍷',
+    'Réservez en 2 clics !',
+    'Besoin d\'aide ?'
+  ];
+  var genieBubbleIndex = 0;
+  var genieBubbleTimer = null;
+
+  // ACTE 1 — Disparition : le génie rentre dans le logo
   function dismissMaiaFloat() {
     var fab = document.getElementById('maiaFloat');
-    if (fab) fab.classList.add('dismissed');
-    sessionStorage.setItem('maiaFloatDismissed', '1');
-    // Afficher le mini-fab
-    var mini = document.getElementById('maiaMiniFab');
-    if (mini) mini.classList.add('visible');
+    var logo = document.getElementById('logoWrap');
+    if (!fab) return;
+
+    // Animation spirale
+    fab.classList.add('genie-out');
+    fab.style.pointerEvents = 'none';
+
+    // Après l'animation spirale → flash doré sur le logo + pastille
+    setTimeout(function() {
+      fab.classList.add('dismissed');
+      fab.classList.remove('genie-out');
+      sessionStorage.setItem('maiaFloatDismissed', '1');
+
+      // Flash doré : le génie est absorbé
+      if (logo) {
+        logo.classList.add('absorbed');
+        setTimeout(function() { logo.classList.remove('absorbed'); }, 700);
+      }
+
+      // Pastille apparaît en tournant
+      var mini = document.getElementById('maiaMiniFab');
+      if (mini) {
+        mini.classList.add('visible');
+        // Après l'arrivée → respiration douce
+        setTimeout(function() {
+          mini.classList.add('breathing');
+        }, 700);
+      }
+
+      // Halo doré permanent sur le logo
+      if (logo) logo.classList.add('has-genie');
+
+      // Lancer les réapparitions périodiques
+      startGenieBubbles();
+    }, 800);
   }
 
-  // Logo cliquable → ouvre le chat si mini-fab visible
+  // ACTE 2 — Respiration (gérée par CSS .breathing)
+
+  // ACTE 3 — Réapparition bulle texte
+  function showGenieBubble() {
+    var mini = document.getElementById('maiaMiniFab');
+    var logo = document.getElementById('logoWrap');
+    if (!mini || !mini.classList.contains('visible')) return;
+    if (document.getElementById('chatSheet').classList.contains('visible')) return;
+
+    // Arrêter la respiration, grossir légèrement
+    mini.classList.remove('breathing');
+
+    // Créer la bulle
+    var bubble = document.createElement('div');
+    bubble.className = 'maia-bubble';
+    bubble.textContent = genieBubbleMessages[genieBubbleIndex % genieBubbleMessages.length];
+    genieBubbleIndex++;
+    logo.appendChild(bubble);
+
+    // Après 4s → rétracte la bulle
+    setTimeout(function() {
+      bubble.classList.add('out');
+      setTimeout(function() {
+        if (bubble.parentNode) bubble.parentNode.removeChild(bubble);
+        // Reprendre la respiration
+        if (mini) mini.classList.add('breathing');
+      }, 300);
+    }, 4000);
+  }
+
+  function startGenieBubbles() {
+    if (genieBubbleTimer) clearInterval(genieBubbleTimer);
+    // Première bulle après 20s, puis toutes les 45s
+    setTimeout(function() {
+      showGenieBubble();
+      genieBubbleTimer = setInterval(showGenieBubble, 45000);
+    }, 20000);
+  }
+
+  // ACTE 4 — Réveil : le génie sort du logo
   function onLogoClick() {
     var mini = document.getElementById('maiaMiniFab');
-    if (mini && mini.classList.contains('visible')) {
+    var logo = document.getElementById('logoWrap');
+    if (!mini || !mini.classList.contains('visible')) return;
+
+    // Stopper les bulles
+    if (genieBubbleTimer) clearInterval(genieBubbleTimer);
+    genieBubbleTimer = null;
+    // Retirer les bulles existantes
+    var existingBubbles = logo.querySelectorAll('.maia-bubble');
+    existingBubbles.forEach(function(b) { b.remove(); });
+
+    // Animation réveil
+    mini.classList.remove('breathing');
+    mini.classList.add('waking');
+
+    // Onde de choc dorée
+    logo.classList.add('genie-release');
+
+    setTimeout(function() {
+      mini.classList.remove('visible', 'waking');
+      logo.classList.remove('has-genie', 'genie-release');
       openChat();
-    }
+    }, 500);
   }
 
   // Restaurer l'état dismiss au chargement
@@ -2386,17 +2595,14 @@ margin: 20px 20px 0;
     var fab = document.getElementById('maiaFloat');
     if (fab) fab.classList.add('dismissed');
     var mini = document.getElementById('maiaMiniFab');
-    if (mini) mini.classList.add('visible');
-  }
-
-  // Rappel périodique : pulse sur la pastille Maïa toutes les 30s
-  setInterval(function() {
-    var mini = document.getElementById('maiaMiniFab');
-    if (mini && mini.classList.contains('visible')) {
-      mini.classList.add('pulse');
-      setTimeout(function() { mini.classList.remove('pulse'); }, 1500);
+    if (mini) {
+      mini.classList.add('visible');
+      setTimeout(function() { mini.classList.add('breathing'); }, 500);
     }
-  }, 30000);
+    var logo = document.getElementById('logoWrap');
+    if (logo) logo.classList.add('has-genie');
+    startGenieBubbles();
+  }
 
   function buildWelcomeHTML() {
     var user = getStoredUser();
