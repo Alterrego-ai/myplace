@@ -858,6 +858,14 @@ text-align: center; padding: 30px 20px; color: var(--text-tertiary);
   transition: background 0.15s, color 0.15s;
 }
 .chat-suggestion:hover { background: var(--primary); color: #fff; border-color: var(--primary); }
+.chat-actions { display: flex; flex-wrap: wrap; gap: 6px; padding: 8px 0; justify-content: flex-end; }
+.chat-action-btn {
+  background: var(--bg-subtle); border: 1px solid var(--border); border-radius: 16px;
+  padding: 7px 14px; font-size: 13px; color: var(--text-secondary); cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+}
+.chat-action-btn:first-child { background: var(--primary); color: #fff; border-color: var(--primary); }
+.chat-action-btn:hover { background: var(--primary); color: #fff; border-color: var(--primary); }
 
 /* ── AUTH AVATARS ── */
 .auth-avatar-nav {
@@ -2089,6 +2097,23 @@ margin: 20px 20px 0;
         appendChatBubble(data.error, 'assistant');
       } else {
         appendChatBubble(data.reply, 'assistant');
+        if (data.actions && data.actions.length) {
+          var actionsDiv = document.createElement('div');
+          actionsDiv.className = 'chat-actions';
+          data.actions.forEach(function(action) {
+            var btn = document.createElement('button');
+            btn.className = 'chat-action-btn';
+            btn.textContent = action.label;
+            btn.onclick = function() {
+              actionsDiv.remove();
+              document.getElementById('chatInput').value = action.value;
+              sendChatMessage();
+            };
+            actionsDiv.appendChild(btn);
+          });
+          document.getElementById('chatMessages').appendChild(actionsDiv);
+          document.getElementById('chatMessages').scrollTop = document.getElementById('chatMessages').scrollHeight;
+        }
       }
     })
     .catch(function(err) {
