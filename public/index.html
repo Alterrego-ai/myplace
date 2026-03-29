@@ -801,6 +801,49 @@ font-weight: 600;
 color: var(--text-secondary);
 }
 
+/* ── CHAT ── */
+.chat-container {
+display: flex; flex-direction: column; height: 60vh; max-height: 500px;
+}
+.chat-messages {
+flex: 1; overflow-y: auto; padding: 12px 16px; display: flex; flex-direction: column; gap: 10px;
+-webkit-overflow-scrolling: touch;
+}
+.chat-messages::-webkit-scrollbar { display: none; }
+.chat-bubble {
+max-width: 85%; padding: 10px 14px; border-radius: 16px; font-size: 14px; line-height: 1.5;
+word-wrap: break-word; animation: chatFadeIn 0.2s ease;
+}
+@keyframes chatFadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+.chat-bubble.user {
+align-self: flex-end; background: var(--primary); color: #fff; border-bottom-right-radius: 4px;
+}
+.chat-bubble.assistant {
+align-self: flex-start; background: var(--bg-subtle); color: var(--text); border-bottom-left-radius: 4px;
+}
+.chat-bubble.typing {
+align-self: flex-start; background: var(--bg-subtle); color: var(--text-tertiary); font-style: italic;
+}
+.chat-input-bar {
+display: flex; gap: 8px; padding: 10px 16px; border-top: 1px solid var(--border); background: var(--bg-card);
+}
+.chat-input {
+flex: 1; border: 1px solid var(--border); border-radius: 20px; padding: 8px 16px; font-size: 14px;
+font-family: var(--font); background: var(--bg); color: var(--text); outline: none; resize: none;
+}
+.chat-input:focus { border-color: var(--primary); }
+.chat-send {
+width: 36px; height: 36px; border-radius: 50%; border: none; background: var(--primary); color: #fff;
+display: flex; align-items: center; justify-content: center; cursor: pointer; flex-shrink: 0;
+}
+.chat-send:disabled { opacity: 0.4; cursor: not-allowed; }
+.chat-welcome {
+text-align: center; padding: 30px 20px; color: var(--text-tertiary);
+}
+.chat-welcome-icon { font-size: 40px; margin-bottom: 8px; }
+.chat-welcome h4 { font-size: 15px; font-weight: 700; color: var(--text); margin: 0 0 6px; }
+.chat-welcome p { font-size: 13px; margin: 0; line-height: 1.5; }
+
 /* ── AUTH AVATARS ── */
 .auth-avatar-nav {
 width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
@@ -1060,14 +1103,14 @@ margin: 20px 20px 0;
     </div>
     <span class="cta-label">Appeler</span>
   </a>
-  <a href="sms:+33437243979" class="cta-btn">
+  <button class="cta-btn" onclick="openChat()" id="btnDiscuter">
     <div class="cta-icon">
       <svg viewBox="0 0 640 640" fill="currentColor">
         <path d="M267.7 576.9L267.7 576.9L359.6 512L480 512C533 512 576 469 576 416L576 192C576 139 533 96 480 96L160 96C107 96 64 139 64 192L64 416C64 469 107 512 160 512L192 512L192 584C192 593 197 601.2 205 605.3C213 609.4 222.6 608.8 229.9 603.6L267.7 576.9zM359.6 464C349.7 464 340 467.1 331.9 472.8C303.3 493 272.6 514.6 240 537.7L240 488C240 485.2 239.5 482.4 238.6 479.9C235.3 470.6 226.4 464 216 464L160 464C133.5 464 112 442.5 112 416L112 192C112 165.5 133.5 144 160 144L480 144C506.5 144 528 165.5 528 192L528 416C528 442.5 506.5 464 480 464L359.6 464zM184 272C170.7 272 160 282.7 160 296C160 309.3 170.7 320 184 320L312 320C325.3 320 336 309.3 336 296C336 282.7 325.3 272 312 272L184 272zM408 272C394.7 272 384 282.7 384 296C384 309.3 394.7 320 408 320L456 320C469.3 320 480 309.3 480 296C480 282.7 469.3 272 456 272L408 272zM184 368C170.7 368 160 378.7 160 392C160 405.3 170.7 416 184 416L232 416C245.3 416 256 405.3 256 392C256 378.7 245.3 368 232 368L184 368zM328 368C314.7 368 304 378.7 304 392C304 405.3 314.7 416 328 416L456 416C469.3 416 480 405.3 480 392C480 378.7 469.3 368 456 368L328 368z"/>
       </svg>
     </div>
     <span class="cta-label">Discuter</span>
-  </a>
+  </button>
   <button class="cta-btn" onclick="openAddressSheet()">
     <div class="cta-icon">
       <svg viewBox="0 0 640 640" fill="currentColor">
@@ -1410,6 +1453,26 @@ margin: 20px 20px 0;
   <div class="sheet-handle"></div>
   <div id="profileSheetContent"></div>
   <button class="sheet-cancel" onclick="closeAllSheets()">Fermer</button>
+</div>
+
+<!-- BOTTOM SHEET CHAT -->
+<div class="bottom-sheet" id="chatSheet" style="max-height:80vh;">
+  <div class="sheet-handle"></div>
+  <div class="chat-container">
+    <div class="chat-messages" id="chatMessages">
+      <div class="chat-welcome">
+        <div class="chat-welcome-icon">🍷</div>
+        <h4>Bienvenue !</h4>
+        <p>Je suis l'assistant de Sauf Imprévu.<br>Posez-moi vos questions sur notre carte, nos vins, nos horaires...</p>
+      </div>
+    </div>
+    <div class="chat-input-bar">
+      <input type="text" class="chat-input" id="chatInput" placeholder="Votre message..." maxlength="2000" autocomplete="off">
+      <button class="chat-send" id="chatSend" onclick="sendChatMessage()">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+      </button>
+    </div>
+  </div>
 </div>
 
     </div><!-- /phone-screen -->
@@ -1883,6 +1946,92 @@ margin: 20px 20px 0;
     var user = getStoredUser();
     updateAuthUI(user);
   })();
+
+  // ── Chat Claude ──
+  var chatBusy = false;
+
+  function openChat() {
+    var user = getStoredUser();
+    if (!user || !user._token) {
+      // Pas connecté → proposer de se connecter
+      if (confirm('Connectez-vous pour discuter avec notre assistant ! Aller à la connexion ?')) {
+        startSSOLogin();
+      }
+      return;
+    }
+    document.getElementById('sheetOverlay').classList.add('visible');
+    document.getElementById('chatSheet').classList.add('visible');
+    document.getElementById('chatInput').focus();
+  }
+
+  // Envoi avec Enter
+  document.getElementById('chatInput').addEventListener('keydown', function(e) {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      sendChatMessage();
+    }
+  });
+
+  function appendChatBubble(text, role) {
+    var messages = document.getElementById('chatMessages');
+    // Supprimer le welcome au premier message
+    var welcome = messages.querySelector('.chat-welcome');
+    if (welcome) welcome.remove();
+
+    var bubble = document.createElement('div');
+    bubble.className = 'chat-bubble ' + role;
+    bubble.textContent = text;
+    messages.appendChild(bubble);
+    messages.scrollTop = messages.scrollHeight;
+    return bubble;
+  }
+
+  function sendChatMessage() {
+    if (chatBusy) return;
+    var input = document.getElementById('chatInput');
+    var text = input.value.trim();
+    if (!text) return;
+
+    var user = getStoredUser();
+    if (!user || !user._token) return;
+
+    // Afficher le message user
+    appendChatBubble(text, 'user');
+    input.value = '';
+    chatBusy = true;
+    document.getElementById('chatSend').disabled = true;
+
+    // Indicateur de frappe
+    var typing = appendChatBubble('...', 'typing');
+
+    fetch(SSO_SERVER + '/api/chat', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + user._token,
+      },
+      body: JSON.stringify({ message: text }),
+    })
+    .then(function(res) { return res.json(); })
+    .then(function(data) {
+      typing.remove();
+      if (data.error) {
+        appendChatBubble(data.error, 'assistant');
+      } else {
+        appendChatBubble(data.reply, 'assistant');
+      }
+    })
+    .catch(function(err) {
+      typing.remove();
+      appendChatBubble('Désolé, une erreur est survenue. Réessayez.', 'assistant');
+      console.error('Chat error:', err);
+    })
+    .finally(function() {
+      chatBusy = false;
+      document.getElementById('chatSend').disabled = false;
+      document.getElementById('chatInput').focus();
+    });
+  }
 
   // ── Version footer (desktop only) ──
   (function() {
