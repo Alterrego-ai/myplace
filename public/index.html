@@ -77,7 +77,7 @@ body[data-theme=”dark”] {
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-html { font-size: 16px; scroll-behavior: smooth; background: var(--bg-card, #ffffff); min-height: 100%; }
+html { font-size: 16px; scroll-behavior: smooth; background: var(--bg-card); min-height: 100%; }
 
 body {
 font-family: var(--font);
@@ -1797,10 +1797,15 @@ margin: 20px 20px 0;
   function applyTheme(theme) {
     document.documentElement.setAttribute('data-theme', theme);
     document.body.setAttribute('data-theme', theme);
-    // Force all CSS variables on body for mobile Safari
+    // Force all CSS variables on body + phone-screen for mobile Safari
     var vars = themeVars[theme] || themeVars.light;
-    for (var k in vars) {
-      document.body.style.setProperty(k, vars[k]);
+    var targets = [document.documentElement, document.body];
+    var ps = document.querySelector('.phone-screen');
+    if (ps) targets.push(ps);
+    for (var i = 0; i < targets.length; i++) {
+      for (var k in vars) {
+        targets[i].style.setProperty(k, vars[k]);
+      }
     }
     const icon = document.getElementById('theme-icon');
     if (theme === 'dark') {
