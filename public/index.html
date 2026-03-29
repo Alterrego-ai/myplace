@@ -851,6 +851,13 @@ text-align: center; padding: 30px 20px; color: var(--text-tertiary);
 .chat-welcome-icon { font-size: 40px; margin-bottom: 8px; }
 .chat-welcome h4 { font-size: 15px; font-weight: 700; color: var(--text); margin: 0 0 6px; }
 .chat-welcome p { font-size: 13px; margin: 0; line-height: 1.5; }
+.chat-suggestions { display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; margin-top: 14px; }
+.chat-suggestion {
+  background: var(--bg-subtle); border: 1px solid var(--border); border-radius: 16px;
+  padding: 6px 12px; font-size: 12px; color: var(--text-secondary); cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+}
+.chat-suggestion:hover { background: var(--primary); color: #fff; border-color: var(--primary); }
 
 /* ── AUTH AVATARS ── */
 .auth-avatar-nav {
@@ -1472,6 +1479,12 @@ margin: 20px 20px 0;
         <img src="/img/maia.png" alt="Maïa" style="width:72px;height:72px;border-radius:50%;margin-bottom:8px;object-fit:cover;">
         <h4>Maïa</h4>
         <p>Bonjour ! Je suis Maïa, l'assistante de Sauf Imprévu.<br>Posez-moi vos questions sur notre carte, nos vins, nos horaires...</p>
+        <div class="chat-suggestions">
+          <span class="chat-suggestion" onclick="sendSuggestion(this)">Réserver une table</span>
+          <span class="chat-suggestion" onclick="sendSuggestion(this)">Quels sont vos horaires ?</span>
+          <span class="chat-suggestion" onclick="sendSuggestion(this)">Qu'y a-t-il à la carte ?</span>
+          <span class="chat-suggestion" onclick="sendSuggestion(this)">Conseillez-moi un vin</span>
+        </div>
       </div>
     </div>
     <div class="chat-input-bar">
@@ -2014,6 +2027,14 @@ margin: 20px 20px 0;
       messages.scrollTop = messages.scrollHeight;
       return bubble;
     }
+  }
+
+  function sendSuggestion(el) {
+    document.getElementById('chatInput').value = el.textContent;
+    // Masquer les suggestions après clic
+    var suggestions = document.querySelector('.chat-suggestions');
+    if (suggestions) suggestions.style.display = 'none';
+    sendChatMessage();
   }
 
   function sendChatMessage() {
