@@ -1248,21 +1248,12 @@ margin: 0 auto;
 background: var(--bg-card);
 border-top: 1px solid var(--border);
 display: flex;
-align-items: center;
+align-items: flex-start;
 justify-content: space-around;
-padding: 5px 0 max(18px, env(safe-area-inset-bottom));
+padding: 5px 0 0;
 z-index: 100;
-}
-/* Couvre la zone sous la bottom-bar (safe area + overscroll) */
-.bottom-bar::after {
-content: '';
-position: absolute;
-bottom: -50px;
-left: -50vw;
-right: -50vw;
-height: calc(100% + 50px);
-background: inherit;
-z-index: -1;
+/* Étendre la bottom-bar bien au-delà du bas de l'écran */
+padding-bottom: max(34px, calc(env(safe-area-inset-bottom, 20px) + 14px));
 }
 
 /* Desktop: absolute inside phone-screen (outside phone-scroll) */
