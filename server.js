@@ -651,17 +651,32 @@ app.delete('/reservations/:id', requireAdmin, (req, res) => {
 // ═══════════════════════════════════════════════════════════════════════════════
 app.get('/api/version', (_, res) => res.json({ hash: GIT_HASH }));
 
-// Vérifie si l'utilisateur connecté est admin
+// Vérifie si l'utilisateur connecté est admin (session OU token Bearer)
 app.get('/api/me', (req, res) => {
-  if (!req.session || !req.session.user) {
-    return res.json({ authenticated: false, isAdmin: false });
+  // Essayer d'abord la session cookie
+  if (req.session && req.session.user) {
+    return res.json({
+      authenticated: true,
+      isAdmin: isAdminEmail(req.session.user.email),
+      name: req.session.user.name,
+      email: req.session.user.email,
+    });
   }
-  res.json({
-    authenticated: true,
-    isAdmin: isAdminEmail(req.session.user.email),
-    name: req.session.user.name,
-    email: req.session.user.email,
-  });
+  // Sinon essayer le token Bearer (même auth que le chat)
+  const authHeader = req.headers.authorization;
+  if (authHeader && authHeader.startsWith('Bearer ')) {
+    const { verifyUserToken } = require('./auth');
+    const user = verifyUserToken(authHeader.substring(7));
+    if (user) {
+      return res.json({
+        authenticated: true,
+        isAdmin: isAdminEmail(user.email),
+        name: user.name,
+        email: user.email,
+      });
+    }
+  }
+  res.json({ authenticated: false, isAdmin: false });
 });
 
 app.get('/admin', requireAuth, (req, res) => {
