@@ -1872,12 +1872,6 @@ margin: 20px 20px 0;
     currentTheme = next;
     localStorage.setItem('theme', next);
     applyTheme(next);
-    // DEBUG toast temporaire — à retirer
-    var t = document.createElement('div');
-    t.textContent = 'Theme → ' + next;
-    t.style.cssText = 'position:fixed;top:60px;left:50%;transform:translateX(-50%);background:red;color:#fff;padding:8px 16px;border-radius:8px;z-index:99999;font-size:14px;';
-    document.body.appendChild(t);
-    setTimeout(function(){ t.remove(); }, 2000);
   }
 
   // Hours sheet
