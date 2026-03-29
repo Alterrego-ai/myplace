@@ -769,7 +769,6 @@ border: 1px solid var(--border);
 border-radius: var(--radius-sm);
 text-decoration: none;
 transition: var(--transition);
-box-shadow: var(--shadow);
 }
 
 .social-item:active { transform: scale(0.96); }
@@ -1019,20 +1018,6 @@ margin: 20px 20px 0;
 <div class="info fade-up">
   <h1 class="merchant-name">Sauf Imprévu Bar à vins</h1>
   <div class="address-text" onclick="openAddressSheet()">15 Rue Vauban · 69006 Lyon</div>
-  <!-- HOURS DRAWER -->
-  <div class="hours-drawer" id="hoursDrawer">
-    <div class="hours-inner">
-      <div class="hours-row today"><span class="day-name">Mercredi</span><span class="day-hours">16h30 – 01h00</span></div>
-      <div class="hours-rest" id="hoursRest">
-        <div class="hours-row"><span class="day-name">Lundi</span><span class="day-hours">16h30 – 00h00</span></div>
-        <div class="hours-row"><span class="day-name">Mardi</span><span class="day-hours">16h30 – 00h00</span></div>
-        <div class="hours-row"><span class="day-name">Jeudi</span><span class="day-hours">16h30 – 01h00</span></div>
-        <div class="hours-row"><span class="day-name">Vendredi</span><span class="day-hours">16h30 – 01h00</span></div>
-        <div class="hours-row"><span class="day-name">Samedi</span><span class="day-closed">Fermé</span></div>
-        <div class="hours-row"><span class="day-name">Dimanche</span><span class="day-closed">Fermé</span></div>
-      </div>
-    </div>
-  </div>
 </div>
 
 <!-- CTAs -->
@@ -1082,11 +1067,9 @@ margin: 20px 20px 0;
   </div>
 
   <a href="#" class="compte-unauth" style="text-decoration:none;display:flex;align-items:center;gap:14px;padding:12px 16px;background:var(--bg-card);border-radius:var(--radius-sm);border:1px solid var(--border);margin-bottom:8px;">
-    <div style="width:44px;height:44px;border-radius:50%;background:var(--primary-ultra-light);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
-      <svg width="36" height="36" viewBox="0 0 640 640" fill="var(--primary)">
-        <path d="M476.1 480.6C462.1 425.1 411.9 384 352 384L288 384C228.1 384 177.9 425.1 163.9 480.6C122 439.9 96 383 96 320C96 196.3 196.3 96 320 96C443.7 96 544 196.3 544 320C544 383 518 439.9 476.1 480.6zM447.6 504C411.5 529.2 367.4 544 320 544C272.6 544 228.5 529.2 192.3 504.1C196.3 454.8 237.6 416 288 416L352 416C402.4 416 443.6 454.8 447.7 504.1zM320 576C461.4 576 576 461.4 576 320C576 178.6 461.4 64 320 64C178.6 64 64 178.6 64 320C64 461.4 178.6 576 320 576zM320 304C293.5 304 272 282.5 272 256C272 229.5 293.5 208 320 208C346.5 208 368 229.5 368 256C368 282.5 346.5 304 320 304zM240 256C240 300.2 275.8 336 320 336C364.2 336 400 300.2 400 256C400 211.8 364.2 176 320 176C275.8 176 240 211.8 240 256z"/>
-      </svg>
-    </div>
+    <svg width="44" height="44" viewBox="0 0 640 640" fill="var(--primary)" style="flex-shrink:0;">
+      <path d="M476.1 480.6C462.1 425.1 411.9 384 352 384L288 384C228.1 384 177.9 425.1 163.9 480.6C122 439.9 96 383 96 320C96 196.3 196.3 96 320 96C443.7 96 544 196.3 544 320C544 383 518 439.9 476.1 480.6zM447.6 504C411.5 529.2 367.4 544 320 544C272.6 544 228.5 529.2 192.3 504.1C196.3 454.8 237.6 416 288 416L352 416C402.4 416 443.6 454.8 447.7 504.1zM320 576C461.4 576 576 461.4 576 320C576 178.6 461.4 64 320 64C178.6 64 64 178.6 64 320C64 461.4 178.6 576 320 576zM320 304C293.5 304 272 282.5 272 256C272 229.5 293.5 208 320 208C346.5 208 368 229.5 368 256C368 282.5 346.5 304 320 304zM240 256C240 300.2 275.8 336 320 336C364.2 336 400 300.2 400 256C400 211.8 364.2 176 320 176C275.8 176 240 211.8 240 256z"/>
+    </svg>
     <div>
       <div style="font-size:14px;font-weight:700;color:var(--text);">Nous rejoindre</div>
       <div style="font-size:12px;color:var(--text-tertiary);margin-top:2px;">Offres et avantages exclusifs</div>
@@ -1192,7 +1175,7 @@ margin: 20px 20px 0;
 
 <!-- OVERLAY -->
 
-<div class="sheet-overlay" id="sheetOverlay" onclick="closeAddressSheet()"></div>
+<div class="sheet-overlay" id="sheetOverlay" onclick="closeAllSheets()"></div>
 
 <!-- BOTTOM SHEET ADRESSE -->
 
@@ -1233,7 +1216,24 @@ margin: 20px 20px 0;
       </div>
     </button>
   </div>
-  <button class="sheet-cancel" onclick="closeAddressSheet()">Annuler</button>
+  <button class="sheet-cancel" onclick="closeAllSheets()">Annuler</button>
+</div>
+
+<!-- BOTTOM SHEET HORAIRES -->
+
+<div class="bottom-sheet" id="hoursSheet">
+  <div class="sheet-handle"></div>
+  <div class="sheet-title">Nos horaires</div>
+  <div style="padding:0 4px;">
+    <div class="hours-row today"><span class="day-name">Mercredi</span><span class="day-hours">16h30 – 01h00</span></div>
+    <div class="hours-row"><span class="day-name">Lundi</span><span class="day-hours">16h30 – 00h00</span></div>
+    <div class="hours-row"><span class="day-name">Mardi</span><span class="day-hours">16h30 – 00h00</span></div>
+    <div class="hours-row"><span class="day-name">Jeudi</span><span class="day-hours">16h30 – 01h00</span></div>
+    <div class="hours-row"><span class="day-name">Vendredi</span><span class="day-hours">16h30 – 01h00</span></div>
+    <div class="hours-row"><span class="day-name">Samedi</span><span class="day-closed">Fermé</span></div>
+    <div class="hours-row"><span class="day-name">Dimanche</span><span class="day-closed">Fermé</span></div>
+  </div>
+  <button class="sheet-cancel" onclick="closeAllSheets()">Fermer</button>
 </div>
 
     </div><!-- /phone-screen -->
@@ -1284,24 +1284,17 @@ margin: 20px 20px 0;
     applyTheme(next);
   }
 
-  // Hours drawer
+  // Hours sheet
   function toggleHours() {
-    const drawer = document.getElementById('hoursDrawer');
-    const btn = document.querySelector('.hours-toggle');
-    const rest = document.getElementById('hoursRest');
-    const today = document.querySelector('.hours-row.today');
-    const isOpen = drawer.classList.toggle('open');
-    btn.setAttribute('aria-expanded', isOpen);
-    if (isOpen) {
-      // petit délai pour que le drawer s'ouvre d'abord
-      setTimeout(() => {
-        rest.classList.add('open');
-        today.classList.add('expanded');
-      }, 80);
-    } else {
-      rest.classList.remove('open');
-      today.classList.remove('expanded');
-    }
+    document.getElementById('sheetOverlay').classList.add('visible');
+    document.getElementById('hoursSheet').classList.add('visible');
+  }
+
+  // Close all sheets
+  function closeAllSheets() {
+    document.getElementById('sheetOverlay').classList.remove('visible');
+    document.getElementById('addressSheet').classList.remove('visible');
+    document.getElementById('hoursSheet').classList.remove('visible');
   }
 
   // Share
@@ -1328,8 +1321,7 @@ margin: 20px 20px 0;
   }
 
   function closeAddressSheet() {
-    document.getElementById('addressSheet').classList.remove('visible');
-    document.getElementById('sheetOverlay').classList.remove('visible');
+    closeAllSheets();
     document.body.style.overflow = '';
   }
 
