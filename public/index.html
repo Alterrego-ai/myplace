@@ -2013,7 +2013,7 @@ margin: 20px 20px 0;
       var bubble = document.createElement('div');
       bubble.className = 'chat-bubble ' + role;
       bubble.style.alignSelf = 'auto';
-      bubble.textContent = text;
+      bubble.innerHTML = text.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br>');
       row.appendChild(avatar);
       row.appendChild(bubble);
       messages.appendChild(row);
@@ -2022,7 +2022,7 @@ margin: 20px 20px 0;
     } else {
       var bubble = document.createElement('div');
       bubble.className = 'chat-bubble ' + role;
-      bubble.textContent = text;
+      bubble.innerHTML = text.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br>');
       messages.appendChild(bubble);
       messages.scrollTop = messages.scrollHeight;
       return bubble;
