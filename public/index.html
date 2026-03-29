@@ -2049,6 +2049,23 @@ margin: 20px 20px 0;
   function closeChatSheet() {
     document.getElementById('chatSheet').classList.remove('visible');
     document.body.style.overflow = '';
+    // Vider la conversation et réafficher le welcome
+    var messages = document.getElementById('chatMessages');
+    messages.innerHTML = '<div class="chat-welcome">' +
+      '<img src="/img/maia.png" alt="Maïa" style="width:96px;height:96px;border-radius:50%;margin-bottom:12px;object-fit:cover;box-shadow:0 4px 12px rgba(0,0,0,0.15);">' +
+      '<h4>Maïa</h4>' +
+      '<p>Bonjour ! Je suis Maïa, l\'assistante de Sauf Imprévu.<br>Posez-moi vos questions sur notre carte, nos vins, nos horaires...</p>' +
+      '<div class="chat-suggestions">' +
+        '<span class="chat-suggestion" onclick="sendSuggestion(this)">Réserver une table</span>' +
+        '<span class="chat-suggestion" onclick="sendSuggestion(this)">Quels sont vos horaires ?</span>' +
+        '<span class="chat-suggestion" onclick="sendSuggestion(this)">Qu\'y a-t-il à la carte ?</span>' +
+        '<span class="chat-suggestion" onclick="sendSuggestion(this)">Conseillez-moi un vin</span>' +
+      '</div></div>';
+    // Reset côté serveur aussi
+    var user = getStoredUser();
+    if (user && user._token) {
+      fetch('/api/chat/reset', { method: 'POST', headers: { 'Authorization': 'Bearer ' + user._token } });
+    }
   }
 
   // Gestion du clavier mobile — ajuste la hauteur du chat quand le clavier apparaît

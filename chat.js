@@ -417,6 +417,11 @@ function chatRoutes(router, carteDb, resaDb) {
     res.json({ ok: true });
   });
 
+  router.post('/api/chat/reset', requireChatAuth, (req, res) => {
+    conversations.delete(req.chatUser.sub);
+    res.json({ ok: true });
+  });
+
   return router;
 }
 
