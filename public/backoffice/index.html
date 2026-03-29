@@ -1,0 +1,4431 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="theme-color" content="#3d5a80">
+    <link rel="manifest" href="/backoffice/manifest.json">
+    <link rel="icon" type="image/svg+xml" href="/backoffice/icon.svg">
+    <link rel="icon" type="image/png" sizes="192x192" href="/backoffice/icon-192.png">
+    <link rel="apple-touch-icon" href="/backoffice/icon-192.png">
+    <title>Sauf Imprévu</title>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/lottie-web@5.12.2/build/player/lottie.min.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            touch-action: manipulation;
+        }
+
+        html, body {
+            font-family: 'DM Sans', sans-serif;
+            background-color: #f0f3f8;
+            color: #1a2332;
+            height: 100%;
+            overflow: hidden;
+            -webkit-text-size-adjust: 100%;
+        }
+
+        body {
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Header */
+        header {
+            background-color: #ffffff;
+            border-bottom: 1px solid #edf0f5;
+            padding: 0.75rem 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+            box-sizing: border-box;
+        }
+
+        .header-logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            letter-spacing: 0.15em;
+            color: #3d5a80;
+            text-transform: uppercase;
+        }
+
+        .header-nav {
+            display: flex;
+            gap: 0.5rem;
+            align-items: center;
+        }
+
+        .auth-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.3rem;
+            background: none;
+            border: 1px solid #dde3ec;
+            border-radius: 8px;
+            padding: 0.35rem 0.6rem;
+            font-size: 0.72rem;
+            font-weight: 600;
+            color: #3d5a80;
+            cursor: pointer;
+            margin-left: 0.4rem;
+            transition: background 0.15s;
+        }
+        .auth-btn:hover { background: #f0f4f8; }
+        .auth-avatar {
+            width: 22px; height: 22px;
+            border-radius: 50%;
+            background: #3d5a80;
+            color: #fff;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.65rem;
+            font-weight: 700;
+        }
+
+        .nav-tab {
+            background: none;
+            border: 1.5px solid #edf0f5;
+            cursor: pointer;
+            font-size: 1.1rem;
+            color: #8a9bb0;
+            width: 38px;
+            height: 38px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: all 0.15s ease;
+        }
+
+        .nav-tab:hover {
+            color: #5c8db8;
+            border-color: #5c8db8;
+        }
+
+        .nav-tab.active {
+            color: #ffffff;
+            background-color: #3d5a80;
+            border-color: #3d5a80;
+        }
+
+        /* Main content */
+        main {
+            flex: 1;
+            overflow: hidden;
+            position: relative;
+            margin-top: var(--header-h, 56px);
+        }
+
+        .section {
+            display: none;
+            flex-direction: column;
+            overflow: hidden;
+            height: 100%;
+        }
+
+        .section.active {
+            display: flex;
+        }
+
+        /* Footer version */
+        .version-footer {
+            flex-shrink: 0;
+            text-align: center;
+            padding: 0.4rem;
+            font-size: 0.7rem;
+            color: #aab5c4;
+            background: #f0f3f8;
+            border-top: 1px solid #e2e8f0;
+            font-family: monospace;
+        }
+
+        /* Settings Modal */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(26, 35, 50, 0.5);
+            z-index: 1000;
+            align-items: flex-end;
+            justify-content: center;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        body.modal-open .reservations-content,
+        body.modal-open .carte-content {
+            overflow: hidden;
+        }
+
+        .modal {
+            background-color: #ffffff;
+            border-radius: 16px 16px 0 0;
+            padding: 1.25rem;
+            width: 100%;
+            max-height: 92vh;
+            overflow-y: auto;
+            box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.12);
+        }
+
+        .modal-handle {
+            width: 36px;
+            height: 4px;
+            background: #edf0f5;
+            border-radius: 2px;
+            margin: 0 auto 0.75rem;
+        }
+
+        .modal-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+        }
+
+        .modal-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #1a2332;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 1.25rem;
+            color: #8a9bb0;
+            padding: 0.25rem;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.75rem;
+        }
+
+        .form-row .form-group {
+            min-width: 0;
+            overflow: hidden;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: #4a5568;
+            margin-bottom: 0.35rem;
+        }
+
+        .covers-selector {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .covers-btn {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            border: 1.5px solid #edf0f5;
+            background: #f8f9fb;
+            color: #3d5a80;
+            font-size: 1.2rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.15s;
+        }
+
+        .covers-btn:hover,
+        .covers-btn:active {
+            background: #3d5a80;
+            color: #fff;
+            border-color: #3d5a80;
+        }
+
+        .covers-value {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #1a2332;
+            min-width: 2rem;
+            text-align: center;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #edf0f5;
+            border-radius: 8px;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 1rem;
+            color: #1a2332;
+            transition: border-color 0.2s ease;
+            box-sizing: border-box;
+            min-width: 0;
+        }
+
+        .form-row .form-input {
+            font-size: 0.9rem;
+            padding: 0.65rem 0.5rem;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #5c8db8;
+            box-shadow: 0 0 0 3px rgba(92, 141, 184, 0.1);
+        }
+
+        /* Buttons */
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn-primary {
+            background-color: #5c8db8;
+            color: #ffffff;
+        }
+
+        .btn-primary:hover {
+            background-color: #3d5a80;
+        }
+
+        .btn-secondary {
+            background-color: #f8f9fb;
+            color: #3d5a80;
+            border: 1px solid #edf0f5;
+        }
+
+        .btn-secondary:hover {
+            background-color: #edf0f5;
+        }
+
+        .btn-danger {
+            background-color: #ef4444;
+            color: #ffffff;
+        }
+
+        .btn-danger:hover {
+            background-color: #dc2626;
+        }
+
+        .btn-sm {
+            padding: 0.5rem 1rem;
+            font-size: 0.875rem;
+        }
+
+        .btn-icon {
+            width: 40px;
+            height: 40px;
+            padding: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 8px;
+            background-color: #f8f9fb;
+            color: #3d5a80;
+            border: 1px solid #edf0f5;
+        }
+
+        .btn-icon:hover {
+            background-color: #edf0f5;
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+            justify-content: flex-end;
+        }
+
+        /* Toast Notifications */
+        .toast-container {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            z-index: 2000;
+            max-width: 400px;
+        }
+
+        .toast {
+            background-color: #ffffff;
+            border-left: 4px solid #5c8db8;
+            padding: 1rem 1.5rem;
+            border-radius: 10px;
+            margin-top: 1rem;
+            box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+            animation: slideIn 0.3s ease;
+        }
+
+        .toast.error {
+            border-left-color: #ef4444;
+        }
+
+        .toast.success {
+            border-left-color: #4ade80;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(400px);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        /* CARTE Section */
+        .carte-container {
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .carte-subtabs {
+            display: flex;
+            gap: 2rem;
+            padding: 0 2rem;
+            border-bottom: 1px solid #edf0f5;
+            background-color: #ffffff;
+            flex-shrink: 0;
+            position: sticky;
+            top: 0;
+            z-index: 50;
+        }
+
+        .subtab-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 1rem 0;
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: #8a9bb0;
+            border-bottom: 3px solid transparent;
+            transition: all 0.2s ease;
+            font-family: 'DM Sans', sans-serif;
+        }
+
+        .subtab-btn:hover {
+            color: #5c8db8;
+        }
+
+        .subtab-btn.active {
+            color: #3d5a80;
+            border-bottom-color: #5c8db8;
+        }
+
+        .carte-content {
+            flex: 1;
+            overflow-y: auto;
+            padding: 1.5rem 2rem 2rem;
+        }
+
+        /* KPI Bar */
+        .kpi-bar {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .kpi-card {
+            background-color: #ffffff;
+            border: 1px solid #edf0f5;
+            border-radius: 10px;
+            padding: 1.25rem;
+            text-align: center;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+        }
+
+        .kpi-label {
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            color: #8a9bb0;
+            margin-bottom: 0.5rem;
+            letter-spacing: 0.05em;
+        }
+
+        .kpi-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #3d5a80;
+        }
+
+        /* Family Filter Pills */
+        .family-filter {
+            display: flex;
+            gap: 0.75rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .filter-pill {
+            padding: 0.5rem 1.25rem;
+            border: 1px solid #edf0f5;
+            border-radius: 20px;
+            background-color: #ffffff;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: #4a5568;
+            transition: all 0.2s ease;
+        }
+
+        .filter-pill:hover {
+            border-color: #5c8db8;
+            color: #5c8db8;
+        }
+
+        .filter-pill.active {
+            background-color: #5c8db8;
+            border-color: #5c8db8;
+            color: #ffffff;
+        }
+
+        /* Category Cards */
+        .category-grid {
+            display: grid;
+            gap: 2rem;
+        }
+
+        .category-card {
+            background-color: #ffffff;
+            border: 1px solid #edf0f5;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+        }
+
+        .category-header {
+            padding: 1rem 1.25rem;
+            border-bottom: 1px solid #edf0f5;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .category-title-section {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            flex: 1;
+        }
+
+        .category-name {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #1a2332;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .badge-family {
+            background-color: #f8f9fb;
+            color: #3d5a80;
+        }
+
+        .badge-visible {
+            background-color: #d1fae5;
+            color: #065f46;
+        }
+
+        .badge-hidden {
+            background-color: #fee2e2;
+            color: #7f1d1d;
+        }
+
+        .category-controls {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .category-body {
+            padding: 1rem 1.25rem;
+        }
+
+        .items-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .item-row {
+            background-color: #ffffff;
+            border: 1px solid #dde3ec;
+            border-radius: 10px;
+            display: flex;
+            align-items: stretch;
+            overflow: hidden;
+            min-height: 56px;
+        }
+
+        .item-price-col {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 60px;
+            min-width: 60px;
+            flex-shrink: 0;
+            background: #f0f4f8;
+            border-right: 1px solid #dde3ec;
+            font-size: 0.92rem;
+            font-weight: 800;
+            color: #3d5a80;
+            font-variant-numeric: tabular-nums;
+        }
+
+        .item-content {
+            flex: 1;
+            padding: 0.45rem 0.55rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            gap: 0.15rem;
+            min-width: 0;
+        }
+
+        .item-row1 {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 0.5rem;
+        }
+
+        .item-name {
+            font-size: 0.92rem;
+            font-weight: 700;
+            color: #1a2332;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .item-row2 {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 0.4rem;
+            margin-top: 0.15rem;
+        }
+
+        .item-row2-left {
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+            flex-wrap: wrap;
+            min-width: 0;
+        }
+
+        .item-description {
+            font-size: 0.78rem;
+            color: #8a9bb0;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .item-tags {
+            display: flex;
+            gap: 0.3rem;
+            flex-wrap: wrap;
+        }
+
+        .tag-pill {
+            display: inline-block;
+            padding: 0.1rem 0.4rem;
+            border-radius: 4px;
+            font-size: 0.68rem;
+            font-weight: 500;
+            background-color: #e0e7ff;
+            color: #4c1d95;
+        }
+
+        .item-controls {
+            display: flex;
+            align-items: center;
+            gap: 0.35rem;
+            flex-shrink: 0;
+            padding-right: 0.4rem;
+        }
+
+        .toggle-switch {
+            position: relative;
+            width: 36px;
+            height: 20px;
+            background-color: #dde3ec;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+            border: none;
+            padding: 0;
+            flex-shrink: 0;
+        }
+
+        .toggle-switch.active {
+            background-color: #4ade80;
+        }
+
+        .toggle-switch::after {
+            content: '';
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            width: 16px;
+            height: 16px;
+            background-color: #ffffff;
+            border-radius: 8px;
+            transition: left 0.2s ease;
+        }
+
+        .toggle-switch.active::after {
+            left: 18px;
+        }
+
+        .add-item-btn {
+            margin-top: 1rem;
+            width: 100%;
+        }
+
+        .expandable-section {
+            cursor: pointer;
+        }
+
+        .expandable-header {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .expand-icon {
+            display: inline-block;
+            transition: transform 0.2s ease;
+        }
+
+        .expandable-section.collapsed .expand-icon {
+            transform: rotate(-90deg);
+        }
+
+        /* Organisation View */
+        .organisation-container {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+
+        .family-section {
+            background-color: #ffffff;
+            border: 1px solid #edf0f5;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+        }
+
+        .family-header {
+            padding: 1rem 1.25rem;
+            background-color: #f8f9fb;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .family-name {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #1a2332;
+        }
+
+        .family-controls {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .category-list {
+            padding: 1rem 1.25rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .category-item {
+            padding: 0.75rem 1rem;
+            background-color: #f8f9fb;
+            border-radius: 8px;
+            border: 1px solid #edf0f5;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .category-item-name {
+            font-weight: 500;
+            color: #1a2332;
+        }
+
+        .reorder-controls {
+            display: flex;
+            gap: 0.25rem;
+        }
+
+        /* Tags View */
+        .tags-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .tag-group {
+            background-color: #ffffff;
+            border: 1px solid #edf0f5;
+            border-radius: 10px;
+            padding: 1.25rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+        }
+
+        .tag-group-title {
+            font-size: 0.875rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            color: #8a9bb0;
+            margin-bottom: 1rem;
+            letter-spacing: 0.05em;
+        }
+
+        .tags-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .tag-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0.75rem 1rem;
+            background-color: #f8f9fb;
+            border-radius: 8px;
+            border: 1px solid #edf0f5;
+        }
+
+        .tag-item-name {
+            font-weight: 500;
+            color: #1a2332;
+        }
+
+        .tag-count {
+            font-size: 0.875rem;
+            color: #8a9bb0;
+            background-color: #ffffff;
+            padding: 0.25rem 0.75rem;
+            border-radius: 12px;
+        }
+
+        .allergen-card {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0.6rem 0.85rem;
+            border-radius: 8px;
+            border: 1px solid #edf0f5;
+            cursor: pointer;
+            transition: background 0.15s;
+        }
+
+        .allergen-card:active {
+            background: #f0f0f5;
+        }
+
+        .allergen-left {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            min-width: 0;
+        }
+
+        .allergen-icon {
+            font-size: 1.15rem;
+            flex-shrink: 0;
+            line-height: 1;
+        }
+
+        .allergen-name {
+            font-size: 0.88rem;
+            font-weight: 600;
+            color: #1a2332;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        /* Item Modal */
+        .modal-section-title {
+            font-size: 0.875rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            color: #8a9bb0;
+            margin: 1.5rem 0 1rem 0;
+            letter-spacing: 0.05em;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1rem;
+            border-bottom: 1px solid #edf0f5;
+        }
+
+        .tab-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 0.75rem 0;
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: #8a9bb0;
+            border-bottom: 2px solid transparent;
+            transition: all 0.2s ease;
+            font-family: 'DM Sans', sans-serif;
+        }
+
+        .tab-btn:hover {
+            color: #5c8db8;
+        }
+
+        .tab-btn.active {
+            color: #3d5a80;
+            border-bottom-color: #5c8db8;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .photo-preview {
+            width: 100%;
+            height: 200px;
+            background-color: #f8f9fb;
+            border: 2px dashed #edf0f5;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1rem;
+        }
+
+        .photo-preview img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 8px;
+        }
+
+        .photo-preview.empty {
+            color: #8a9bb0;
+        }
+
+        .tag-picker {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .tag-group-picker {
+            border: 1px solid #edf0f5;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .tag-group-header {
+            background-color: #f8f9fb;
+            padding: 0.75rem 1rem;
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: #3d5a80;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .tag-group-picker.allergen .tag-group-header {
+            background-color: #fee2e2;
+            color: #7f1d1d;
+        }
+
+        .tag-group-content {
+            padding: 1rem;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+        }
+
+        .tag-group-content.hidden {
+            display: none;
+        }
+
+        .tag-checkbox {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            background-color: #f8f9fb;
+            cursor: pointer;
+            user-select: none;
+            border: 2px solid transparent;
+            transition: all 0.2s ease;
+        }
+
+        .tag-checkbox input {
+            cursor: pointer;
+        }
+
+        .tag-checkbox.selected {
+            background-color: #e0e7ff;
+            border-color: #5c8db8;
+        }
+
+        .allergen-detail {
+            background-color: #fee2e2;
+            border: 1px solid #fecaca;
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .allergen-detail-name {
+            font-weight: 600;
+            color: #7f1d1d;
+            margin-bottom: 0.25rem;
+        }
+
+        .allergen-detail-desc {
+            font-size: 0.875rem;
+            color: #991b1b;
+        }
+
+        /* RÉSERVATIONS Section */
+        .reservations-container {
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .reservations-content {
+            flex: 1;
+            overflow-y: auto;
+            padding: 0;
+        }
+
+        .resa-toolbar {
+            position: sticky;
+            top: 0;
+            z-index: 50;
+            background: #ffffff;
+            padding: 1rem 2rem 0;
+            border-bottom: 1px solid #edf0f5;
+        }
+
+        .reservation-list {
+            padding: 1rem 2rem 2rem;
+        }
+
+        .date-navigator {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 0.75rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .date-nav-btn {
+            background: none;
+            border: 1px solid #edf0f5;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: #3d5a80;
+            font-size: 1rem;
+            transition: all 0.2s;
+        }
+
+        .date-nav-btn:hover {
+            background: #f8f9fb;
+            border-color: #5c8db8;
+        }
+
+        .date-display {
+            text-align: center;
+            line-height: 1.3;
+            flex: 1;
+            position: relative;
+            cursor: pointer;
+        }
+
+        .date-display .date-weekday {
+            font-size: 0.75rem;
+            font-weight: 500;
+            color: #8a9bb0;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .date-display .date-main {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #1a2332;
+        }
+
+        .date-display input[type="date"] {
+            position: absolute;
+            top: 0;
+            left: 15%;
+            width: 70%;
+            height: 100%;
+            opacity: 0;
+            cursor: pointer;
+        }
+
+        .service-cards {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.75rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .service-card {
+            background: #ffffff;
+            border: 1.5px solid #edf0f5;
+            border-radius: 10px;
+            padding: 0.7rem 0.9rem;
+            cursor: pointer;
+            text-align: left;
+            transition: all 0.15s ease;
+            font-family: inherit;
+        }
+
+        .service-card:hover {
+            border-color: #5c8db8;
+        }
+
+        .service-card.active {
+            border-color: #3d5a80;
+            background: #f7f9fc;
+        }
+
+        .service-card-row1 {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.35rem;
+        }
+
+        .service-card-title {
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            color: #8a9bb0;
+        }
+
+        .service-card.active .service-card-title {
+            color: #3d5a80;
+        }
+
+        .service-card-dispo {
+            font-size: 0.75rem;
+            color: #2e7d32;
+            font-weight: 600;
+        }
+
+        .service-card-row2 {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.8rem;
+            color: #6b7a8d;
+        }
+
+        .service-card-row2 strong {
+            font-weight: 700;
+            color: #3d5a80;
+        }
+
+        .daily-recap {
+            text-align: center;
+            font-size: 0.75rem;
+            color: #a0aec0;
+            margin-bottom: 1rem;
+            padding: 0.3rem 0;
+        }
+
+        .add-resa-btn {
+            position: fixed;
+            bottom: 1.5rem;
+            right: 1.5rem;
+            border-radius: 2rem;
+            border: none;
+            background: #3d5a80;
+            color: #ffffff;
+            font-size: 0.85rem;
+            font-weight: 600;
+            font-family: inherit;
+            padding: 0.75rem 1.25rem;
+            cursor: pointer;
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            transition: background 0.15s;
+        }
+
+        .add-resa-btn:hover {
+            background: #2e4a6e;
+        }
+
+        .scan-btn {
+            position: fixed;
+            bottom: 1.5rem;
+            left: 1.5rem;
+            border-radius: 50%;
+            border: none;
+            background: #1a2332;
+            color: #ffffff;
+            width: 48px;
+            height: 48px;
+            cursor: pointer;
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.15s;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+        }
+
+        .scan-btn:hover {
+            background: #2e4a6e;
+        }
+
+        .scanner-overlay {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: #000;
+            z-index: 2000;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .scanner-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1rem 1.25rem;
+            background: rgba(0,0,0,0.6);
+            color: #fff;
+            z-index: 1;
+        }
+
+        .scanner-header-title {
+            font-size: 1rem;
+            font-weight: 600;
+        }
+
+        .scanner-close-btn {
+            background: none;
+            border: none;
+            color: #fff;
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 0.25rem;
+            line-height: 1;
+        }
+
+        .scanner-video-wrap {
+            flex: 1;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .scanner-video-wrap video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .scanner-frame {
+            position: absolute;
+            width: 240px;
+            height: 240px;
+            border: 2px solid rgba(255,255,255,0.6);
+            border-radius: 16px;
+            pointer-events: none;
+        }
+
+        .scanner-frame::before,
+        .scanner-frame::after {
+            content: '';
+            position: absolute;
+            width: 30px;
+            height: 30px;
+            border-color: #fff;
+            border-style: solid;
+        }
+
+        .scanner-frame::before {
+            top: -1px; left: -1px;
+            border-width: 3px 0 0 3px;
+            border-radius: 12px 0 0 0;
+        }
+
+        .scanner-frame::after {
+            top: -1px; right: -1px;
+            border-width: 3px 3px 0 0;
+            border-radius: 0 12px 0 0;
+        }
+
+        .scanner-result {
+            padding: 1rem 1.25rem;
+            background: rgba(0,0,0,0.6);
+            color: #fff;
+            text-align: center;
+            font-size: 0.85rem;
+            min-height: 3rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .geo-btn {
+            position: fixed;
+            bottom: 1.5rem;
+            left: 4.5rem;
+            border-radius: 50%;
+            border: none;
+            background: #1a2332;
+            color: #ffffff;
+            width: 48px;
+            height: 48px;
+            cursor: pointer;
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.15s;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+        }
+
+        .geo-btn:hover { background: #2e4a6e; }
+
+        .geo-btn.active {
+            background: #2e7d32;
+            animation: geo-pulse 2s infinite;
+        }
+
+        @keyframes geo-pulse {
+            0%, 100% { box-shadow: 0 2px 8px rgba(0,0,0,0.15); }
+            50% { box-shadow: 0 0 0 6px rgba(46,125,50,0.2); }
+        }
+
+        .geo-overlay {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+        }
+
+        .geo-panel {
+            background: #fff;
+            border-radius: 12px;
+            width: 100%;
+            max-width: 380px;
+            max-height: 85vh;
+            overflow: hidden;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.2);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .geo-panel-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0.85rem 1rem;
+            border-bottom: 1px solid #edf0f5;
+        }
+
+        .geo-panel-header-title {
+            font-size: 1rem;
+            font-weight: 700;
+            color: #1a2332;
+        }
+
+        .geo-panel-close {
+            background: none;
+            border: none;
+            font-size: 1.4rem;
+            color: #8a9bb0;
+            cursor: pointer;
+            line-height: 1;
+            padding: 0.2rem;
+        }
+
+        .geo-panel-map {
+            width: 100%;
+            height: 280px;
+        }
+
+        .geo-panel-info {
+            padding: 1rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.4rem;
+        }
+
+        .geo-panel-distance {
+            font-size: 1.3rem;
+            font-weight: 800;
+            color: #3d5a80;
+        }
+
+        .geo-panel-coords {
+            font-size: 0.75rem;
+            color: #8a9bb0;
+            font-variant-numeric: tabular-nums;
+        }
+
+        .geo-panel-accuracy {
+            font-size: 0.75rem;
+            color: #8a9bb0;
+        }
+
+        .reservation-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .resa-swipe-wrapper {
+            position: relative;
+            overflow: hidden;
+            border-radius: 10px;
+        }
+
+        .resa-swipe-bg {
+            position: absolute;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            width: 90px;
+            background: #e74c3c;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-weight: 700;
+            font-size: 0.8rem;
+            border-radius: 0 10px 10px 0;
+        }
+
+        .reservation-card {
+            background-color: #ffffff;
+            border: 1px solid #dde3ec;
+            border-radius: 10px;
+            display: flex;
+            flex-direction: row;
+            overflow: hidden;
+            min-height: 76px;
+            position: relative;
+            z-index: 1;
+            transition: transform 0.2s ease;
+            cursor: pointer;
+        }
+
+        .resa-time-col {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 0.2rem;
+            padding: 0;
+            width: 68px;
+            min-width: 68px;
+            flex-shrink: 0;
+            background: var(--resa-bg, #e8f5e9);
+            border-right: 2px solid var(--resa-accent, #2e7d32);
+            border-top: 1px solid var(--resa-accent, #2e7d32);
+            border-bottom: 1px solid var(--resa-accent, #2e7d32);
+            border-left: 1px solid var(--resa-accent, #2e7d32);
+            border-radius: 10px 0 0 10px;
+            margin: -1px 0 -1px -1px;
+        }
+
+        .resa-time-val {
+            font-size: 1.05rem;
+            font-weight: 800;
+            color: var(--resa-accent, #2e7d32);
+            letter-spacing: -0.02em;
+            font-variant-numeric: tabular-nums;
+        }
+
+        .resa-source-icon {
+            opacity: 0.45;
+            line-height: 0;
+            color: var(--resa-accent, #2e7d32);
+        }
+
+        /* Statuts */
+        .resa-statut-confirmee { --resa-bg: #e8f5e9; --resa-accent: #2e7d32; }
+        .resa-statut-en_attente { --resa-bg: #fff8e1; --resa-accent: #f57f17; }
+        .resa-statut-annulee { --resa-bg: #fdecea; --resa-accent: #c0392b; }
+
+        .resa-content {
+            flex: 1;
+            padding: 0.45rem 0.55rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            gap: 0.2rem;
+            min-width: 0;
+        }
+
+        .resa-row1 {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 0.5rem;
+        }
+
+        .resa-client {
+            font-size: 1.05rem;
+            font-weight: 700;
+            color: #1a2332;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        /* delete btn removed — swipe-to-delete instead */
+
+        .resa-row2 {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 0.4rem;
+            font-size: 0.78rem;
+            color: #8a9bb0;
+            margin-top: 0.3rem;
+        }
+
+        .resa-row2-left {
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            min-width: 0;
+        }
+
+        .resa-row2-right {
+            flex-shrink: 0;
+        }
+
+        .resa-covers {
+            display: flex;
+            align-items: center;
+            gap: 0.35rem;
+            font-weight: 700;
+            color: #3d5a80;
+            flex-shrink: 0;
+        }
+
+        .resa-covers-num {
+            font-size: 0.95rem;
+            min-width: 14px;
+            text-align: center;
+        }
+
+        .resa-covers-dots {
+            display: flex;
+            gap: 2px;
+            align-items: center;
+        }
+
+        .resa-dot {
+            width: 5px;
+            height: 5px;
+            border-radius: 50%;
+            background: #3d5a80;
+            opacity: 0.4;
+        }
+
+        .resa-table-badge {
+            font-size: 0.68rem;
+            font-weight: 600;
+            color: #8a9bb0;
+            background: #edf0f5;
+            border-radius: 4px;
+            padding: 0.15rem 0.4rem;
+            letter-spacing: 0.02em;
+        }
+
+        .resa-table-badge.assigned {
+            color: #2e7d32;
+            background: #e8f5e9;
+        }
+
+        .resa-tel-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.25rem;
+            font-size: 0.72rem;
+            font-weight: 500;
+            color: #3d5a80;
+            background: #eaf0f8;
+            border-radius: 4px;
+            padding: 0.15rem 0.45rem;
+            text-decoration: none;
+        }
+
+        .resa-tel-tag svg {
+            color: #3d5a80;
+            flex-shrink: 0;
+        }
+
+        .resa-notes {
+            font-size: 0.78rem;
+            color: #a0aec0;
+            font-style: italic;
+        }
+
+        .resa-notes::before {
+            content: '·';
+            margin-right: 0.5rem;
+        }
+
+        .add-reservation-form {
+            background-color: #ffffff;
+            border: 1px solid #edf0f5;
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .form-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .form-title {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #1a2332;
+        }
+
+        .form-toggle {
+            font-size: 1.5rem;
+            color: #8a9bb0;
+            transition: transform 0.2s ease;
+        }
+
+        .add-reservation-form.collapsed .form-content {
+            display: none;
+        }
+
+        .add-reservation-form.collapsed .form-toggle {
+            transform: rotate(-90deg);
+        }
+
+        .form-content {
+            margin-top: 1.5rem;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+
+        .form-group-full {
+            grid-column: 1 / -1;
+        }
+
+        .form-actions {
+            grid-column: 1 / -1;
+            display: flex;
+            gap: 1rem;
+            justify-content: flex-end;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            header {
+                padding: 0.6rem 0.75rem;
+            }
+
+            .header-logo img {
+                height: 24px !important;
+            }
+
+            .nav-tab {
+                font-size: 1.2rem;
+                padding: 0.5rem 0.7rem;
+            }
+
+            .section {
+                display: none !important;
+            }
+
+            .section.active {
+                display: flex !important;
+            }
+
+            .carte-content {
+                padding: 1rem;
+            }
+
+            .resa-toolbar {
+                padding: 0.75rem 1rem 0;
+            }
+
+            .reservation-list {
+                padding: 0.75rem 1rem 1.5rem;
+            }
+
+            .carte-subtabs {
+                padding: 0.5rem 1rem;
+            }
+
+            .kpi-bar {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 0.75rem;
+            }
+
+            .kpi-card {
+                padding: 0.75rem;
+            }
+
+            .kpi-value {
+                font-size: 1.5rem;
+            }
+
+            .category-grid {
+                grid-template-columns: 1fr !important;
+            }
+
+            .tags-container {
+                grid-template-columns: 1fr;
+            }
+
+            .date-display .date-main {
+                font-size: 1.1rem;
+            }
+
+            .resa-time-col {
+                width: 60px;
+                min-width: 60px;
+            }
+
+            .resa-time-val {
+                font-size: 0.95rem;
+            }
+
+            .family-filter {
+                gap: 0.4rem;
+                flex-wrap: wrap;
+            }
+
+            .filter-pill {
+                font-size: 0.8rem;
+                padding: 0.35rem 0.8rem;
+            }
+
+            .service-card-kpi {
+                gap: 0.4rem;
+                font-size: 0.75rem;
+            }
+
+            .service-card-kpi strong {
+                font-size: 0.9rem;
+            }
+
+            .add-reservation-form {
+                margin-top: 1rem;
+            }
+
+            .modal {
+                width: 95%;
+                padding: 1.25rem;
+                max-height: 85vh;
+            }
+
+            .toast-container {
+                width: calc(100% - 2rem);
+                left: 1rem;
+                right: 1rem;
+            }
+
+            .reservation-actions {
+                flex-wrap: wrap;
+            }
+
+            .organisation-container .btn {
+                font-size: 0.85rem;
+                padding: 0.4rem 0.75rem;
+            }
+        }
+
+        @media (max-width: 400px) {
+            .kpi-bar {
+                grid-template-columns: 1fr 1fr;
+                gap: 0.5rem;
+            }
+
+            .nav-tab {
+                font-size: 0.8rem;
+                padding: 0.3rem 0.5rem;
+            }
+        }
+
+        @media (min-width: 769px) {
+            .modal-overlay {
+                align-items: center;
+            }
+
+            .modal {
+                border-radius: 12px;
+                max-width: 480px;
+                padding: 1.5rem;
+            }
+
+            .modal-handle {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-logo"><img src="/backoffice/logo-bleu.png" alt="Sauf Imprévu" style="height:32px;"></div>
+        <nav class="header-nav">
+            <button class="nav-tab" data-section="carte" title="Carte"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg></button>
+            <button class="nav-tab active" data-section="reservations" title="Réservations"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></button>
+            <span id="authBtn"></span>
+        </nav>
+    </header>
+
+    <main>
+        <!-- CARTE Section -->
+        <section class="section carte-container" id="carteSection">
+            <div class="carte-subtabs">
+                <button class="subtab-btn active" data-subtab="carte">Carte</button>
+                <button class="subtab-btn" data-subtab="organisation">Organisation</button>
+                <button class="subtab-btn" data-subtab="tags">Tags</button>
+            </div>
+            <div class="carte-content">
+                <!-- Carte Subtab -->
+                <div id="carteSubtab" class="carte-subtab-content">
+                    <div class="kpi-bar">
+                        <div class="kpi-card">
+                            <div class="kpi-label">Familles</div>
+                            <div class="kpi-value" id="kpiFamily">0</div>
+                        </div>
+                        <div class="kpi-card">
+                            <div class="kpi-label">Catégories</div>
+                            <div class="kpi-value" id="kpiCategory">0</div>
+                        </div>
+                        <div class="kpi-card">
+                            <div class="kpi-label">Plats</div>
+                            <div class="kpi-value" id="kpiItem">0</div>
+                        </div>
+                        <div class="kpi-card">
+                            <div class="kpi-label">Prix Moyen</div>
+                            <div class="kpi-value" id="kpiPrice">-</div>
+                        </div>
+                    </div>
+                    <div class="family-filter" id="familyFilter"></div>
+                    <div class="category-grid" id="categoryGrid"></div>
+                </div>
+
+                <!-- Organisation Subtab -->
+                <div id="organisationSubtab" class="carte-subtab-content" style="display: none;">
+                    <div class="organisation-container" id="organisationContainer"></div>
+                    <button class="btn btn-primary" id="addFamilyBtn" style="margin-top: 1rem;">+ Ajouter une famille</button>
+                </div>
+
+                <!-- Tags Subtab -->
+                <div id="tagsSubtab" class="carte-subtab-content" style="display: none;">
+                    <div class="tags-container" id="tagsContainer"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- RÉSERVATIONS Section -->
+        <section class="section active reservations-container" id="reservationsSection">
+            <div class="reservations-content">
+                <div class="resa-toolbar">
+                    <div class="date-navigator">
+                        <button class="date-nav-btn" id="prevDayBtn"><i class="fa-solid fa-angle-left"></i></button>
+                        <div class="date-display" id="dateDisplay">
+                            <div class="date-weekday"></div>
+                            <div class="date-main"></div>
+                            <input type="date" id="datePickerInput">
+                        </div>
+                        <button class="date-nav-btn" id="nextDayBtn"><i class="fa-solid fa-angle-right"></i></button>
+                    </div>
+
+                    <div class="service-cards">
+                        <button class="service-card active" data-service="midi">
+                            <div class="service-card-row1">
+                                <span class="service-card-title">Midi</span>
+                                <span class="service-card-dispo"><strong id="midiDispo">42</strong> dispo</span>
+                            </div>
+                            <div class="service-card-row2">
+                                <span><strong id="midiResas">0</strong> table</span>
+                                <span><strong id="midiCovers">0</strong> cvt</span>
+                            </div>
+                        </button>
+                        <button class="service-card" data-service="soir">
+                            <div class="service-card-row1">
+                                <span class="service-card-title">Soir</span>
+                                <span class="service-card-dispo"><strong id="soirDispo">42</strong> dispo</span>
+                            </div>
+                            <div class="service-card-row2">
+                                <span><strong id="soirResas">0</strong> table</span>
+                                <span><strong id="soirCovers">0</strong> cvt</span>
+                            </div>
+                        </button>
+                    </div>
+                    <div class="daily-recap" id="dailyRecap">0 table · 0 couverts</div>
+                </div>
+
+                <div class="reservation-list" id="reservationList"></div>
+
+            <button class="scan-btn" id="openScannerBtn" title="Scanner QR"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7V5a2 2 0 0 1 2-2h2"/><path d="M17 3h2a2 2 0 0 1 2 2v2"/><path d="M21 17v2a2 2 0 0 1-2 2h-2"/><path d="M7 21H5a2 2 0 0 1-2-2v-2"/><line x1="7" y1="12" x2="17" y2="12"/></svg></button>
+            <button class="geo-btn" id="geoBtn" title="Géolocalisation"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="M2 12h2"/><path d="M20 12h2"/><circle cx="12" cy="12" r="9"/></svg></button>
+            <button class="scan-btn" id="arMenuBtn" title="AR Menu" style="left:7.5rem;background:linear-gradient(135deg,#4c1d95,#3d5a80)"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg></button>
+            <button class="add-resa-btn" id="openAddResaBtn">Réserver <svg style="width:16px;height:16px;vertical-align:-2px;margin-left:4px" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/><path d="M9 16l2 2 4-4"/></svg></button>
+            </div>
+        </section>
+    </main>
+
+    <footer class="version-footer" id="versionFooter">...</footer>
+
+    <!-- Add Reservation Modal -->
+    <div class="modal-overlay" id="addResaModal">
+        <div class="modal">
+            <div class="modal-handle"></div>
+            <div class="modal-header">
+                <h2 class="modal-title">Nouvelle réservation</h2>
+                <button class="modal-close" id="closeAddResaBtn">✕</button>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Nom</label>
+                <input type="text" class="form-input" id="addResaNom" placeholder="Nom du client" autocomplete="off">
+            </div>
+            <div class="form-group">
+                <label class="form-label">Téléphone</label>
+                <input type="tel" class="form-input" id="addResaTel" placeholder="06 XX XX XX XX" autocomplete="off">
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label class="form-label">Date</label>
+                    <input type="date" class="form-input" id="addResaDate">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Heure</label>
+                    <input type="time" class="form-input" id="addResaHeure" step="300">
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Couverts</label>
+                <div class="covers-selector">
+                    <button type="button" class="covers-btn" id="coversMinusBtn">−</button>
+                    <span class="covers-value" id="coversDisplay">2</span>
+                    <button type="button" class="covers-btn" id="coversPlusBtn">+</button>
+                </div>
+                <input type="hidden" id="addResaCouverts" value="2">
+            </div>
+            <div class="form-group">
+                <label class="form-label">Notes</label>
+                <input type="text" class="form-input" id="addResaNotes" placeholder="Allergies, préférences..." autocomplete="off">
+            </div>
+            <div class="modal-actions">
+                <button class="btn btn-secondary" id="cancelAddResaBtn">Annuler</button>
+                <button class="btn btn-primary" id="submitAddResaBtn">Enregistrer</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Item Modal -->
+    <div class="modal-overlay" id="itemModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h2 class="modal-title" id="itemModalTitle">Nouvel élément</h2>
+                <button class="modal-close" id="closeItemModalBtn">✕</button>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Nom</label>
+                <input type="text" class="form-input" id="itemName" placeholder="Nom du plat">
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Description</label>
+                <input type="text" class="form-input" id="itemDescription" placeholder="Description courte">
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Prix (€)</label>
+                <input type="number" class="form-input" id="itemPrice" placeholder="12.50" step="0.01" min="0">
+            </div>
+
+            <div class="modal-section-title">Photo</div>
+            <div class="tabs">
+                <button class="tab-btn active" data-tab="upload">Importer</button>
+                <button class="tab-btn" data-tab="url">URL</button>
+            </div>
+
+            <div class="tab-content active" id="uploadTab">
+                <input type="file" class="form-input" id="itemPhoto" accept="image/*" style="padding: 0; border: none; margin-bottom: 1rem;">
+                <div class="photo-preview empty" id="photoPreview">Aucune image</div>
+            </div>
+
+            <div class="tab-content" id="urlTab">
+                <div class="form-group">
+                    <label class="form-label">URL de l'image</label>
+                    <input type="url" class="form-input" id="itemPhotoUrl" placeholder="https://...">
+                </div>
+            </div>
+
+            <div class="modal-section-title">Tags</div>
+            <div class="tag-picker" id="tagPicker"></div>
+
+            <div class="modal-actions">
+                <button class="btn btn-secondary" id="cancelItemBtn">Annuler</button>
+                <button class="btn btn-primary" id="submitItemBtn">Enregistrer</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Category Modal -->
+    <div class="modal-overlay" id="categoryModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h2 class="modal-title" id="categoryModalTitle">Nouvelle catégorie</h2>
+                <button class="modal-close" id="closeCategoryModalBtn">✕</button>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Nom</label>
+                <input type="text" class="form-input" id="categoryName" placeholder="Nom de la catégorie">
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Famille</label>
+                <select class="form-input" id="categoryFamily">
+                    <option value="">Sélectionner une famille</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Visible</label>
+                <div style="display: flex; gap: 1rem;">
+                    <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
+                        <input type="radio" name="categoryVisibility" value="true" checked>
+                        Oui
+                    </label>
+                    <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
+                        <input type="radio" name="categoryVisibility" value="false">
+                        Non
+                    </label>
+                </div>
+            </div>
+
+            <div class="modal-section-title">Photo</div>
+            <div class="photo-preview empty" id="categoryPhotoPreview">Aucune image</div>
+            <input type="file" class="form-input" id="categoryPhoto" accept="image/*" style="padding: 0; border: none; margin-bottom: 1rem;">
+
+            <div class="modal-actions">
+                <button class="btn btn-secondary" id="cancelCategoryBtn">Annuler</button>
+                <button class="btn btn-primary" id="submitCategoryBtn">Enregistrer</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Family Modal -->
+    <div class="modal-overlay" id="familyModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h2 class="modal-title" id="familyModalTitle">Nouvelle famille</h2>
+                <button class="modal-close" id="closeFamilyModalBtn">✕</button>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Nom</label>
+                <input type="text" class="form-input" id="familyName" placeholder="Nom de la famille">
+            </div>
+
+            <div class="modal-section-title">Photo</div>
+            <div class="photo-preview empty" id="familyPhotoPreview">Aucune image</div>
+            <input type="file" class="form-input" id="familyPhoto" accept="image/*" style="padding: 0; border: none; margin-bottom: 1rem;">
+
+            <div class="modal-actions">
+                <button class="btn btn-secondary" id="cancelFamilyBtn">Annuler</button>
+                <button class="btn btn-primary" id="submitFamilyBtn">Enregistrer</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Container -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <script>
+        // ============================================================================
+        // CONFIG & STORAGE
+        // ============================================================================
+
+        // ============================================================================
+        // API HELPERS
+        // ============================================================================
+
+        async function carteApi(endpoint, options = {}) {
+            try {
+                const response = await fetch(`/api${endpoint}`, {
+                    headers: { 'Content-Type': 'application/json', ...options.headers },
+                    ...options
+                });
+                if (!response.ok) {
+                    const error = await response.text();
+                    throw new Error(error || `HTTP ${response.status}`);
+                }
+                return await response.json();
+            } catch (err) {
+                showToast(`Erreur Carte: ${err.message}`, 'error');
+                throw err;
+            }
+        }
+
+        async function resaApi(endpoint, options = {}) {
+            try {
+                const response = await fetch(endpoint, {
+                    headers: { 'Content-Type': 'application/json', ...options.headers },
+                    ...options
+                });
+                if (!response.ok) {
+                    const error = await response.text();
+                    throw new Error(error || `HTTP ${response.status}`);
+                }
+                return await response.json();
+            } catch (err) {
+                showToast(`Erreur Réservation: ${err.message}`, 'error');
+                throw err;
+            }
+        }
+
+        // ============================================================================
+        // TOAST NOTIFICATIONS
+        // ============================================================================
+
+        function showToast(message, type = 'success') {
+            const container = document.getElementById('toastContainer');
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            toast.textContent = message;
+            container.appendChild(toast);
+
+            setTimeout(() => {
+                toast.remove();
+            }, 3000);
+        }
+
+        // ============================================================================
+        // CART STATE
+        // ============================================================================
+
+        const carteState = {
+            restaurantId: null,
+            families: [],
+            categories: [],
+            items: [],
+            tags: [],
+            tagLookup: {},
+            selectedFamily: null,
+            currentEditingItem: null,
+            currentEditingCategory: null,
+            currentEditingCategoryId: null,
+            currentEditingFamily: null,
+            selectedTags: []
+        };
+
+        // ============================================================================
+        // NAVIGATION
+        // ============================================================================
+
+        document.querySelectorAll('.nav-tab').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const section = btn.dataset.section;
+
+                document.querySelectorAll('.nav-tab').forEach(b => b.classList.remove('active'));
+                document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+
+                btn.classList.add('active');
+                document.getElementById(`${section}Section`).classList.add('active');
+
+                if (section === 'carte') {
+                    loadCarteData();
+                } else if (section === 'reservations') {
+                    loadReservations();
+                }
+            });
+        });
+
+        document.querySelectorAll('.subtab-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const subtab = btn.dataset.subtab;
+                const parent = btn.closest('.carte-subtabs').parentElement;
+
+                document.querySelectorAll('.subtab-btn').forEach(b => b.classList.remove('active'));
+                document.querySelectorAll('.carte-subtab-content').forEach(s => s.style.display = 'none');
+
+                btn.classList.add('active');
+                document.getElementById(`${subtab}Subtab`).style.display = 'block';
+
+                if (subtab === 'organisation') {
+                    renderOrganisation();
+                } else if (subtab === 'tags') {
+                    renderTags();
+                }
+            });
+        });
+
+        // ============================================================================
+
+        // ============================================================================
+        // CARTE - DATA LOADING
+        // ============================================================================
+
+        async function loadCarteData() {
+            try {
+                const restaurantsRaw = await carteApi('/restaurants');
+                const restaurants = restaurantsRaw.data || restaurantsRaw || [];
+                if (restaurants.length > 0) {
+                    carteState.restaurantId = restaurants[0].id;
+
+                    const [familiesRaw, categoriesRaw, itemsRaw, tagsRaw] = await Promise.all([
+                        carteApi(`/families?restaurant_id=${carteState.restaurantId}`),
+                        carteApi(`/categories?restaurant_id=${carteState.restaurantId}`),
+                        carteApi(`/items?restaurant_id=${carteState.restaurantId}`),
+                        carteApi('/tags')
+                    ]);
+
+                    carteState.families = familiesRaw.data || familiesRaw || [];
+                    carteState.categories = categoriesRaw.data || categoriesRaw || [];
+                    carteState.items = itemsRaw.data || itemsRaw || [];
+                    carteState.tags = tagsRaw.data || tagsRaw || [];
+
+                    carteState.tagLookup = {};
+                    carteState.tags.forEach(tag => {
+                        carteState.tagLookup[tag.id] = tag;
+                    });
+
+                    updateCarteUI();
+                }
+            } catch (err) {
+                console.error('Failed to load carte data:', err);
+            }
+        }
+
+        function updateCarteUI() {
+            updateKPI();
+            renderFamilyFilter();
+            renderCategoryCards();
+        }
+
+        function updateKPI() {
+            const prices = carteState.items.map(i => i.price || 0).filter(p => p > 0);
+            const avgPrice = prices.length > 0 ? (prices.reduce((a, b) => a + b, 0) / prices.length).toFixed(2) : '-';
+
+            document.getElementById('kpiFamily').textContent = carteState.families.length;
+            document.getElementById('kpiCategory').textContent = carteState.categories.length;
+            document.getElementById('kpiItem').textContent = carteState.items.length;
+            document.getElementById('kpiPrice').textContent = avgPrice === '-' ? '-' : `${avgPrice}€`;
+        }
+
+        function renderFamilyFilter() {
+            const container = document.getElementById('familyFilter');
+            container.innerHTML = '';
+
+            const allBtn = document.createElement('button');
+            allBtn.className = 'filter-pill active';
+            allBtn.textContent = 'Tous';
+            allBtn.addEventListener('click', () => {
+                carteState.selectedFamily = null;
+                renderFamilyFilter();
+                renderCategoryCards();
+            });
+            container.appendChild(allBtn);
+
+            carteState.families.forEach(family => {
+                const btn = document.createElement('button');
+                btn.className = 'filter-pill';
+                if (carteState.selectedFamily === family.id) btn.classList.add('active');
+                btn.textContent = family.name;
+                btn.addEventListener('click', () => {
+                    carteState.selectedFamily = family.id;
+                    renderFamilyFilter();
+                    renderCategoryCards();
+                });
+                container.appendChild(btn);
+            });
+        }
+
+        function renderCategoryCards() {
+            const container = document.getElementById('categoryGrid');
+            container.innerHTML = '';
+
+            const filteredCategories = carteState.selectedFamily
+                ? carteState.categories.filter(c => c.family_id === carteState.selectedFamily)
+                : carteState.categories;
+
+            filteredCategories.forEach(category => {
+                const family = carteState.families.find(f => f.id === category.family_id);
+                const items = carteState.items.filter(i => i.category_id === category.id);
+
+                const card = document.createElement('div');
+                card.className = 'category-card expandable-section';
+
+                const headerDiv = document.createElement('div');
+                headerDiv.className = 'category-header';
+
+                const titleSection = document.createElement('div');
+                titleSection.className = 'category-title-section';
+
+                const titleBtn = document.createElement('div');
+                titleBtn.className = 'expandable-header';
+                titleBtn.style.cursor = 'pointer';
+                titleBtn.innerHTML = `<span class="expand-icon">▶</span> <span class="category-name">${category.name}</span>`;
+
+                titleSection.appendChild(titleBtn);
+
+                if (family) {
+                    const familyBadge = document.createElement('span');
+                    familyBadge.className = 'badge badge-family';
+                    familyBadge.textContent = family.name;
+                    titleSection.appendChild(familyBadge);
+                }
+
+                if (category.is_visible) {
+                    const visibleBadge = document.createElement('span');
+                    visibleBadge.className = 'badge badge-visible';
+                    visibleBadge.textContent = 'Visible';
+                    titleSection.appendChild(visibleBadge);
+                } else {
+                    const hiddenBadge = document.createElement('span');
+                    hiddenBadge.className = 'badge badge-hidden';
+                    hiddenBadge.textContent = 'Caché';
+                    titleSection.appendChild(hiddenBadge);
+                }
+
+                headerDiv.appendChild(titleSection);
+
+                const controls = document.createElement('div');
+                controls.className = 'category-controls';
+
+                const editBtn = document.createElement('button');
+                editBtn.className = 'btn-icon';
+                editBtn.textContent = '✏️';
+                editBtn.addEventListener('click', () => openCategoryModal(category));
+                controls.appendChild(editBtn);
+
+                const deleteBtn = document.createElement('button');
+                deleteBtn.className = 'btn-icon';
+                deleteBtn.textContent = '🗑️';
+                deleteBtn.addEventListener('click', async () => {
+                    if (confirm('Supprimer cette catégorie?')) {
+                        try {
+                            await carteApi(`/categories/${category.id}`, { method: 'DELETE' });
+                            loadCarteData();
+                            showToast('Catégorie supprimée');
+                        } catch (err) {
+                            showToast('Erreur lors de la suppression', 'error');
+                        }
+                    }
+                });
+                controls.appendChild(deleteBtn);
+
+                headerDiv.appendChild(controls);
+                card.appendChild(headerDiv);
+
+                const bodyDiv = document.createElement('div');
+                bodyDiv.className = 'category-body';
+
+                const itemsList = document.createElement('div');
+                itemsList.className = 'items-list';
+
+                items.forEach(item => {
+                    const itemRow = document.createElement('div');
+                    itemRow.className = 'item-row';
+                    if (!item.is_available) itemRow.style.opacity = '0.5';
+
+                    // Colonne prix (comme colonne heure des résas)
+                    const priceCol = document.createElement('div');
+                    priceCol.className = 'item-price-col';
+                    priceCol.textContent = `${item.price}€`;
+                    itemRow.appendChild(priceCol);
+
+                    // Contenu
+                    const content = document.createElement('div');
+                    content.className = 'item-content';
+
+                    // Row 1 : nom + toggle
+                    const row1 = document.createElement('div');
+                    row1.className = 'item-row1';
+                    const name = document.createElement('span');
+                    name.className = 'item-name';
+                    name.textContent = item.name;
+                    row1.appendChild(name);
+
+                    const controls = document.createElement('div');
+                    controls.className = 'item-controls';
+
+                    const toggleBtn = document.createElement('button');
+                    toggleBtn.className = 'toggle-switch';
+                    if (item.is_available) toggleBtn.classList.add('active');
+                    toggleBtn.addEventListener('click', async (e) => {
+                        e.stopPropagation();
+                        try {
+                            await carteApi(`/items/${item.id}/toggle`, { method: 'PUT' });
+                            loadCarteData();
+                        } catch (err) {
+                            showToast('Erreur lors de la modification', 'error');
+                        }
+                    });
+                    controls.appendChild(toggleBtn);
+                    row1.appendChild(controls);
+                    content.appendChild(row1);
+
+                    // Row 2 : description/tags à gauche, actions à droite
+                    const hasDetails = item.description || (item.tags && item.tags.length > 0);
+                    if (hasDetails) {
+                        const row2 = document.createElement('div');
+                        row2.className = 'item-row2';
+
+                        const left = document.createElement('div');
+                        left.className = 'item-row2-left';
+
+                        if (item.description) {
+                            const desc = document.createElement('span');
+                            desc.className = 'item-description';
+                            desc.textContent = item.description;
+                            left.appendChild(desc);
+                        }
+
+                        if (item.tags && item.tags.length > 0) {
+                            const tagsDiv = document.createElement('div');
+                            tagsDiv.className = 'item-tags';
+                            item.tags.forEach(tagId => {
+                                const tag = carteState.tagLookup[tagId];
+                                if (tag) {
+                                    const pill = document.createElement('span');
+                                    pill.className = 'tag-pill';
+                                    if (tag.bg) pill.style.background = tag.bg;
+                                    if (tag.color) pill.style.color = tag.color;
+                                    pill.textContent = (tag.icon || '') + ' ' + tag.name;
+                                    tagsDiv.appendChild(pill);
+                                }
+                            });
+                            left.appendChild(tagsDiv);
+                        }
+
+                        row2.appendChild(left);
+                        content.appendChild(row2);
+                    }
+
+                    itemRow.appendChild(content);
+
+                    // Tap → edit
+                    itemRow.style.cursor = 'pointer';
+                    itemRow.addEventListener('click', () => openItemModal(item));
+                    itemsList.appendChild(itemRow);
+                });
+
+                bodyDiv.appendChild(itemsList);
+
+                const addItemBtn = document.createElement('button');
+                addItemBtn.className = 'btn btn-primary add-item-btn';
+                addItemBtn.textContent = '+ Ajouter un plat';
+                addItemBtn.addEventListener('click', () => {
+                    openItemModal(null, category.id);
+                });
+                bodyDiv.appendChild(addItemBtn);
+
+                card.appendChild(bodyDiv);
+
+                titleBtn.addEventListener('click', () => {
+                    card.classList.toggle('collapsed');
+                    if (card.classList.contains('collapsed')) {
+                        bodyDiv.style.display = 'none';
+                    } else {
+                        bodyDiv.style.display = 'block';
+                    }
+                });
+
+                container.appendChild(card);
+            });
+        }
+
+        // ============================================================================
+        // ITEM MODAL
+        // ============================================================================
+
+        const itemModal = document.getElementById('itemModal');
+        const itemModalTitle = document.getElementById('itemModalTitle');
+        const closeItemModalBtn = document.getElementById('closeItemModalBtn');
+        const itemName = document.getElementById('itemName');
+        const itemDescription = document.getElementById('itemDescription');
+        const itemPrice = document.getElementById('itemPrice');
+        const itemPhoto = document.getElementById('itemPhoto');
+        const itemPhotoUrl = document.getElementById('itemPhotoUrl');
+        const photoPreview = document.getElementById('photoPreview');
+        const tagPicker = document.getElementById('tagPicker');
+        const cancelItemBtn = document.getElementById('cancelItemBtn');
+        const submitItemBtn = document.getElementById('submitItemBtn');
+
+        let currentEditingItem = null;
+        let currentItemCategoryId = null;
+
+        itemPhoto.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = (event) => {
+                    photoPreview.innerHTML = `<img src="${event.target.result}">`;
+                    photoPreview.classList.remove('empty');
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        document.querySelectorAll('.tab-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const tab = btn.dataset.tab;
+                document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+                document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+                btn.classList.add('active');
+                document.getElementById(`${tab}Tab`).classList.add('active');
+            });
+        });
+
+        function openItemModal(item = null, categoryId = null) {
+            currentEditingItem = item;
+            currentItemCategoryId = categoryId;
+
+            if (item) {
+                itemModalTitle.textContent = 'Modifier le plat';
+                itemName.value = item.name || '';
+                itemDescription.value = item.description || '';
+                itemPrice.value = item.price || '';
+                carteState.selectedTags = item.tags || [];
+
+                if (item.photo_url) {
+                    photoPreview.innerHTML = `<img src="${item.photo_url}">`;
+                    photoPreview.classList.remove('empty');
+                    itemPhotoUrl.value = item.photo_url;
+                } else {
+                    photoPreview.innerHTML = 'Aucune image';
+                    photoPreview.classList.add('empty');
+                }
+            } else {
+                itemModalTitle.textContent = 'Nouvel élément';
+                itemName.value = '';
+                itemDescription.value = '';
+                itemPrice.value = '';
+                itemPhoto.value = '';
+                itemPhotoUrl.value = '';
+                carteState.selectedTags = [];
+                photoPreview.innerHTML = 'Aucune image';
+                photoPreview.classList.add('empty');
+            }
+
+            renderTagPicker();
+            itemModal.classList.add('active');
+        }
+
+        function renderTagPicker() {
+            tagPicker.innerHTML = '';
+
+            const tagGroups = {};
+            carteState.tags.forEach(tag => {
+                if (!tagGroups[tag.category]) {
+                    tagGroups[tag.category] = [];
+                }
+                tagGroups[tag.category].push(tag);
+            });
+
+            Object.entries(tagGroups).forEach(([category, tags]) => {
+                const groupDiv = document.createElement('div');
+                groupDiv.className = 'tag-group-picker';
+                if (category === 'ALLERGEN') groupDiv.classList.add('allergen');
+
+                const header = document.createElement('div');
+                header.className = 'tag-group-header';
+                header.textContent = category;
+                groupDiv.appendChild(header);
+
+                const content = document.createElement('div');
+                content.className = 'tag-group-content';
+
+                if (category === 'ALLERGEN') {
+                    tags.forEach(tag => {
+                        const tagDiv = document.createElement('div');
+                        tagDiv.className = 'allergen-detail';
+
+                        const name = document.createElement('div');
+                        name.className = 'allergen-detail-name';
+                        name.textContent = tag.name;
+                        tagDiv.appendChild(name);
+
+                        if (tag.description) {
+                            const desc = document.createElement('div');
+                            desc.className = 'allergen-detail-desc';
+                            desc.textContent = tag.description;
+                            tagDiv.appendChild(desc);
+                        }
+
+                        const checkbox = document.createElement('input');
+                        checkbox.type = 'checkbox';
+                        checkbox.value = tag.id;
+                        checkbox.checked = carteState.selectedTags.includes(tag.id);
+                        checkbox.addEventListener('change', () => {
+                            if (checkbox.checked) {
+                                if (!carteState.selectedTags.includes(tag.id)) {
+                                    carteState.selectedTags.push(tag.id);
+                                }
+                            } else {
+                                carteState.selectedTags = carteState.selectedTags.filter(id => id !== tag.id);
+                            }
+                        });
+
+                        tagDiv.style.display = 'flex';
+                        tagDiv.style.alignItems = 'center';
+                        tagDiv.style.gap = '0.5rem';
+                        tagDiv.style.marginBottom = '0.5rem';
+                        tagDiv.appendChild(checkbox);
+
+                        content.appendChild(tagDiv);
+                    });
+                } else {
+                    tags.forEach(tag => {
+                        const label = document.createElement('label');
+                        label.className = 'tag-checkbox';
+                        if (carteState.selectedTags.includes(tag.id)) label.classList.add('selected');
+
+                        const checkbox = document.createElement('input');
+                        checkbox.type = 'checkbox';
+                        checkbox.value = tag.id;
+                        checkbox.checked = carteState.selectedTags.includes(tag.id);
+                        checkbox.addEventListener('change', () => {
+                            if (checkbox.checked) {
+                                if (!carteState.selectedTags.includes(tag.id)) {
+                                    carteState.selectedTags.push(tag.id);
+                                }
+                            } else {
+                                carteState.selectedTags = carteState.selectedTags.filter(id => id !== tag.id);
+                            }
+                            if (checkbox.checked) {
+                                label.classList.add('selected');
+                            } else {
+                                label.classList.remove('selected');
+                            }
+                        });
+
+                        label.appendChild(checkbox);
+                        label.appendChild(document.createTextNode(tag.name));
+                        content.appendChild(label);
+                    });
+                }
+
+                groupDiv.appendChild(content);
+
+                header.addEventListener('click', () => {
+                    content.classList.toggle('hidden');
+                });
+
+                tagPicker.appendChild(groupDiv);
+            });
+        }
+
+        closeItemModalBtn.addEventListener('click', () => itemModal.classList.remove('active'));
+
+        cancelItemBtn.addEventListener('click', () => itemModal.classList.remove('active'));
+
+        submitItemBtn.addEventListener('click', async () => {
+            const name = itemName.value.trim();
+            const description = itemDescription.value.trim();
+            const price = parseFloat(itemPrice.value);
+
+            if (!name || !price) {
+                showToast('Remplissez tous les champs', 'error');
+                return;
+            }
+
+            let photoUrl = itemPhotoUrl.value.trim();
+
+            if (itemPhoto.files.length > 0) {
+                const formData = new FormData();
+                formData.append('file', itemPhoto.files[0]);
+                try {
+                    const uploadRes = await carteApi('/upload', {
+                        method: 'POST',
+                        body: formData,
+                        headers: {}
+                    });
+                    photoUrl = uploadRes.url || photoUrl;
+                } catch (err) {
+                    showToast('Erreur lors de l\'upload', 'error');
+                    return;
+                }
+            }
+
+            const itemData = {
+                name,
+                description,
+                price,
+                photo_url: photoUrl,
+                tags: carteState.selectedTags,
+                category_id: currentItemCategoryId || currentEditingItem.category_id,
+                restaurant_id: carteState.restaurantId
+            };
+
+            try {
+                if (currentEditingItem) {
+                    await carteApi(`/items/${currentEditingItem.id}`, {
+                        method: 'PUT',
+                        body: JSON.stringify(itemData)
+                    });
+                    showToast('Plat modifié');
+                } else {
+                    await carteApi('/items', {
+                        method: 'POST',
+                        body: JSON.stringify(itemData)
+                    });
+                    showToast('Plat créé');
+                }
+                itemModal.classList.remove('active');
+                loadCarteData();
+            } catch (err) {
+                showToast('Erreur lors de l\'enregistrement', 'error');
+            }
+        });
+
+        // ============================================================================
+        // CATEGORY MODAL
+        // ============================================================================
+
+        const categoryModal = document.getElementById('categoryModal');
+        const categoryModalTitle = document.getElementById('categoryModalTitle');
+        const closeCategoryModalBtn = document.getElementById('closeCategoryModalBtn');
+        const categoryName = document.getElementById('categoryName');
+        const categoryFamily = document.getElementById('categoryFamily');
+        const categoryPhoto = document.getElementById('categoryPhoto');
+        const categoryPhotoPreview = document.getElementById('categoryPhotoPreview');
+        const cancelCategoryBtn = document.getElementById('cancelCategoryBtn');
+        const submitCategoryBtn = document.getElementById('submitCategoryBtn');
+
+        let currentEditingCategoryData = null;
+
+        categoryPhoto.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = (event) => {
+                    categoryPhotoPreview.innerHTML = `<img src="${event.target.result}">`;
+                    categoryPhotoPreview.classList.remove('empty');
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        function openCategoryModal(category = null) {
+            currentEditingCategoryData = category;
+
+            if (category) {
+                categoryModalTitle.textContent = 'Modifier la catégorie';
+                categoryName.value = category.name || '';
+                categoryFamily.value = category.family_id || '';
+
+                if (category.photo_url) {
+                    categoryPhotoPreview.innerHTML = `<img src="${category.photo_url}">`;
+                    categoryPhotoPreview.classList.remove('empty');
+                } else {
+                    categoryPhotoPreview.innerHTML = 'Aucune image';
+                    categoryPhotoPreview.classList.add('empty');
+                }
+
+                const visibilityRadios = document.querySelectorAll('input[name="categoryVisibility"]');
+                visibilityRadios.forEach(radio => {
+                    radio.checked = (radio.value === 'true') === category.is_visible;
+                });
+            } else {
+                categoryModalTitle.textContent = 'Nouvelle catégorie';
+                categoryName.value = '';
+                categoryFamily.value = '';
+                categoryPhoto.value = '';
+                categoryPhotoPreview.innerHTML = 'Aucune image';
+                categoryPhotoPreview.classList.add('empty');
+
+                const visibilityRadios = document.querySelectorAll('input[name="categoryVisibility"]');
+                visibilityRadios[0].checked = true;
+            }
+
+            updateCategoryFamilySelect();
+            categoryModal.classList.add('active');
+        }
+
+        function updateCategoryFamilySelect() {
+            categoryFamily.innerHTML = '<option value="">Sélectionner une famille</option>';
+            carteState.families.forEach(family => {
+                const option = document.createElement('option');
+                option.value = family.id;
+                option.textContent = family.name;
+                categoryFamily.appendChild(option);
+            });
+        }
+
+        closeCategoryModalBtn.addEventListener('click', () => categoryModal.classList.remove('active'));
+        cancelCategoryBtn.addEventListener('click', () => categoryModal.classList.remove('active'));
+
+        submitCategoryBtn.addEventListener('click', async () => {
+            const name = categoryName.value.trim();
+            const familyId = categoryFamily.value;
+            const visibilityRadio = document.querySelector('input[name="categoryVisibility"]:checked');
+            const isVisible = visibilityRadio.value === 'true';
+
+            if (!name || !familyId) {
+                showToast('Remplissez tous les champs', 'error');
+                return;
+            }
+
+            let photoUrl = '';
+            if (currentEditingCategoryData && currentEditingCategoryData.photo_url) {
+                photoUrl = currentEditingCategoryData.photo_url;
+            }
+
+            if (categoryPhoto.files.length > 0) {
+                const formData = new FormData();
+                formData.append('file', categoryPhoto.files[0]);
+                try {
+                    const uploadRes = await carteApi('/upload', {
+                        method: 'POST',
+                        body: formData,
+                        headers: {}
+                    });
+                    photoUrl = uploadRes.url || photoUrl;
+                } catch (err) {
+                    showToast('Erreur lors de l\'upload', 'error');
+                    return;
+                }
+            }
+
+            const categoryData = {
+                name,
+                family_id: familyId,
+                photo_url: photoUrl,
+                is_visible: isVisible,
+                restaurant_id: carteState.restaurantId
+            };
+
+            try {
+                if (currentEditingCategoryData) {
+                    await carteApi(`/categories/${currentEditingCategoryData.id}`, {
+                        method: 'PUT',
+                        body: JSON.stringify(categoryData)
+                    });
+                    showToast('Catégorie modifiée');
+                } else {
+                    await carteApi('/categories', {
+                        method: 'POST',
+                        body: JSON.stringify(categoryData)
+                    });
+                    showToast('Catégorie créée');
+                }
+                categoryModal.classList.remove('active');
+                loadCarteData();
+            } catch (err) {
+                showToast('Erreur lors de l\'enregistrement', 'error');
+            }
+        });
+
+        // ============================================================================
+        // FAMILY MODAL
+        // ============================================================================
+
+        const familyModal = document.getElementById('familyModal');
+        const familyModalTitle = document.getElementById('familyModalTitle');
+        const closeFamilyModalBtn = document.getElementById('closeFamilyModalBtn');
+        const familyName = document.getElementById('familyName');
+        const familyPhoto = document.getElementById('familyPhoto');
+        const familyPhotoPreview = document.getElementById('familyPhotoPreview');
+        const cancelFamilyBtn = document.getElementById('cancelFamilyBtn');
+        const submitFamilyBtn = document.getElementById('submitFamilyBtn');
+        const addFamilyBtn = document.getElementById('addFamilyBtn');
+
+        let currentEditingFamilyData = null;
+
+        familyPhoto.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = (event) => {
+                    familyPhotoPreview.innerHTML = `<img src="${event.target.result}">`;
+                    familyPhotoPreview.classList.remove('empty');
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        function openFamilyModal(family = null) {
+            currentEditingFamilyData = family;
+
+            if (family) {
+                familyModalTitle.textContent = 'Modifier la famille';
+                familyName.value = family.name || '';
+
+                if (family.photo_url) {
+                    familyPhotoPreview.innerHTML = `<img src="${family.photo_url}">`;
+                    familyPhotoPreview.classList.remove('empty');
+                } else {
+                    familyPhotoPreview.innerHTML = 'Aucune image';
+                    familyPhotoPreview.classList.add('empty');
+                }
+            } else {
+                familyModalTitle.textContent = 'Nouvelle famille';
+                familyName.value = '';
+                familyPhoto.value = '';
+                familyPhotoPreview.innerHTML = 'Aucune image';
+                familyPhotoPreview.classList.add('empty');
+            }
+
+            familyModal.classList.add('active');
+        }
+
+        closeFamilyModalBtn.addEventListener('click', () => familyModal.classList.remove('active'));
+        cancelFamilyBtn.addEventListener('click', () => familyModal.classList.remove('active'));
+        addFamilyBtn.addEventListener('click', () => openFamilyModal(null));
+
+        submitFamilyBtn.addEventListener('click', async () => {
+            const name = familyName.value.trim();
+
+            if (!name) {
+                showToast('Remplissez le nom de la famille', 'error');
+                return;
+            }
+
+            let photoUrl = '';
+            if (currentEditingFamilyData && currentEditingFamilyData.photo_url) {
+                photoUrl = currentEditingFamilyData.photo_url;
+            }
+
+            if (familyPhoto.files.length > 0) {
+                const formData = new FormData();
+                formData.append('file', familyPhoto.files[0]);
+                try {
+                    const uploadRes = await carteApi('/upload', {
+                        method: 'POST',
+                        body: formData,
+                        headers: {}
+                    });
+                    photoUrl = uploadRes.url || photoUrl;
+                } catch (err) {
+                    showToast('Erreur lors de l\'upload', 'error');
+                    return;
+                }
+            }
+
+            const familyData = {
+                name,
+                photo_url: photoUrl,
+                restaurant_id: carteState.restaurantId
+            };
+
+            try {
+                if (currentEditingFamilyData) {
+                    await carteApi(`/families/${currentEditingFamilyData.id}`, {
+                        method: 'PUT',
+                        body: JSON.stringify(familyData)
+                    });
+                    showToast('Famille modifiée');
+                } else {
+                    await carteApi('/families', {
+                        method: 'POST',
+                        body: JSON.stringify(familyData)
+                    });
+                    showToast('Famille créée');
+                }
+                familyModal.classList.remove('active');
+                loadCarteData();
+            } catch (err) {
+                showToast('Erreur lors de l\'enregistrement', 'error');
+            }
+        });
+
+        // ============================================================================
+        // ORGANISATION VIEW
+        // ============================================================================
+
+        function renderOrganisation() {
+            const container = document.getElementById('organisationContainer');
+            container.innerHTML = '';
+
+            carteState.families.forEach((family, index) => {
+                const section = document.createElement('div');
+                section.className = 'family-section';
+
+                const header = document.createElement('div');
+                header.className = 'family-header';
+
+                const nameDiv = document.createElement('div');
+                nameDiv.className = 'family-name';
+                nameDiv.textContent = family.name;
+                header.appendChild(nameDiv);
+
+                const controls = document.createElement('div');
+                controls.className = 'family-controls';
+
+                const upBtn = document.createElement('button');
+                upBtn.className = 'btn-icon';
+                upBtn.textContent = '⬆️';
+                upBtn.disabled = index === 0;
+                upBtn.addEventListener('click', async () => {
+                    if (index > 0) {
+                        const swapId = carteState.families[index - 1].id;
+                        try {
+                            await carteApi('/families/reorder', {
+                                method: 'PUT',
+                                body: JSON.stringify({ family_id: family.id, swap_with_id: swapId })
+                            });
+                            loadCarteData();
+                        } catch (err) {
+                            showToast('Erreur lors du réordonnancement', 'error');
+                        }
+                    }
+                });
+                controls.appendChild(upBtn);
+
+                const downBtn = document.createElement('button');
+                downBtn.className = 'btn-icon';
+                downBtn.textContent = '⬇️';
+                downBtn.disabled = index === carteState.families.length - 1;
+                downBtn.addEventListener('click', async () => {
+                    if (index < carteState.families.length - 1) {
+                        const swapId = carteState.families[index + 1].id;
+                        try {
+                            await carteApi('/families/reorder', {
+                                method: 'PUT',
+                                body: JSON.stringify({ family_id: family.id, swap_with_id: swapId })
+                            });
+                            loadCarteData();
+                        } catch (err) {
+                            showToast('Erreur lors du réordonnancement', 'error');
+                        }
+                    }
+                });
+                controls.appendChild(downBtn);
+
+                const editBtn = document.createElement('button');
+                editBtn.className = 'btn-icon';
+                editBtn.textContent = '✏️';
+                editBtn.addEventListener('click', () => openFamilyModal(family));
+                controls.appendChild(editBtn);
+
+                const deleteBtn = document.createElement('button');
+                deleteBtn.className = 'btn-icon';
+                deleteBtn.textContent = '🗑️';
+                deleteBtn.addEventListener('click', async () => {
+                    if (confirm('Supprimer cette famille?')) {
+                        try {
+                            await carteApi(`/families/${family.id}`, { method: 'DELETE' });
+                            loadCarteData();
+                            showToast('Famille supprimée');
+                        } catch (err) {
+                            showToast('Erreur lors de la suppression', 'error');
+                        }
+                    }
+                });
+                controls.appendChild(deleteBtn);
+
+                const addCatBtn = document.createElement('button');
+                addCatBtn.className = 'btn-icon';
+                addCatBtn.textContent = '+';
+                addCatBtn.addEventListener('click', () => {
+                    currentItemCategoryId = null;
+                    currentEditingCategoryData = null;
+                    categoryName.value = '';
+                    categoryFamily.value = family.id;
+                    updateCategoryFamilySelect();
+                    categoryPhotoPreview.innerHTML = 'Aucune image';
+                    categoryPhotoPreview.classList.add('empty');
+                    categoryPhoto.value = '';
+                    document.querySelector('input[name="categoryVisibility"]').checked = true;
+                    categoryModal.classList.add('active');
+                });
+                controls.appendChild(addCatBtn);
+
+                header.appendChild(controls);
+                section.appendChild(header);
+
+                const categoryList = document.createElement('div');
+                categoryList.className = 'category-list';
+
+                const familyCategories = carteState.categories.filter(c => c.family_id === family.id);
+
+                familyCategories.forEach((category, catIndex) => {
+                    const item = document.createElement('div');
+                    item.className = 'category-item';
+
+                    const name = document.createElement('div');
+                    name.className = 'category-item-name';
+                    name.textContent = category.name;
+                    item.appendChild(name);
+
+                    const reorderControls = document.createElement('div');
+                    reorderControls.className = 'reorder-controls';
+
+                    const upBtn = document.createElement('button');
+                    upBtn.className = 'btn-icon';
+                    upBtn.textContent = '⬆️';
+                    upBtn.disabled = catIndex === 0;
+                    upBtn.addEventListener('click', async () => {
+                        if (catIndex > 0) {
+                            const swapId = familyCategories[catIndex - 1].id;
+                            try {
+                                await carteApi('/categories/reorder', {
+                                    method: 'PUT',
+                                    body: JSON.stringify({ category_id: category.id, swap_with_id: swapId })
+                                });
+                                loadCarteData();
+                            } catch (err) {
+                                showToast('Erreur lors du réordonnancement', 'error');
+                            }
+                        }
+                    });
+                    reorderControls.appendChild(upBtn);
+
+                    const downBtn = document.createElement('button');
+                    downBtn.className = 'btn-icon';
+                    downBtn.textContent = '⬇️';
+                    downBtn.disabled = catIndex === familyCategories.length - 1;
+                    downBtn.addEventListener('click', async () => {
+                        if (catIndex < familyCategories.length - 1) {
+                            const swapId = familyCategories[catIndex + 1].id;
+                            try {
+                                await carteApi('/categories/reorder', {
+                                    method: 'PUT',
+                                    body: JSON.stringify({ category_id: category.id, swap_with_id: swapId })
+                                });
+                                loadCarteData();
+                            } catch (err) {
+                                showToast('Erreur lors du réordonnancement', 'error');
+                            }
+                        }
+                    });
+                    reorderControls.appendChild(downBtn);
+
+                    item.appendChild(reorderControls);
+                    categoryList.appendChild(item);
+                });
+
+                section.appendChild(categoryList);
+                container.appendChild(section);
+            });
+        }
+
+        // ============================================================================
+        // TAGS VIEW
+        // ============================================================================
+
+        function showTagDetailPopup(tag, items) {
+            // Réutilise le système modal existant
+            let overlay = document.getElementById('tagDetailOverlay');
+            if (!overlay) {
+                overlay = document.createElement('div');
+                overlay.id = 'tagDetailOverlay';
+                overlay.style.cssText = 'position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.4);z-index:1000;display:flex;align-items:center;justify-content:center;padding:1rem;';
+                overlay.addEventListener('click', (e) => {
+                    if (e.target === overlay) overlay.remove();
+                });
+                document.body.appendChild(overlay);
+            }
+            const card = document.createElement('div');
+            card.style.cssText = 'background:#fff;border-radius:12px;max-width:360px;width:100%;max-height:70vh;overflow-y:auto;padding:1.25rem;box-shadow:0 8px 30px rgba(0,0,0,0.15);';
+
+            let html = `<div style="display:flex;align-items:center;gap:0.6rem;margin-bottom:0.75rem;">
+                <span style="font-size:1.5rem;">${tag.icon || '🏷️'}</span>
+                <span style="font-size:1.1rem;font-weight:700;color:${tag.color || '#1a2332'}">${tag.name}</span>
+            </div>`;
+
+            if (tag.description) {
+                html += `<div style="font-size:0.82rem;color:#5a6a7e;margin-bottom:1rem;line-height:1.4;">${tag.description}</div>`;
+            }
+
+            if (items.length > 0) {
+                html += `<div style="font-size:0.75rem;font-weight:600;color:#8a9bb0;text-transform:uppercase;margin-bottom:0.5rem;">${items.length} plat${items.length > 1 ? 's' : ''} concerné${items.length > 1 ? 's' : ''}</div>`;
+                html += `<div style="display:flex;flex-direction:column;gap:0.35rem;">`;
+                items.forEach(item => {
+                    html += `<div style="font-size:0.85rem;color:#1a2332;padding:0.35rem 0;border-bottom:1px solid #f0f0f5;">• ${item.name}</div>`;
+                });
+                html += `</div>`;
+            } else {
+                html += `<div style="font-size:0.85rem;color:#8a9bb0;font-style:italic;">Aucun plat associé</div>`;
+            }
+
+            card.innerHTML = html;
+            overlay.innerHTML = '';
+            overlay.appendChild(card);
+        }
+
+        function renderTags() {
+            const container = document.getElementById('tagsContainer');
+            container.innerHTML = '';
+
+            const tagGroups = {};
+            carteState.tags.forEach(tag => {
+                if (!tagGroups[tag.category]) {
+                    tagGroups[tag.category] = [];
+                }
+                tagGroups[tag.category].push(tag);
+            });
+
+            const categoryOrder = ['ALLERGEN', 'PRODUCT_TYPE', 'BEVERAGE', 'CERTIFICATION', 'ORIGIN', 'OFFER', 'HIGHLIGHT'];
+
+            categoryOrder.forEach(category => {
+                if (!tagGroups[category]) return;
+
+                const group = document.createElement('div');
+                group.className = 'tag-group';
+
+                const title = document.createElement('div');
+                title.className = 'tag-group-title';
+                title.textContent = category;
+                group.appendChild(title);
+
+                if (category === 'ALLERGEN') {
+                    const tagsList = document.createElement('div');
+                    tagsList.className = 'tags-list';
+
+                    tagGroups[category].forEach(tag => {
+                        const tagItem = document.createElement('div');
+                        tagItem.className = 'allergen-card';
+                        if (tag.bg) tagItem.style.background = tag.bg;
+                        if (tag.color) tagItem.style.borderColor = tag.color + '33';
+
+                        const left = document.createElement('div');
+                        left.className = 'allergen-left';
+
+                        const icon = document.createElement('div');
+                        icon.className = 'allergen-icon';
+                        icon.textContent = tag.icon || '⚠️';
+                        left.appendChild(icon);
+
+                        const name = document.createElement('div');
+                        name.className = 'allergen-name';
+                        if (tag.color) name.style.color = tag.color;
+                        name.textContent = tag.name;
+                        left.appendChild(name);
+
+                        tagItem.appendChild(left);
+
+                        const matchingItems = carteState.items.filter(i => i.tags && i.tags.includes(tag.id));
+                        const count = matchingItems.length;
+                        const usage = document.createElement('div');
+                        usage.className = 'tag-count';
+                        usage.textContent = `${count}`;
+                        tagItem.appendChild(usage);
+
+                        // Tap → popup détails
+                        tagItem.addEventListener('click', () => {
+                            showTagDetailPopup(tag, matchingItems);
+                        });
+
+                        tagsList.appendChild(tagItem);
+                    });
+
+                    group.appendChild(tagsList);
+                } else {
+                    const tagsList = document.createElement('div');
+                    tagsList.className = 'tags-list';
+
+                    tagGroups[category].forEach(tag => {
+                        const tagItem = document.createElement('div');
+                        tagItem.className = 'tag-item';
+                        tagItem.style.cursor = 'pointer';
+                        if (tag.bg) tagItem.style.background = tag.bg;
+
+                        const left = document.createElement('div');
+                        left.style.cssText = 'display:flex;align-items:center;gap:0.5rem;min-width:0;';
+                        if (tag.icon) {
+                            const icon = document.createElement('span');
+                            icon.textContent = tag.icon;
+                            icon.style.fontSize = '1rem';
+                            left.appendChild(icon);
+                        }
+                        const name = document.createElement('div');
+                        name.className = 'tag-item-name';
+                        if (tag.color) name.style.color = tag.color;
+                        name.textContent = tag.name;
+                        left.appendChild(name);
+                        tagItem.appendChild(left);
+
+                        const matchingItems = carteState.items.filter(i => i.tags && i.tags.includes(tag.id));
+                        const usage = document.createElement('div');
+                        usage.className = 'tag-count';
+                        usage.textContent = `${matchingItems.length}`;
+                        tagItem.appendChild(usage);
+
+                        tagItem.addEventListener('click', () => {
+                            showTagDetailPopup(tag, matchingItems);
+                        });
+
+                        tagsList.appendChild(tagItem);
+                    });
+
+                    group.appendChild(tagsList);
+                }
+
+                container.appendChild(group);
+            });
+        }
+
+        // ============================================================================
+        // RÉSERVATIONS - DATA & UI
+        // ============================================================================
+
+        let currentDate = new Date();
+        currentDate.setHours(0, 0, 0, 0);
+        let currentService = 'midi';
+
+        function formatDate(date) {
+            const year = date.getFullYear();
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const day = String(date.getDate()).padStart(2, '0');
+            return `${year}-${month}-${day}`;
+        }
+
+        function updateDateDisplay(date) {
+            const weekday = date.toLocaleDateString('fr-FR', { weekday: 'long' });
+            const main = date.toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' });
+            document.querySelector('#dateDisplay .date-weekday').textContent = weekday;
+            document.querySelector('#dateDisplay .date-main').textContent = main;
+
+            // Sync le date picker
+            const picker = document.getElementById('datePickerInput');
+            if (picker) picker.value = formatDate(date);
+        }
+
+        const prevDayBtn = document.getElementById('prevDayBtn');
+        const nextDayBtn = document.getElementById('nextDayBtn');
+        const dateDisplay = document.getElementById('dateDisplay');
+        const datePickerInput = document.getElementById('datePickerInput');
+
+        prevDayBtn.addEventListener('click', () => {
+            currentDate.setDate(currentDate.getDate() - 1);
+            loadReservations();
+        });
+
+        nextDayBtn.addEventListener('click', () => {
+            currentDate.setDate(currentDate.getDate() + 1);
+            loadReservations();
+        });
+
+        // Le bouton calendrier : l'input date est superposé transparent
+        // Le clic tombe dessus et ouvre le picker natif du téléphone
+        datePickerInput.value = formatDate(currentDate);
+
+        datePickerInput.addEventListener('change', (e) => {
+            if (e.target.value) {
+                const [y, m, d] = e.target.value.split('-').map(Number);
+                currentDate = new Date(y, m - 1, d);
+                currentDate.setHours(0, 0, 0, 0);
+                loadReservations();
+            }
+        });
+
+        document.querySelectorAll('.service-card').forEach(card => {
+            card.addEventListener('click', () => {
+                document.querySelectorAll('.service-card').forEach(c => c.classList.remove('active'));
+                card.classList.add('active');
+                currentService = card.dataset.service;
+                loadReservations();
+            });
+        });
+
+        const addResaModal = document.getElementById('addResaModal');
+        const addResaNom = document.getElementById('addResaNom');
+        const addResaTel = document.getElementById('addResaTel');
+        const addResaDate = document.getElementById('addResaDate');
+        const addResaHeure = document.getElementById('addResaHeure');
+        const addResaCouverts = document.getElementById('addResaCouverts');
+        const addResaNotes = document.getElementById('addResaNotes');
+        const cancelAddResaBtn = document.getElementById('cancelAddResaBtn');
+        const submitAddResaBtn = document.getElementById('submitAddResaBtn');
+
+        // Covers +/- selector
+        const coversDisplay = document.getElementById('coversDisplay');
+        let coversCount = 2;
+
+        document.getElementById('coversMinusBtn').addEventListener('click', () => {
+            if (coversCount > 1) {
+                coversCount--;
+                coversDisplay.textContent = coversCount;
+                addResaCouverts.value = coversCount;
+            }
+        });
+
+        document.getElementById('coversPlusBtn').addEventListener('click', () => {
+            if (coversCount < 30) {
+                coversCount++;
+                coversDisplay.textContent = coversCount;
+                addResaCouverts.value = coversCount;
+            }
+        });
+
+        let editingResaId = null;
+
+        function clearResaForm() {
+            editingResaId = null;
+            addResaNom.value = '';
+            addResaTel.value = '';
+            addResaDate.value = '';
+            addResaHeure.value = '';
+            coversCount = 2;
+            coversDisplay.textContent = '2';
+            addResaCouverts.value = '2';
+            addResaNotes.value = '';
+            document.querySelector('#addResaModal .modal-title').textContent = 'Nouvelle réservation';
+            submitAddResaBtn.textContent = 'Réserver';
+        }
+
+        function openModal(modal) {
+            document.body.classList.add('modal-open');
+            modal.classList.add('active');
+        }
+
+        function closeModal(modal) {
+            modal.classList.remove('active');
+            document.body.classList.remove('modal-open');
+        }
+
+        document.getElementById('openAddResaBtn').addEventListener('click', () => {
+            clearResaForm();
+            addResaDate.value = formatDate(currentDate);
+            addResaHeure.value = currentService === 'midi' ? '12:00' : '19:30';
+            openModal(addResaModal);
+        });
+
+        document.getElementById('closeAddResaBtn').addEventListener('click', () => {
+            closeModal(addResaModal);
+            clearResaForm();
+        });
+
+        cancelAddResaBtn.addEventListener('click', () => {
+            closeModal(addResaModal);
+            clearResaForm();
+        });
+
+        addResaModal.addEventListener('click', (e) => {
+            if (e.target === addResaModal) {
+                closeModal(addResaModal);
+                clearResaForm();
+            }
+        });
+
+        let isSubmitting = false;
+
+        submitAddResaBtn.addEventListener('click', async () => {
+            if (isSubmitting) return;
+
+            const nom = addResaNom.value.trim();
+            const tel = addResaTel.value.trim();
+            const date = addResaDate.value;
+            const heure = addResaHeure.value;
+            const couverts = parseInt(addResaCouverts.value);
+            const notes = addResaNotes.value.trim();
+
+            if (!nom || !date || !heure || !couverts) {
+                showToast('Remplissez tous les champs obligatoires', 'error');
+                return;
+            }
+
+            // Lock + loader
+            isSubmitting = true;
+            const originalText = submitAddResaBtn.innerHTML;
+            submitAddResaBtn.innerHTML = 'Envoi…';
+            submitAddResaBtn.style.opacity = '0.6';
+            submitAddResaBtn.style.pointerEvents = 'none';
+
+            const resaData = {
+                nom,
+                telephone: tel,
+                date,
+                heure,
+                couverts,
+                notes
+            };
+
+            try {
+                if (editingResaId) {
+                    await resaApi(`/reservations/${editingResaId}`, {
+                        method: 'PUT',
+                        body: JSON.stringify(resaData)
+                    });
+                    showToast('Réservation modifiée');
+                } else {
+                    await resaApi('/reservations', {
+                        method: 'POST',
+                        body: JSON.stringify(resaData)
+                    });
+                    showToast('Réservation ajoutée');
+                }
+                closeModal(addResaModal);
+                clearResaForm();
+                loadReservations();
+            } catch (err) {
+                showToast(editingResaId ? 'Erreur lors de la modification' : 'Erreur lors de l\'ajout', 'error');
+            } finally {
+                isSubmitting = false;
+                submitAddResaBtn.innerHTML = originalText;
+                submitAddResaBtn.style.opacity = '';
+                submitAddResaBtn.style.pointerEvents = '';
+            }
+        });
+
+        function filterByService(list, service) {
+            return list.filter(r => {
+                const hour = parseInt(r.heure.split(':')[0]);
+                return service === 'midi' ? (hour >= 11 && hour < 17) : (hour >= 17);
+            });
+        }
+
+        async function loadReservations() {
+            updateDateDisplay(currentDate);
+
+            try {
+                const reservations = await resaApi(`/reservations?date=${formatDate(currentDate)}`);
+                const list = reservations.data || reservations || [];
+
+                const midi = filterByService(list, 'midi');
+                const soir = filterByService(list, 'soir');
+                const capacity = 42;
+
+                // KPI par service
+                const midiCovers = midi.reduce((s, r) => s + (r.couverts || 0), 0);
+                const soirCovers = soir.reduce((s, r) => s + (r.couverts || 0), 0);
+
+                document.getElementById('midiResas').textContent = midi.length;
+                document.getElementById('midiResas').parentElement.innerHTML = `<strong id="midiResas">${midi.length}</strong> table${midi.length > 1 ? 's' : ''}`;
+                document.getElementById('midiCovers').textContent = midiCovers;
+                document.getElementById('midiDispo').textContent = Math.max(0, capacity - midiCovers);
+
+                document.getElementById('soirResas').textContent = soir.length;
+                document.getElementById('soirResas').parentElement.innerHTML = `<strong id="soirResas">${soir.length}</strong> table${soir.length > 1 ? 's' : ''}`;
+                document.getElementById('soirCovers').textContent = soirCovers;
+                document.getElementById('soirDispo').textContent = Math.max(0, capacity - soirCovers);
+
+                // Recap journée
+                const totalR = list.length;
+                const totalC = midiCovers + soirCovers;
+                document.getElementById('dailyRecap').textContent = `${totalR} table${totalR > 1 ? 's' : ''} · ${totalC} couvert${totalC > 1 ? 's' : ''}`;
+
+                // Afficher le service sélectionné
+                const filtered = currentService === 'midi' ? midi : soir;
+                renderReservationList(filtered);
+            } catch (err) {
+                console.error('Failed to load reservations:', err);
+            }
+        }
+
+        // ── Swipe helpers ──
+        function setupSwipe(wrapper, card, onDelete) {
+            let startX = 0, currentX = 0, swiping = false;
+            const THRESHOLD = 70;
+
+            card.addEventListener('touchstart', (e) => {
+                startX = e.touches[0].clientX;
+                currentX = 0;
+                swiping = true;
+                card.style.transition = 'none';
+            }, { passive: true });
+
+            card.addEventListener('touchmove', (e) => {
+                if (!swiping) return;
+                currentX = e.touches[0].clientX - startX;
+                if (currentX < 0) {
+                    card.style.transform = `translateX(${Math.max(currentX, -90)}px)`;
+                }
+            }, { passive: true });
+
+            card.addEventListener('touchend', () => {
+                swiping = false;
+                card.style.transition = 'transform 0.2s ease';
+                if (currentX < -THRESHOLD) {
+                    card.style.transform = 'translateX(-90px)';
+                    wrapper._swiped = true;
+                } else {
+                    card.style.transform = 'translateX(0)';
+                    wrapper._swiped = false;
+                }
+            });
+
+            // Tap anywhere else closes swipe
+            document.addEventListener('touchstart', (e) => {
+                if (wrapper._swiped && !wrapper.contains(e.target)) {
+                    card.style.transition = 'transform 0.2s ease';
+                    card.style.transform = 'translateX(0)';
+                    wrapper._swiped = false;
+                }
+            }, { passive: true });
+        }
+
+        // ── Edit mode ──
+        function openEditModal(resa) {
+            editingResaId = resa.id;
+            addResaNom.value = resa.nom || '';
+            addResaTel.value = resa.telephone || '';
+            addResaDate.value = resa.date || '';
+            addResaHeure.value = resa.heure || '';
+            coversCount = resa.couverts || 2;
+            coversDisplay.textContent = coversCount;
+            addResaCouverts.value = coversCount;
+            addResaNotes.value = resa.notes || '';
+            document.querySelector('#addResaModal .modal-title').textContent = 'Modifier la réservation';
+            submitAddResaBtn.textContent = 'Enregistrer';
+            openModal(addResaModal);
+        }
+
+        function renderReservationList(reservations) {
+            const container = document.getElementById('reservationList');
+            container.innerHTML = '';
+
+            if (reservations.length === 0) {
+                const empty = document.createElement('div');
+                empty.style.textAlign = 'center';
+                empty.style.color = '#8a9bb0';
+                empty.style.padding = '2rem';
+                empty.textContent = 'Aucune réservation';
+                container.appendChild(empty);
+                return;
+            }
+
+            reservations.sort((a, b) => a.heure.localeCompare(b.heure));
+
+            reservations.forEach(resa => {
+                // Wrapper pour le swipe
+                const wrapper = document.createElement('div');
+                wrapper.className = 'resa-swipe-wrapper';
+
+                // Background rouge (visible au swipe)
+                const bg = document.createElement('div');
+                bg.className = 'resa-swipe-bg';
+                bg.textContent = 'Supprimer';
+                bg.addEventListener('click', async () => {
+                    if (confirm('Supprimer cette réservation ?')) {
+                        try {
+                            await resaApi(`/reservations/${resa.id}`, { method: 'DELETE' });
+                            loadReservations();
+                            showToast('Réservation supprimée');
+                        } catch (err) {
+                            showToast('Erreur lors de la suppression', 'error');
+                        }
+                    }
+                });
+                wrapper.appendChild(bg);
+
+                const card = document.createElement('div');
+                const statut = resa.statut || 'confirmee';
+                card.className = `reservation-card resa-statut-${statut}`;
+
+                // Tap → edit (seulement si pas en swipe)
+                card.addEventListener('click', (e) => {
+                    if (wrapper._swiped) {
+                        card.style.transition = 'transform 0.2s ease';
+                        card.style.transform = 'translateX(0)';
+                        wrapper._swiped = false;
+                        return;
+                    }
+                    openEditModal(resa);
+                });
+
+                // ── Colonne heure + source ──
+                const sourceIcons = {
+                    backoffice: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>',
+                    web: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>',
+                    phone: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>'
+                };
+                const srcIcon = sourceIcons[resa.source] || sourceIcons.backoffice;
+                const timeCol = document.createElement('div');
+                timeCol.className = 'resa-time-col';
+                timeCol.innerHTML = `<span class="resa-time-val">${resa.heure}</span><span class="resa-source-icon">${srcIcon}</span>`;
+                card.appendChild(timeCol);
+
+                // ── Contenu ──
+                const content = document.createElement('div');
+                content.className = 'resa-content';
+
+                // Ligne 1 : nom + couverts
+                const row1 = document.createElement('div');
+                row1.className = 'resa-row1';
+                const n = Math.min(resa.couverts || 0, 8);
+                let dotsHtml = '';
+                for (let i = 0; i < n; i++) dotsHtml += '<span class="resa-dot"></span>';
+                row1.innerHTML = `<span class="resa-client">${resa.nom}</span><span class="resa-covers"><span class="resa-covers-dots">${dotsHtml}</span><span class="resa-covers-num">${resa.couverts || 0}</span></span>`;
+                content.appendChild(row1);
+
+                // Ligne 2 : gauche (tél + notes) | droite (table)
+                {
+                    const row2 = document.createElement('div');
+                    row2.className = 'resa-row2';
+
+                    // Gauche : tél + notes (sous le nom)
+                    let leftHtml = '';
+                    if (resa.telephone) leftHtml += `<a href="tel:${resa.telephone}" class="resa-tel-tag" onclick="event.stopPropagation()"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg> ${resa.telephone}</a>`;
+                    if (resa.notes) leftHtml += `<span class="resa-notes">${resa.notes}</span>`;
+
+                    // Droite : table (sous les couverts)
+                    const tableHtml = `<span class="resa-table-badge${resa.table ? ' assigned' : ''}">${resa.table ? 'Table ' + resa.table : 'Table —'}</span>`;
+
+                    row2.innerHTML = `<div class="resa-row2-left">${leftHtml}</div><div class="resa-row2-right">${tableHtml}</div>`;
+                    content.appendChild(row2);
+                }
+
+                card.appendChild(content);
+                wrapper.appendChild(card);
+
+                // Setup swipe gesture
+                setupSwipe(wrapper, card);
+
+                container.appendChild(wrapper);
+            });
+        }
+
+        // ============================================================================
+        // GÉOLOCALISATION
+        // ============================================================================
+        {
+            const RESTO_LAT = 45.76286;
+            const RESTO_LNG = 4.83291;
+            const RESTO_NAME = 'Sauf Imprévu';
+
+            const geoBtn = document.getElementById('geoBtn');
+            let geoPanel = null;
+            let geoMap = null;
+            let geoUserMarker = null;
+            let geoWatchId = null;
+
+            function haversineDistance(lat1, lon1, lat2, lon2) {
+                const R = 6371000;
+                const toRad = x => x * Math.PI / 180;
+                const dLat = toRad(lat2 - lat1);
+                const dLon = toRad(lon2 - lon1);
+                const a = Math.sin(dLat/2)**2 + Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) * Math.sin(dLon/2)**2;
+                return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+            }
+
+            function formatDistance(meters) {
+                if (meters < 1000) return `${Math.round(meters)} m`;
+                return `${(meters / 1000).toFixed(1)} km`;
+            }
+
+            geoBtn.addEventListener('click', () => {
+                if (geoPanel) {
+                    closeGeoPanel();
+                } else {
+                    openGeoPanel();
+                }
+            });
+
+            function openGeoPanel() {
+                geoBtn.classList.add('active');
+
+                const overlay = document.createElement('div');
+                overlay.className = 'geo-overlay';
+                overlay.addEventListener('click', (e) => {
+                    if (e.target === overlay) closeGeoPanel();
+                });
+
+                geoPanel = document.createElement('div');
+                geoPanel.className = 'geo-panel';
+                geoPanel.innerHTML = `
+                    <div class="geo-panel-header">
+                        <span class="geo-panel-header-title">📍 Géolocalisation</span>
+                        <button class="geo-panel-close" id="geoPanelClose">&times;</button>
+                    </div>
+                    <div class="geo-panel-map" id="geoMapContainer"></div>
+                    <div class="geo-panel-info">
+                        <div class="geo-panel-distance" id="geoDistance">Localisation...</div>
+                        <div class="geo-panel-coords" id="geoCoords"></div>
+                        <div class="geo-panel-accuracy" id="geoAccuracy"></div>
+                    </div>
+                `;
+                overlay.appendChild(geoPanel);
+                document.body.appendChild(overlay);
+                geoPanel._overlay = overlay;
+
+                document.getElementById('geoPanelClose').addEventListener('click', closeGeoPanel);
+
+                // Init carte Leaflet
+                geoMap = L.map('geoMapContainer', { zoomControl: false }).setView([RESTO_LAT, RESTO_LNG], 15);
+                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                    attribution: '© OSM',
+                    maxZoom: 19
+                }).addTo(geoMap);
+
+                // Marqueur resto
+                L.marker([RESTO_LAT, RESTO_LNG], {
+                    icon: L.divIcon({
+                        html: '<div style="background:#c0392b;color:#fff;width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;border:2px solid #fff;box-shadow:0 2px 6px rgba(0,0,0,0.3);">🍷</div>',
+                        iconSize: [28, 28],
+                        iconAnchor: [14, 14],
+                        className: ''
+                    })
+                }).addTo(geoMap).bindPopup(RESTO_NAME);
+
+                // Démarrer le suivi GPS
+                if ('geolocation' in navigator) {
+                    geoWatchId = navigator.geolocation.watchPosition(
+                        pos => updateGeoPosition(pos),
+                        err => {
+                            document.getElementById('geoDistance').textContent = 'GPS indisponible';
+                            document.getElementById('geoAccuracy').textContent = err.message;
+                        },
+                        { enableHighAccuracy: true, maximumAge: 5000, timeout: 15000 }
+                    );
+                } else {
+                    document.getElementById('geoDistance').textContent = 'Géolocalisation non supportée';
+                }
+            }
+
+            function updateGeoPosition(pos) {
+                const { latitude, longitude, accuracy } = pos.coords;
+                const dist = haversineDistance(latitude, longitude, RESTO_LAT, RESTO_LNG);
+
+                document.getElementById('geoDistance').textContent = `${formatDistance(dist)} du resto`;
+                document.getElementById('geoCoords').textContent = `${latitude.toFixed(5)}, ${longitude.toFixed(5)}`;
+                document.getElementById('geoAccuracy').textContent = `Précision : ±${Math.round(accuracy)} m`;
+
+                if (geoUserMarker) {
+                    geoUserMarker.setLatLng([latitude, longitude]);
+                } else {
+                    geoUserMarker = L.circleMarker([latitude, longitude], {
+                        radius: 8,
+                        fillColor: '#3d5a80',
+                        fillOpacity: 1,
+                        color: '#fff',
+                        weight: 3
+                    }).addTo(geoMap);
+                }
+
+                // Ajuster la vue pour montrer les deux points
+                const bounds = L.latLngBounds(
+                    [latitude, longitude],
+                    [RESTO_LAT, RESTO_LNG]
+                );
+                geoMap.fitBounds(bounds.pad(0.3));
+            }
+
+            function closeGeoPanel() {
+                geoBtn.classList.remove('active');
+                if (geoWatchId !== null) {
+                    navigator.geolocation.clearWatch(geoWatchId);
+                    geoWatchId = null;
+                }
+                if (geoMap) {
+                    geoMap.remove();
+                    geoMap = null;
+                }
+                geoUserMarker = null;
+                if (geoPanel) {
+                    if (geoPanel._overlay) geoPanel._overlay.remove();
+                    else geoPanel.remove();
+                    geoPanel = null;
+                }
+            }
+        }
+
+        // ============================================================================
+        // ============================================================================
+        // AR MENU
+        // ============================================================================
+        {
+            document.getElementById('arMenuBtn').addEventListener('click', openARMenu);
+
+            async function openARMenu() {
+                // Charger les plats depuis l'API
+                let items = [];
+                try {
+                    const data = await carteApi('/items');
+                    items = (data.data || data || []).filter(i => i.is_available !== 0).slice(0, 8);
+                } catch (e) {
+                    items = [
+                        { name: 'Tartare de bœuf', price: 16, description: 'Frites saison' },
+                        { name: 'Fish & Chips', price: 16, description: 'Maison' },
+                        { name: 'Velouté butternut', price: 12, description: 'Coco, courge' },
+                    ];
+                }
+
+                if (!items.length) { showToast('Aucun plat disponible'); return; }
+
+                const overlay = document.createElement('div');
+                overlay.style.cssText = 'position:fixed;top:0;left:0;right:0;bottom:0;z-index:2000;background:#000;overflow:hidden;';
+
+                // Vidéo caméra
+                const video = document.createElement('video');
+                video.setAttribute('autoplay', '');
+                video.setAttribute('playsinline', '');
+                video.style.cssText = 'width:100%;height:100%;object-fit:cover;';
+                overlay.appendChild(video);
+
+                // Canvas pour feu d'artifice
+                const fwCanvas = document.createElement('canvas');
+                fwCanvas.style.cssText = 'position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:5;';
+                overlay.appendChild(fwCanvas);
+
+                // Conteneur Lottie
+                const lottieContainer = document.createElement('div');
+                lottieContainer.style.cssText = 'position:absolute;top:0;left:0;right:0;bottom:0;z-index:6;pointer-events:none;display:flex;align-items:center;justify-content:center;';
+                overlay.appendChild(lottieContainer);
+
+                // Texte bienvenue
+                const welcomeText = document.createElement('div');
+                welcomeText.style.cssText = 'position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);z-index:7;pointer-events:none;text-align:center;opacity:0;transition:opacity 0.6s ease;';
+                welcomeText.innerHTML = `
+                    <div style="font-size:2rem;font-weight:900;color:#fff;text-shadow:0 2px 20px rgba(0,0,0,0.5);letter-spacing:0.02em;">Bienvenue</div>
+                    <div style="font-size:1.6rem;font-weight:700;color:rgba(255,255,255,0.95);margin-top:0.4rem;text-shadow:0 2px 12px rgba(0,0,0,0.5);letter-spacing:0.03em;">chez Sauf Imprévu</div>
+                `;
+                overlay.appendChild(welcomeText);
+
+                // Couche AR (cartes) — cachée initialement
+                const arLayer = document.createElement('div');
+                arLayer.style.cssText = 'position:absolute;top:0;left:0;right:0;bottom:0;pointer-events:none;perspective:800px;overflow:hidden;';
+                overlay.appendChild(arLayer);
+
+                // Header
+                const header = document.createElement('div');
+                header.style.cssText = 'position:absolute;top:0;left:0;right:0;padding:1rem;display:flex;justify-content:space-between;align-items:center;background:linear-gradient(to bottom,rgba(0,0,0,0.6),transparent);z-index:10;';
+                header.innerHTML = '<span style="color:#fff;font-weight:700;font-size:1rem;">AR Menu — Sauf Imprévu</span>';
+                const closeBtn = document.createElement('button');
+                closeBtn.textContent = '✕';
+                closeBtn.style.cssText = 'background:rgba(255,255,255,0.2);border:none;color:#fff;font-size:1.2rem;width:36px;height:36px;border-radius:50%;cursor:pointer;pointer-events:auto;';
+                closeBtn.addEventListener('click', closeAR);
+                header.appendChild(closeBtn);
+                overlay.appendChild(header);
+
+                // Footer hint
+                const footer = document.createElement('div');
+                footer.style.cssText = 'position:absolute;bottom:0;left:0;right:0;padding:1.5rem;text-align:center;background:linear-gradient(to top,rgba(0,0,0,0.6),transparent);z-index:10;opacity:0;transition:opacity 0.5s ease;';
+                footer.innerHTML = '<span style="color:rgba(255,255,255,0.7);font-size:0.8rem;">Bougez le téléphone pour explorer les plats</span>';
+                overlay.appendChild(footer);
+
+                document.body.appendChild(overlay);
+
+                // Démarrer la caméra
+                let stream = null;
+                try {
+                    stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } });
+                    video.srcObject = stream;
+                    video.play();
+                } catch (e) {
+                    video.style.background = 'linear-gradient(135deg, #1a1a2e, #16213e)';
+                }
+
+                // ============================================================
+                // PHASE 1 : Lottie confettis + texte bienvenue (0 → 2.5s)
+                // ============================================================
+                let lottieAnim = null;
+                try {
+                    lottieAnim = lottie.loadAnimation({
+                        container: lottieContainer,
+                        renderer: 'svg',
+                        loop: false,
+                        autoplay: true,
+                        path: 'https://assets2.lottiefiles.com/packages/lf20_u4yrau.json'
+                    });
+                } catch(e) {
+                    // Fallback : pas de lottie, on continue
+                }
+
+                // Texte bienvenue apparaît
+                setTimeout(() => { welcomeText.style.opacity = '1'; }, 300);
+
+                // ============================================================
+                // PHASE 2 : Feu d'artifice Canvas (1.5s → 3.5s)
+                // ============================================================
+                const vw = window.innerWidth;
+                const vh = window.innerHeight;
+                fwCanvas.width = vw;
+                fwCanvas.height = vh;
+                const ctx = fwCanvas.getContext('2d');
+
+                const particles = [];
+                const fwColors = ['#ff6b6b','#ffd93d','#6bcb77','#4d96ff','#ff6eb4','#a66cff','#fff'];
+
+                function spawnBurst(x, y, count) {
+                    for (let i = 0; i < count; i++) {
+                        const angle = (Math.PI * 2 * i) / count + (Math.random() - 0.5) * 0.3;
+                        const speed = 2 + Math.random() * 4;
+                        particles.push({
+                            x, y,
+                            vx: Math.cos(angle) * speed,
+                            vy: Math.sin(angle) * speed,
+                            life: 1,
+                            decay: 0.012 + Math.random() * 0.015,
+                            color: fwColors[Math.floor(Math.random() * fwColors.length)],
+                            size: 2 + Math.random() * 3,
+                            trail: []
+                        });
+                    }
+                }
+
+                let fwRunning = false;
+                function animateFireworks() {
+                    if (!fwRunning) return;
+                    ctx.clearRect(0, 0, vw, vh);
+                    for (let i = particles.length - 1; i >= 0; i--) {
+                        const p = particles[i];
+                        p.trail.push({ x: p.x, y: p.y, life: p.life });
+                        if (p.trail.length > 6) p.trail.shift();
+                        p.x += p.vx;
+                        p.y += p.vy;
+                        p.vy += 0.04; // gravité légère
+                        p.vx *= 0.99;
+                        p.life -= p.decay;
+
+                        // Traînée
+                        p.trail.forEach((t, ti) => {
+                            ctx.globalAlpha = t.life * (ti / p.trail.length) * 0.4;
+                            ctx.fillStyle = p.color;
+                            ctx.beginPath();
+                            ctx.arc(t.x, t.y, p.size * 0.5, 0, Math.PI * 2);
+                            ctx.fill();
+                        });
+
+                        // Particule principale
+                        ctx.globalAlpha = p.life;
+                        ctx.fillStyle = p.color;
+                        ctx.shadowColor = p.color;
+                        ctx.shadowBlur = 8;
+                        ctx.beginPath();
+                        ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+                        ctx.fill();
+                        ctx.shadowBlur = 0;
+
+                        if (p.life <= 0) particles.splice(i, 1);
+                    }
+                    ctx.globalAlpha = 1;
+                    requestAnimationFrame(animateFireworks);
+                }
+
+                // Lancer les feux d'artifice après 1.2s
+                setTimeout(() => {
+                    fwRunning = true;
+                    animateFireworks();
+                    // Burst 1 — centre
+                    spawnBurst(vw * 0.5, vh * 0.35, 50);
+                    // Burst 2 — gauche
+                    setTimeout(() => spawnBurst(vw * 0.25, vh * 0.3, 40), 300);
+                    // Burst 3 — droite
+                    setTimeout(() => spawnBurst(vw * 0.75, vh * 0.25, 40), 500);
+                    // Burst 4 — centre bas
+                    setTimeout(() => spawnBurst(vw * 0.5, vh * 0.5, 35), 750);
+                    // Burst 5 — final grand
+                    setTimeout(() => spawnBurst(vw * 0.4, vh * 0.4, 60), 1000);
+                    setTimeout(() => spawnBurst(vw * 0.6, vh * 0.35, 60), 1100);
+                }, 1200);
+
+                // ============================================================
+                // PHASE 3 : Disparition intro + apparition des cartes (3.5s →)
+                // ============================================================
+                setTimeout(() => {
+                    // Fade out welcome + lottie
+                    welcomeText.style.opacity = '0';
+                    lottieContainer.style.transition = 'opacity 0.5s ease';
+                    lottieContainer.style.opacity = '0';
+                    // Arrêter feu d'artifice
+                    setTimeout(() => {
+                        fwRunning = false;
+                        ctx.clearRect(0, 0, vw, vh);
+                        fwCanvas.style.display = 'none';
+                        lottieContainer.remove();
+                        welcomeText.remove();
+                        if (lottieAnim) { try { lottieAnim.destroy(); } catch(e){} }
+                    }, 600);
+                    // Montrer footer hint
+                    footer.style.opacity = '1';
+                }, 3500);
+
+                // Créer les cartes plat (cachées, apparaissent en cascade à 4s)
+                const cards = [];
+
+                items.forEach((item, i) => {
+                    const card = document.createElement('div');
+                    card.style.cssText = `
+                        position:absolute;
+                        pointer-events:auto;
+                        background:rgba(255,255,255,0.92);
+                        backdrop-filter:blur(12px);
+                        -webkit-backdrop-filter:blur(12px);
+                        border-radius:14px;
+                        padding:0.85rem 1rem;
+                        width:180px;
+                        box-shadow:0 8px 32px rgba(0,0,0,0.3);
+                        border:1px solid rgba(255,255,255,0.3);
+                        transition:transform 0.1s ease-out;
+                        cursor:pointer;
+                        opacity:0;
+                        transform:scale(0.3) translateY(60px);
+                    `;
+
+                    const tags = item.tags || [];
+                    let tagIcons = '';
+                    if (tags.length && carteState && carteState.tagLookup) {
+                        const icons = tags.slice(0, 3).map(tid => {
+                            const t = carteState.tagLookup[tid];
+                            return t && t.icon ? t.icon : '';
+                        }).filter(Boolean);
+                        if (icons.length) tagIcons = `<div style="margin-top:0.3rem;font-size:0.85rem;">${icons.join(' ')}</div>`;
+                    }
+
+                    card.innerHTML = `
+                        <div style="font-weight:800;font-size:0.88rem;color:#1a2332;line-height:1.2;">${item.name}</div>
+                        ${item.description ? `<div style="font-size:0.72rem;color:#8a9bb0;margin-top:0.2rem;">${item.description}</div>` : ''}
+                        ${tagIcons}
+                        <div style="font-size:1.1rem;font-weight:800;color:#3d5a80;margin-top:0.4rem;">${item.price}€</div>
+                    `;
+
+                    // Position en cercle
+                    const angle = (i / items.length) * Math.PI * 2;
+                    const radius = Math.min(vw, vh) * 0.25;
+                    const cx = vw / 2 + Math.cos(angle) * radius - 90;
+                    const cy = vh / 2 + Math.sin(angle) * radius - 40;
+
+                    card.dataset.baseX = cx;
+                    card.dataset.baseY = cy;
+                    card.dataset.depth = (0.6 + Math.random() * 0.8).toFixed(2);
+                    card.style.left = cx + 'px';
+                    card.style.top = cy + 'px';
+
+                    // Apparition en cascade à partir de 4s
+                    setTimeout(() => {
+                        card.style.transition = 'opacity 0.6s cubic-bezier(0.34,1.56,0.64,1), transform 0.6s cubic-bezier(0.34,1.56,0.64,1)';
+                        card.style.opacity = '1';
+                        card.style.transform = 'scale(1) translateY(0)';
+                    }, 4000 + i * 200);
+
+                    // Tap → agrandir
+                    card.addEventListener('click', () => {
+                        if (card.dataset.expanded === '1') {
+                            card.style.transform = 'scale(1)';
+                            card.dataset.expanded = '0';
+                        } else {
+                            card.style.transform = 'scale(1.15)';
+                            card.style.zIndex = '10';
+                            card.dataset.expanded = '1';
+                        }
+                    });
+
+                    arLayer.appendChild(card);
+                    cards.push(card);
+                });
+
+                // Gyroscope parallax
+                let gyroX = 0, gyroY = 0;
+                function onOrientation(e) {
+                    gyroX = (e.gamma || 0);
+                    gyroY = (e.beta || 0) - 45;
+                }
+
+                if (typeof DeviceOrientationEvent !== 'undefined' && typeof DeviceOrientationEvent.requestPermission === 'function') {
+                    try {
+                        const perm = await DeviceOrientationEvent.requestPermission();
+                        if (perm === 'granted') window.addEventListener('deviceorientation', onOrientation);
+                    } catch (e) {}
+                } else {
+                    window.addEventListener('deviceorientation', onOrientation);
+                }
+
+                // Animation loop
+                let arRunning = true;
+                function animateAR() {
+                    if (!arRunning) return;
+                    cards.forEach(card => {
+                        const depth = parseFloat(card.dataset.depth);
+                        const bx = parseFloat(card.dataset.baseX);
+                        const by = parseFloat(card.dataset.baseY);
+                        const dx = gyroX * depth * 2;
+                        const dy = gyroY * depth * 1.5;
+                        card.style.left = (bx + dx) + 'px';
+                        card.style.top = (by + dy) + 'px';
+                    });
+                    requestAnimationFrame(animateAR);
+                }
+                animateAR();
+
+                // Floating animation subtile
+                let floatTime = 0;
+                function floatAnim() {
+                    if (!arRunning) return;
+                    floatTime += 0.02;
+                    cards.forEach((card, i) => {
+                        const offset = Math.sin(floatTime + i * 1.2) * 3;
+                        card.style.marginTop = offset + 'px';
+                    });
+                    requestAnimationFrame(floatAnim);
+                }
+                floatAnim();
+
+                function closeAR() {
+                    arRunning = false;
+                    fwRunning = false;
+                    window.removeEventListener('deviceorientation', onOrientation);
+                    if (stream) stream.getTracks().forEach(t => t.stop());
+                    if (lottieAnim) { try { lottieAnim.destroy(); } catch(e){} }
+                    overlay.remove();
+                }
+            }
+        }
+
+        // ============================================================================
+        // AUTH — mySafe SSO
+        // ============================================================================
+        {
+            async function initAuth() {
+                const authBtn = document.getElementById('authBtn');
+                try {
+                    const res = await fetch('/auth/me');
+                    const data = await res.json();
+                    if (data.authenticated && data.user) {
+                        const initials = (data.user.name || '?').split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2);
+                        authBtn.innerHTML = `
+                            <button class="auth-btn" onclick="document.getElementById('authMenu').style.display=document.getElementById('authMenu').style.display==='none'?'flex':'none'" title="${data.user.name}">
+                                <span class="auth-avatar">${initials}</span>
+                                <span style="max-width:80px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${data.user.name}</span>
+                            </button>
+                            <div id="authMenu" style="display:none;position:absolute;top:48px;right:0.5rem;background:#fff;border:1px solid #dde3ec;border-radius:10px;box-shadow:0 4px 16px rgba(0,0,0,0.1);padding:0.6rem;z-index:200;flex-direction:column;gap:0.3rem;min-width:160px;">
+                                <div style="font-size:0.75rem;color:#8a9bb0;padding:0.2rem 0.4rem;">${data.user.email || data.user.sub}</div>
+                                <a href="/auth/logout" style="display:block;padding:0.4rem 0.6rem;font-size:0.8rem;color:#e74c3c;text-decoration:none;border-radius:6px;font-weight:600;" onmouseover="this.style.background='#fef2f2'" onmouseout="this.style.background='none'">Déconnexion</a>
+                            </div>
+                        `;
+                    } else {
+                        authBtn.innerHTML = `<a href="/auth/login" class="auth-btn" title="Connexion mySafe"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg></a>`;
+                    }
+                } catch (e) {
+                    // Auth non disponible — masquer le bouton
+                    authBtn.style.display = 'none';
+                }
+            }
+            initAuth();
+
+            // Fermer le menu auth si clic ailleurs
+            document.addEventListener('click', (e) => {
+                const menu = document.getElementById('authMenu');
+                if (menu && !e.target.closest('.auth-btn') && !e.target.closest('#authMenu')) {
+                    menu.style.display = 'none';
+                }
+            });
+        }
+
+        // QR SCANNER
+        // ============================================================================
+        {
+            const scanBtn = document.getElementById('openScannerBtn');
+            let scannerActive = false;
+
+            scanBtn.addEventListener('click', () => {
+                if (scannerActive) return;
+                openScanner();
+            });
+
+            function openScanner() {
+                scannerActive = true;
+
+                const overlay = document.createElement('div');
+                overlay.className = 'scanner-overlay';
+
+                overlay.innerHTML = `
+                    <div class="scanner-header">
+                        <span class="scanner-header-title">Scanner un QR code</span>
+                        <button class="scanner-close-btn" id="scannerCloseBtn">&times;</button>
+                    </div>
+                    <div class="scanner-video-wrap">
+                        <video id="scannerVideo" autoplay playsinline></video>
+                        <div class="scanner-frame"></div>
+                    </div>
+                    <div class="scanner-result" id="scannerResult">Placez un QR code dans le cadre...</div>
+                `;
+
+                document.body.appendChild(overlay);
+
+                const video = document.getElementById('scannerVideo');
+                const resultDiv = document.getElementById('scannerResult');
+                const canvas = document.createElement('canvas');
+                const ctx = canvas.getContext('2d', { willReadFrequently: true });
+                let stream = null;
+                let animFrame = null;
+
+                function closeScanner() {
+                    scannerActive = false;
+                    if (animFrame) cancelAnimationFrame(animFrame);
+                    if (stream) stream.getTracks().forEach(t => t.stop());
+                    overlay.remove();
+                }
+
+                document.getElementById('scannerCloseBtn').addEventListener('click', closeScanner);
+
+                navigator.mediaDevices.getUserMedia({
+                    video: { facingMode: 'environment' }
+                }).then(s => {
+                    stream = s;
+                    video.srcObject = s;
+                    video.play();
+                    requestAnimationFrame(tick);
+                }).catch(err => {
+                    resultDiv.textContent = 'Impossible d\'accéder à la caméra';
+                    console.error('Camera error:', err);
+                });
+
+                function tick() {
+                    if (!scannerActive) return;
+                    if (video.readyState === video.HAVE_ENOUGH_DATA) {
+                        canvas.width = video.videoWidth;
+                        canvas.height = video.videoHeight;
+                        ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+                        const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+                        const code = jsQR(imageData.data, imageData.width, imageData.height, {
+                            inversionAttempts: 'dontInvert'
+                        });
+
+                        if (code) {
+                            handleQRResult(code.data);
+                            closeScanner();
+                            return;
+                        }
+                    }
+                    animFrame = requestAnimationFrame(tick);
+                }
+            }
+
+            function handleQRResult(data) {
+                console.log('QR scanné:', data);
+                alert(data);
+            }
+
+            // Auto-open depuis raccourci PWA (?action=scan ou ?action=resa)
+            const urlParams = new URLSearchParams(window.location.search);
+            const action = urlParams.get('action');
+            if (action === 'scan') {
+                setTimeout(() => openScanner(), 300);
+                history.replaceState(null, '', window.location.pathname);
+            } else if (action === 'resa') {
+                setTimeout(() => document.getElementById('openAddResaBtn').click(), 300);
+                history.replaceState(null, '', window.location.pathname);
+            }
+        }
+
+        // ============================================================================
+        // SERVICE WORKER
+        // ============================================================================
+
+        if ('serviceWorker' in navigator) {
+            // Reload auto quand un nouveau SW prend le contrôle
+            let refreshing = false;
+            navigator.serviceWorker.addEventListener('controllerchange', () => {
+                if (refreshing) return;
+                refreshing = true;
+                window.location.reload();
+            });
+
+            navigator.serviceWorker.register('/backoffice/sw.js').then(reg => {
+                // Le navigateur check le SW toutes les 24h automatiquement
+                // + à chaque navigation. Le controllerchange ci-dessus gère le reload.
+            }).catch(err => {
+                console.log('Service worker registration failed:', err);
+            });
+        }
+
+        // ============================================================================
+        // INITIALIZATION
+        // ============================================================================
+
+        window.addEventListener('load', () => {
+            // Sync header height → main margin
+            const hdr = document.querySelector('header');
+            document.documentElement.style.setProperty('--header-h', hdr.offsetHeight + 'px');
+
+            loadCarteData();
+            loadReservations();
+
+            // Charger le hash de commit dans le footer
+            fetch('/api/version')
+                .then(r => r.json())
+                .then(v => {
+                    document.getElementById('versionFooter').textContent = `v${v.hash}`;
+                })
+                .catch(() => {});
+        });
+    </script>
+</body>
+</html>

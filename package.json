@@ -1,9 +1,19 @@
 {
   "name": "myplace",
-  "version": "1.0.0",
+  "version": "2.0.0",
+  "description": "myPlace — Plateforme unifiée (Carte + Réservations + Chat IA + Back-office)",
   "private": true,
+  "main": "server.js",
   "scripts": {
-    "build": "node stamp-version.js",
-    "start": "npm run build && npx serve public -s -l tcp://0.0.0.0:${PORT:-3000}"
+    "build": "git rev-parse --short HEAD > .commit-hash 2>/dev/null || echo 'unknown' > .commit-hash && node stamp-version.js",
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "better-sqlite3": "^9.4.3",
+    "express": "^4.18.2",
+    "express-session": "^1.18.0",
+    "multer": "^1.4.5-lts.1",
+    "openid-client": "^5.7.0",
+    "@anthropic-ai/sdk": "^0.52.0"
   }
 }

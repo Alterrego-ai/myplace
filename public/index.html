@@ -1709,7 +1709,7 @@ margin: 20px 20px 0;
   });
 
   // ── SSO mySafe (cross-domain via token signé) ──
-  var SSO_SERVER = 'https://sauf-imprevu-reservations-production.up.railway.app';
+  var SSO_SERVER = ''; // same-origin — serveur unifié myPlace
   var SSO_KEY = 'myplace_user';
   var isDesktop = window.matchMedia('(min-width: 769px)').matches;
 
@@ -2120,9 +2120,8 @@ margin: 20px 20px 0;
     // Indicateur de frappe
     var typing = appendChatBubble('...', 'typing');
 
-    fetch(SSO_SERVER + '/api/chat', {
+    fetch('/api/chat', {
       method: 'POST',
-      mode: 'cors',
       headers: {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer ' + user._token,
