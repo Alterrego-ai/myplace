@@ -180,6 +180,10 @@ border-radius: 42px;
 
 /* ── Mobile: no frame ── */
 @media (max-width: 768px) {
+  /* CRITICAL: body bg = bottom-bar bg → no visible band on iOS overscroll */
+  body {
+    background: var(--bg-card);
+  }
   .phone-shell {
     display: contents;
   }
@@ -195,7 +199,7 @@ border-radius: 42px;
     max-width: 600px;
     margin: 0 auto;
     min-height: 100dvh;
-    background: var(--bg);
+    background: var(--bg-card);
     color: var(--text);
     border-radius: 0;
     overflow: visible;
@@ -209,6 +213,7 @@ border-radius: 42px;
     min-height: 100dvh;
     overflow: visible;
     border-radius: 0;
+    background: var(--bg);
   }
 }
 
@@ -1344,13 +1349,12 @@ border-top: 1px solid var(--border);
 display: flex;
 align-items: center;
 justify-content: space-around;
-padding: 8px 0 50px;
+padding: 8px 0;
+/* iOS safe area: fallback 8px, then env() override */
+padding-bottom: 8px;
+padding-bottom: constant(safe-area-inset-bottom); /* iOS < 11.2 */
+padding-bottom: calc(8px + env(safe-area-inset-bottom, 0px));
 z-index: 100;
-}
-@supports (padding-bottom: env(safe-area-inset-bottom)) {
-  .bottom-bar {
-    padding-bottom: calc(env(safe-area-inset-bottom, 20px) + 16px);
-  }
 }
 
 /* Desktop: absolute inside phone-screen (outside phone-scroll) */
@@ -2019,8 +2023,9 @@ margin: 20px 20px 0;
         document.head.appendChild(darkStyle);
       }
       darkStyle.textContent =
-        'html { background: #1a2636 !important; }' +
-        'body, .phone-screen, .phone-scroll { background: #0f1923 !important; color: #eef2f7 !important; }' +
+        'html, body { background: #1a2636 !important; }' +
+        '.phone-screen { background: #1a2636 !important; color: #eef2f7 !important; }' +
+        '.phone-scroll { background: #0f1923 !important; color: #eef2f7 !important; }' +
         '.spacer { background: #0f1923 !important; }' +
         '.bottom-bar { background: #1a2636 !important; }' +
         '.logo-wrap, .section, .user-row, .google-row { background: #1a2636 !important; }' +
