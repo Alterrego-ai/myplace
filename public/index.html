@@ -1172,6 +1172,9 @@ margin: 20px 20px 0;
   </a>
 </nav>
 
+<!-- VERSION FOOTER (desktop only) -->
+<div id="versionFooter" style="display:none;position:fixed;bottom:4px;right:8px;font-size:10px;color:rgba(0,0,0,0.25);z-index:1;pointer-events:none;font-family:monospace;"></div>
+
 <!-- OVERLAY -->
 
 <div class="sheet-overlay" id="sheetOverlay" onclick="closeAllSheets()"></div>
@@ -1635,6 +1638,16 @@ margin: 20px 20px 0;
     // 2. Sinon, vérifier le localStorage
     var user = getStoredUser();
     updateAuthUI(user);
+  })();
+
+  // ── Version footer (desktop only) ──
+  (function() {
+    if (window.matchMedia('(min-width: 900px)').matches) {
+      var el = document.getElementById('versionFooter');
+      if (el) el.style.display = 'block';
+      // __BUILD_VERSION__ est remplacé par le script de build
+      el.textContent = '__BUILD_VERSION__';
+    }
   })();
 </script>
 
