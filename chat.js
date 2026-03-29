@@ -6,7 +6,7 @@
 const Anthropic = require('@anthropic-ai/sdk');
 const { verifyUserToken } = require('./auth');
 
-const MODEL = 'claude-3-5-sonnet-20241022';
+const MODEL = 'claude-sonnet-4-5-20250929';
 const MAX_TOKENS = 1024;
 const CAPACITE_TOTALE = 42;
 
