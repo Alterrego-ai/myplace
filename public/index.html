@@ -3,7 +3,7 @@
 <html lang="fr" data-theme="auto">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <meta name="theme-color" content="#3D6B8C">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -910,11 +910,12 @@ align-self: center;
 .ctas { position: relative; overflow: visible; }
 .maia-float {
   position: absolute;
-  top: 0; left: 0; bottom: -9px;
+  top: 0; left: 0;
   width: 50%;
+  height: 100%;
   z-index: 10;
   display: flex;
-  align-items: stretch;
+  align-items: center;
   cursor: pointer;
   animation: maiaFloatIn 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) 2s both;
   -webkit-tap-highlight-color: transparent;
@@ -928,10 +929,11 @@ align-self: center;
   align-items: center;
   gap: 8px;
   background: linear-gradient(135deg, var(--primary), #2a5a6e);
-  padding: 10px 14px;
+  padding: 8px 12px;
   border-radius: 0 16px 16px 0;
   box-shadow: 4px 0 20px rgba(0,0,0,0.12);
   width: 100%;
+  height: 100%;
   position: relative;
 }
 .maia-float-avatar {
