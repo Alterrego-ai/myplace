@@ -77,7 +77,7 @@ body[data-theme=”dark”] {
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-html { font-size: 16px; scroll-behavior: smooth; background: var(--bg); }
+html { font-size: 16px; scroll-behavior: smooth; background: var(--bg); overscroll-behavior: none; }
 
 body {
 font-family: var(--font);
@@ -86,6 +86,7 @@ color: var(--text);
 min-height: 100dvh;
 -webkit-font-smoothing: antialiased;
 margin: 0;
+overscroll-behavior: none;
 }
 
 /* ── Phone frame (desktop only) ── */
@@ -188,6 +189,7 @@ border-radius: 42px;
     max-width: 600px;
     margin: 0 auto;
     min-height: 100dvh;
+    background: var(--bg);
   }
   .phone-scroll {
     all: unset;
