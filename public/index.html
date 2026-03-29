@@ -204,6 +204,13 @@ overflow: hidden;
 border-radius: 0;
 }
 
+/* PWA standalone: extend hero to cover safe area */
+@media (display-mode: standalone) {
+  .hero {
+    height: calc(200px + env(safe-area-inset-top, 0px));
+  }
+}
+
 /* On desktop, clip the hero top corners to match phone screen */
 @media (min-width: 769px) {
   .hero {
@@ -858,7 +865,7 @@ margin-top: -2px;
 /* ── THEME TOGGLE ── */
 .theme-toggle {
 position: absolute;
-top: 16px;
+top: calc(16px + env(safe-area-inset-top, 0px));
 left: 16px;
 z-index: 50;
 width: 38px;
@@ -883,7 +890,7 @@ transition: var(--transition);
 
 .hero-status-group {
 position: absolute;
-top: 16px;
+top: calc(16px + env(safe-area-inset-top, 0px));
 right: 16px;
 z-index: 50;
 display: flex;
@@ -949,72 +956,6 @@ color: var(--text-tertiary);
 font-size: 11px;
 font-weight: 500;
 }
-
-/* ── PWA INSTALL BANNER ── */
-.pwa-banner {
-display: none;
-margin: 0 20px 16px;
-padding: 14px 16px;
-background: var(--bg-card);
-border: 1px solid var(--border);
-border-radius: var(--radius-sm);
-animation: fadeUp 0.4s ease;
-}
-
-.pwa-banner.visible { display: block; }
-
-.pwa-banner-header {
-display: flex;
-align-items: center;
-justify-content: space-between;
-margin-bottom: 8px;
-}
-
-.pwa-banner-title {
-font-size: 14px;
-font-weight: 700;
-color: var(--text);
-}
-
-.pwa-banner-close {
-background: none;
-border: none;
-color: var(--text-tertiary);
-cursor: pointer;
-padding: 4px;
-font-size: 18px;
-line-height: 1;
-}
-
-.pwa-banner-text {
-font-size: 12px;
-color: var(--text-secondary);
-line-height: 1.5;
-margin-bottom: 10px;
-}
-
-.pwa-banner-text .pwa-icon-inline {
-display: inline-block;
-vertical-align: middle;
-width: 18px;
-height: 18px;
-margin: 0 2px;
-}
-
-.pwa-banner-btn {
-width: 100%;
-padding: 10px;
-border: none;
-border-radius: 8px;
-background: var(--primary);
-color: #fff;
-font-size: 13px;
-font-weight: 600;
-cursor: pointer;
-transition: opacity 0.15s;
-}
-
-.pwa-banner-btn:active { opacity: 0.7; }
 
 /* ── SPACER ── */
 .spacer { height: 120px; background: var(--bg); }
@@ -1205,15 +1146,6 @@ margin: 20px 20px 0;
   </div>
   </div>
 
-<!-- PWA INSTALL BANNER -->
-<div class="pwa-banner" id="pwaBanner">
-  <div class="pwa-banner-header">
-    <span class="pwa-banner-title" id="pwaBannerTitle">Installer l'application</span>
-    <button class="pwa-banner-close" onclick="dismissPwaBanner()" aria-label="Fermer">&times;</button>
-  </div>
-  <div class="pwa-banner-text" id="pwaBannerText"></div>
-  <button class="pwa-banner-btn" id="pwaBannerBtn" style="display:none;">Installer</button>
-</div>
 
 <div class="spacer"></div>
 
@@ -1568,84 +1500,11 @@ margin: 20px 20px 0;
     }
   });
 
-  // ── PWA INSTALL ──
-  (function() {
-    var banner = document.getElementById('pwaBanner');
-    var title = document.getElementById('pwaBannerTitle');
-    var text = document.getElementById('pwaBannerText');
-    var btn = document.getElementById('pwaBannerBtn');
-
-    // Already standalone or dismissed recently?
-    var isStandalone = window.matchMedia('(display-mode: standalone)').matches
-                    || window.navigator.standalone === true;
-    var dismissed = localStorage.getItem('pwa-dismiss');
-    if (dismissed) {
-      var diff = Date.now() - parseInt(dismissed, 10);
-      if (diff < 7 * 24 * 60 * 60 * 1000) return; // 7 jours
-    }
-    if (isStandalone) return;
-
-    var isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
-    var isAndroid = /Android/.test(navigator.userAgent);
-    var deferredPrompt = null;
-
-    // Android : beforeinstallprompt
-    window.addEventListener('beforeinstallprompt', function(e) {
-      e.preventDefault();
-      deferredPrompt = e;
-      title.textContent = 'Garder Sauf Imprévu';
-      text.innerHTML = 'Un simple raccourci sur votre écran, rien à installer.';
-      btn.style.display = 'block';
-      btn.textContent = 'Ajouter à mon écran';
-      btn.onclick = function() {
-        deferredPrompt.prompt();
-        deferredPrompt.userChoice.then(function(result) {
-          if (result.outcome === 'accepted') {
-            banner.classList.remove('visible');
-          }
-          deferredPrompt = null;
-        });
-      };
-      banner.classList.add('visible');
-    });
-
-    // iOS : instructions manuelles
-    if (isIOS) {
-      var isSafari = /Safari/.test(navigator.userAgent) && !/CriOS|FxiOS|OPiOS/.test(navigator.userAgent);
-      if (!isSafari) {
-        title.textContent = 'Ouvrez dans Safari';
-        text.innerHTML = 'Pour installer l\'application, ouvrez cette page dans <strong>Safari</strong>, puis suivez les instructions.';
-        btn.style.display = 'none';
-      } else {
-        title.textContent = 'Garder Sauf Imprévu';
-        text.innerHTML = 'Dans Safari, tapez sur <strong>⋯</strong> (en bas) puis <strong>Partager</strong>, et enfin <strong>Sur l\'écran d\'accueil</strong>.';
-        btn.style.display = 'none';
-      }
-      banner.classList.add('visible');
-    }
-
-    // Android sans beforeinstallprompt (Samsung, Firefox...)
-    if (isAndroid && !deferredPrompt) {
-      setTimeout(function() {
-        if (!deferredPrompt && !banner.classList.contains('visible')) {
-          title.textContent = 'Garder Sauf Imprévu';
-          text.innerHTML = 'Tapez sur <strong>⋮</strong> (menu) puis <strong>Ajouter à l\'écran d\'accueil</strong> pour un accès rapide.';
-          btn.style.display = 'none';
-          banner.classList.add('visible');
-        }
-      }, 2000);
-    }
-  })();
-
-  function dismissPwaBanner() {
-    document.getElementById('pwaBanner').classList.remove('visible');
-    localStorage.setItem('pwa-dismiss', Date.now().toString());
-  }
-
-  // Track successful install
-  window.addEventListener('appinstalled', function() {
-    document.getElementById('pwaBanner').classList.remove('visible');
-    localStorage.removeItem('pwa-dismiss');
+  // ── PWA INSTALL (Android beforeinstallprompt only) ──
+  var deferredPrompt = null;
+  window.addEventListener('beforeinstallprompt', function(e) {
+    e.preventDefault();
+    deferredPrompt = e;
   });
 </script>
 
