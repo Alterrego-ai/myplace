@@ -1,0 +1,17 @@
+{
+  "name": "Sauf Imprévu — Bar à vins",
+  "short_name": "Sauf Imprévu",
+  "description": "Bar à vins · Restaurant — Lyon 6e",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#f7f8fa",
+  "theme_color": "#3D6B8C",
+  "icons": [
+    {
+      "src": "https://ciss-media-dev.s3.fr-par.scw.cloud/pointofsales/47408/15-vauban-brc-187.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
