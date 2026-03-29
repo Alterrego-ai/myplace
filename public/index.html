@@ -37,7 +37,8 @@
 --closed-bg: #fdecea;
 }
 
-[data-theme=”dark”] {
+[data-theme=”dark”],
+body[data-theme=”dark”] {
 --bg: #0f1923;
 --bg-card: #1a2636;
 --bg-subtle: #212f3f;
@@ -1262,6 +1263,10 @@ margin: 20px 20px 0;
 
   function applyTheme(theme) {
     document.documentElement.setAttribute('data-theme', theme);
+    document.body.setAttribute('data-theme', theme);
+    // Force Safari mobile repaint
+    document.body.style.background = theme === 'dark' ? '#0f1923' : '#f7f8fa';
+    document.body.style.color = theme === 'dark' ? '#eef2f7' : '#1a2332';
     const icon = document.getElementById('theme-icon');
     if (theme === 'dark') {
       icon.innerHTML = '<circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>';
