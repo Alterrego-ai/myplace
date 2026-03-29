@@ -1347,13 +1347,15 @@ justify-content: space-around;
 padding: 5px 0 env(safe-area-inset-bottom, 0px);
 z-index: 100;
 }
-.bottom-bar::after {
+/* Bande fixe sous la bottom-bar — même couleur, couvre tout */
+body::after {
 content: '';
-position: absolute;
-left: -50vw; right: -50vw;
-top: 0; height: 200px;
-background: inherit;
-z-index: -1;
+position: fixed;
+bottom: 0; left: 0; right: 0;
+height: 120px;
+background: var(--bg-card);
+z-index: 99;
+pointer-events: none;
 }
 
 /* Desktop: absolute inside phone-screen (outside phone-scroll) */
@@ -2025,7 +2027,8 @@ margin: 20px 20px 0;
         'html { background: #1a2636 !important; }' +
         'body, .phone-screen, .phone-scroll { background: #0f1923 !important; color: #eef2f7 !important; }' +
         '.spacer { background: #0f1923 !important; }' +
-        '.bottom-bar, .bottom-bar::after { background: #1a2636 !important; }' +
+        '.bottom-bar { background: #1a2636 !important; }' +
+        'body::after { background: #1a2636 !important; }' +
         '.logo-wrap, .section, .user-row, .google-row { background: #1a2636 !important; }' +
         '.info, .identity, .ctas { color: #eef2f7 !important; }' +
         '.merchant-name, .address-text, h2, h3 { color: #eef2f7 !important; }' +
