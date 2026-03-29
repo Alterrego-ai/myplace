@@ -651,6 +651,19 @@ app.delete('/reservations/:id', requireAdmin, (req, res) => {
 // ═══════════════════════════════════════════════════════════════════════════════
 app.get('/api/version', (_, res) => res.json({ hash: GIT_HASH }));
 
+// Vérifie si l'utilisateur connecté est admin
+app.get('/api/me', (req, res) => {
+  if (!req.session || !req.session.user) {
+    return res.json({ authenticated: false, isAdmin: false });
+  }
+  res.json({
+    authenticated: true,
+    isAdmin: isAdminEmail(req.session.user.email),
+    name: req.session.user.name,
+    email: req.session.user.email,
+  });
+});
+
 app.get('/admin', requireAuth, (req, res) => {
   if (!isAdminEmail(req.session.user?.email)) {
     return res.status(403).send('Accès réservé aux administrateurs.');
