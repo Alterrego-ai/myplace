@@ -1261,7 +1261,7 @@ bottom: -50px;
 left: -50vw;
 right: -50vw;
 height: calc(100% + 50px);
-background: var(--bg-card);
+background: inherit;
 z-index: -1;
 }
 
@@ -1399,7 +1399,7 @@ font-weight: 500;
 }
 
 /* ── SPACER ── */
-.spacer { height: calc(80px + env(safe-area-inset-bottom, 0px)); background: var(--bg); flex-shrink: 0; }
+.spacer { height: calc(100px + env(safe-area-inset-bottom, 0px)); background: var(--bg-card); flex-shrink: 0; }
 
 /* ── ANIMATIONS ── */
 .fade-up {
@@ -1931,8 +1931,10 @@ margin: 20px 20px 0;
         document.head.appendChild(darkStyle);
       }
       darkStyle.textContent =
-        'html, body, .phone-screen, .phone-scroll { background: #0f1923 !important; color: #eef2f7 !important; }' +
-        '.logo-wrap, .section, .user-row, .google-row, .bottom-bar { background: #1a2636 !important; }' +
+        'html { background: #1a2636 !important; }' +
+        'body, .phone-screen, .phone-scroll { background: #0f1923 !important; color: #eef2f7 !important; }' +
+        '.spacer, .bottom-bar, .bottom-bar::after { background: #1a2636 !important; }' +
+        '.logo-wrap, .section, .user-row, .google-row { background: #1a2636 !important; }' +
         '.info, .identity, .ctas { color: #eef2f7 !important; }' +
         '.merchant-name, .address-text, h2, h3 { color: #eef2f7 !important; }' +
         '.cta-label { color: #8fa3bb !important; }' +
