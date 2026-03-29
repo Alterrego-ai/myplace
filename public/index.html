@@ -823,8 +823,8 @@ color: #fff; flex-shrink: 0;
 }
 .chat-header-left { display: flex; align-items: center; gap: 10px; }
 .chat-header-avatar {
-width: 38px; height: 38px; border-radius: 50%; object-fit: cover;
-border: 2px solid rgba(255,255,255,0.3); box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+width: 42px; height: 42px; border-radius: 0; object-fit: contain;
+border: none;
 }
 .chat-header-info h4 { font-size: 15px; font-weight: 700; margin: 0; color: #fff; }
 .chat-header-info span { font-size: 11px; opacity: 0.8; }
@@ -1567,9 +1567,9 @@ margin: 20px 20px 0;
   <div class="chat-container">
     <div class="chat-messages" id="chatMessages">
       <div class="chat-welcome">
-        <img src="/img/maia.png" alt="Maïa" style="width:96px;height:96px;border-radius:50%;margin-bottom:12px;object-fit:cover;box-shadow:0 4px 12px rgba(0,0,0,0.15);">
+        <img src="/img/maia.png" alt="Maïa" style="width:96px;height:96px;border-radius:0;margin-bottom:12px;object-fit:contain;">
         <h4>Maïa</h4>
-        <p>Bonjour ! Je suis Maïa, l'assistante de Sauf Imprévu.<br>Posez-moi vos questions sur notre carte, nos vins, nos horaires...</p>
+        <p>Bonjour ! Je suis Maïa, votre agent d'hospitalité.<br>Posez-moi vos questions sur notre carte, nos vins, nos horaires...</p>
         <div class="chat-suggestions">
           <span class="chat-suggestion" onclick="sendSuggestion(this)">Réserver une table</span>
           <span class="chat-suggestion" onclick="sendSuggestion(this)">Quels sont vos horaires ?</span>
@@ -2130,9 +2130,9 @@ margin: 20px 20px 0;
     // Vider la conversation et réafficher le welcome
     var messages = document.getElementById('chatMessages');
     messages.innerHTML = '<div class="chat-welcome">' +
-      '<img src="/img/maia.png" alt="Maïa" style="width:96px;height:96px;border-radius:50%;margin-bottom:12px;object-fit:cover;box-shadow:0 4px 12px rgba(0,0,0,0.15);">' +
+      '<img src="/img/maia.png" alt="Maïa" style="width:96px;height:96px;border-radius:0;margin-bottom:12px;object-fit:contain;">' +
       '<h4>Maïa</h4>' +
-      '<p>Bonjour ! Je suis Maïa, l\'assistante de Sauf Imprévu.<br>Posez-moi vos questions sur notre carte, nos vins, nos horaires...</p>' +
+      '<p>Bonjour ! Je suis Maïa, votre agent d\'hospitalité.<br>Posez-moi vos questions sur notre carte, nos vins, nos horaires...</p>' +
       '<div class="chat-suggestions">' +
         '<span class="chat-suggestion" onclick="sendSuggestion(this)">Réserver une table</span>' +
         '<span class="chat-suggestion" onclick="sendSuggestion(this)">Quels sont vos horaires ?</span>' +
@@ -2186,7 +2186,7 @@ margin: 20px 20px 0;
       var avatar = document.createElement('img');
       avatar.src = '/img/maia.png';
       avatar.alt = 'Maïa';
-      avatar.style.cssText = 'width:36px;height:36px;border-radius:50%;flex-shrink:0;object-fit:cover;';
+      avatar.style.cssText = 'width:36px;height:36px;border-radius:0;flex-shrink:0;object-fit:contain;';
       var bubble = document.createElement('div');
       bubble.className = 'chat-bubble ' + role;
       bubble.style.alignSelf = 'auto';
