@@ -356,10 +356,14 @@ function chatRoutes(router, carteDb, resaDb) {
       // Ajouter la réponse à l'historique
       conv.messages.push({ role: 'assistant', content: response.content });
 
-      // Détecter si Maïa demande une confirmation de réservation
+      // Détecter si Maïa présente un récap de réservation avec des valeurs concrètes
       const lowerMsg = (assistantMessage || '').toLowerCase();
-      const isConfirmation = lowerMsg.includes('confirmer') || lowerMsg.includes('souhaitez-vous') || lowerMsg.includes('c\'est bien ça') || lowerMsg.includes('on confirme');
-      const hasRecap = lowerMsg.includes('date') && lowerMsg.includes('heure') && lowerMsg.includes('personne');
+      const isConfirmation = lowerMsg.includes('confirmer') || lowerMsg.includes('c\'est bien ça') || lowerMsg.includes('on confirme') || lowerMsg.includes('est-ce correct') || lowerMsg.includes('je vous récapitule');
+      // Le récap doit contenir une vraie date (jour/chiffre), un horaire (xxh), et un nombre de personnes
+      const hasRealDate = /\d{1,2}\s*(janvier|février|mars|avril|mai|juin|juillet|août|septembre|octobre|novembre|décembre)|\d{4}-\d{2}-\d{2}|\d{1,2}\/\d{1,2}/.test(lowerMsg);
+      const hasRealTime = /\d{1,2}\s*[h:]\s*\d{0,2}/.test(lowerMsg);
+      const hasRealCouverts = /\d+\s*(personne|couvert|convive)/.test(lowerMsg);
+      const hasRecap = hasRealDate && hasRealTime && hasRealCouverts;
 
       const responseData = {
         reply: assistantMessage,

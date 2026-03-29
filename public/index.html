@@ -2026,7 +2026,7 @@ margin: 20px 20px 0;
       }
       return;
     }
-    document.getElementById('chatSheet').classList.add('visible');
+    document.getElementById('chatSheet').classList.add('visible'); document.body.style.overflow = 'hidden';
     document.body.style.overflow = 'hidden';
     if (isDesktop) {
       setTimeout(function() { document.getElementById('chatInput').focus(); }, 400);
@@ -2034,7 +2034,7 @@ margin: 20px 20px 0;
   }
 
   function closeChatSheet() {
-    document.getElementById('chatSheet').classList.remove('visible');
+    document.getElementById('chatSheet').classList.remove('visible'); document.body.style.overflow = '';
     document.body.style.overflow = '';
   }
 
