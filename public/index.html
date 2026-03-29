@@ -878,11 +878,18 @@ transition: var(--transition);
 .theme-toggle { background: rgba(26,38,54,0.92); color: #fff; }
 }
 
-.hero-status {
+.hero-status-group {
 position: absolute;
 top: 16px;
 right: 16px;
 z-index: 50;
+display: flex;
+flex-direction: column;
+align-items: flex-end;
+gap: 4px;
+}
+
+.hero-status {
 display: inline-flex;
 align-items: center;
 gap: 6px;
@@ -894,6 +901,20 @@ background: rgba(255,255,255,0.92);
 backdrop-filter: blur(8px);
 color: var(--open-color);
 box-shadow: 0 2px 12px rgba(0,0,0,0.15);
+}
+
+.hero-hours-link {
+background: none;
+border: none;
+padding: 0;
+font-size: 11px;
+font-weight: 500;
+color: rgba(255,255,255,0.85);
+cursor: pointer;
+display: flex;
+align-items: center;
+gap: 3px;
+text-shadow: 0 1px 4px rgba(0,0,0,0.4);
 }
 
 .hero-status.open { color: #2d9c6e; }
@@ -973,9 +994,15 @@ margin: 20px 20px 0;
       <circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
     </svg>
   </button>
-  <div class="hero-status open">
-    <span class="status-dot"></span>
-    Ouvert
+  <div class="hero-status-group">
+    <div class="hero-status open">
+      <span class="status-dot"></span>
+      Ouvert
+    </div>
+    <button class="hero-hours-link" onclick="toggleHours()" aria-expanded="false">
+      Nos horaires
+      <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg>
+    </button>
   </div>
 </div>
 
@@ -985,14 +1012,7 @@ margin: 20px 20px 0;
   <div class="logo-wrap">
     <img src="https://ciss-media-dev.s3.fr-par.scw.cloud/pointofsales/47408/15-vauban-brc-187.png" alt="Logo Sauf Imprévu" />
   </div>
-  <div class="identity-right">
-    <button class="hours-toggle" onclick="toggleHours()" aria-expanded="false">
-      <span class="hours-today">Nos horaires</span>
-      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
-        <polyline points="6 9 12 15 18 9"/>
-      </svg>
-    </button>
-  </div>
+  <div class="identity-right"></div>
 </div>
 
 <!-- INFO -->
