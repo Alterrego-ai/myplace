@@ -1043,11 +1043,7 @@ display: flex; flex-direction: column; gap: 10px;
 .chat-welcome-top h4 { font-size: 15px; font-weight: 700; color: var(--text); margin: 0 0 4px; }
 .chat-welcome-top p { font-size: 13px; margin: 0; line-height: 1.4; color: var(--text-secondary); }
 
-/* Zone ouverte */
-.zone-open {
-  background: var(--bg-card); border-radius: 14px; padding: 8px;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-}
+/* Zone ouverte — plus de container, bouton pleine largeur */
 .cta-main {
   display: flex; align-items: center; gap: 12px;
   padding: 12px 14px; background: linear-gradient(135deg, var(--primary), var(--primary-dark));
@@ -1742,15 +1738,13 @@ margin: 20px 20px 0;
           <h4>Bonjour !</h4>
           <p>Je suis Maïa, votre agent d'hospitalité</p>
         </div>
-        <div class="zone-open">
-          <button class="cta-main" onclick="sendSuggestion(this)" data-msg="Je souhaite réserver une table">
-            <div class="cta-icon">📅</div>
-            <div class="cta-text">
-              <h4>Réserver une table</h4>
-              <span>Disponibilité en temps réel</span>
-            </div>
-          </button>
-        </div>
+        <button class="cta-main" onclick="sendSuggestion(this)" data-msg="Je souhaite réserver une table">
+          <div class="cta-icon">📅</div>
+          <div class="cta-text">
+            <h4>Réserver une table</h4>
+            <span>Disponibilité en temps réel</span>
+          </div>
+        </button>
         <div class="zone-premium" id="zonePremium">
           <div class="zone-premium-header">
             <span class="lock-icon">🔒</span>
@@ -2431,12 +2425,10 @@ margin: 20px 20px 0;
         '<h4>Bonjour !</h4>' +
         '<p>Je suis Maïa, votre agent d\'hospitalité</p>' +
       '</div>' +
-      '<div class="zone-open">' +
-        '<button class="cta-main" onclick="sendSuggestion(this)" data-msg="Je souhaite réserver une table">' +
-          '<div class="cta-icon">📅</div>' +
-          '<div class="cta-text"><h4>Réserver une table</h4><span>Disponibilité en temps réel</span></div>' +
-        '</button>' +
-      '</div>' +
+      '<button class="cta-main" onclick="sendSuggestion(this)" data-msg="Je souhaite réserver une table">' +
+        '<div class="cta-icon">📅</div>' +
+        '<div class="cta-text"><h4>Réserver une table</h4><span>Disponibilité en temps réel</span></div>' +
+      '</button>' +
       '<div class="' + premiumClass + '">' +
         '<div class="zone-premium-header">' +
           '<span class="lock-icon">' + lockIcon + '</span>' +
