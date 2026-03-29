@@ -3015,24 +3015,34 @@ margin: 20px 20px 0;
     }
   }
 
-  // Gestion du clavier mobile — ajuste la hauteur du chat quand le clavier apparaît
+  // Gestion du clavier mobile — ajuste le chat quand le clavier apparaît
   if (window.visualViewport) {
-    window.visualViewport.addEventListener('resize', function() {
+    function adjustChatForKeyboard() {
       var chatSheet = document.getElementById('chatSheet');
-      if (chatSheet && chatSheet.classList.contains('visible')) {
-        chatSheet.style.height = window.visualViewport.height + 'px';
-        // Scroll vers le bas des messages
-        var messages = document.getElementById('chatMessages');
-        if (messages) messages.scrollTop = messages.scrollHeight;
+      if (!chatSheet || !chatSheet.classList.contains('visible')) return;
+      var vv = window.visualViewport;
+      chatSheet.style.height = vv.height + 'px';
+      chatSheet.style.top = vv.offsetTop + 'px';
+      // Garder l'input visible et scroller les messages
+      var messages = document.getElementById('chatMessages');
+      if (messages) {
+        setTimeout(function() { messages.scrollTop = messages.scrollHeight; }, 100);
       }
-    });
-    window.visualViewport.addEventListener('scroll', function() {
-      var chatSheet = document.getElementById('chatSheet');
-      if (chatSheet && chatSheet.classList.contains('visible')) {
-        chatSheet.style.top = window.visualViewport.offsetTop + 'px';
-      }
-    });
+    }
+    window.visualViewport.addEventListener('resize', adjustChatForKeyboard);
+    window.visualViewport.addEventListener('scroll', adjustChatForKeyboard);
   }
+
+  // Reset la taille du chat quand on blur l'input
+  document.addEventListener('focusout', function(e) {
+    if (e.target && e.target.id === 'chatInput') {
+      var chatSheet = document.getElementById('chatSheet');
+      if (chatSheet) {
+        chatSheet.style.height = '';
+        chatSheet.style.top = '';
+      }
+    }
+  });
 
   // Envoi avec Enter
   document.getElementById('chatInput').addEventListener('keydown', function(e) {
