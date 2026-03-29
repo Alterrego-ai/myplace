@@ -1344,18 +1344,11 @@ border-top: 1px solid var(--border);
 display: flex;
 align-items: center;
 justify-content: space-around;
-padding: 5px 0 env(safe-area-inset-bottom, 0px);
+padding: 5px 0 calc(env(safe-area-inset-bottom, 20px) + 15px);
 z-index: 100;
-}
-/* Bande fixe sous la bottom-bar — même couleur, couvre tout */
-body::after {
-content: '';
-position: fixed;
-bottom: 0; left: 0; right: 0;
-height: 120px;
-background: var(--bg-card);
-z-index: 99;
-pointer-events: none;
+/* La bar descend bien au-delà du bas de l'écran */
+bottom: -50px;
+padding-bottom: calc(50px + env(safe-area-inset-bottom, 20px) + 15px);
 }
 
 /* Desktop: absolute inside phone-screen (outside phone-scroll) */
@@ -2028,7 +2021,6 @@ margin: 20px 20px 0;
         'body, .phone-screen, .phone-scroll { background: #0f1923 !important; color: #eef2f7 !important; }' +
         '.spacer { background: #0f1923 !important; }' +
         '.bottom-bar { background: #1a2636 !important; }' +
-        'body::after { background: #1a2636 !important; }' +
         '.logo-wrap, .section, .user-row, .google-row { background: #1a2636 !important; }' +
         '.info, .identity, .ctas { color: #eef2f7 !important; }' +
         '.merchant-name, .address-text, h2, h3 { color: #eef2f7 !important; }' +
