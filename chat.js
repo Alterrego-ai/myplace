@@ -62,6 +62,21 @@ function executeFunction(name, args, resaDb) {
     const { date, heure, couverts } = args;
     const demande = parseInt(couverts);
 
+    // Vérifier que la date n'est pas un week-end
+    const requestedDate = new Date(date + 'T12:00:00');
+    const dayOfWeek = requestedDate.getDay(); // 0 = dimanche, 6 = samedi
+    if (dayOfWeek === 0 || dayOfWeek === 6) {
+      const dayNames = ['dimanche','lundi','mardi','mercredi','jeudi','vendredi','samedi'];
+      return { disponible: false, message: `Le ${dayNames[dayOfWeek]} ${date}, nous sommes fermés. Le restaurant est fermé le week-end (samedi et dimanche). Propose le lundi suivant.` };
+    }
+
+    // Vérifier que la date n'est pas dans le passé
+    const now = new Date();
+    const todayStr = now.toISOString().split('T')[0];
+    if (date < todayStr) {
+      return { disponible: false, message: `La date ${date} est passée. Nous sommes le ${todayStr}. Demande une date future.` };
+    }
+
     if (demande > 10) {
       return { disponible: false, message: "Les groupes de plus de 10 personnes nécessitent une privatisation. Invitez le client à appeler le restaurant." };
     }
@@ -84,6 +99,14 @@ function executeFunction(name, args, resaDb) {
   if (name === 'create_reservation') {
     const { nom, date, heure, couverts, telephone, notes } = args;
     const demande = parseInt(couverts);
+
+    // Garde-fou : pas de résa le week-end
+    const reqDate = new Date(date + 'T12:00:00');
+    const dow = reqDate.getDay();
+    if (dow === 0 || dow === 6) {
+      return { success: false, message: "Impossible : le restaurant est fermé le week-end." };
+    }
+
     const service = getService(heure);
 
     if (!service) {
@@ -175,7 +198,7 @@ Sauf Imprévu propose une cuisine maison à base de produits frais et de saison,
 Tu fais en sorte que chaque visiteur se sente comme un invité de marque, pas comme un client.
 
 ## Date du jour
-Aujourd'hui : ${todayDay} ${today}
+Aujourd'hui c'est ${todayDay} ${today}.${(new Date().getDay() === 0 || new Date().getDay() === 6) ? ' ATTENTION : NOUS SOMMES FERMÉS AUJOURD\'HUI (week-end). Aucune réservation n\'est possible pour aujourd\'hui.' : ''}
 
 ## Horaires
 - Du lundi au mercredi · Midi : 12h00 – 14h00 (dernières commandes vers 13h30) · Soir : 17h00 – minuit (cuisine jusqu'à 22h)
