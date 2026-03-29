@@ -656,11 +656,12 @@ app.get('/api/version', (_, res) => res.json({ hash: GIT_HASH }));
 app.get('/api/me', (req, res) => {
   // Essayer d'abord la session cookie
   if (req.session && req.session.user) {
+    const email = req.session.user.email || req.session.user.name;
     return res.json({
       authenticated: true,
-      isAdmin: isAdminEmail(req.session.user.email),
+      isAdmin: isAdminEmail(email),
       name: req.session.user.name,
-      email: req.session.user.email,
+      email: email,
     });
   }
   // Sinon essayer le token Bearer (même auth que le chat)
@@ -669,11 +670,12 @@ app.get('/api/me', (req, res) => {
     const { verifyUserToken } = require('./auth');
     const user = verifyUserToken(authHeader.substring(7));
     if (user) {
+      const email = user.email || user.name; // fallback: certains OIDC mettent l'email dans name
       return res.json({
         authenticated: true,
-        isAdmin: isAdminEmail(user.email),
+        isAdmin: isAdminEmail(email),
         name: user.name,
-        email: user.email,
+        email: email,
       });
     }
   }
