@@ -1344,9 +1344,13 @@ border-top: 1px solid var(--border);
 display: flex;
 align-items: center;
 justify-content: space-around;
-padding: 8px 0 34px;
-padding-bottom: max(34px, env(safe-area-inset-bottom, 34px));
+padding: 8px 0 50px;
 z-index: 100;
+}
+@supports (padding-bottom: env(safe-area-inset-bottom)) {
+  .bottom-bar {
+    padding-bottom: calc(env(safe-area-inset-bottom, 20px) + 16px);
+  }
 }
 
 /* Desktop: absolute inside phone-screen (outside phone-scroll) */
