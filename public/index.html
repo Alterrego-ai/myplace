@@ -178,22 +178,30 @@ border-radius: 42px;
     display: contents;
   }
   .phone-frame {
-    all: unset;
+    display: contents;
   }
   .phone-frame::before {
     display: none;
   }
   .phone-screen {
-    all: unset;
     display: block;
+    width: 100%;
     max-width: 600px;
     margin: 0 auto;
     min-height: 100dvh;
     background: var(--bg);
+    color: var(--text);
+    border-radius: 0;
+    overflow: visible;
+    height: auto;
+    position: static;
   }
   .phone-scroll {
-    all: unset;
     display: block;
+    width: 100%;
+    height: auto;
+    overflow: visible;
+    border-radius: 0;
   }
 }
 
