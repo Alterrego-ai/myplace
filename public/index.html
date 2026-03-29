@@ -808,6 +808,7 @@ z-index: 1000; background: var(--bg-card);
 display: none; flex-direction: column;
 transform: none; max-width: none; border-radius: 0;
 overscroll-behavior: contain; touch-action: none;
+min-height: 100vh; min-height: 100dvh;
 }
 #chatSheet .chat-container { touch-action: auto; }
 #chatSheet .chat-messages { touch-action: pan-y; }
@@ -909,7 +910,7 @@ align-self: center;
 .ctas { position: relative; overflow: visible; }
 .maia-float {
   position: absolute;
-  top: 0; left: 0; bottom: 0;
+  top: 0; left: 0; bottom: -9px;
   width: 50%;
   z-index: 10;
   display: flex;
