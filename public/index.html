@@ -1469,9 +1469,9 @@ margin: 20px 20px 0;
   <div class="chat-container">
     <div class="chat-messages" id="chatMessages">
       <div class="chat-welcome">
-        <div class="chat-welcome-icon">🍷</div>
-        <h4>Bienvenue !</h4>
-        <p>Je suis l'assistant de Sauf Imprévu.<br>Posez-moi vos questions sur notre carte, nos vins, nos horaires...</p>
+        <img src="/img/maia.png" alt="Maïa" style="width:72px;height:72px;border-radius:50%;margin-bottom:8px;object-fit:cover;">
+        <h4>Maïa</h4>
+        <p>Bonjour ! Je suis Maïa, l'assistante de Sauf Imprévu.<br>Posez-moi vos questions sur notre carte, nos vins, nos horaires...</p>
       </div>
     </div>
     <div class="chat-input-bar">
@@ -1989,12 +1989,31 @@ margin: 20px 20px 0;
     var welcome = messages.querySelector('.chat-welcome');
     if (welcome) welcome.remove();
 
-    var bubble = document.createElement('div');
-    bubble.className = 'chat-bubble ' + role;
-    bubble.textContent = text;
-    messages.appendChild(bubble);
-    messages.scrollTop = messages.scrollHeight;
-    return bubble;
+    if (role === 'assistant' || role === 'typing') {
+      // Bulle assistant avec avatar Maïa
+      var row = document.createElement('div');
+      row.style.cssText = 'display:flex;align-items:flex-end;gap:8px;align-self:flex-start;max-width:90%;';
+      var avatar = document.createElement('img');
+      avatar.src = '/img/maia.png';
+      avatar.alt = 'Maïa';
+      avatar.style.cssText = 'width:28px;height:28px;border-radius:50%;flex-shrink:0;object-fit:cover;';
+      var bubble = document.createElement('div');
+      bubble.className = 'chat-bubble ' + role;
+      bubble.style.alignSelf = 'auto';
+      bubble.textContent = text;
+      row.appendChild(avatar);
+      row.appendChild(bubble);
+      messages.appendChild(row);
+      messages.scrollTop = messages.scrollHeight;
+      return row;
+    } else {
+      var bubble = document.createElement('div');
+      bubble.className = 'chat-bubble ' + role;
+      bubble.textContent = text;
+      messages.appendChild(bubble);
+      messages.scrollTop = messages.scrollHeight;
+      return bubble;
+    }
   }
 
   function sendChatMessage() {
