@@ -203,9 +203,10 @@ border-radius: 42px;
     position: static;
   }
   .phone-scroll {
-    display: block;
+    display: flex;
+    flex-direction: column;
     width: 100%;
-    height: auto;
+    min-height: 100dvh;
     overflow: visible;
     border-radius: 0;
   }
@@ -1390,7 +1391,7 @@ font-weight: 500;
 }
 
 /* ── SPACER ── */
-.spacer { height: calc(100px + env(safe-area-inset-bottom, 0px)); background: var(--bg-card); flex-shrink: 0; }
+.spacer { flex: 1; min-height: calc(80px + env(safe-area-inset-bottom, 0px)); background: var(--bg-card); }
 
 /* ── ANIMATIONS ── */
 .fade-up {
