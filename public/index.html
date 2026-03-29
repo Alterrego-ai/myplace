@@ -1344,11 +1344,9 @@ border-top: 1px solid var(--border);
 display: flex;
 align-items: center;
 justify-content: space-around;
-padding: 5px 0 calc(env(safe-area-inset-bottom, 20px) + 15px);
+padding: 8px 0 34px;
+padding-bottom: max(34px, env(safe-area-inset-bottom, 34px));
 z-index: 100;
-/* La bar descend bien au-delà du bas de l'écran */
-bottom: -50px;
-padding-bottom: calc(50px + env(safe-area-inset-bottom, 20px) + 15px);
 }
 
 /* Desktop: absolute inside phone-screen (outside phone-scroll) */
