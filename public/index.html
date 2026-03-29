@@ -84,6 +84,7 @@ font-family: var(--font);
 background: var(--bg);
 color: var(--text);
 min-height: 100dvh;
+min-height: -webkit-fill-available;
 -webkit-font-smoothing: antialiased;
 margin: 0;
 overscroll-behavior: none;
@@ -961,7 +962,7 @@ font-weight: 500;
 }
 
 /* ── SPACER ── */
-.spacer { height: 120px; background: var(--bg); }
+.spacer { height: calc(80px + env(safe-area-inset-bottom, 0px)); background: var(--bg); flex-shrink: 0; }
 
 /* ── ANIMATIONS ── */
 .fade-up {
