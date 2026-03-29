@@ -23,49 +23,49 @@
     --font: -apple-system, BlinkMacSystemFont, 'Inter', 'SF Pro Display', 'Segoe UI', sans-serif;
   }
 
-[data-theme=“light”], :root {
-–bg: #f7f8fa;
-–bg-card: #ffffff;
-–bg-subtle: #f0f3f7;
-–text: #1a2332;
-–text-secondary: #5a6a7e;
-–text-tertiary: #8a9ab0;
-–border: rgba(0,0,0,0.07);
-–open-color: #2d9c6e;
-–open-bg: #e8f7f2;
-–closed-color: #c0392b;
-–closed-bg: #fdecea;
+[data-theme=”light”], :root {
+--bg: #f7f8fa;
+--bg-card: #ffffff;
+--bg-subtle: #f0f3f7;
+--text: #1a2332;
+--text-secondary: #5a6a7e;
+--text-tertiary: #8a9ab0;
+--border: rgba(0,0,0,0.07);
+--open-color: #2d9c6e;
+--open-bg: #e8f7f2;
+--closed-color: #c0392b;
+--closed-bg: #fdecea;
 }
 
-[data-theme=“dark”] {
-–bg: #0f1923;
-–bg-card: #1a2636;
-–bg-subtle: #212f3f;
-–text: #eef2f7;
-–text-secondary: #8fa3bb;
-–text-tertiary: #5a7288;
-–border: rgba(255,255,255,0.07);
-–open-color: #3dbf87;
-–open-bg: rgba(61,191,135,0.12);
-–closed-color: #e05c4b;
-–closed-bg: rgba(224,92,75,0.12);
-–primary-ultra-light: rgba(61,107,140,0.15);
+[data-theme=”dark”] {
+--bg: #0f1923;
+--bg-card: #1a2636;
+--bg-subtle: #212f3f;
+--text: #eef2f7;
+--text-secondary: #8fa3bb;
+--text-tertiary: #5a7288;
+--border: rgba(255,255,255,0.07);
+--open-color: #3dbf87;
+--open-bg: rgba(61,191,135,0.12);
+--closed-color: #e05c4b;
+--closed-bg: rgba(224,92,75,0.12);
+--primary-ultra-light: rgba(61,107,140,0.15);
 }
 
 @media (prefers-color-scheme: dark) {
-:root:not([data-theme=“light”]) {
-–bg: #0f1923;
-–bg-card: #1a2636;
-–bg-subtle: #212f3f;
-–text: #eef2f7;
-–text-secondary: #8fa3bb;
-–text-tertiary: #5a7288;
-–border: rgba(255,255,255,0.07);
-–open-color: #3dbf87;
-–open-bg: rgba(61,191,135,0.12);
-–closed-color: #e05c4b;
-–closed-bg: rgba(224,92,75,0.12);
-–primary-ultra-light: rgba(61,107,140,0.15);
+:root:not([data-theme=”light”]) {
+--bg: #0f1923;
+--bg-card: #1a2636;
+--bg-subtle: #212f3f;
+--text: #eef2f7;
+--text-secondary: #8fa3bb;
+--text-tertiary: #5a7288;
+--border: rgba(255,255,255,0.07);
+--open-color: #3dbf87;
+--open-bg: rgba(61,191,135,0.12);
+--closed-color: #e05c4b;
+--closed-bg: rgba(224,92,75,0.12);
+--primary-ultra-light: rgba(61,107,140,0.15);
 }
 }
 
@@ -1076,6 +1076,10 @@ margin: 20px 20px 0;
 
 <div class="socials fade-up">
   <div style="height:1px;background:var(--border);margin:0 0 8px;"></div>
+
+  <div class="section-header">
+    <span class="section-title">Nous suivre</span>
+  </div>
 
   <a href="#" class="compte-unauth" style="text-decoration:none;display:flex;align-items:center;gap:14px;padding:12px 16px;background:var(--bg-card);border-radius:var(--radius-sm);border:1px solid var(--border);margin-bottom:8px;">
     <div style="width:44px;height:44px;border-radius:50%;background:var(--primary-ultra-light);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
