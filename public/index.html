@@ -2027,6 +2027,7 @@ margin: 20px 20px 0;
       return;
     }
     document.getElementById('chatSheet').classList.add('visible');
+    document.body.style.overflow = 'hidden';
     if (isDesktop) {
       setTimeout(function() { document.getElementById('chatInput').focus(); }, 400);
     }
@@ -2034,6 +2035,7 @@ margin: 20px 20px 0;
 
   function closeChatSheet() {
     document.getElementById('chatSheet').classList.remove('visible');
+    document.body.style.overflow = '';
   }
 
   // Gestion du clavier mobile — ajuste la hauteur du chat quand le clavier apparaît
