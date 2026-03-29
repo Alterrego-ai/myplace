@@ -814,6 +814,7 @@ border-radius: 20px 20px 0 0;
 .chat-header {
 display: flex; align-items: center; justify-content: space-between;
 padding: 14px 16px 12px;
+padding-top: calc(14px + env(safe-area-inset-top));
 background: linear-gradient(135deg, var(--primary), #2a5a6e);
 color: #fff;
 }
@@ -853,8 +854,8 @@ align-self: flex-start; background: var(--bg-subtle); color: var(--text); border
 align-self: flex-start; background: var(--bg-subtle); color: var(--text-tertiary); font-style: italic;
 }
 .chat-input-bar {
-display: flex; gap: 8px; padding: 10px 16px; border-top: 1px solid var(--border); background: var(--bg-card);
-flex-shrink: 0;
+display: flex; gap: 8px; padding: 10px 16px; padding-bottom: calc(10px + env(safe-area-inset-bottom));
+border-top: 1px solid var(--border); background: var(--bg-card); flex-shrink: 0;
 }
 .chat-input {
 flex: 1; border: 1px solid var(--border); border-radius: 20px; padding: 8px 16px; font-size: 16px;
