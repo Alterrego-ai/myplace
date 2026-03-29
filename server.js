@@ -602,6 +602,7 @@ function createReservation(req, res, defaultSource) {
 // Liste des emails/domaines autorisés (séparés par des virgules)
 // Supporte les emails exacts (rriquoir@me.com) et les domaines (@sauf-imprevu.fr)
 const ADMIN_RULES = (process.env.ADMIN_EMAILS || '').split(',').map(e => e.trim().toLowerCase()).filter(Boolean);
+console.log('🔑 ADMIN_RULES:', ADMIN_RULES);
 
 function isAdminEmail(email) {
   if (!email || ADMIN_RULES.length === 0) return ADMIN_RULES.length === 0;

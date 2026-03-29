@@ -2201,22 +2201,25 @@ margin: 20px 20px 0;
 
   function checkAdminStatus() {
     var user = getStoredUser();
-    if (!user || !user._token) return;
+    if (!user || !user._token) { console.log('[Admin] Pas de token'); return; }
+    console.log('[Admin] Check avec token pour:', user.email);
     fetch('/api/me', {
       headers: { 'Authorization': 'Bearer ' + user._token },
       credentials: 'include'
     })
     .then(function(r) { return r.json(); })
     .then(function(data) {
+      console.log('[Admin] Réponse /api/me:', JSON.stringify(data));
       isUserAdmin = data.isAdmin;
       if (isUserAdmin) {
         var nav = document.getElementById('navAccueil');
         if (nav) {
           nav.onclick = function(e) { e.preventDefault(); toggleAdminMenu(); };
+          console.log('[Admin] Menu admin activé');
         }
       }
     })
-    .catch(function() {});
+    .catch(function(err) { console.error('[Admin] Erreur:', err); });
   }
 
   function toggleAdminMenu() {
