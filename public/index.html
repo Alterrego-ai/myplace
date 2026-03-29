@@ -75,6 +75,12 @@ body[data-theme=”dark”] {
 }
 }
 
+/* ── DARK MODE OVERRIDE (classe JS, bypass variables) ── */
+html.dark-active { background: #1a2636 !important; }
+body.dark-active { background: #0f1923 !important; color: #eef2f7 !important; }
+body.dark-active .phone-screen { background: #0f1923 !important; }
+body.dark-active .phone-scroll { background: #0f1923 !important; }
+
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 html { font-size: 16px; scroll-behavior: smooth; background: var(--bg-card); min-height: 100%; }
@@ -1816,7 +1822,15 @@ margin: 20px 20px 0;
   function applyTheme(theme) {
     document.documentElement.setAttribute('data-theme', theme);
     document.body.setAttribute('data-theme', theme);
-    // Force all CSS variables on html, body, phone-screen
+    // Classe CSS directe pour dark (bypass total des variables)
+    if (theme === 'dark') {
+      document.documentElement.classList.add('dark-active');
+      document.body.classList.add('dark-active');
+    } else {
+      document.documentElement.classList.remove('dark-active');
+      document.body.classList.remove('dark-active');
+    }
+    // CSS variables pour les composants enfants
     var vars = themeVars[theme] || themeVars.light;
     var targets = [document.documentElement, document.body];
     var ps = document.querySelector('.phone-screen');
@@ -1826,12 +1840,6 @@ margin: 20px 20px 0;
         targets[i].style.setProperty(k, vars[k]);
       }
     }
-    // Force backgrounds directement avec !important (Safari mobile)
-    document.documentElement.style.setProperty('background-color', vars['--bg-card'], 'important');
-    document.body.style.setProperty('background-color', vars['--bg'], 'important');
-    if (ps) ps.style.setProperty('background-color', vars['--bg'], 'important');
-    var psc = document.querySelector('.phone-scroll');
-    if (psc) psc.style.setProperty('background-color', vars['--bg'], 'important');
     // Update meta theme-color
     var meta = document.querySelector('meta[name="theme-color"]');
     if (meta) meta.setAttribute('content', vars['--bg-card']);
