@@ -906,77 +906,162 @@ align-self: center;
 }
 .admin-menu-overlay.visible { display: block; }
 
-/* ── Floating Maïa ── */
+/* ── Floating Maïa (overlay sur zone CTA) ── */
+.ctas { position: relative; }
 .maia-float {
-  position: fixed;
-  bottom: 80px;
-  right: 16px;
-  z-index: 800;
+  position: absolute;
+  top: 0; left: 0;
+  width: 50%;
+  height: 100%;
+  z-index: 10;
   display: flex;
   align-items: center;
-  gap: 0;
+  justify-content: center;
   cursor: pointer;
-  animation: maiaFloatIn 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) 1.5s both;
-  filter: drop-shadow(0 4px 16px rgba(0,0,0,0.2));
+  animation: maiaFloatIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) 1.2s both;
   -webkit-tap-highlight-color: transparent;
 }
-.maia-float:active { transform: scale(0.96); }
 @keyframes maiaFloatIn {
-  from { opacity: 0; transform: translateY(30px) scale(0.8); }
-  to { opacity: 1; transform: translateY(0) scale(1); }
+  from { opacity: 0; transform: translateX(-20px) scale(0.9); }
+  to { opacity: 1; transform: translateX(0) scale(1); }
 }
-.maia-float-bubble {
+.maia-float-inner {
+  display: flex;
+  align-items: center;
+  gap: 6px;
   background: linear-gradient(135deg, var(--primary), #2a5a6e);
-  color: #fff;
-  padding: 10px 16px;
-  border-radius: 20px 20px 6px 20px;
-  font-size: 13px;
-  font-weight: 600;
-  line-height: 1.35;
-  max-width: 200px;
+  padding: 8px 12px;
+  border-radius: 16px;
   box-shadow: 0 4px 20px rgba(0,0,0,0.15);
-}
-.maia-float-bubble small {
-  display: block;
-  font-weight: 400;
-  opacity: 0.85;
-  font-size: 11px;
-  margin-top: 2px;
+  max-width: 100%;
+  position: relative;
 }
 .maia-float-avatar {
-  width: 56px;
-  height: 56px;
+  width: 42px;
+  height: 42px;
   object-fit: contain;
-  margin-left: -6px;
   flex-shrink: 0;
+  position: relative;
 }
 .maia-float-pulse {
   position: absolute;
-  bottom: 2px; right: 2px;
-  width: 12px; height: 12px;
+  bottom: 0; right: 0;
+  width: 10px; height: 10px;
   background: #22c55e;
   border-radius: 50%;
-  border: 2px solid #fff;
+  border: 2px solid var(--primary-dark);
   animation: maiaOnline 2s infinite;
 }
 @keyframes maiaOnline {
   0%, 100% { box-shadow: 0 0 0 0 rgba(34,197,94,0.5); }
-  50% { box-shadow: 0 0 0 6px rgba(34,197,94,0); }
+  50% { box-shadow: 0 0 0 5px rgba(34,197,94,0); }
 }
+.maia-float-text {
+  color: #fff;
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1.3;
+}
+.maia-float-text small {
+  display: block;
+  font-weight: 400;
+  opacity: 0.8;
+  font-size: 10px;
+  margin-top: 1px;
+}
+.maia-float-close {
+  position: absolute;
+  top: -6px; right: -6px;
+  width: 20px; height: 20px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 12px; line-height: 1;
+  color: var(--text-tertiary);
+  cursor: pointer;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+  z-index: 2;
+}
+.maia-float-close:active { background: var(--bg-subtle); }
+.maia-float.dismissed { display: none; }
 
 .chat-welcome {
-text-align: center; padding: 30px 20px; color: var(--text-tertiary);
+text-align: center; padding: 16px 14px 8px; color: var(--text-tertiary);
+display: flex; flex-direction: column; gap: 12px;
 }
-.chat-welcome-icon { font-size: 40px; margin-bottom: 8px; }
-.chat-welcome h4 { font-size: 15px; font-weight: 700; color: var(--text); margin: 0 0 6px; }
-.chat-welcome p { font-size: 13px; margin: 0; line-height: 1.5; }
-.chat-suggestions { display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; margin-top: 14px; }
-.chat-suggestion {
-  background: var(--bg-subtle); border: 1px solid var(--border); border-radius: 16px;
-  padding: 6px 12px; font-size: 12px; color: var(--text-secondary); cursor: pointer;
-  transition: background 0.15s, color 0.15s;
+.chat-welcome-top { text-align: center; padding: 4px 0; }
+.chat-welcome-top h4 { font-size: 15px; font-weight: 700; color: var(--text); margin: 0 0 4px; }
+.chat-welcome-top p { font-size: 13px; margin: 0; line-height: 1.4; color: var(--text-secondary); }
+
+/* Zone ouverte */
+.zone-open {
+  background: var(--bg-card); border-radius: 14px; padding: 10px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.05);
 }
-.chat-suggestion:hover { background: var(--primary); color: #fff; border-color: var(--primary); }
+.cta-main {
+  display: flex; align-items: center; gap: 12px;
+  padding: 12px 14px; background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+  color: #fff; border-radius: 12px; cursor: pointer; border: none;
+  width: 100%; text-align: left; font-family: var(--font);
+  transition: transform 0.15s;
+}
+.cta-main:active { transform: scale(0.98); }
+.cta-main .cta-icon {
+  width: 36px; height: 36px; background: rgba(255,255,255,0.2);
+  border-radius: 10px; display: flex; align-items: center; justify-content: center;
+  font-size: 18px; flex-shrink: 0;
+}
+.cta-main .cta-text h4 { font-size: 14px; font-weight: 700; margin: 0 0 1px; color: #fff; }
+.cta-main .cta-text span { font-size: 11px; opacity: 0.85; font-weight: 400; }
+
+/* Zone premium */
+.zone-premium {
+  background: var(--bg-card); border-radius: 14px; padding: 12px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+}
+.zone-premium.unlocked { border: 1.5px solid rgba(200,169,110,0.3); }
+.zone-premium-header {
+  display: flex; align-items: center; gap: 6px;
+  margin-bottom: 10px; padding-bottom: 8px; border-bottom: 1px solid var(--border);
+}
+.zone-premium-header .lock-icon { font-size: 13px; }
+.zone-premium-header span {
+  font-size: 12px; font-weight: 600; color: var(--accent); letter-spacing: 0.02em;
+}
+.features-grid {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 6px;
+}
+.feature-tile {
+  display: flex; align-items: center; gap: 8px;
+  padding: 8px 8px; border-radius: 10px;
+  background: var(--bg-subtle); border: 1px solid var(--border);
+  transition: all 0.15s;
+}
+.feature-tile .feat-icon {
+  width: 28px; height: 28px; border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 14px; flex-shrink: 0;
+  background: rgba(200,169,110,0.12);
+}
+.feature-tile .feat-label {
+  font-size: 11px; font-weight: 600; color: var(--text-secondary); line-height: 1.3;
+}
+.feature-tile.locked { opacity: 0.5; cursor: default; }
+.feature-tile.locked .feat-icon { background: var(--bg-subtle); filter: grayscale(1); }
+.feature-tile.unlocked { opacity: 1; cursor: pointer; border-color: rgba(200,169,110,0.25); }
+.feature-tile.unlocked:active { transform: scale(0.97); background: rgba(200,169,110,0.08); }
+.feature-tile.unlocked .feat-label { color: var(--text); }
+.cta-join {
+  display: flex; align-items: center; justify-content: center; gap: 6px;
+  margin-top: 10px; padding: 9px;
+  background: linear-gradient(135deg, var(--accent), #b8953e);
+  color: #fff; border: none; border-radius: 10px;
+  font-size: 12px; font-weight: 700; cursor: pointer;
+  width: 100%; font-family: var(--font); letter-spacing: 0.02em;
+  transition: transform 0.15s;
+}
+.cta-join:active { transform: scale(0.98); }
 .chat-actions { display: flex; flex-wrap: wrap; gap: 6px; padding: 8px 0; justify-content: flex-end; }
 .chat-action-btn {
   background: var(--bg-subtle); border: 1px solid var(--border); border-radius: 16px;
@@ -1237,6 +1322,19 @@ margin: 20px 20px 0;
 <!-- CTAs -->
 
 <div class="ctas fade-up">
+  <div class="maia-float" id="maiaFloat" onclick="openChat()">
+    <div class="maia-float-inner">
+      <button class="maia-float-close" onclick="event.stopPropagation(); dismissMaiaFloat()">&times;</button>
+      <div style="position:relative;">
+        <img src="/img/maia.png" alt="Maïa" class="maia-float-avatar">
+        <div class="maia-float-pulse"></div>
+      </div>
+      <div class="maia-float-text">
+        Besoin d'un conseil<br>ou d'une table ?
+        <small>Je suis disponible</small>
+      </div>
+    </div>
+  </div>
   <a href="tel:+33437243979" class="cta-btn">
     <div class="cta-icon">
       <svg viewBox="0 0 640 640" fill="currentColor">
@@ -1354,16 +1452,6 @@ margin: 20px 20px 0;
 <div class="spacer"></div>
 
 <!-- FLOATING MAÏA -->
-<div class="maia-float" id="maiaFloat" onclick="openChat()">
-  <div class="maia-float-bubble">
-    Besoin d'un conseil ou d'une table ?
-    <small>Je suis disponible maintenant</small>
-  </div>
-  <div style="position:relative;">
-    <img src="/img/maia.png" alt="Maïa" class="maia-float-avatar">
-    <div class="maia-float-pulse"></div>
-  </div>
-</div>
 
 <!-- BOTTOM BAR -->
 
@@ -1594,15 +1682,35 @@ margin: 20px 20px 0;
   </div>
   <div class="chat-container">
     <div class="chat-messages" id="chatMessages">
-      <div class="chat-welcome">
-        <img src="/img/maia.png" alt="Maïa" style="width:96px;height:96px;border-radius:0;margin-bottom:12px;object-fit:contain;">
-        <h4>Maïa</h4>
-        <p>Bonjour ! Je suis Maïa, votre agent d'hospitalité.<br>Posez-moi vos questions sur notre carte, nos vins, nos horaires...</p>
-        <div class="chat-suggestions">
-          <span class="chat-suggestion" onclick="sendSuggestion(this)">Réserver une table</span>
-          <span class="chat-suggestion" onclick="sendSuggestion(this)">Quels sont vos horaires ?</span>
-          <span class="chat-suggestion" onclick="sendSuggestion(this)">Qu'y a-t-il à la carte ?</span>
-          <span class="chat-suggestion" onclick="sendSuggestion(this)">Conseillez-moi un vin</span>
+      <div class="chat-welcome" id="chatWelcome">
+        <div class="chat-welcome-top">
+          <img src="/img/maia.png" alt="Maïa" style="width:72px;height:72px;border-radius:0;margin-bottom:8px;object-fit:contain;">
+          <h4>Bonjour !</h4>
+          <p>Je suis Maïa, votre agent d'hospitalité</p>
+        </div>
+        <div class="zone-open">
+          <button class="cta-main" onclick="sendSuggestion(this)" data-msg="Je souhaite réserver une table">
+            <div class="cta-icon">📅</div>
+            <div class="cta-text">
+              <h4>Réserver une table</h4>
+              <span>Disponibilité en temps réel</span>
+            </div>
+          </button>
+        </div>
+        <div class="zone-premium" id="zonePremium">
+          <div class="zone-premium-header">
+            <span class="lock-icon">🔒</span>
+            <span id="premiumLabel">Réservé à nos membres</span>
+          </div>
+          <div class="features-grid" id="featuresGrid">
+            <div class="feature-tile locked"><div class="feat-icon">🍷</div><div class="feat-label">Acheter à prix club</div></div>
+            <div class="feature-tile locked"><div class="feat-icon">🏡</div><div class="feat-label">Découvrir les domaines</div></div>
+            <div class="feature-tile locked"><div class="feat-icon">📆</div><div class="feat-label">Agenda du club</div></div>
+            <div class="feature-tile locked"><div class="feat-icon">🎁</div><div class="feat-label">Offres exclusives</div></div>
+            <div class="feature-tile locked"><div class="feat-icon">📖</div><div class="feat-label">Carnet de dégustation</div></div>
+            <div class="feature-tile locked"><div class="feat-icon">⭐</div><div class="feat-label">Fidélité & avantages</div></div>
+          </div>
+          <button class="cta-join" id="ctaJoin" onclick="handleJoinClick()">Créer mon compte gratuitement</button>
         </div>
       </div>
     </div>
@@ -2138,19 +2246,103 @@ margin: 20px 20px 0;
   var chatBusy = false;
 
   function openChat() {
+    // Reconstruire le welcome selon l'état actuel (anonyme/logué/membre)
+    var messages = document.getElementById('chatMessages');
+    var welcome = messages.querySelector('.chat-welcome');
+    if (welcome) {
+      messages.innerHTML = buildWelcomeHTML();
+    }
+    // Activer/désactiver l'input selon le login
     var user = getStoredUser();
-    if (!user || !user._token) {
-      if (confirm('Connectez-vous pour discuter avec notre assistant ! Aller à la connexion ?')) {
-        startSSOLogin();
-      }
-      return;
+    var isLogged = !!(user && user._token);
+    var chatInput = document.getElementById('chatInput');
+    var chatSend = document.getElementById('chatSend');
+    if (!isLogged) {
+      chatInput.disabled = true;
+      chatInput.placeholder = 'Connectez-vous pour discuter...';
+      chatInput.style.opacity = '0.5';
+      chatSend.disabled = true;
+      chatSend.style.opacity = '0.5';
+    } else {
+      chatInput.disabled = false;
+      chatInput.placeholder = 'Votre message...';
+      chatInput.style.opacity = '';
+      chatSend.disabled = false;
+      chatSend.style.opacity = '';
     }
     document.getElementById('chatSheet').classList.add('visible');
     document.body.style.overflow = 'hidden';
     var fab = document.getElementById('maiaFloat');
-    if (fab) fab.style.display = 'none';
-    if (isDesktop) {
-      setTimeout(function() { document.getElementById('chatInput').focus(); }, 400);
+    if (fab && !fab.classList.contains('dismissed')) fab.style.visibility = 'hidden';
+    if (isDesktop && isLogged) {
+      setTimeout(function() { chatInput.focus(); }, 400);
+    }
+  }
+
+  function dismissMaiaFloat() {
+    var fab = document.getElementById('maiaFloat');
+    if (fab) fab.classList.add('dismissed');
+    sessionStorage.setItem('maiaFloatDismissed', '1');
+  }
+
+  // Restaurer l'état dismiss au chargement
+  if (sessionStorage.getItem('maiaFloatDismissed') === '1') {
+    var fab = document.getElementById('maiaFloat');
+    if (fab) fab.classList.add('dismissed');
+  }
+
+  function buildWelcomeHTML() {
+    var user = getStoredUser();
+    var isLogged = !!(user && user._token);
+    // TODO: isMember sera géré via /api/me quand le flag existera
+    var isMember = false;
+
+    var lockIcon = isMember ? '👑' : (isLogged ? '✨' : '🔒');
+    var labelText = isMember ? 'Espace club' : (isLogged ? 'Rejoignez le club' : 'Réservé à nos membres');
+    var tileClass = isMember ? 'unlocked' : 'locked';
+    var premiumClass = isMember ? 'zone-premium unlocked' : 'zone-premium';
+    var joinBtn = isMember ? '' :
+      (isLogged
+        ? '<button class="cta-join" onclick="handleJoinClick()">✨ Rejoindre le club</button>'
+        : '<button class="cta-join" onclick="handleJoinClick()">Créer mon compte gratuitement</button>');
+
+    return '<div class="chat-welcome" id="chatWelcome">' +
+      '<div class="chat-welcome-top">' +
+        '<img src="/img/maia.png" alt="Maïa" style="width:72px;height:72px;border-radius:0;margin-bottom:8px;object-fit:contain;">' +
+        '<h4>Bonjour !</h4>' +
+        '<p>Je suis Maïa, votre agent d\'hospitalité</p>' +
+      '</div>' +
+      '<div class="zone-open">' +
+        '<button class="cta-main" onclick="sendSuggestion(this)" data-msg="Je souhaite réserver une table">' +
+          '<div class="cta-icon">📅</div>' +
+          '<div class="cta-text"><h4>Réserver une table</h4><span>Disponibilité en temps réel</span></div>' +
+        '</button>' +
+      '</div>' +
+      '<div class="' + premiumClass + '">' +
+        '<div class="zone-premium-header">' +
+          '<span class="lock-icon">' + lockIcon + '</span>' +
+          '<span>' + labelText + '</span>' +
+        '</div>' +
+        '<div class="features-grid">' +
+          '<div class="feature-tile ' + tileClass + '"><div class="feat-icon">🍷</div><div class="feat-label">Acheter à prix club</div></div>' +
+          '<div class="feature-tile ' + tileClass + '"><div class="feat-icon">🏡</div><div class="feat-label">Découvrir les domaines</div></div>' +
+          '<div class="feature-tile ' + tileClass + '"><div class="feat-icon">📆</div><div class="feat-label">Agenda du club</div></div>' +
+          '<div class="feature-tile ' + tileClass + '"><div class="feat-icon">🎁</div><div class="feat-label">Offres exclusives</div></div>' +
+          '<div class="feature-tile ' + tileClass + '"><div class="feat-icon">📖</div><div class="feat-label">Carnet de dégustation</div></div>' +
+          '<div class="feature-tile ' + tileClass + '"><div class="feat-icon">⭐</div><div class="feat-label">Fidélité & avantages</div></div>' +
+        '</div>' +
+        joinBtn +
+      '</div>' +
+    '</div>';
+  }
+
+  function handleJoinClick() {
+    var user = getStoredUser();
+    if (!user || !user._token) {
+      startSSOLogin();
+    } else {
+      // Logué mais pas membre — pour l'instant on affiche un message
+      alert('L\'adhésion au club sera bientôt disponible !');
     }
   }
 
@@ -2158,19 +2350,10 @@ margin: 20px 20px 0;
     document.getElementById('chatSheet').classList.remove('visible');
     document.body.style.overflow = '';
     var fab = document.getElementById('maiaFloat');
-    if (fab) fab.style.display = '';
+    if (fab && !fab.classList.contains('dismissed')) fab.style.visibility = '';
     // Vider la conversation et réafficher le welcome
     var messages = document.getElementById('chatMessages');
-    messages.innerHTML = '<div class="chat-welcome">' +
-      '<img src="/img/maia.png" alt="Maïa" style="width:96px;height:96px;border-radius:0;margin-bottom:12px;object-fit:contain;">' +
-      '<h4>Maïa</h4>' +
-      '<p>Bonjour ! Je suis Maïa, votre agent d\'hospitalité.<br>Posez-moi vos questions sur notre carte, nos vins, nos horaires...</p>' +
-      '<div class="chat-suggestions">' +
-        '<span class="chat-suggestion" onclick="sendSuggestion(this)">Réserver une table</span>' +
-        '<span class="chat-suggestion" onclick="sendSuggestion(this)">Quels sont vos horaires ?</span>' +
-        '<span class="chat-suggestion" onclick="sendSuggestion(this)">Qu\'y a-t-il à la carte ?</span>' +
-        '<span class="chat-suggestion" onclick="sendSuggestion(this)">Conseillez-moi un vin</span>' +
-      '</div></div>';
+    messages.innerHTML = buildWelcomeHTML();
     // Reset côté serveur aussi
     var user = getStoredUser();
     if (user && user._token) {
@@ -2243,10 +2426,8 @@ margin: 20px 20px 0;
   }
 
   function sendSuggestion(el) {
-    document.getElementById('chatInput').value = el.textContent;
-    // Masquer les suggestions après clic
-    var suggestions = document.querySelector('.chat-suggestions');
-    if (suggestions) suggestions.style.display = 'none';
+    var msg = el.getAttribute('data-msg') || el.textContent;
+    document.getElementById('chatInput').value = msg;
     sendChatMessage();
   }
 
