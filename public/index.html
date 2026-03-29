@@ -1261,12 +1261,31 @@ margin: 20px 20px 0;
     return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
   }
 
+  var themeVars = {
+    light: {
+      '--bg':'#f7f8fa','--bg-card':'#ffffff','--bg-subtle':'#f0f3f7',
+      '--text':'#1a2332','--text-secondary':'#5a6a7e','--text-tertiary':'#8a9ab0',
+      '--border':'rgba(0,0,0,0.07)','--open-color':'#2d9c6e','--open-bg':'#e8f7f2',
+      '--closed-color':'#c0392b','--closed-bg':'#fdecea',
+      '--primary-ultra-light':'#e8f0f6'
+    },
+    dark: {
+      '--bg':'#0f1923','--bg-card':'#1a2636','--bg-subtle':'#212f3f',
+      '--text':'#eef2f7','--text-secondary':'#8fa3bb','--text-tertiary':'#5a7288',
+      '--border':'rgba(255,255,255,0.07)','--open-color':'#3dbf87','--open-bg':'rgba(61,191,135,0.12)',
+      '--closed-color':'#e05c4b','--closed-bg':'rgba(224,92,75,0.12)',
+      '--primary-ultra-light':'rgba(61,107,140,0.15)'
+    }
+  };
+
   function applyTheme(theme) {
     document.documentElement.setAttribute('data-theme', theme);
     document.body.setAttribute('data-theme', theme);
-    // Force Safari mobile repaint
-    document.body.style.background = theme === 'dark' ? '#0f1923' : '#f7f8fa';
-    document.body.style.color = theme === 'dark' ? '#eef2f7' : '#1a2332';
+    // Force all CSS variables on body for mobile Safari
+    var vars = themeVars[theme] || themeVars.light;
+    for (var k in vars) {
+      document.body.style.setProperty(k, vars[k]);
+    }
     const icon = document.getElementById('theme-icon');
     if (theme === 'dark') {
       icon.innerHTML = '<circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>';
