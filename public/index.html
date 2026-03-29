@@ -808,7 +808,10 @@ z-index: 1000; background: var(--bg);
 display: none; flex-direction: column;
 transform: none; max-width: none; border-radius: 0;
 transform: none; max-width: none; border-radius: 0;
+overscroll-behavior: contain; touch-action: none;
 }
+#chatSheet .chat-container { touch-action: auto; }
+#chatSheet .chat-messages { touch-action: pan-y; }
 #chatSheet.visible { display: flex; }
 #chatSheet .sheet-handle { display: none; }
 .chat-header {
@@ -852,6 +855,16 @@ align-self: flex-start; background: var(--bg-subtle); color: var(--text); border
 }
 .chat-bubble.typing {
 align-self: flex-start; background: var(--bg-subtle); color: var(--text-tertiary); font-style: italic;
+}
+.typing-dots span {
+  animation: typingDot 1.4s infinite;
+  display: inline-block; font-size: 18px; letter-spacing: 2px;
+}
+.typing-dots span:nth-child(2) { animation-delay: 0.2s; }
+.typing-dots span:nth-child(3) { animation-delay: 0.4s; }
+@keyframes typingDot {
+  0%, 60%, 100% { opacity: 0.2; transform: translateY(0); }
+  30% { opacity: 1; transform: translateY(-3px); }
 }
 .chat-input-bar {
 display: flex; gap: 8px; padding: 10px 16px;
@@ -1519,7 +1532,7 @@ margin: 20px 20px 0;
   <div class="chat-container">
     <div class="chat-messages" id="chatMessages">
       <div class="chat-welcome">
-        <img src="/img/maia.png" alt="Maïa" style="width:72px;height:72px;border-radius:50%;margin-bottom:8px;object-fit:cover;">
+        <img src="/img/maia.png" alt="Maïa" style="width:96px;height:96px;border-radius:50%;margin-bottom:12px;object-fit:cover;box-shadow:0 4px 12px rgba(0,0,0,0.15);">
         <h4>Maïa</h4>
         <p>Bonjour ! Je suis Maïa, l'assistante de Sauf Imprévu.<br>Posez-moi vos questions sur notre carte, nos vins, nos horaires...</p>
         <div class="chat-suggestions">
@@ -2026,7 +2039,7 @@ margin: 20px 20px 0;
       }
       return;
     }
-    document.getElementById('chatSheet').classList.add('visible'); document.body.style.overflow = 'hidden';
+    document.getElementById('chatSheet').classList.add('visible');
     document.body.style.overflow = 'hidden';
     if (isDesktop) {
       setTimeout(function() { document.getElementById('chatInput').focus(); }, 400);
@@ -2034,7 +2047,7 @@ margin: 20px 20px 0;
   }
 
   function closeChatSheet() {
-    document.getElementById('chatSheet').classList.remove('visible'); document.body.style.overflow = '';
+    document.getElementById('chatSheet').classList.remove('visible');
     document.body.style.overflow = '';
   }
 
@@ -2078,11 +2091,15 @@ margin: 20px 20px 0;
       var avatar = document.createElement('img');
       avatar.src = '/img/maia.png';
       avatar.alt = 'Maïa';
-      avatar.style.cssText = 'width:28px;height:28px;border-radius:50%;flex-shrink:0;object-fit:cover;';
+      avatar.style.cssText = 'width:36px;height:36px;border-radius:50%;flex-shrink:0;object-fit:cover;';
       var bubble = document.createElement('div');
       bubble.className = 'chat-bubble ' + role;
       bubble.style.alignSelf = 'auto';
-      bubble.innerHTML = text.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br>');
+      if (role === 'typing') {
+        bubble.innerHTML = '<span class="typing-dots"><span>.</span><span>.</span><span>.</span></span>';
+      } else {
+        bubble.innerHTML = text.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br>');
+      }
       row.appendChild(avatar);
       row.appendChild(bubble);
       messages.appendChild(row);
