@@ -1822,14 +1822,29 @@ margin: 20px 20px 0;
   function applyTheme(theme) {
     document.documentElement.setAttribute('data-theme', theme);
     document.body.setAttribute('data-theme', theme);
-    // Classe CSS directe pour dark (bypass total des variables)
+
+    // INJECTION STYLE TAG — méthode la plus fiable tous navigateurs
+    var darkStyle = document.getElementById('dark-override');
     if (theme === 'dark') {
-      document.documentElement.classList.add('dark-active');
-      document.body.classList.add('dark-active');
+      if (!darkStyle) {
+        darkStyle = document.createElement('style');
+        darkStyle.id = 'dark-override';
+        document.head.appendChild(darkStyle);
+      }
+      darkStyle.textContent =
+        'html, body, .phone-screen, .phone-scroll { background: #0f1923 !important; color: #eef2f7 !important; }' +
+        '.logo-wrap, .section, .user-row, .google-row, .bottom-bar { background: #1a2636 !important; }' +
+        '.info, .identity, .ctas { color: #eef2f7 !important; }' +
+        '.merchant-name, .address-text, h2, h3 { color: #eef2f7 !important; }' +
+        '.cta-label { color: #8fa3bb !important; }' +
+        '.social-row a { background: #212f3f !important; color: #eef2f7 !important; }' +
+        '.bottom-bar-item { color: #5a7288 !important; }' +
+        '.bottom-bar-item.active { color: #3D6B8C !important; }' +
+        '.theme-toggle { background: rgba(26,38,54,0.92) !important; color: #fff !important; }';
     } else {
-      document.documentElement.classList.remove('dark-active');
-      document.body.classList.remove('dark-active');
+      if (darkStyle) darkStyle.remove();
     }
+
     // CSS variables pour les composants enfants
     var vars = themeVars[theme] || themeVars.light;
     var targets = [document.documentElement, document.body];
@@ -1843,11 +1858,13 @@ margin: 20px 20px 0;
     // Update meta theme-color
     var meta = document.querySelector('meta[name="theme-color"]');
     if (meta) meta.setAttribute('content', vars['--bg-card']);
-    const icon = document.getElementById('theme-icon');
-    if (theme === 'dark') {
-      icon.innerHTML = '<circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>';
-    } else {
-      icon.innerHTML = '<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>';
+    var icon = document.getElementById('theme-icon');
+    if (icon) {
+      if (theme === 'dark') {
+        icon.innerHTML = '<circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>';
+      } else {
+        icon.innerHTML = '<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>';
+      }
     }
   }
 
@@ -1856,12 +1873,17 @@ margin: 20px 20px 0;
   else applyTheme(currentTheme);
 
   function toggleTheme() {
-    const sys = getSystemTheme();
-    const current = document.documentElement.getAttribute('data-theme');
-    const next = current === 'dark' ? 'light' : 'dark';
+    var current = document.documentElement.getAttribute('data-theme');
+    var next = current === 'dark' ? 'light' : 'dark';
     currentTheme = next;
     localStorage.setItem('theme', next);
     applyTheme(next);
+    // DEBUG toast temporaire — à retirer
+    var t = document.createElement('div');
+    t.textContent = 'Theme → ' + next;
+    t.style.cssText = 'position:fixed;top:60px;left:50%;transform:translateX(-50%);background:red;color:#fff;padding:8px 16px;border-radius:8px;z-index:99999;font-size:14px;';
+    document.body.appendChild(t);
+    setTimeout(function(){ t.remove(); }, 2000);
   }
 
   // Hours sheet
