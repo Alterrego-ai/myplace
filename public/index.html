@@ -994,20 +994,23 @@ align-self: center;
 .maia-float-close:active { background: var(--bg-subtle); }
 .maia-float.dismissed { display: none; }
 
-/* Mini-fab Maïa (après dismiss du float) */
+/* Mini-fab Maïa (après dismiss du float) — overlay logo haut gauche */
 .maia-mini-fab {
   display: none;
-  position: fixed;
-  bottom: 80px; right: 14px;
-  width: 48px; height: 48px;
-  border-radius: 50%;
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  width: 100%; height: 100%;
+  border-radius: 10px;
   cursor: pointer;
   z-index: 800;
-  box-shadow: 0 3px 14px rgba(0,0,0,0.18);
+  box-shadow: 0 3px 14px rgba(0,0,0,0.25);
   animation: maiaMiniFabIn 0.4s ease both;
   -webkit-tap-highlight-color: transparent;
   overflow: hidden;
-  border: 2px solid var(--bg-card);
+  border: 2px solid rgba(255,255,255,0.3);
+  background: linear-gradient(135deg, rgba(61,107,140,0.9), rgba(42,90,110,0.95));
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
 }
 .maia-mini-fab img {
   width: 100%; height: 100%; object-fit: cover;
@@ -1339,8 +1342,12 @@ margin: 20px 20px 0;
 <!-- IDENTITY + STATUS -->
 
 <div class="identity fade-up">
-  <div class="logo-wrap">
+  <div class="logo-wrap" style="position:relative;">
     <img src="https://ciss-media-dev.s3.fr-par.scw.cloud/pointofsales/47408/15-vauban-brc-187.png" alt="Logo Sauf Imprévu" />
+    <!-- Mini-fab Maïa (overlay logo après dismiss du floating) -->
+    <div class="maia-mini-fab" id="maiaMiniFab" onclick="openChat()">
+      <img src="/img/maia.png" alt="Maïa">
+    </div>
   </div>
 </div>
 
@@ -1699,10 +1706,6 @@ margin: 20px 20px 0;
   <button class="sheet-cancel" onclick="closeAllSheets()">Fermer</button>
 </div>
 
-<!-- Mini-fab Maïa (après dismiss du floating) -->
-<div class="maia-mini-fab" id="maiaMiniFab" onclick="openChat()">
-  <img src="/img/maia.png" alt="Maïa">
-</div>
 
 <!-- BOTTOM SHEET CHAT -->
 <div class="bottom-sheet" id="chatSheet">
@@ -1805,7 +1808,7 @@ margin: 20px 20px 0;
   function applyTheme(theme) {
     document.documentElement.setAttribute('data-theme', theme);
     document.body.setAttribute('data-theme', theme);
-    // Force all CSS variables on body + phone-screen for mobile Safari
+    // Force all CSS variables on html, body, phone-screen
     var vars = themeVars[theme] || themeVars.light;
     var targets = [document.documentElement, document.body];
     var ps = document.querySelector('.phone-screen');
@@ -1815,6 +1818,13 @@ margin: 20px 20px 0;
         targets[i].style.setProperty(k, vars[k]);
       }
     }
+    // Force background colors directly (mobile Safari ne rafraîchit pas toujours les var())
+    document.documentElement.style.background = vars['--bg-card'];
+    document.body.style.background = vars['--bg'];
+    if (ps) ps.style.background = vars['--bg'];
+    // Update meta theme-color
+    var meta = document.querySelector('meta[name="theme-color"]');
+    if (meta) meta.setAttribute('content', vars['--bg-card']);
     const icon = document.getElementById('theme-icon');
     if (theme === 'dark') {
       icon.innerHTML = '<circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>';
