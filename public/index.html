@@ -1946,33 +1946,7 @@ margin: 20px 20px 0;
   <div style="padding:0 20px;">
     <div style="font-size:16px;font-weight:700;color:var(--text);margin-bottom:4px;">Garder sur votre écran</div>
     <div style="font-size:12px;color:var(--text-tertiary);margin-bottom:16px;">Un simple raccourci, rien à installer ni à télécharger</div>
-
-    <div style="display:flex;flex-direction:column;gap:12px;">
-      <!-- Étape 1 -->
-      <div style="display:flex;align-items:flex-start;gap:12px;">
-        <div style="width:28px;height:28px;border-radius:50%;background:var(--primary);color:#fff;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;flex-shrink:0;">1</div>
-        <div>
-          <div style="font-size:13px;font-weight:600;color:var(--text);">Tapez sur <strong>⋯</strong> ou <svg style="display:inline-block;vertical-align:middle;width:16px;height:16px;" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12v8a2 2 0 002 2h12a2 2 0 002-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg></div>
-          <div style="font-size:11px;color:var(--text-tertiary);margin-top:2px;">En bas de votre navigateur Safari</div>
-        </div>
-      </div>
-      <!-- Étape 2 -->
-      <div style="display:flex;align-items:flex-start;gap:12px;">
-        <div style="width:28px;height:28px;border-radius:50%;background:var(--primary);color:#fff;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;flex-shrink:0;">2</div>
-        <div>
-          <div style="font-size:13px;font-weight:600;color:var(--text);">Choisissez <strong>Partager...</strong></div>
-          <div style="font-size:11px;color:var(--text-tertiary);margin-top:2px;">Si pas visible directement dans le menu</div>
-        </div>
-      </div>
-      <!-- Étape 3 -->
-      <div style="display:flex;align-items:flex-start;gap:12px;">
-        <div style="width:28px;height:28px;border-radius:50%;background:var(--primary);color:#fff;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;flex-shrink:0;">3</div>
-        <div>
-          <div style="font-size:13px;font-weight:600;color:var(--text);">Tapez <strong>Sur l'écran d'accueil</strong></div>
-          <div style="font-size:11px;color:var(--text-tertiary);margin-top:2px;">Puis confirmez en haut à droite</div>
-        </div>
-      </div>
-    </div>
+    <div id="pwaGuideSteps"></div>
   </div>
   <button class="sheet-cancel" onclick="closeAllSheets()">Compris</button>
 </div>
@@ -2197,10 +2171,11 @@ margin: 20px 20px 0;
 
   // Share
   function handleShare() {
-    // Sur iOS non-standalone, afficher l'option PWA
+    // Sur iOS/Android non-standalone, afficher l'option PWA
     var isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+    var isAndroid = /Android/.test(navigator.userAgent);
     var isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
-    if (isIOS && !isStandalone) {
+    if ((isIOS || isAndroid) && !isStandalone) {
       document.getElementById('shareSheetPwa').style.display = 'flex';
     }
     document.getElementById('sheetOverlay').classList.add('visible');
@@ -2229,6 +2204,33 @@ margin: 20px 20px 0;
 
   function showPwaInstructions() {
     closeAllSheets();
+    // Détecter navigateur
+    var ua = navigator.userAgent;
+    var isIOS = /iPad|iPhone|iPod/.test(ua) && !window.MSStream;
+    var isChromeIOS = isIOS && /CriOS/.test(ua);
+    var isAndroid = /Android/.test(ua);
+    var steps = '';
+    var stepStyle = 'display:flex;align-items:flex-start;gap:12px;';
+    var numStyle = 'width:28px;height:28px;border-radius:50%;background:var(--primary);color:#fff;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;flex-shrink:0;';
+    var titleStyle = 'font-size:13px;font-weight:600;color:var(--text);';
+    var subStyle = 'font-size:11px;color:var(--text-tertiary);margin-top:2px;';
+
+    if (isChromeIOS) {
+      steps =
+        '<div style="' + stepStyle + '"><div style="' + numStyle + '">1</div><div><div style="' + titleStyle + '">Tapez sur <strong>⋯</strong> (menu)</div><div style="' + subStyle + '">En bas à droite de Chrome</div></div></div>' +
+        '<div style="' + stepStyle + 'margin-top:12px;"><div style="' + numStyle + '">2</div><div><div style="' + titleStyle + '">Tapez <strong>Ajouter à l\'écran d\'accueil</strong></div><div style="' + subStyle + '">Puis confirmez</div></div></div>';
+    } else if (isAndroid) {
+      steps =
+        '<div style="' + stepStyle + '"><div style="' + numStyle + '">1</div><div><div style="' + titleStyle + '">Tapez sur <strong>⋮</strong> (menu)</div><div style="' + subStyle + '">En haut à droite du navigateur</div></div></div>' +
+        '<div style="' + stepStyle + 'margin-top:12px;"><div style="' + numStyle + '">2</div><div><div style="' + titleStyle + '">Tapez <strong>Ajouter à l\'écran d\'accueil</strong></div><div style="' + subStyle + '">Ou "Installer l\'application"</div></div></div>';
+    } else {
+      // Safari iOS (défaut)
+      steps =
+        '<div style="' + stepStyle + '"><div style="' + numStyle + '">1</div><div><div style="' + titleStyle + '">Tapez sur <svg style="display:inline-block;vertical-align:middle;width:16px;height:16px;" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12v8a2 2 0 002 2h12a2 2 0 002-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg> (Partager)</div><div style="' + subStyle + '">En bas de Safari</div></div></div>' +
+        '<div style="' + stepStyle + 'margin-top:12px;"><div style="' + numStyle + '">2</div><div><div style="' + titleStyle + '">Tapez <strong>Sur l\'écran d\'accueil</strong></div><div style="' + subStyle + '">Puis confirmez en haut à droite</div></div></div>';
+    }
+    document.getElementById('pwaGuideSteps').innerHTML = steps;
+
     setTimeout(function() {
       document.getElementById('sheetOverlay').classList.add('visible');
       document.getElementById('pwaGuideSheet').classList.add('visible');
