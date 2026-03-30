@@ -40,6 +40,7 @@ function createUserToken(user) {
   const secret = process.env.OIDC_CLIENT_SECRET || 'dev-secret';
   const payload = {
     sub: user.sub,
+    account_id: user.account_id || null,
     name: user.name,
     email: user.email,
     picture: user.picture,
@@ -141,7 +142,7 @@ function authRoutes(router) {
       req.session.oidc = { codeVerifier, state };
 
       const authUrl = oidcClient.authorizationUrl({
-        scope: 'openid birthday emails phones addresses',
+        scope: 'openid birthday emails phones addresses account_id',
         state,
         code_challenge: codeChallenge,
         code_challenge_method: 'S256',
@@ -179,16 +180,22 @@ function authRoutes(router) {
       );
 
       // Récupérer les infos utilisateur
-      let userInfo = { sub: tokenSet.claims().sub };
+      console.log('✓ OIDC token claims:', JSON.stringify(tokenSet.claims(), null, 2));
+      console.log('✓ OIDC access_token exists:', !!tokenSet.access_token);
+      let userInfo = tokenSet.claims(); // fallback = claims du id_token
       try {
-        userInfo = await oidcClient.userinfo(tokenSet.access_token);
+        const uinfo = await oidcClient.userinfo(tokenSet.access_token);
+        console.log('✓ OIDC userinfo response:', JSON.stringify(uinfo, null, 2));
+        userInfo = { ...userInfo, ...uinfo }; // merge claims + userinfo
       } catch (e) {
-        console.warn('⚠ userinfo fetch failed, using token claims:', e.message);
+        console.warn('⚠ userinfo fetch failed, using token claims only:', e.message);
       }
+      console.log('✓ OIDC final userInfo:', JSON.stringify(userInfo, null, 2));
 
       // Stocker en session (tous les champs disponibles)
       req.session.user = {
         sub: userInfo.sub,
+        account_id: userInfo.account_id || null,
         email: userInfo.email || (userInfo.emails && userInfo.emails[0]) || null,
         name: userInfo.name || userInfo.preferred_username || userInfo.sub,
         picture: userInfo.picture || null,

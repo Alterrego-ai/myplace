@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="auto">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="theme-color" content="#3D6B8C">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>Maïa — Sauf Imprévu</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --primary: #3D6B8C;
+  --primary-light: #5a8aab;
+  --primary-dark: #2a4f6b;
+  --primary-ultra-light: #e8f0f6;
+  --accent: #c8a96e;
+  --radius: 16px;
+  --radius-sm: 10px;
+  --transition: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  --font: -apple-system, BlinkMacSystemFont, 'Inter', 'SF Pro Display', 'Segoe UI', sans-serif;
+  --bg: #f7f8fa;
+  --bg-card: #ffffff;
+  --bg-subtle: #f0f3f7;
+  --text: #1a2332;
+  --text-secondary: #5a6a7e;
+  --text-tertiary: #8a9ab0;
+  --border: rgba(0,0,0,0.07);
+  --open-color: #2d9c6e;
+  --closed-color: #c0392b;
+}
+[data-theme="dark"] {
+  --bg: #0f1923;
+  --bg-card: #1a2636;
+  --bg-subtle: #212f3f;
+  --text: #eef2f7;
+  --text-secondary: #8fa3bb;
+  --text-tertiary: #5a7288;
+  --border: rgba(255,255,255,0.07);
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0f1923; --bg-card: #1a2636; --bg-subtle: #212f3f;
+    --text: #eef2f7; --text-secondary: #8fa3bb; --text-tertiary: #5a7288;
+    --border: rgba(255,255,255,0.07);
+  }
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html, body {
+  height: 100%; font-family: var(--font);
+  background: var(--bg); color: var(--text);
+  -webkit-font-smoothing: antialiased;
+}
+/* ── Layout: header fixe en haut, input fixe en bas, messages entre les deux ── */
+.chat-page {
+  display: flex; flex-direction: column;
+  height: 100dvh; height: 100vh;
+  max-width: 600px; margin: 0 auto;
+}
+/* Header */
+.chat-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 14px 16px 12px;
+  padding-top: calc(14px + env(safe-area-inset-top, 0px));
+  background: linear-gradient(135deg, var(--primary), #2a5a6e);
+  color: #fff; flex-shrink: 0;
+}
+.chat-header-left { display: flex; align-items: center; gap: 10px; }
+.chat-header-avatar {
+  width: 42px; height: 42px; border-radius: 0; object-fit: contain; border: none;
+}
+.chat-header-info h4 { font-size: 15px; font-weight: 700; margin: 0; color: #fff; }
+.chat-header-info span { font-size: 11px; opacity: 0.8; }
+.chat-header-close {
+  background: rgba(255,255,255,0.15); border: none; color: #fff; width: 32px; height: 32px;
+  border-radius: 50%; font-size: 20px; cursor: pointer; display: flex; align-items: center;
+  justify-content: center; text-decoration: none;
+}
+.chat-header-close:hover { background: rgba(255,255,255,0.3); }
+/* Messages */
+.chat-messages {
+  flex: 1; overflow-y: auto; padding: 10px 10px;
+  display: flex; flex-direction: column; gap: 10px;
+  background: var(--bg);
+  -webkit-overflow-scrolling: touch;
+}
+.chat-messages::-webkit-scrollbar { display: none; }
+.chat-bubble {
+  max-width: 85%; padding: 10px 14px; border-radius: 16px;
+  font-size: 14px; line-height: 1.5; word-wrap: break-word;
+  animation: chatFadeIn 0.2s ease; flex-shrink: 0;
+}
+@keyframes chatFadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+.chat-bubble.user {
+  align-self: flex-end; background: var(--primary); color: #fff; border-bottom-right-radius: 4px;
+}
+.chat-bubble.assistant {
+  align-self: flex-start; background: var(--bg-subtle); color: var(--text); border-bottom-left-radius: 4px;
+}
+.chat-bubble.typing {
+  align-self: flex-start; background: var(--bg-subtle); color: var(--text-tertiary); font-style: italic;
+}
+.typing-dots span {
+  animation: typingDot 1.4s infinite; display: inline-block; font-size: 18px; letter-spacing: 2px;
+}
+.typing-dots span:nth-child(2) { animation-delay: 0.2s; }
+.typing-dots span:nth-child(3) { animation-delay: 0.4s; }
+@keyframes typingDot {
+  0%, 60%, 100% { opacity: 0.2; transform: translateY(0); }
+  30% { opacity: 1; transform: translateY(-3px); }
+}
+/* Input bar */
+.chat-input-bar {
+  display: flex; gap: 8px; padding: 10px 16px;
+  padding-bottom: calc(10px + env(safe-area-inset-bottom, 0px));
+  border-top: 1px solid var(--border); background: var(--bg-card); flex-shrink: 0;
+}
+.chat-input {
+  flex: 1; border: 1px solid var(--border); border-radius: 20px;
+  padding: 10px 16px; font-size: 16px; font-family: var(--font);
+  background: var(--bg); color: var(--text); outline: none;
+  -webkit-appearance: none;
+}
+.chat-input:focus { border-color: var(--primary); }
+.chat-send {
+  width: 40px; height: 40px; border-radius: 50%; border: none;
+  background: var(--primary); color: #fff;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; flex-shrink: 0; align-self: center;
+}
+.chat-send:disabled { opacity: 0.4; cursor: not-allowed; }
+/* Welcome */
+.chat-welcome {
+  text-align: center; padding: 10px 4px 8px; color: var(--text-tertiary);
+  display: flex; flex-direction: column; gap: 10px;
+}
+.chat-welcome-top { text-align: center; padding: 4px 0; }
+.chat-welcome-top h4 { font-size: 15px; font-weight: 700; color: var(--text); margin: 0 0 4px; }
+.chat-welcome-top p { font-size: 13px; margin: 0; line-height: 1.4; color: var(--text-secondary); }
+.cta-main {
+  display: flex; align-items: center; gap: 12px;
+  padding: 12px 14px; background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+  color: #fff; border-radius: 12px; cursor: pointer; border: none;
+  width: 100%; text-align: left; font-family: var(--font); transition: transform 0.15s;
+}
+.cta-main:active { transform: scale(0.98); }
+.cta-main .cta-icon {
+  width: 36px; height: 36px; background: rgba(255,255,255,0.2);
+  border-radius: 10px; display: flex; align-items: center; justify-content: center;
+  font-size: 18px; flex-shrink: 0;
+}
+.cta-main .cta-text h4 { font-size: 14px; font-weight: 700; margin: 0 0 1px; color: #fff; }
+.cta-main .cta-text span { font-size: 11px; opacity: 0.85; font-weight: 400; }
+/* Zone premium */
+.zone-premium {
+  background: var(--bg-card); border-radius: 14px; padding: 10px;
+  margin-top: 6px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); border: 1px solid var(--border);
+}
+.zone-premium-header {
+  display: flex; align-items: center; gap: 6px;
+  margin: -10px -10px 10px; padding: 10px 12px;
+  background: var(--bg-subtle); border-bottom: 1px solid var(--border);
+  border-radius: 14px 14px 0 0;
+}
+.zone-premium-header .lock-icon { font-size: 13px; }
+.zone-premium-header span {
+  font-size: 12px; font-weight: 700; color: var(--text-secondary); letter-spacing: 0.03em; text-transform: uppercase;
+}
+.features-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+.feature-tile {
+  display: flex; align-items: center; gap: 8px;
+  padding: 10px 10px; border-radius: 10px;
+  background: var(--bg-subtle); border: 1px solid var(--border);
+}
+.feature-tile .feat-icon {
+  width: 30px; height: 30px; border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 22px; flex-shrink: 0; background: none;
+}
+.feature-tile .feat-label { font-size: 12px; font-weight: 600; color: var(--text-secondary); line-height: 1.3; }
+.feature-tile.locked { opacity: 0.7; cursor: default; }
+.feature-tile.locked .feat-icon { filter: grayscale(0.5); }
+.cta-join {
+  display: flex; align-items: center; justify-content: center; gap: 6px;
+  margin-top: 10px; padding: 11px;
+  background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+  color: #fff; border: none; border-radius: 10px;
+  font-size: 13px; font-weight: 700; cursor: pointer;
+  width: 100%; font-family: var(--font);
+}
+</style>
+</head>
+<body>
+
+<div class="chat-page">
+  <!-- Header -->
+  <div class="chat-header">
+    <div class="chat-header-left">
+      <img class="chat-header-avatar" src="/img/maia.png" alt="Maïa">
+      <div class="chat-header-info">
+        <h4>Maïa</h4>
+        <span>Agent d'hospitalité · Sauf Imprévu Bar à vins</span>
+      </div>
+    </div>
+    <a href="/" class="chat-header-close" onclick="return closeChat()">✕</a>
+  </div>
+
+  <!-- Messages -->
+  <div class="chat-messages" id="chatMessages">
+    <!-- Welcome injecté par JS -->
+  </div>
+
+  <!-- Input -->
+  <div class="chat-input-bar" id="chatInputBar">
+    <input type="text" class="chat-input" id="chatInput" placeholder="Votre message..." maxlength="2000" autocomplete="off">
+    <button class="chat-send" id="chatSend" onclick="sendMessage()">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+    </button>
+  </div>
+</div>
+
+<script>
+  // ── Close ──
+  var inIframe = window.self !== window.top;
+  function closeChat() {
+    if (inIframe) {
+      window.parent.postMessage('closeChat', '*');
+      return false; // empêche la navigation
+    }
+    return true; // navigation classique vers /
+  }
+
+  // ── SSO ──
+  var SSO_KEY = 'myplace_user';
+  function getStoredUser() {
+    try { return JSON.parse(localStorage.getItem(SSO_KEY)); } catch(e) { return null; }
+  }
+  function getSSOLoginUrl() {
+    return '/auth/login?returnTo=' + encodeURIComponent(window.location.href);
+  }
+
+  // ── State ──
+  var chatBusy = false;
+  var user = getStoredUser();
+  var isLogged = !!(user && user._token);
+
+  // ── Welcome ──
+  function buildWelcome() {
+    var isMember = false;
+    var lockIcon = isMember ? '👑' : (isLogged ? '✨' : '🔒');
+    var labelText = isMember ? 'Espace club' : (isLogged ? 'Rejoignez le club' : 'Réservé à nos membres');
+    var tileClass = isMember ? 'unlocked' : 'locked';
+    var joinBtn = isMember ? '' :
+      (isLogged
+        ? '<button class="cta-join" onclick="window.location.href=getSSOLoginUrl()">✨ Rejoindre le club</button>'
+        : '<button class="cta-join" onclick="window.location.href=getSSOLoginUrl()">Créer mon compte gratuitement</button>');
+    var fakeInput = !isLogged ?
+      '<div onclick="window.location.href=getSSOLoginUrl()" style="display:flex;align-items:center;gap:8px;margin-top:10px;padding:10px 14px;background:var(--bg);border:1px solid var(--border);border-radius:20px;cursor:pointer;opacity:0.5;">' +
+        '<span style="flex:1;font-size:14px;color:var(--text-tertiary);">Connectez-vous pour discuter...</span>' +
+        '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="color:var(--text-tertiary);"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>' +
+      '</div>' : '';
+
+    return '<div class="chat-welcome">' +
+      '<div class="chat-welcome-top">' +
+        '<img src="/img/maia.png" alt="Maïa" style="width:72px;height:72px;border-radius:0;margin-bottom:8px;object-fit:contain;">' +
+        '<h4>Bonjour !</h4>' +
+        '<p>Je suis Maïa, votre agent d\'hospitalité</p>' +
+      '</div>' +
+      '<button class="cta-main" onclick="startReservation()">' +
+        '<div class="cta-icon">📅</div>' +
+        '<div class="cta-text"><h4>Réserver une table</h4><span>Disponibilité en temps réel</span></div>' +
+      '</button>' +
+      '<div style="min-height:30px;"></div>' +
+      '<div class="zone-premium">' +
+        '<div class="zone-premium-header">' +
+          '<span class="lock-icon">' + lockIcon + '</span>' +
+          '<span>' + labelText + '</span>' +
+        '</div>' +
+        '<div class="features-grid">' +
+          '<div class="feature-tile ' + tileClass + '"><div class="feat-icon">🍷</div><div class="feat-label">Acheter à prix club</div></div>' +
+          '<div class="feature-tile ' + tileClass + '"><div class="feat-icon">🏡</div><div class="feat-label">Découvrir les domaines</div></div>' +
+          '<div class="feature-tile ' + tileClass + '"><div class="feat-icon">📆</div><div class="feat-label">Agenda du club</div></div>' +
+          '<div class="feature-tile ' + tileClass + '"><div class="feat-icon">🎁</div><div class="feat-label">Offres exclusives</div></div>' +
+          '<div class="feature-tile ' + tileClass + '"><div class="feat-icon">📖</div><div class="feat-label">Carnet de dégustation</div></div>' +
+          '<div class="feature-tile ' + tileClass + '"><div class="feat-icon">⭐</div><div class="feat-label">Fidélité & avantages</div></div>' +
+        '</div>' +
+        fakeInput +
+        joinBtn +
+      '</div>' +
+    '</div>';
+  }
+
+  // ── Init ──
+  var messages = document.getElementById('chatMessages');
+  var inputBar = document.getElementById('chatInputBar');
+  var chatInput = document.getElementById('chatInput');
+  var chatSend = document.getElementById('chatSend');
+
+  // Vérifier si on arrive avec ?resa=1
+  var autoResa = new URLSearchParams(window.location.search).get('resa') === '1';
+
+  if (autoResa) {
+    // Lancer directement la réservation
+    inputBar.style.display = '';
+    chatInput.disabled = false;
+    chatInput.placeholder = 'Votre demande de réservation...';
+    chatInput.value = 'Je souhaite réserver une table';
+    // Petite pause pour que la page se charge
+    setTimeout(function() { sendMessage(); }, 300);
+  } else if (!isLogged) {
+    messages.innerHTML = buildWelcome();
+    inputBar.style.display = 'none';
+  } else {
+    messages.innerHTML = buildWelcome();
+    chatInput.placeholder = 'Votre message...';
+  }
+
+  // ── Fonctions chat ──
+  function startReservation() {
+    var welcome = messages.querySelector('.chat-welcome');
+    if (welcome) welcome.remove();
+    inputBar.style.display = '';
+    chatInput.disabled = false;
+    chatInput.placeholder = 'Votre demande de réservation...';
+    chatInput.value = 'Je souhaite réserver une table';
+    sendMessage();
+  }
+
+  function appendBubble(text, role) {
+    var welcome = messages.querySelector('.chat-welcome');
+    if (welcome) welcome.remove();
+
+    if (role === 'assistant' || role === 'typing') {
+      var row = document.createElement('div');
+      row.style.cssText = 'display:flex;align-items:flex-end;gap:8px;align-self:flex-start;max-width:90%;';
+      var avatar = document.createElement('img');
+      avatar.src = '/img/maia.png'; avatar.alt = 'Maïa';
+      avatar.style.cssText = 'width:36px;height:36px;border-radius:0;flex-shrink:0;object-fit:contain;';
+      var bubble = document.createElement('div');
+      bubble.className = 'chat-bubble ' + role;
+      bubble.style.alignSelf = 'auto';
+      if (role === 'typing') {
+        bubble.innerHTML = '<span class="typing-dots"><span>.</span><span>.</span><span>.</span></span>';
+      } else {
+        bubble.innerHTML = text.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br>');
+      }
+      row.appendChild(avatar);
+      row.appendChild(bubble);
+      messages.appendChild(row);
+      messages.scrollTop = messages.scrollHeight;
+      return row;
+    } else {
+      var bubble = document.createElement('div');
+      bubble.className = 'chat-bubble ' + role;
+      bubble.innerHTML = text.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br>');
+      messages.appendChild(bubble);
+      messages.scrollTop = messages.scrollHeight;
+      return bubble;
+    }
+  }
+
+  function sendMessage() {
+    if (chatBusy) return;
+    var text = chatInput.value.trim();
+    if (!text) return;
+
+    var token = (user && user._token) ? user._token : null;
+
+    appendBubble(text, 'user');
+    chatInput.value = '';
+    chatBusy = true;
+    chatSend.disabled = true;
+
+    var typing = appendBubble('...', 'typing');
+
+    var headers = { 'Content-Type': 'application/json' };
+    if (token) headers['Authorization'] = 'Bearer ' + token;
+
+    fetch('/api/chat', {
+      method: 'POST',
+      headers: headers,
+      body: JSON.stringify({ message: text }),
+    })
+    .then(function(res) {
+      if (!res.ok) {
+        return res.text().then(function(t) {
+          try { return JSON.parse(t); } catch(e) { return { error: 'Erreur serveur (' + res.status + ')' }; }
+        });
+      }
+      return res.json();
+    })
+    .then(function(data) {
+      typing.remove();
+      if (data.error) {
+        appendBubble(data.error, 'assistant');
+      } else {
+        appendBubble(data.reply, 'assistant');
+        // Actions suggérées
+        if (data.actions && data.actions.length > 0) {
+          var actionsDiv = document.createElement('div');
+          actionsDiv.style.cssText = 'display:flex;flex-wrap:wrap;gap:6px;padding:8px 0;justify-content:flex-end;';
+          data.actions.forEach(function(action, i) {
+            var btn = document.createElement('button');
+            btn.style.cssText = 'background:' + (i === 0 ? 'var(--primary);color:#fff;border-color:var(--primary)' : 'var(--bg-subtle);color:var(--text-secondary)') + ';border:1px solid var(--border);border-radius:16px;padding:7px 14px;font-size:13px;cursor:pointer;font-family:var(--font);';
+            btn.textContent = action.label;
+            btn.onclick = function() {
+              chatInput.value = action.value;
+              sendMessage();
+            };
+            actionsDiv.appendChild(btn);
+          });
+          messages.appendChild(actionsDiv);
+          messages.scrollTop = messages.scrollHeight;
+        }
+      }
+    })
+    .catch(function(err) {
+      typing.remove();
+      appendBubble('Connexion impossible. Vérifiez votre réseau.', 'assistant');
+    })
+    .finally(function() {
+      chatBusy = false;
+      chatSend.disabled = false;
+      chatInput.focus();
+    });
+  }
+
+  // Enter pour envoyer
+  chatInput.addEventListener('keydown', function(e) {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      sendMessage();
+    }
+  });
+
+  // Clic sur input bar quand disabled → login
+  inputBar.addEventListener('click', function() {
+    if (chatInput.disabled) window.location.href = getSSOLoginUrl();
+  });
+
+  // Theme
+  (function() {
+    var saved = localStorage.getItem('theme') || 'auto';
+    var theme = saved;
+    if (saved === 'auto') {
+      theme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+    }
+    document.documentElement.setAttribute('data-theme', theme);
+  })();
+</script>
+</body>
+</html>
