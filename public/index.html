@@ -1706,11 +1706,11 @@ margin: 20px 20px 0;
 <!-- ADMIN MENU -->
 <div class="admin-menu-overlay" id="adminOverlay" onclick="closeAdminMenu()"></div>
 <div class="admin-menu" id="adminMenu">
-  <a href="/admin" class="admin-menu-item">
+  <a href="/admin" class="admin-menu-item" onclick="closeAdminMenu()">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
     Cahier de réservation
   </a>
-  <a href="/menu/sauf-imprevu" class="admin-menu-item">
+  <a href="/menu/sauf-imprevu" class="admin-menu-item" onclick="closeAdminMenu()">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/></svg>
     Carte en ligne
   </a>
@@ -2419,6 +2419,15 @@ margin: 20px 20px 0;
     localStorage.removeItem(SSO_KEY);
     closeAllSheets();
     updateAuthUI(null);
+
+    // 2b. Réinitialiser le menu admin
+    isUserAdmin = false;
+    var nav = document.getElementById('navAccueil');
+    if (nav) {
+      nav.onclick = null; // retirer le handler admin
+      nav.href = '#';
+    }
+    closeAdminMenu();
 
     // 2. Logout serveur mySafe en arrière-plan (ne bloque pas l'utilisateur)
     // On utilise un iframe caché pour éviter de quitter la page
