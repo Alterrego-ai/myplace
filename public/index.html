@@ -3229,7 +3229,7 @@ margin: 20px 20px 0;
     if (!text) return;
 
     var user = getStoredUser();
-    if (!user || !user._token) return;
+    var token = user && user._token ? user._token : null;
 
     // Afficher le message user
     appendChatBubble(text, 'user');
@@ -3240,12 +3240,12 @@ margin: 20px 20px 0;
     // Indicateur de frappe
     var typing = appendChatBubble('...', 'typing');
 
+    var headers = { 'Content-Type': 'application/json' };
+    if (token) headers['Authorization'] = 'Bearer ' + token;
+
     fetch('/api/chat', {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer ' + user._token,
-      },
+      headers: headers,
       body: JSON.stringify({ message: text }),
     })
     .then(function(res) {
