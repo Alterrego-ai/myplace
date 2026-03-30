@@ -2647,25 +2647,34 @@ margin: 20px 20px 0;
     document.getElementById('adminOverlay').classList.remove('visible');
   }
 
-  // Naviguer vers une page admin en vérifiant la session serveur d'abord
+  // Naviguer vers une page admin : sync le token frontend → session serveur si besoin
   function navigateAdmin(e, url) {
     e.preventDefault();
     closeAdminMenu();
-    // Vérifier si la session serveur est active
-    fetch('/auth/me', { credentials: 'include' })
-      .then(function(r) { return r.json(); })
-      .then(function(data) {
-        if (data.authenticated) {
-          // Session serveur active → naviguer directement
-          window.location.href = url;
-        } else {
-          // Pas de session serveur → login avec returnTo vers la page admin
-          window.location.href = '/auth/login?returnTo=' + encodeURIComponent(url);
-        }
-      })
-      .catch(function() {
+    var user = getStoredUser();
+    var token = user && user._token;
+    if (!token) {
+      window.location.href = '/auth/login?returnTo=' + encodeURIComponent(url);
+      return false;
+    }
+    // Sync le token → session serveur, puis naviguer
+    fetch('/auth/sync', {
+      method: 'POST',
+      headers: { 'Authorization': 'Bearer ' + token },
+      credentials: 'include'
+    })
+    .then(function(r) { return r.json(); })
+    .then(function(data) {
+      if (data.authenticated) {
         window.location.href = url;
-      });
+      } else {
+        // Token invalide/expiré → re-login
+        window.location.href = '/auth/login?returnTo=' + encodeURIComponent(url);
+      }
+    })
+    .catch(function() {
+      window.location.href = url;
+    });
     return false;
   }
 

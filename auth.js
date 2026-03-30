@@ -319,6 +319,32 @@ function authRoutes(router) {
     }
   });
 
+  // --- API : sync token frontend → session serveur (évite re-login mySafe) ---
+  router.post('/auth/sync', (req, res) => {
+    const authHeader = req.headers.authorization;
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+      return res.status(401).json({ authenticated: false });
+    }
+    const token = authHeader.substring(7);
+    const user = verifyUserToken(token);
+    if (!user) {
+      return res.status(401).json({ authenticated: false });
+    }
+    // Créer la session serveur à partir du token vérifié
+    req.session.user = {
+      sub: user.sub,
+      account_id: user.account_id || null,
+      email: user.email,
+      name: user.name,
+      picture: user.picture || null,
+      birthday: user.birthday || null,
+      phone: user.phone || null,
+      address: user.address || null,
+      roles: user.roles || [],
+    };
+    res.json({ authenticated: true });
+  });
+
   return router;
 }
 
