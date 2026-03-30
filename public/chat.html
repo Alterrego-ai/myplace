@@ -178,6 +178,7 @@ html, body {
   font-size: 22px; flex-shrink: 0; background: none;
 }
 .feature-tile .feat-label { font-size: 12px; font-weight: 600; color: var(--text-secondary); line-height: 1.3; }
+.feat-soon { display: block; font-size: 9px; font-weight: 600; color: var(--primary); opacity: 0.7; text-transform: uppercase; letter-spacing: 0.04em; margin-top: 2px; }
 .feature-tile.locked { opacity: 0.7; cursor: default; }
 .feature-tile.locked .feat-icon { filter: grayscale(0.5); }
 .cta-join {
@@ -277,12 +278,12 @@ html, body {
           '<span>' + labelText + '</span>' +
         '</div>' +
         '<div class="features-grid">' +
-          '<div class="feature-tile ' + tileClass + '"><div class="feat-icon">🍷</div><div class="feat-label">Acheter à prix club</div></div>' +
-          '<div class="feature-tile ' + tileClass + '"><div class="feat-icon">🏡</div><div class="feat-label">Découvrir les domaines</div></div>' +
-          '<div class="feature-tile ' + tileClass + '"><div class="feat-icon">📆</div><div class="feat-label">Agenda du club</div></div>' +
-          '<div class="feature-tile ' + tileClass + '"><div class="feat-icon">🎁</div><div class="feat-label">Offres exclusives</div></div>' +
-          '<div class="feature-tile ' + tileClass + '"><div class="feat-icon">📖</div><div class="feat-label">Carnet de dégustation</div></div>' +
-          '<div class="feature-tile ' + tileClass + '"><div class="feat-icon">⭐</div><div class="feat-label">Fidélité & avantages</div></div>' +
+          '<div class="feature-tile ' + tileClass + '"><div class="feat-icon">🍷</div><div class="feat-label">Acheter à prix club<span class="feat-soon">Prochainement</span></div></div>' +
+          '<div class="feature-tile ' + tileClass + '"><div class="feat-icon">🏡</div><div class="feat-label">Découvrir les domaines<span class="feat-soon">Prochainement</span></div></div>' +
+          '<div class="feature-tile ' + tileClass + '"><div class="feat-icon">📆</div><div class="feat-label">Agenda du club<span class="feat-soon">Prochainement</span></div></div>' +
+          '<div class="feature-tile ' + tileClass + '"><div class="feat-icon">🎁</div><div class="feat-label">Offres exclusives<span class="feat-soon">Prochainement</span></div></div>' +
+          '<div class="feature-tile ' + tileClass + '"><div class="feat-icon">📖</div><div class="feat-label">Carnet de dégustation<span class="feat-soon">Prochainement</span></div></div>' +
+          '<div class="feature-tile ' + tileClass + '"><div class="feat-icon">⭐</div><div class="feat-label">Fidélité & avantages<span class="feat-soon">Prochainement</span></div></div>' +
         '</div>' +
         fakeInput +
         joinBtn +

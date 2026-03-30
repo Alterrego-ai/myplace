@@ -910,15 +910,23 @@ align-self: center;
 }
 .chat-send:disabled { opacity: 0.4; cursor: not-allowed; }
 /* ── Admin menu popup ── */
-.admin-menu {
-  position: fixed; bottom: 72px; left: 12px; right: 12px;
-  background: var(--bg-card); border-radius: 16px; padding: 8px;
-  box-shadow: 0 -4px 24px rgba(0,0,0,0.15); border: 1px solid var(--border);
-  z-index: 900; display: none;
-  animation: adminMenuIn 0.2s ease;
+.admin-sheet {
+  position: absolute; bottom: 0; left: 0; right: 0;
+  background: var(--bg-card); border-radius: 20px 20px 0 0; padding: 8px 8px 20px;
+  box-shadow: 0 -4px 24px rgba(0,0,0,0.15); border: 1px solid var(--border); border-bottom: none;
+  z-index: 200; transform: translateY(100%); transition: transform 0.25s ease;
+  padding-bottom: 20px;
+  padding-bottom: calc(20px + env(safe-area-inset-bottom, 0px));
 }
-.admin-menu.visible { display: block; }
-@keyframes adminMenuIn { from { opacity:0; transform:translateY(10px); } to { opacity:1; transform:translateY(0); } }
+.admin-sheet.visible { transform: translateY(0); }
+.admin-sheet-handle {
+  width: 36px; height: 4px; background: var(--border); border-radius: 2px;
+  margin: 4px auto 12px;
+}
+.admin-sheet-title {
+  font-size: 13px; font-weight: 700; color: var(--text-tertiary); text-transform: uppercase;
+  letter-spacing: 0.04em; padding: 0 16px 8px;
+}
 .admin-menu-item {
   display: flex; align-items: center; gap: 12px; padding: 14px 16px;
   border-radius: 12px; color: var(--text); text-decoration: none;
@@ -926,11 +934,11 @@ align-self: center;
 }
 .admin-menu-item:hover, .admin-menu-item:active { background: var(--bg-subtle); }
 .admin-menu-item svg { width: 22px; height: 22px; color: var(--primary); flex-shrink: 0; }
-.admin-menu-overlay {
-  position: fixed; top: 0; left: 0; right: 0; bottom: 0;
-  z-index: 899; display: none;
+.admin-sheet-overlay {
+  position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+  z-index: 199; display: none; background: rgba(0,0,0,0.3);
 }
-.admin-menu-overlay.visible { display: block; }
+.admin-sheet-overlay.visible { display: block; }
 
 /* ── Floating Maïa (overlay sur zone CTA) ── */
 .ctas { position: relative; overflow: visible; }
@@ -1306,6 +1314,7 @@ display: flex; flex-direction: column; gap: 10px;
 .feature-tile.unlocked { opacity: 1; cursor: pointer; border-color: var(--primary); }
 .feature-tile.unlocked:active { transform: scale(0.97); background: rgba(61,107,140,0.06); }
 .feature-tile.unlocked .feat-label { color: var(--text); }
+.feat-soon { display: block; font-size: 9px; font-weight: 600; color: var(--primary); opacity: 0.7; text-transform: uppercase; letter-spacing: 0.04em; margin-top: 2px; }
 .cta-join {
   display: flex; align-items: center; justify-content: center; gap: 6px;
   margin-top: 10px; padding: 11px;
@@ -1774,9 +1783,11 @@ margin: 20px 20px 0;
 
       </div><!-- /phone-scroll -->
 
-<!-- ADMIN MENU -->
-<div class="admin-menu-overlay" id="adminOverlay" onclick="closeAdminMenu()"></div>
-<div class="admin-menu" id="adminMenu">
+<!-- ADMIN SHEET -->
+<div class="admin-sheet-overlay" id="adminOverlay" onclick="closeAdminMenu()"></div>
+<div class="admin-sheet" id="adminMenu">
+  <div class="admin-sheet-handle"></div>
+  <div class="admin-sheet-title">Administration</div>
   <a href="/admin" class="admin-menu-item" onclick="closeAdminMenu()">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
     Cahier de réservation
@@ -1993,12 +2004,12 @@ margin: 20px 20px 0;
             <span id="premiumLabel">Réservé à nos membres</span>
           </div>
           <div class="features-grid" id="featuresGrid">
-            <div class="feature-tile locked"><div class="feat-icon">🍷</div><div class="feat-label">Acheter à prix club</div></div>
-            <div class="feature-tile locked"><div class="feat-icon">🏡</div><div class="feat-label">Découvrir les domaines</div></div>
-            <div class="feature-tile locked"><div class="feat-icon">📆</div><div class="feat-label">Agenda du club</div></div>
-            <div class="feature-tile locked"><div class="feat-icon">🎁</div><div class="feat-label">Offres exclusives</div></div>
-            <div class="feature-tile locked"><div class="feat-icon">📖</div><div class="feat-label">Carnet de dégustation</div></div>
-            <div class="feature-tile locked"><div class="feat-icon">⭐</div><div class="feat-label">Fidélité & avantages</div></div>
+            <div class="feature-tile locked"><div class="feat-icon">🍷</div><div class="feat-label">Acheter à prix club<span class="feat-soon">Prochainement</span></div></div>
+            <div class="feature-tile locked"><div class="feat-icon">🏡</div><div class="feat-label">Découvrir les domaines<span class="feat-soon">Prochainement</span></div></div>
+            <div class="feature-tile locked"><div class="feat-icon">📆</div><div class="feat-label">Agenda du club<span class="feat-soon">Prochainement</span></div></div>
+            <div class="feature-tile locked"><div class="feat-icon">🎁</div><div class="feat-label">Offres exclusives<span class="feat-soon">Prochainement</span></div></div>
+            <div class="feature-tile locked"><div class="feat-icon">📖</div><div class="feat-label">Carnet de dégustation<span class="feat-soon">Prochainement</span></div></div>
+            <div class="feature-tile locked"><div class="feat-icon">⭐</div><div class="feat-label">Fidélité & avantages<span class="feat-soon">Prochainement</span></div></div>
           </div>
           <button class="cta-join" id="ctaJoin" onclick="handleJoinClick()">Créer mon compte gratuitement</button>
         </div>
@@ -2618,14 +2629,13 @@ margin: 20px 20px 0;
   }
 
   function toggleAdminMenu() {
-    var menu = document.getElementById('adminMenu');
+    var sheet = document.getElementById('adminMenu');
     var overlay = document.getElementById('adminOverlay');
-    var visible = menu.classList.contains('visible');
+    var visible = sheet.classList.contains('visible');
     if (visible) {
-      menu.classList.remove('visible');
-      overlay.classList.remove('visible');
+      closeAdminMenu();
     } else {
-      menu.classList.add('visible');
+      sheet.classList.add('visible');
       overlay.classList.add('visible');
     }
   }
@@ -3107,12 +3117,12 @@ margin: 20px 20px 0;
           '<span>' + labelText + '</span>' +
         '</div>' +
         '<div class="features-grid">' +
-          '<div class="feature-tile ' + tileClass + '"><div class="feat-icon">🍷</div><div class="feat-label">Acheter à prix club</div></div>' +
-          '<div class="feature-tile ' + tileClass + '"><div class="feat-icon">🏡</div><div class="feat-label">Découvrir les domaines</div></div>' +
-          '<div class="feature-tile ' + tileClass + '"><div class="feat-icon">📆</div><div class="feat-label">Agenda du club</div></div>' +
-          '<div class="feature-tile ' + tileClass + '"><div class="feat-icon">🎁</div><div class="feat-label">Offres exclusives</div></div>' +
-          '<div class="feature-tile ' + tileClass + '"><div class="feat-icon">📖</div><div class="feat-label">Carnet de dégustation</div></div>' +
-          '<div class="feature-tile ' + tileClass + '"><div class="feat-icon">⭐</div><div class="feat-label">Fidélité & avantages</div></div>' +
+          '<div class="feature-tile ' + tileClass + '"><div class="feat-icon">🍷</div><div class="feat-label">Acheter à prix club<span class="feat-soon">Prochainement</span></div></div>' +
+          '<div class="feature-tile ' + tileClass + '"><div class="feat-icon">🏡</div><div class="feat-label">Découvrir les domaines<span class="feat-soon">Prochainement</span></div></div>' +
+          '<div class="feature-tile ' + tileClass + '"><div class="feat-icon">📆</div><div class="feat-label">Agenda du club<span class="feat-soon">Prochainement</span></div></div>' +
+          '<div class="feature-tile ' + tileClass + '"><div class="feat-icon">🎁</div><div class="feat-label">Offres exclusives<span class="feat-soon">Prochainement</span></div></div>' +
+          '<div class="feature-tile ' + tileClass + '"><div class="feat-icon">📖</div><div class="feat-label">Carnet de dégustation<span class="feat-soon">Prochainement</span></div></div>' +
+          '<div class="feature-tile ' + tileClass + '"><div class="feat-icon">⭐</div><div class="feat-label">Fidélité & avantages<span class="feat-soon">Prochainement</span></div></div>' +
         '</div>' +
         fakeInput +
         joinBtn +
