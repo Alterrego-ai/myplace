@@ -1546,43 +1546,36 @@ margin: 20px 20px 0;
 }
 </style>
 
-<!-- iOS PWA Splash Screen Generator -->
-<script>
-(function() {
-  if (!navigator.standalone && !window.matchMedia('(display-mode: standalone)').matches) {
-    // Générer splash pour iOS — canvas dynamique
-    var dpr = window.devicePixelRatio || 1;
-    var w = screen.width * dpr;
-    var h = screen.height * dpr;
-    var canvas = document.createElement('canvas');
-    canvas.width = w;
-    canvas.height = h;
-    var ctx = canvas.getContext('2d');
-    // Fond primary-dark
-    ctx.fillStyle = '#2a4a5e';
-    ctx.fillRect(0, 0, w, h);
-    // Texte "Sauf Imprévu" en blanc
-    var fontSize = Math.round(w * 0.06);
-    ctx.fillStyle = '#ffffff';
-    ctx.font = '700 ' + fontSize + 'px Inter, -apple-system, sans-serif';
-    ctx.textAlign = 'center';
-    ctx.fillText('Sauf Imprévu', w / 2, h / 2 + fontSize * 0.35);
-    // Sous-titre
-    var subSize = Math.round(fontSize * 0.45);
-    ctx.font = '400 ' + subSize + 'px Inter, -apple-system, sans-serif';
-    ctx.fillStyle = 'rgba(255,255,255,0.6)';
-    ctx.fillText('Bar à vins · Lyon', w / 2, h / 2 + fontSize * 0.35 + subSize * 2);
-    // Injecter comme apple-touch-startup-image
-    var link = document.createElement('link');
-    link.rel = 'apple-touch-startup-image';
-    link.href = canvas.toDataURL('image/png');
-    document.head.appendChild(link);
-  }
-})();
-</script>
+<!-- Splash screen styles (inline pour affichage immédiat) -->
+<style>
+.splash-screen {
+  position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+  z-index: 9999;
+  background: linear-gradient(160deg, #3D6B8C 0%, #2a4a5e 100%);
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  transition: opacity 0.5s ease, visibility 0.5s ease;
+}
+.splash-screen.hidden { opacity: 0; visibility: hidden; pointer-events: none; }
+.splash-logo { width: 90px; height: 90px; border-radius: 16px; object-fit: contain; margin-bottom: 20px; }
+.splash-maia { width: 64px; height: 64px; object-fit: contain; margin-bottom: 24px; }
+.splash-name { font-family: 'Inter', sans-serif; font-size: 24px; font-weight: 700; color: #fff; margin: 0; }
+.splash-sub { font-family: 'Inter', sans-serif; font-size: 13px; color: rgba(255,255,255,0.6); margin-top: 6px; }
+.splash-loader { width: 32px; height: 32px; border: 3px solid rgba(255,255,255,0.2); border-top-color: #fff; border-radius: 50%; animation: splashSpin 0.8s linear infinite; margin-top: 40px; }
+@keyframes splashSpin { to { transform: rotate(360deg); } }
+</style>
 
 </head>
 <body>
+
+<!-- SPLASH SCREEN -->
+<div class="splash-screen" id="splashScreen">
+  <img class="splash-maia" src="/img/maia.png" alt="Maïa">
+  <img class="splash-logo" src="https://ciss-media-dev.s3.fr-par.scw.cloud/pointofsales/47408/15-vauban-brc-187.png" alt="Sauf Imprévu">
+  <p class="splash-name">Sauf Imprévu</p>
+  <p class="splash-sub">Bar à vins · Lyon</p>
+  <div class="splash-loader"></div>
+</div>
+
 <div class="phone-shell">
   <div class="phone-frame">
     <div class="phone-screen">
@@ -2064,6 +2057,17 @@ margin: 20px 20px 0;
   function getSystemTheme() {
     return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
   }
+
+  // Masquer la splash screen
+  window.addEventListener('load', function() {
+    setTimeout(function() {
+      var splash = document.getElementById('splashScreen');
+      if (splash) {
+        splash.classList.add('hidden');
+        setTimeout(function() { splash.remove(); }, 600);
+      }
+    }, 800);
+  });
 
   var themeVars = {
     light: {
