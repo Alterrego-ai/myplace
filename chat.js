@@ -275,11 +275,14 @@ Faire en sorte que chaque visiteur se sente bienvenu et enthousiaste à l'idée 
 
 /**
  * Middleware : vérifie le token SSO dans le header Authorization
+ * Accepte les requêtes anonymes en mode limité (réservation uniquement)
  */
 function requireChatAuth(req, res, next) {
   const authHeader = req.headers.authorization;
   if (!authHeader || !authHeader.startsWith('Bearer ')) {
-    return res.status(401).json({ error: 'Connectez-vous pour discuter avec notre assistant' });
+    // Mode anonyme — autorisé pour la réservation
+    req.chatUser = { sub: 'anon_' + (req.ip || 'unknown'), name: 'Visiteur', anonymous: true };
+    return next();
   }
   const token = authHeader.substring(7);
   const user = verifyUserToken(token);
@@ -345,7 +348,10 @@ function chatRoutes(router, carteDb, resaDb) {
       }
 
       // Appel Claude avec tools
-      const systemPrompt = buildSystemPrompt(carteDb);
+      let systemPrompt = buildSystemPrompt(carteDb);
+      if (req.chatUser.anonymous) {
+        systemPrompt += '\n\n## MODE VISITEUR ANONYME\nCe visiteur n\'est pas connecté. Tu peux uniquement l\'aider à réserver une table. Pour toute autre demande (carte des vins, questions, conversation), invite-le à se créer un compte gratuitement pour accéder à toutes les fonctionnalités de l\'assistant.';
+      }
       let response = await client.messages.create({
         model: MODEL,
         max_tokens: MAX_TOKENS,
