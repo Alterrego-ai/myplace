@@ -190,7 +190,7 @@ function authRoutes(router) {
       } catch (e) {
         console.warn('⚠ userinfo fetch failed, using token claims only:', e.message);
       }
-      console.log('✓ OIDC final userInfo:', JSON.stringify(userInfo, null, 2));
+      console.log('✓ OIDC final userInfo:', JSON.stringify(userInfo));
 
       // Extraire les champs mySafe (noms avec tirets + tableaux d'objets)
       const givenName = userInfo['given-name'] || userInfo.given_name || '';
