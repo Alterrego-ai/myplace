@@ -192,25 +192,26 @@ function authRoutes(router) {
       }
       console.log('✓ OIDC final userInfo:', JSON.stringify(userInfo));
 
-      // Extraire les champs mySafe (noms avec tirets + tableaux d'objets)
-      const givenName = userInfo['given-name'] || userInfo.given_name || '';
-      const familyName = userInfo['family-name'] || userInfo.family_name || '';
+      // mySafe imbrique les données utilisateur dans userInfo.data
+      const d = userInfo.data || {};
+      const givenName = d['given-name'] || d.given_name || '';
+      const familyName = d['family-name'] || d.family_name || '';
       const fullName = (givenName + ' ' + familyName).trim();
-      const emailObj = userInfo.emails && userInfo.emails[0];
-      const email = userInfo.email || (emailObj && emailObj.email) || null;
-      const phoneObj = userInfo.phones && userInfo.phones[0];
-      const phone = userInfo.phone_number || (phoneObj && (phoneObj.phone || phoneObj.number)) || null;
-      const addrObj = userInfo.addresses && userInfo.addresses[0];
-      const address = userInfo.address || (addrObj && (addrObj.formatted || addrObj.street_address || addrObj.address)) || null;
+      const emailObj = d.emails && d.emails[0];
+      const email = (emailObj && emailObj.email) || userInfo.email || null;
+      const phoneObj = d.phones && d.phones[0];
+      const phone = (phoneObj && phoneObj.number) || null;
+      const addrObj = d.addresses && d.addresses[0];
+      const address = (addrObj && (addrObj.formatted || addrObj.street_address || addrObj.address)) || null;
 
       // Stocker en session (tous les champs disponibles)
       req.session.user = {
         sub: userInfo.sub,
-        account_id: userInfo.account_id || null,
+        account_id: d.account_id || null,
         email: email,
-        name: fullName || userInfo.name || userInfo.preferred_username || userInfo.sub,
+        name: fullName || userInfo.sub,
         picture: userInfo.picture || null,
-        birthday: userInfo.birthday || userInfo.birthdate || null,
+        birthday: d.birthday || null,
         phone: phone,
         address: address,
         roles: userInfo.roles || [],
