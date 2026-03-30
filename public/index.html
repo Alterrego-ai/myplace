@@ -1497,26 +1497,6 @@ font-size: 11px;
 font-weight: 500;
 }
 
-/* ── PARTENAIRES ── */
-.partners-section {
-  padding: 24px 20px;
-}
-.partners-grid {
-  display: flex; flex-wrap: wrap; justify-content: center; gap: 20px;
-}
-.partner-item {
-  display: flex; align-items: center; justify-content: center;
-  width: 120px; height: 80px; border-radius: 12px;
-  background: #0a0a0a; padding: 12px;
-  border: 1px solid var(--border);
-  transition: transform 0.15s;
-}
-.partner-item:active { transform: scale(0.97); }
-.partner-logo {
-  max-width: 100%; max-height: 100%; object-fit: contain;
-  filter: brightness(1.2);
-}
-
 /* ── SPACER ── */
 .spacer { flex: 1; min-height: 150px; }
 
@@ -1552,16 +1532,22 @@ margin: 20px 20px 0;
   position: fixed; top: 0; left: 0; right: 0; bottom: 0;
   z-index: 9999;
   background: linear-gradient(160deg, #3D6B8C 0%, #2a4a5e 100%);
-  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  display: flex; flex-direction: column; align-items: center; justify-content: space-between;
   transition: opacity 0.5s ease, visibility 0.5s ease;
 }
 .splash-screen.hidden { opacity: 0; visibility: hidden; pointer-events: none; }
+.splash-main { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; }
 .splash-logo { width: 90px; height: 90px; border-radius: 16px; object-fit: contain; margin-bottom: 20px; }
 .splash-maia { width: 64px; height: 64px; object-fit: contain; margin-bottom: 24px; }
 .splash-name { font-family: 'Inter', sans-serif; font-size: 24px; font-weight: 700; color: #fff; margin: 0; }
 .splash-sub { font-family: 'Inter', sans-serif; font-size: 13px; color: rgba(255,255,255,0.6); margin-top: 6px; }
 .splash-loader { width: 32px; height: 32px; border: 3px solid rgba(255,255,255,0.2); border-top-color: #fff; border-radius: 50%; animation: splashSpin 0.8s linear infinite; margin-top: 40px; }
 @keyframes splashSpin { to { transform: rotate(360deg); } }
+.splash-partners { padding: 20px 24px; padding-bottom: calc(20px + env(safe-area-inset-bottom, 0px)); text-align: center; }
+.splash-partners-label { font-family: 'Inter', sans-serif; font-size: 10px; font-weight: 600; color: rgba(255,255,255,0.35); text-transform: uppercase; letter-spacing: 0.1em; margin: 0 0 12px; }
+.splash-partners-grid { display: flex; justify-content: center; gap: 16px; flex-wrap: wrap; }
+.splash-partner-item { display: flex; align-items: center; justify-content: center; width: 80px; height: 50px; padding: 6px; opacity: 0.6; }
+.splash-partner-logo { max-width: 100%; max-height: 100%; object-fit: contain; }
 </style>
 
 </head>
@@ -1569,11 +1555,21 @@ margin: 20px 20px 0;
 
 <!-- SPLASH SCREEN -->
 <div class="splash-screen" id="splashScreen">
-  <img class="splash-maia" src="/img/maia.png" alt="Maïa">
-  <img class="splash-logo" src="https://ciss-media-dev.s3.fr-par.scw.cloud/pointofsales/47408/15-vauban-brc-187.png" alt="Sauf Imprévu">
-  <p class="splash-name">Sauf Imprévu</p>
-  <p class="splash-sub">Bar à vins · Lyon</p>
-  <div class="splash-loader"></div>
+  <div class="splash-main">
+    <img class="splash-maia" src="/img/maia.png" alt="Maïa">
+    <img class="splash-logo" src="https://ciss-media-dev.s3.fr-par.scw.cloud/pointofsales/47408/15-vauban-brc-187.png" alt="Sauf Imprévu">
+    <p class="splash-name">Sauf Imprévu</p>
+    <p class="splash-sub">Bar à vins · Lyon</p>
+    <div class="splash-loader"></div>
+  </div>
+  <div class="splash-partners">
+    <p class="splash-partners-label">Nos partenaires</p>
+    <div class="splash-partners-grid">
+      <a href="#" class="splash-partner-item">
+        <img src="/img/partenaire-fac-et-spera.png" alt="Fac et Spera" class="splash-partner-logo">
+      </a>
+    </div>
+  </div>
 </div>
 
 <div class="phone-shell">
@@ -1749,16 +1745,6 @@ margin: 20px 20px 0;
     </a>
   </div>
   </div>
-
-<!-- PARTENAIRES -->
-<div class="section partners-section fade-up">
-  <h2 style="font-size:14px;font-weight:700;color:var(--text-tertiary);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:16px;text-align:center;">Nos partenaires</h2>
-  <div class="partners-grid">
-    <a href="#" class="partner-item">
-      <img src="/img/partenaire-fac-et-spera.png" alt="Fac et Spera" class="partner-logo">
-    </a>
-  </div>
-</div>
 
 <div class="spacer"></div>
 
