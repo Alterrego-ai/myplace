@@ -2063,17 +2063,34 @@ margin: 20px 20px 0;
     return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
   }
 
-  // Masquer la splash screen
-  window.addEventListener('load', function() {
-    setTimeout(function() {
-      var splash = document.getElementById('splashScreen');
-      if (splash) {
+  // Splash screen — affichée max 1 fois par jour (localStorage)
+  (function() {
+    var SPLASH_KEY = 'splashLastSeen';
+    var splash = document.getElementById('splashScreen');
+    if (!splash) return;
+
+    var lastSeen = localStorage.getItem(SPLASH_KEY);
+    var now = Date.now();
+    var oneDay = 24 * 60 * 60 * 1000;
+    var showSplash = !lastSeen || (now - parseInt(lastSeen, 10)) > oneDay;
+
+    if (!showSplash) {
+      // Déjà vue aujourd'hui → masquer immédiatement
+      splash.remove();
+      document.documentElement.style.background = '';
+      return;
+    }
+
+    // Première visite de la journée → afficher 3 secondes
+    localStorage.setItem(SPLASH_KEY, String(now));
+    window.addEventListener('load', function() {
+      setTimeout(function() {
         splash.classList.add('hidden');
         document.documentElement.style.background = '';
         setTimeout(function() { splash.remove(); }, 600);
-      }
-    }, 800);
-  });
+      }, 3000);
+    });
+  })();
 
   var themeVars = {
     light: {
