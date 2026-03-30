@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 
-<html lang="fr" data-theme="auto">
+<html lang="fr" data-theme="auto" style="background:#2a4a5e;">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
@@ -2064,6 +2064,7 @@ margin: 20px 20px 0;
       var splash = document.getElementById('splashScreen');
       if (splash) {
         splash.classList.add('hidden');
+        document.documentElement.style.background = '';
         setTimeout(function() { splash.remove(); }, 600);
       }
     }, 800);
