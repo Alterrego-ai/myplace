@@ -10,6 +10,7 @@
 <meta name="apple-mobile-web-app-title" content="Sauf Imprévu">
 <link rel="manifest" href="/manifest.json">
 <link rel="apple-touch-icon" href="https://ciss-media-dev.s3.fr-par.scw.cloud/pointofsales/47408/15-vauban-brc-187.png">
+<!-- iOS Splash Screen — génère dynamiquement via JS ci-dessous -->
 <title>Sauf Imprévu — Bar à vins · Lyon</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -1496,6 +1497,26 @@ font-size: 11px;
 font-weight: 500;
 }
 
+/* ── PARTENAIRES ── */
+.partners-section {
+  padding: 24px 20px;
+}
+.partners-grid {
+  display: flex; flex-wrap: wrap; justify-content: center; gap: 20px;
+}
+.partner-item {
+  display: flex; align-items: center; justify-content: center;
+  width: 120px; height: 80px; border-radius: 12px;
+  background: #0a0a0a; padding: 12px;
+  border: 1px solid var(--border);
+  transition: transform 0.15s;
+}
+.partner-item:active { transform: scale(0.97); }
+.partner-logo {
+  max-width: 100%; max-height: 100%; object-fit: contain;
+  filter: brightness(1.2);
+}
+
 /* ── SPACER ── */
 .spacer { flex: 1; min-height: 150px; }
 
@@ -1524,6 +1545,41 @@ background: var(--border);
 margin: 20px 20px 0;
 }
 </style>
+
+<!-- iOS PWA Splash Screen Generator -->
+<script>
+(function() {
+  if (!navigator.standalone && !window.matchMedia('(display-mode: standalone)').matches) {
+    // Générer splash pour iOS — canvas dynamique
+    var dpr = window.devicePixelRatio || 1;
+    var w = screen.width * dpr;
+    var h = screen.height * dpr;
+    var canvas = document.createElement('canvas');
+    canvas.width = w;
+    canvas.height = h;
+    var ctx = canvas.getContext('2d');
+    // Fond primary-dark
+    ctx.fillStyle = '#2a4a5e';
+    ctx.fillRect(0, 0, w, h);
+    // Texte "Sauf Imprévu" en blanc
+    var fontSize = Math.round(w * 0.06);
+    ctx.fillStyle = '#ffffff';
+    ctx.font = '700 ' + fontSize + 'px Inter, -apple-system, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('Sauf Imprévu', w / 2, h / 2 + fontSize * 0.35);
+    // Sous-titre
+    var subSize = Math.round(fontSize * 0.45);
+    ctx.font = '400 ' + subSize + 'px Inter, -apple-system, sans-serif';
+    ctx.fillStyle = 'rgba(255,255,255,0.6)';
+    ctx.fillText('Bar à vins · Lyon', w / 2, h / 2 + fontSize * 0.35 + subSize * 2);
+    // Injecter comme apple-touch-startup-image
+    var link = document.createElement('link');
+    link.rel = 'apple-touch-startup-image';
+    link.href = canvas.toDataURL('image/png');
+    document.head.appendChild(link);
+  }
+})();
+</script>
 
 </head>
 <body>
@@ -1700,6 +1756,16 @@ margin: 20px 20px 0;
     </a>
   </div>
   </div>
+
+<!-- PARTENAIRES -->
+<div class="section partners-section fade-up">
+  <h2 style="font-size:14px;font-weight:700;color:var(--text-tertiary);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:16px;text-align:center;">Nos partenaires</h2>
+  <div class="partners-grid">
+    <a href="#" class="partner-item">
+      <img src="/img/partenaire-fac-et-spera.png" alt="Fac et Spera" class="partner-logo">
+    </a>
+  </div>
+</div>
 
 <div class="spacer"></div>
 

@@ -4,7 +4,7 @@
   "description": "Bar à vins · Restaurant — Lyon 6e",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#f7f8fa",
+  "background_color": "#2a4a5e",
   "theme_color": "#3D6B8C",
   "icons": [
     {
