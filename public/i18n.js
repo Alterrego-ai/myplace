@@ -122,7 +122,7 @@ var I18N = (function() {
     profil_naissance:   { fr:'Date de naissance', en:'Date of birth', es:'Fecha de nacimiento', it:'Data di nascita', de:'Geburtsdatum', pt:'Data de nascimento' },
 
     // ── Wallet / Pass ──
-    wallet_titre:       { fr:'Carte de membre', en:'Member card', es:'Tarjeta de miembro', it:'Tessera socio', de:'Mitgliedskarte', pt:'Cartão de membro' },
+    wallet_titre:       { fr:'Club Sauf Imprévu', en:'Club Sauf Imprévu', es:'Club Sauf Imprévu', it:'Club Sauf Imprévu', de:'Club Sauf Imprévu', pt:'Club Sauf Imprévu' },
     wallet_sous_titre:  { fr:'Accédez à vos avantages en un tap', en:'Access your benefits with one tap', es:'Acceda a sus ventajas con un toque', it:'Accedi ai vantaggi con un tap', de:'Zugriff auf Ihre Vorteile mit einem Tap', pt:'Aceda às suas vantagens com um toque' },
     wallet_apple:       { fr:'Apple Wallet', en:'Apple Wallet', es:'Apple Wallet', it:'Apple Wallet', de:'Apple Wallet', pt:'Apple Wallet' },
     wallet_google:      { fr:'Google Wallet', en:'Google Wallet', es:'Google Wallet', it:'Google Wallet', de:'Google Wallet', pt:'Google Wallet' },

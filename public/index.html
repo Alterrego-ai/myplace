@@ -1980,7 +1980,7 @@ margin: 20px 20px 0;
       <div style="display:flex;align-items:center;gap:12px;margin-bottom:14px;">
         <svg width="28" height="28" viewBox="0 0 640 640" fill="#fff"><path d="M528 160L112 160C85.5 160 64 181.5 64 208L64 432C64 458.5 85.5 480 112 480L528 480C554.5 480 576 458.5 576 432L576 208C576 181.5 554.5 160 528 160zM112 208L528 208L528 256L112 256L112 208zM528 432L112 432L112 304L528 304L528 432zM176 368C176 354.7 186.7 344 200 344L280 344C293.3 344 304 354.7 304 368C304 381.3 293.3 392 280 392L200 392C186.7 392 176 381.3 176 368z"/></svg>
         <div>
-          <div style="font-size:15px;font-weight:700;" data-i18n="wallet_titre">Carte de membre</div>
+          <div style="font-size:15px;font-weight:700;" data-i18n="wallet_titre">Club Sauf Imprévu</div>
           <div style="font-size:12px;opacity:0.8;" data-i18n="wallet_sous_titre">Accédez à vos avantages en un tap</div>
         </div>
       </div>
@@ -2317,11 +2317,11 @@ margin: 20px 20px 0;
         <img src="https://ciss-media-dev.s3.fr-par.scw.cloud/pointofsales/47408/15-vauban-brc-187.png" style="width:36px;height:36px;border-radius:50%;object-fit:cover;border:2px solid rgba(255,255,255,0.2);">
         <div style="font-size:13px;font-weight:600;opacity:0.9;">Sauf Imprévu</div>
       </div>
-      <div style="padding:0 20px;font-size:20px;font-weight:700;letter-spacing:-0.3px;">Carte de membre</div>
+      <div style="padding:0 20px;font-size:20px;font-weight:700;letter-spacing:-0.3px;">Club Sauf Imprévu</div>
       <div style="padding:12px 20px 0;display:flex;justify-content:space-between;">
         <div>
           <div style="font-size:9px;text-transform:uppercase;letter-spacing:1px;opacity:0.6;">Nom</div>
-          <div style="font-size:14px;font-weight:600;" id="walletApplePreviewName">Jean Profite</div>
+          <div style="font-size:14px;font-weight:600;" id="walletApplePreviewName">—</div>
         </div>
         <div style="text-align:right;">
           <div style="font-size:9px;text-transform:uppercase;letter-spacing:1px;opacity:0.6;">Statut</div>
@@ -2362,11 +2362,11 @@ margin: 20px 20px 0;
         <img src="https://ciss-media-dev.s3.fr-par.scw.cloud/pointofsales/47408/15-vauban-brc-187.png" style="width:32px;height:32px;border-radius:50%;object-fit:cover;">
         <div style="font-size:14px;font-weight:500;color:#202124;">Sauf Imprévu</div>
       </div>
-      <div style="padding:16px 20px 8px;font-size:22px;font-weight:400;color:#202124;">Carte de membre</div>
+      <div style="padding:16px 20px 8px;font-size:22px;font-weight:400;color:#202124;">Club Sauf Imprévu</div>
       <div style="padding:4px 20px 12px;display:flex;justify-content:space-between;">
         <div>
           <div style="font-size:10px;color:#5f6368;text-transform:uppercase;letter-spacing:0.5px;">Nom</div>
-          <div style="font-size:14px;font-weight:500;color:#202124;" id="walletGooglePreviewName">Jean Profite</div>
+          <div style="font-size:14px;font-weight:500;color:#202124;" id="walletGooglePreviewName">—</div>
         </div>
         <div style="text-align:right;">
           <div style="font-size:10px;color:#5f6368;text-transform:uppercase;letter-spacing:0.5px;">Statut</div>
@@ -2698,6 +2698,9 @@ margin: 20px 20px 0;
       if (fnEl && !fnEl.value) fnEl.value = parts[0] || '';
       if (lnEl && !lnEl.value) lnEl.value = parts.slice(1).join(' ') || '';
     }
+    // Mettre à jour le preview avec le nom pré-rempli
+    updateWalletPreview(type);
+
     if (overlay) overlay.classList.add('visible');
     sheet.classList.add('visible');
   }
@@ -2715,10 +2718,10 @@ margin: 20px 20px 0;
     var fnId = type === 'apple' ? 'walletAppleFirstName' : 'walletGoogleFirstName';
     var lnId = type === 'apple' ? 'walletAppleLastName' : 'walletGoogleLastName';
     var previewId = type === 'apple' ? 'walletApplePreviewName' : 'walletGooglePreviewName';
-    var fn = (document.getElementById(fnId) || {}).value || 'Jean';
-    var ln = (document.getElementById(lnId) || {}).value || 'Profite';
+    var fn = (document.getElementById(fnId) || {}).value || '';
+    var ln = (document.getElementById(lnId) || {}).value || '';
     var el = document.getElementById(previewId);
-    if (el) el.textContent = fn + ' ' + ln;
+    if (el) el.textContent = (fn + ' ' + ln).trim() || '—';
   }
 
   function addToWallet(type) {
