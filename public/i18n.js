@@ -34,6 +34,7 @@ var I18N = (function() {
 
     // ── Présentation ──
     section_presentation: { fr:'Présentation', en:'About us', es:'Presentación', it:'Presentazione', de:'Über uns', pt:'Apresentação' },
+    section_actualites: { fr:'Actualités', en:'News', es:'Novedades', it:'Novità', de:'Neuigkeiten', pt:'Novidades' },
 
     // ── Chat / Welcome ──
     chat_bonjour:       { fr:'Bonjour !', en:'Hello!', es:'¡Hola!', it:'Ciao!', de:'Hallo!', pt:'Olá!' },
