@@ -1371,6 +1371,52 @@ background: var(--primary); color: #fff; font-size: 26px; font-weight: 700; over
 }
 .auth-avatar-xl img { width: 100%; height: 100%; object-fit: cover; border-radius: 50%; }
 
+/* ── ADMIN IFRAME OVERLAY ── */
+.admin-overlay {
+  display: none;
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  z-index: 200;
+  background: var(--bg);
+  flex-direction: column;
+}
+.admin-overlay.visible { display: flex; }
+.admin-overlay iframe {
+  flex: 1;
+  width: 100%;
+  border: none;
+}
+.admin-bottom-bar {
+  background: var(--bg-card);
+  border-top: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  padding: 8px 0;
+  padding-bottom: 8px;
+  padding-bottom: constant(safe-area-inset-bottom);
+  padding-bottom: calc(8px + env(safe-area-inset-bottom, 0px));
+}
+.admin-bottom-bar .nav-item { display: flex; flex-direction: column; align-items: center; gap: 2px; padding: 2px 16px; cursor: pointer; border: none; background: none; color: var(--text-tertiary); text-decoration: none; }
+.admin-bottom-bar .nav-item.active { color: var(--primary); }
+.admin-bottom-bar .nav-item svg { width: 28px; height: 28px; display: block; }
+.admin-bottom-bar .nav-label { font-size: 11px; font-weight: 600; letter-spacing: 0.02em; }
+
+/* Desktop: admin iframe inside phone-screen, not full overlay */
+@media (min-width: 769px) {
+  .admin-overlay {
+    position: absolute;
+    border-radius: 42px;
+    overflow: hidden;
+  }
+  .admin-overlay iframe {
+    border-radius: 42px 42px 0 0;
+  }
+  .admin-bottom-bar {
+    border-radius: 0 0 42px 42px;
+  }
+}
+
 /* ── BOTTOM BAR ── */
 .bottom-bar {
 position: fixed;
@@ -1828,6 +1874,37 @@ margin: 20px 20px 0;
       </div><!-- /phone-scroll -->
 
 <!-- ADMIN (géré via openStaffSheet dans le profileSheet) -->
+
+<!-- ADMIN IFRAME OVERLAY -->
+<div class="admin-overlay" id="adminOverlay">
+  <iframe id="adminIframe" src="about:blank"></iframe>
+  <nav class="admin-bottom-bar">
+    <a href="#" class="nav-item" onclick="event.preventDefault(); closeAdminOverlay();">
+      <svg viewBox="0 0 640 640" fill="currentColor">
+        <path d="M93.9 145.9C104.4 116 132.6 96 164.3 96L476.5 96C508.2 96 536.4 116 546.9 145.9L565.3 198.5C576.3 230 566.3 262.4 544.4 282.9L544.4 472.1C544.4 511.9 512.2 544.1 472.4 544.1L168.4 544.1C128.6 544.1 96.4 511.9 96.4 472.1L96.4 282.9C74.5 262.4 64.5 230 75.5 198.5L93.9 145.9zM144.4 303.8L144.4 384L496.4 384L496.4 303.8C494.4 303.9 492.5 304 490.5 304C468.7 304 448.7 295.1 434.3 280.7C419.7 295.1 399.7 304 377.4 304C355.2 304 335 295 320.4 280.5C305.8 295 285.6 304 263.4 304C241.1 304 221.1 295.1 206.5 280.7C192.1 295.2 172.2 304 150.3 304C148.3 304 146.3 303.9 144.3 303.8zM238.1 144L230.5 219.7C228.6 239.1 243.8 256 263.3 256C281.5 256 296.3 241.2 296.3 223L296.3 144L238 144zM344.4 223C344.4 241.2 359.2 256 377.4 256C396.9 256 412.2 239.1 410.2 219.7L402.6 144L344.3 144L344.3 223zM459.3 227.8C460.9 243.8 474.4 256 490.4 256C512 256 527.1 234.7 519.9 214.4L501.6 161.8C497.9 151.1 487.8 144 476.5 144L450.9 144L459.3 227.8zM150.4 256C166.5 256 179.9 243.8 181.5 227.8L189.9 144L164.3 144C153 144 143 151.1 139.2 161.8L120.8 214.4C113.7 234.8 128.8 256 150.3 256zM144.4 472C144.4 485.3 155.1 496 168.4 496L472.4 496C485.7 496 496.4 485.3 496.4 472L496.4 432L144.4 432L144.4 472z"/>
+      </svg>
+      <span class="nav-label" data-i18n="nav_accueil">Accueil</span>
+    </a>
+    <a href="#" class="nav-item">
+      <svg viewBox="0 0 640 640" fill="currentColor">
+        <path d="M267.7 576.9L267.7 576.9L359.6 512L480 512C533 512 576 469 576 416L576 192C576 139 533 96 480 96L160 96C107 96 64 139 64 192L64 416C64 469 107 512 160 512L192 512L192 584C192 593 197 601.2 205 605.3C213 609.4 222.6 608.8 229.9 603.6L267.7 576.9zM359.6 464C349.7 464 340 467.1 331.9 472.8C303.3 493 272.6 514.6 240 537.7L240 488C240 485.2 239.5 482.4 238.6 479.9C235.3 470.6 226.4 464 216 464L160 464C133.5 464 112 442.5 112 416L112 192C112 165.5 133.5 144 160 144L480 144C506.5 144 528 165.5 528 192L528 416C528 442.5 506.5 464 480 464L359.6 464zM256 288C273.7 288 288 273.7 288 256C288 238.3 273.7 224 256 224C238.3 224 224 238.3 224 256C224 273.7 238.3 288 256 288zM384 288C401.7 288 416 273.7 416 256C416 238.3 401.7 224 384 224C366.3 224 352 238.3 352 256C352 273.7 366.3 288 384 288zM214.5 350.1C204.6 358.9 203.8 374.1 212.6 384C238.9 413.4 277.3 432 319.9 432C362.5 432 400.9 413.4 427.2 384C436 374.1 435.2 359 425.3 350.1C415.4 341.2 400.3 342.1 391.4 352C373.8 371.7 348.3 384 319.8 384C291.3 384 265.9 371.7 248.2 352C239.4 342.1 224.2 341.3 214.3 350.1z"/>
+      </svg>
+      <span class="nav-label" data-i18n="nav_actualites">Actualités</span>
+    </a>
+    <a href="#" class="nav-item" onclick="event.preventDefault(); closeAdminOverlay(); setTimeout(function(){ var n=document.getElementById('navMoi'); if(n) n.click(); },100);">
+      <svg viewBox="0 0 640 640" fill="currentColor">
+        <path d="M470.5 463.6C451.4 416.9 405.5 384 352 384L288 384C234.5 384 188.6 416.9 169.5 463.6C133.9 426.3 112 375.7 112 320C112 205.1 205.1 112 320 112C434.9 112 528 205.1 528 320C528 375.7 506.1 426.2 470.5 463.6zM430.4 496.3C398.4 516.4 360.6 528 320 528C279.4 528 241.6 516.4 209.5 496.3C216.8 459.6 249.2 432 288 432L352 432C390.8 432 423.2 459.6 430.5 496.3zM320 576C461.4 576 576 461.4 576 320C576 178.6 461.4 64 320 64C178.6 64 64 178.6 64 320C64 461.4 178.6 576 320 576zM320 304C297.9 304 280 286.1 280 264C280 241.9 297.9 224 320 224C342.1 224 360 241.9 360 264C360 286.1 342.1 304 320 304zM232 264C232 312.6 271.4 352 320 352C368.6 352 408 312.6 408 264C408 215.4 368.6 176 320 176C271.4 176 232 215.4 232 264z"/>
+      </svg>
+      <span class="nav-label" data-i18n="nav_moi">Moi</span>
+    </a>
+    <a href="#" class="nav-item" onclick="event.preventDefault(); closeAdminOverlay(); setTimeout(function(){ var n=document.getElementById('navPlus'); if(n) n.click(); },100);">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/>
+      </svg>
+      <span class="nav-label" data-i18n="nav_plus">Plus</span>
+    </a>
+  </nav>
+</div>
 
 <!-- BOTTOM BAR (outside phone-scroll, fixed in phone-screen) -->
 <nav class="bottom-bar">
@@ -2822,17 +2899,18 @@ margin: 20px 20px 0;
   function toggleAdminMenu() { /* obsolète — admin dans staffSheet */ }
   function closeAdminMenu() { /* obsolète */ }
 
-  // Naviguer vers une page admin : sync le token frontend → session serveur si besoin
+  // Naviguer vers une page admin : sync le token frontend → session serveur, puis charger en iframe
   function navigateAdmin(e, url) {
     e.preventDefault();
     closeAdminMenu();
+    closeAllSheets();
     var user = getStoredUser();
     var token = user && user._token;
     if (!token) {
       window.location.href = '/auth/login?returnTo=' + encodeURIComponent(url);
       return false;
     }
-    // Sync le token → session serveur, puis naviguer
+    // Sync le token → session serveur, puis ouvrir en iframe overlay
     fetch('/auth/sync', {
       method: 'POST',
       headers: { 'Authorization': 'Bearer ' + token },
@@ -2841,17 +2919,75 @@ margin: 20px 20px 0;
     .then(function(r) { return r.json(); })
     .then(function(data) {
       if (data.authenticated) {
-        window.location.href = url;
+        openAdminOverlay(url);
       } else {
-        // Token invalide/expiré → re-login
         window.location.href = '/auth/login?returnTo=' + encodeURIComponent(url);
       }
     })
     .catch(function() {
-      window.location.href = url;
+      openAdminOverlay(url);
     });
     return false;
   }
+
+  function openAdminOverlay(url) {
+    var overlay = document.getElementById('adminOverlay');
+    var iframe = document.getElementById('adminIframe');
+    if (!overlay || !iframe) { window.location.href = url; return; }
+
+    iframe.src = url;
+    overlay.classList.add('visible');
+
+    // Permettre "retour" navigateur pour fermer
+    history.pushState({ adminOpen: true }, '', window.location.href);
+
+    // Desktop : positionner dans phone-screen
+    if (isDesktop) {
+      var phoneScreen = document.querySelector('.phone-screen');
+      if (phoneScreen) {
+        overlay.style.position = 'absolute';
+        overlay.style.top = '0';
+        overlay.style.left = '0';
+        overlay.style.right = '0';
+        overlay.style.bottom = '0';
+        // Déplacer dans phone-screen si pas déjà dedans
+        if (overlay.parentElement !== phoneScreen) {
+          phoneScreen.appendChild(overlay);
+        }
+      }
+    }
+
+    // Masquer bottom bar principal
+    var mainBar = document.querySelector('nav.bottom-bar');
+    if (mainBar) mainBar.style.display = 'none';
+
+    // Masquer Maïa
+    var fab = document.getElementById('maiaFloat');
+    if (fab) fab.style.visibility = 'hidden';
+  }
+
+  function closeAdminOverlay() {
+    var overlay = document.getElementById('adminOverlay');
+    var iframe = document.getElementById('adminIframe');
+    if (overlay) overlay.classList.remove('visible');
+    if (iframe) iframe.src = 'about:blank';
+
+    // Remettre bottom bar principal
+    var mainBar = document.querySelector('nav.bottom-bar');
+    if (mainBar) mainBar.style.display = '';
+
+    // Remettre Maïa
+    var fab = document.getElementById('maiaFloat');
+    if (fab && !fab.classList.contains('dismissed')) fab.style.visibility = '';
+  }
+
+  // Bouton retour navigateur → fermer overlay admin
+  window.addEventListener('popstate', function(e) {
+    var overlay = document.getElementById('adminOverlay');
+    if (overlay && overlay.classList.contains('visible')) {
+      closeAdminOverlay();
+    }
+  });
 
   checkAdminStatus();
 
