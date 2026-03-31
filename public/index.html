@@ -1446,6 +1446,15 @@ background: var(--primary); color: #fff; font-size: 26px; font-weight: 700; over
   padding-bottom: calc(16px + env(safe-area-inset-bottom, 0px));
 }
 .wallet-sheet.visible { transform: translateY(0); }
+/* Desktop: inside phone-screen */
+@media (min-width: 769px) {
+  .wallet-sheet {
+    position: absolute;
+    max-width: 100%;
+    border-radius: 20px 20px 42px 42px;
+    max-height: 85%;
+  }
+}
 .wallet-sheet .sheet-handle {
   width: 36px; height: 4px; border-radius: 2px;
   background: var(--border); margin: 10px auto 0;
@@ -1975,12 +1984,12 @@ margin: 20px 20px 0;
           <div style="font-size:12px;opacity:0.8;" data-i18n="wallet_sous_titre">Accédez à vos avantages en un tap</div>
         </div>
       </div>
-      <div style="display:flex;gap:10px;">
-        <button onclick="openWalletSheet('apple')" style="flex:1;display:flex;align-items:center;justify-content:center;gap:8px;padding:12px;background:rgba(0,0,0,0.25);border:1px solid rgba(255,255,255,0.2);border-radius:10px;color:#fff;font-size:13px;font-weight:600;cursor:pointer;transition:opacity 0.15s;">
+      <div style="display:flex;gap:10px;" id="walletBtns">
+        <button id="walletBtnApple" onclick="openWalletSheet('apple')" style="flex:1;display:flex;align-items:center;justify-content:center;gap:8px;padding:12px;background:rgba(0,0,0,0.25);border:1px solid rgba(255,255,255,0.2);border-radius:10px;color:#fff;font-size:13px;font-weight:600;cursor:pointer;transition:opacity 0.15s;">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg>
           <span data-i18n="wallet_apple">Apple Wallet</span>
         </button>
-        <button onclick="openWalletSheet('google')" style="flex:1;display:flex;align-items:center;justify-content:center;gap:8px;padding:12px;background:rgba(0,0,0,0.25);border:1px solid rgba(255,255,255,0.2);border-radius:10px;color:#fff;font-size:13px;font-weight:600;cursor:pointer;transition:opacity 0.15s;">
+        <button id="walletBtnGoogle" onclick="openWalletSheet('google')" style="flex:1;display:flex;align-items:center;justify-content:center;gap:8px;padding:12px;background:rgba(0,0,0,0.25);border:1px solid rgba(255,255,255,0.2);border-radius:10px;color:#fff;font-size:13px;font-weight:600;cursor:pointer;transition:opacity 0.15s;">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M3 20.5v-17c0-.83.67-1.5 1.5-1.5s1.5.67 1.5 1.5v17c0 .83-.67 1.5-1.5 1.5S3 21.33 3 20.5zm18-7.5l-6.75 7H8.5v-2.62L14.12 12 8.5 6.62V4h5.75L21 11v2z"/></svg>
           <span data-i18n="wallet_google">Google Wallet</span>
         </button>
@@ -2302,15 +2311,37 @@ margin: 20px 20px 0;
 <div class="wallet-sheet" id="walletAppleSheet">
   <div class="sheet-handle"></div>
   <div class="wallet-preview">
-    <img src="/img/wallet_preview_apple.png" alt="Apple Wallet Preview">
+    <!-- Apple Pass style card -->
+    <div style="width:280px;background:linear-gradient(145deg,#3d5a80,#1a3550);border-radius:16px;overflow:hidden;box-shadow:0 8px 32px rgba(0,0,0,0.25);color:#fff;font-family:-apple-system,sans-serif;">
+      <div style="padding:16px 20px 12px;display:flex;align-items:center;gap:10px;">
+        <img src="https://ciss-media-dev.s3.fr-par.scw.cloud/pointofsales/47408/15-vauban-brc-187.png" style="width:36px;height:36px;border-radius:50%;object-fit:cover;border:2px solid rgba(255,255,255,0.2);">
+        <div style="font-size:13px;font-weight:600;opacity:0.9;">Sauf Imprévu</div>
+      </div>
+      <div style="padding:0 20px;font-size:20px;font-weight:700;letter-spacing:-0.3px;">Carte de membre</div>
+      <div style="padding:12px 20px 0;display:flex;justify-content:space-between;">
+        <div>
+          <div style="font-size:9px;text-transform:uppercase;letter-spacing:1px;opacity:0.6;">Nom</div>
+          <div style="font-size:14px;font-weight:600;" id="walletApplePreviewName">Jean Profite</div>
+        </div>
+        <div style="text-align:right;">
+          <div style="font-size:9px;text-transform:uppercase;letter-spacing:1px;opacity:0.6;">Statut</div>
+          <div style="font-size:14px;font-weight:600;">Membre</div>
+        </div>
+      </div>
+      <div style="padding:16px 20px;display:flex;justify-content:center;">
+        <div style="background:#fff;padding:10px;border-radius:8px;">
+          <svg viewBox="0 0 100 100" width="90" height="90"><rect x="5" y="5" width="25" height="25" fill="#000"/><rect x="35" y="5" width="10" height="10" fill="#000"/><rect x="55" y="5" width="10" height="10" fill="#000"/><rect x="70" y="5" width="25" height="25" fill="#000"/><rect x="10" y="10" width="15" height="15" fill="#fff"/><rect x="75" y="10" width="15" height="15" fill="#fff"/><rect x="13" y="13" width="9" height="9" fill="#000"/><rect x="78" y="13" width="9" height="9" fill="#000"/><rect x="5" y="35" width="10" height="10" fill="#000"/><rect x="25" y="35" width="10" height="10" fill="#000"/><rect x="45" y="35" width="20" height="10" fill="#000"/><rect x="75" y="35" width="10" height="10" fill="#000"/><rect x="5" y="50" width="10" height="5" fill="#000"/><rect x="25" y="50" width="15" height="5" fill="#000"/><rect x="55" y="50" width="10" height="5" fill="#000"/><rect x="80" y="50" width="10" height="5" fill="#000"/><rect x="5" y="70" width="25" height="25" fill="#000"/><rect x="40" y="70" width="10" height="10" fill="#000"/><rect x="60" y="70" width="10" height="10" fill="#000"/><rect x="80" y="70" width="10" height="10" fill="#000"/><rect x="10" y="75" width="15" height="15" fill="#fff"/><rect x="13" y="78" width="9" height="9" fill="#000"/><rect x="45" y="85" width="15" height="5" fill="#000"/><rect x="70" y="80" width="20" height="10" fill="#000"/></svg>
+        </div>
+      </div>
+      <div style="background:rgba(0,0,0,0.15);padding:8px;text-align:center;font-size:10px;opacity:0.5;">Bar à vins · Restaurant · Lyon</div>
+    </div>
   </div>
   <div style="text-align:center;padding:0 24px 8px;">
-    <div style="font-size:16px;font-weight:700;color:var(--text);">Carte de membre</div>
     <div style="font-size:12px;color:var(--text-tertiary);margin-top:2px;">Personnalisez votre carte puis ajoutez-la à votre Wallet</div>
   </div>
   <div class="wallet-form">
-    <input type="text" id="walletAppleFirstName" placeholder="Prénom">
-    <input type="text" id="walletAppleLastName" placeholder="Nom">
+    <input type="text" id="walletAppleFirstName" placeholder="Prénom" oninput="updateWalletPreview('apple')">
+    <input type="text" id="walletAppleLastName" placeholder="Nom" oninput="updateWalletPreview('apple')">
     <button class="wallet-add-btn apple" onclick="addToWallet('apple')">
       <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg>
       Ajouter à Apple Wallet
@@ -2325,15 +2356,37 @@ margin: 20px 20px 0;
 <div class="wallet-sheet" id="walletGoogleSheet">
   <div class="sheet-handle"></div>
   <div class="wallet-preview">
-    <img src="/img/wallet_preview_google.png" alt="Google Wallet Preview">
+    <!-- Google Pass style card -->
+    <div style="width:280px;background:#fff;border-radius:16px;overflow:hidden;box-shadow:0 4px 24px rgba(0,0,0,0.12);font-family:'Roboto',-apple-system,sans-serif;border:1px solid #e0e0e0;">
+      <div style="padding:16px 20px 12px;display:flex;align-items:center;gap:10px;border-bottom:1px solid #eee;">
+        <img src="https://ciss-media-dev.s3.fr-par.scw.cloud/pointofsales/47408/15-vauban-brc-187.png" style="width:32px;height:32px;border-radius:50%;object-fit:cover;">
+        <div style="font-size:14px;font-weight:500;color:#202124;">Sauf Imprévu</div>
+      </div>
+      <div style="padding:16px 20px 8px;font-size:22px;font-weight:400;color:#202124;">Carte de membre</div>
+      <div style="padding:4px 20px 12px;display:flex;justify-content:space-between;">
+        <div>
+          <div style="font-size:10px;color:#5f6368;text-transform:uppercase;letter-spacing:0.5px;">Nom</div>
+          <div style="font-size:14px;font-weight:500;color:#202124;" id="walletGooglePreviewName">Jean Profite</div>
+        </div>
+        <div style="text-align:right;">
+          <div style="font-size:10px;color:#5f6368;text-transform:uppercase;letter-spacing:0.5px;">Statut</div>
+          <div style="font-size:14px;font-weight:500;color:#202124;">Membre</div>
+        </div>
+      </div>
+      <div style="padding:8px 20px 16px;display:flex;justify-content:center;">
+        <div style="padding:8px;border-radius:8px;border:1px solid #eee;">
+          <svg viewBox="0 0 100 100" width="80" height="80"><rect x="5" y="5" width="25" height="25" fill="#000"/><rect x="35" y="5" width="10" height="10" fill="#000"/><rect x="55" y="5" width="10" height="10" fill="#000"/><rect x="70" y="5" width="25" height="25" fill="#000"/><rect x="10" y="10" width="15" height="15" fill="#fff"/><rect x="75" y="10" width="15" height="15" fill="#fff"/><rect x="13" y="13" width="9" height="9" fill="#000"/><rect x="78" y="13" width="9" height="9" fill="#000"/><rect x="5" y="35" width="10" height="10" fill="#000"/><rect x="25" y="35" width="10" height="10" fill="#000"/><rect x="45" y="35" width="20" height="10" fill="#000"/><rect x="75" y="35" width="10" height="10" fill="#000"/><rect x="5" y="50" width="10" height="5" fill="#000"/><rect x="25" y="50" width="15" height="5" fill="#000"/><rect x="55" y="50" width="10" height="5" fill="#000"/><rect x="80" y="50" width="10" height="5" fill="#000"/><rect x="5" y="70" width="25" height="25" fill="#000"/><rect x="40" y="70" width="10" height="10" fill="#000"/><rect x="60" y="70" width="10" height="10" fill="#000"/><rect x="80" y="70" width="10" height="10" fill="#000"/><rect x="10" y="75" width="15" height="15" fill="#fff"/><rect x="13" y="78" width="9" height="9" fill="#000"/><rect x="45" y="85" width="15" height="5" fill="#000"/><rect x="70" y="80" width="20" height="10" fill="#000"/></svg>
+        </div>
+      </div>
+      <div style="background:linear-gradient(135deg,#3d5a80,#2a5a6e);padding:10px;text-align:center;font-size:11px;color:#fff;font-weight:500;">Bar à vins · Restaurant · Lyon</div>
+    </div>
   </div>
   <div style="text-align:center;padding:0 24px 8px;">
-    <div style="font-size:16px;font-weight:700;color:var(--text);">Carte de membre</div>
     <div style="font-size:12px;color:var(--text-tertiary);margin-top:2px;">Personnalisez votre carte puis ajoutez-la à votre Wallet</div>
   </div>
   <div class="wallet-form">
-    <input type="text" id="walletGoogleFirstName" placeholder="Prénom">
-    <input type="text" id="walletGoogleLastName" placeholder="Nom">
+    <input type="text" id="walletGoogleFirstName" placeholder="Prénom" oninput="updateWalletPreview('google')">
+    <input type="text" id="walletGoogleLastName" placeholder="Nom" oninput="updateWalletPreview('google')">
     <button class="wallet-add-btn google" onclick="addToWallet('google')">
       <img src="/img/add_to_google_wallet.svg" alt="Google Wallet" style="height:24px;">
       Ajouter à Google Wallet
@@ -2625,6 +2678,15 @@ margin: 20px 20px 0;
     var overlay = document.getElementById('sheetOverlay');
     var sheet = document.getElementById(type === 'apple' ? 'walletAppleSheet' : 'walletGoogleSheet');
     if (!sheet) return;
+
+    // Desktop : déplacer dans phone-screen
+    if (isDesktop) {
+      var phoneScreen = document.querySelector('.phone-screen');
+      if (phoneScreen && sheet.parentElement !== phoneScreen) {
+        phoneScreen.appendChild(sheet);
+      }
+    }
+
     // Pré-remplir avec le nom du user connecté si dispo
     var user = getStoredUser();
     if (user && user.name) {
@@ -2649,6 +2711,16 @@ margin: 20px 20px 0;
     if (google) google.classList.remove('visible');
   }
 
+  function updateWalletPreview(type) {
+    var fnId = type === 'apple' ? 'walletAppleFirstName' : 'walletGoogleFirstName';
+    var lnId = type === 'apple' ? 'walletAppleLastName' : 'walletGoogleLastName';
+    var previewId = type === 'apple' ? 'walletApplePreviewName' : 'walletGooglePreviewName';
+    var fn = (document.getElementById(fnId) || {}).value || 'Jean';
+    var ln = (document.getElementById(lnId) || {}).value || 'Profite';
+    var el = document.getElementById(previewId);
+    if (el) el.textContent = fn + ' ' + ln;
+  }
+
   function addToWallet(type) {
     var fnId = type === 'apple' ? 'walletAppleFirstName' : 'walletGoogleFirstName';
     var lnId = type === 'apple' ? 'walletAppleLastName' : 'walletGoogleLastName';
@@ -2660,6 +2732,16 @@ margin: 20px 20px 0;
     alert('Carte de ' + firstName + ' ' + lastName + ' prête !\n\nL\'intégration Boostore Wallet sera disponible prochainement.');
     closeWalletSheet();
   }
+
+  // ── Wallet : détection OS → un seul bouton sur mobile ──
+  (function() {
+    var isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+    var isAndroid = /Android/.test(navigator.userAgent);
+    var btnApple = document.getElementById('walletBtnApple');
+    var btnGoogle = document.getElementById('walletBtnGoogle');
+    if (isIOS && btnGoogle) btnGoogle.style.display = 'none';
+    if (isAndroid && btnApple) btnApple.style.display = 'none';
+  })();
 
   // Share
   function handleShare() {
