@@ -1031,6 +1031,13 @@ align-self: center;
 }
 .maia-float-close:active { background: var(--bg-subtle); }
 .maia-float.dismissed { display: none; }
+.maia-float.swipe-out {
+  transition: transform 0.3s ease, opacity 0.3s ease;
+  transform: translateX(-110%) !important;
+  opacity: 0;
+  pointer-events: none;
+}
+.maia-float.swiping { transition: none; }
 
 /* ── ACTE 1 : Disparition spirale du float vers le logo ── */
 .maia-float.genie-out {
@@ -2842,6 +2849,46 @@ margin: 20px 20px 0;
       }, 500);
     }, 800);
   }
+
+  // ── Swipe-left pour cacher Maïa ──
+  (function initMaiaSwipe() {
+    var fab = document.getElementById('maiaFloat');
+    if (!fab) return;
+    var startX = 0, startY = 0, dx = 0, swiping = false;
+
+    fab.addEventListener('touchstart', function(e) {
+      var t = e.touches[0];
+      startX = t.clientX; startY = t.clientY; dx = 0; swiping = false;
+    }, { passive: true });
+
+    fab.addEventListener('touchmove', function(e) {
+      var t = e.touches[0];
+      dx = t.clientX - startX;
+      var dy = Math.abs(t.clientY - startY);
+      // Swipe horizontal uniquement (gauche)
+      if (dx < -10 && dy < 40) {
+        swiping = true;
+        fab.classList.add('swiping');
+        fab.style.transform = 'translateX(' + Math.min(0, dx) + 'px)';
+        fab.style.opacity = Math.max(0, 1 + dx / 150);
+        e.preventDefault();
+      }
+    }, { passive: false });
+
+    fab.addEventListener('touchend', function() {
+      fab.classList.remove('swiping');
+      if (swiping && dx < -60) {
+        // Seuil atteint → dismiss
+        fab.classList.add('swipe-out');
+        setTimeout(function() { dismissMaiaFloat(); fab.classList.remove('swipe-out'); fab.style.transform = ''; fab.style.opacity = ''; }, 300);
+      } else {
+        // Reset
+        fab.style.transform = '';
+        fab.style.opacity = '';
+      }
+      swiping = false;
+    }, { passive: true });
+  })();
 
   // ACTE 2 — Respiration (gérée par CSS .breathing)
 
