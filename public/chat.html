@@ -204,6 +204,10 @@ html, body {
         <span data-i18n="chat_agent">Agent d'hospitalité · Sauf Imprévu Bar à vins</span>
       </div>
     </div>
+    <button id="chatLangBtn" onclick="toggleChatLang()" style="background:none;border:1px solid var(--border);border-radius:8px;padding:4px 8px;display:flex;align-items:center;gap:4px;cursor:pointer;color:var(--text-secondary);font-size:11px;font-weight:600;margin-right:4px;">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+      <span id="chatLangCode">FR</span>
+    </button>
     <a href="/" class="chat-header-close" onclick="return closeChat()">✕</a>
   </div>
 
@@ -221,7 +225,44 @@ html, body {
   </div>
 </div>
 
+<div id="chatLangDropdown" style="display:none;position:fixed;top:56px;right:48px;background:var(--bg-card);border:1px solid var(--border);border-radius:12px;box-shadow:0 8px 24px rgba(0,0,0,0.15);z-index:100;overflow:hidden;min-width:150px;"></div>
+
 <script>
+  // ── Lang selector ──
+  function toggleChatLang() {
+    var dd = document.getElementById('chatLangDropdown');
+    if (dd.style.display !== 'none') { dd.style.display = 'none'; return; }
+    var langs = I18N.getLangs();
+    var cur = I18N.getLang();
+    var html = '';
+    for (var i = 0; i < langs.length; i++) {
+      var l = langs[i];
+      var active = l === cur;
+      html += '<a href="#" onclick="I18N.setLang(\'' + l + '\');document.getElementById(\'chatLangCode\').textContent=\'' + l.toUpperCase() + '\';document.getElementById(\'chatLangDropdown\').style.display=\'none\';I18N.applyAll();return false;" style="display:flex;align-items:center;gap:10px;padding:10px 14px;text-decoration:none;color:' + (active ? 'var(--primary)' : 'var(--text)') + ';font-size:14px;font-weight:' + (active ? '700' : '500') + ';' + (i < langs.length-1 ? 'border-bottom:1px solid var(--border);' : '') + '">' +
+        '<span style="font-size:18px;">' + I18N.getLangFlag(l) + '</span>' +
+        I18N.getLangLabel(l) +
+        (active ? '<svg style="margin-left:auto;" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>' : '') +
+      '</a>';
+    }
+    dd.innerHTML = html;
+    dd.style.display = 'block';
+  }
+
+  // Init lang code display
+  document.addEventListener('DOMContentLoaded', function() {
+    var el = document.getElementById('chatLangCode');
+    if (el) el.textContent = I18N.getLang().toUpperCase();
+  });
+
+  // Close dropdown on click outside
+  document.addEventListener('click', function(e) {
+    var dd = document.getElementById('chatLangDropdown');
+    var btn = document.getElementById('chatLangBtn');
+    if (dd && dd.style.display !== 'none' && !dd.contains(e.target) && !btn.contains(e.target)) {
+      dd.style.display = 'none';
+    }
+  });
+
   // ── Close ──
   var inIframe = window.self !== window.top;
   function closeChat() {
