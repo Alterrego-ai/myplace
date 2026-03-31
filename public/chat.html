@@ -129,6 +129,18 @@ html, body {
   cursor: pointer; flex-shrink: 0; align-self: center;
 }
 .chat-send:disabled { opacity: 0.4; cursor: not-allowed; }
+.chat-mic {
+  width: 40px; height: 40px; border-radius: 50%; border: none;
+  background: none; color: var(--text-tertiary);
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; flex-shrink: 0; align-self: center; transition: color 0.2s;
+}
+.chat-mic:active { color: var(--primary); }
+.chat-mic.recording { color: #dc2626; animation: micPulse 1s infinite; }
+@keyframes micPulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.15); }
+}
 /* Welcome */
 .chat-welcome {
   text-align: center; padding: 10px 4px 8px; color: var(--text-tertiary);
@@ -218,6 +230,9 @@ html, body {
 
   <!-- Input -->
   <div class="chat-input-bar" id="chatInputBar">
+    <button class="chat-mic" id="chatMic" onclick="toggleVoice()" title="Dictée vocale">
+      <svg width="20" height="20" viewBox="0 0 640 640" fill="currentColor"><path d="M320 112C346.5 112 368 133.5 368 160L368 288C368 314.5 346.5 336 320 336C293.5 336 272 314.5 272 288L272 160C272 133.5 293.5 112 320 112zM224 160L224 288C224 341 267 384 320 384C373 384 416 341 416 288L416 160C416 107 373 64 320 64C267 64 224 107 224 160zM176 248C176 234.7 165.3 224 152 224C138.7 224 128 234.7 128 248L128 288C128 385.9 201.3 466.7 296 478.5L296 528L248 528C234.7 528 224 538.7 224 552C224 565.3 234.7 576 248 576L392 576C405.3 576 416 565.3 416 552C416 538.7 405.3 528 392 528L344 528L344 478.5C438.7 466.7 512 385.9 512 288L512 248C512 234.7 501.3 224 488 224C474.7 224 464 234.7 464 248L464 288C464 367.5 399.5 432 320 432C240.5 432 176 367.5 176 288L176 248z"/></svg>
+    </button>
     <input type="text" class="chat-input" id="chatInput" placeholder="Votre message..." data-i18n-ph="chat_placeholder" maxlength="2000" autocomplete="off">
     <button class="chat-send" id="chatSend" onclick="sendMessage()">
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
@@ -480,6 +495,85 @@ html, body {
   inputBar.addEventListener('click', function() {
     if (chatInput.disabled) window.location.href = getSSOLoginUrl();
   });
+
+  // ── Dictée vocale (Web Speech API) ──
+  var speechRecog = null;
+  var isRecording = false;
+
+  function toggleVoice() {
+    if (isRecording) { stopVoice(); return; }
+    startVoice();
+  }
+
+  function startVoice() {
+    var SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (!SpeechRecognition) {
+      alert('La reconnaissance vocale n\'est pas supportée par ce navigateur.');
+      return;
+    }
+    speechRecog = new SpeechRecognition();
+    // Mapper la langue i18n vers le code BCP47
+    var langMap = { fr:'fr-FR', en:'en-US', es:'es-ES', it:'it-IT', de:'de-DE', pt:'pt-PT' };
+    speechRecog.lang = langMap[I18N.getLang()] || 'fr-FR';
+    speechRecog.continuous = true;
+    speechRecog.interimResults = true;
+
+    var micBtn = document.getElementById('chatMic');
+    var input = document.getElementById('chatInput');
+    var finalText = input.value;
+
+    speechRecog.onstart = function() {
+      isRecording = true;
+      micBtn.classList.add('recording');
+    };
+
+    speechRecog.onresult = function(e) {
+      var interim = '';
+      var final2 = '';
+      for (var i = e.resultIndex; i < e.results.length; i++) {
+        var transcript = e.results[i][0].transcript;
+        if (e.results[i].isFinal) {
+          final2 += transcript;
+        } else {
+          interim += transcript;
+        }
+      }
+      if (final2) finalText += (finalText ? ' ' : '') + final2;
+      input.value = finalText + (interim ? ' ' + interim : '');
+      // Activer le bouton envoi
+      document.getElementById('chatSend').disabled = !input.value.trim();
+    };
+
+    speechRecog.onerror = function(e) {
+      if (e.error !== 'no-speech') console.warn('Speech error:', e.error);
+      stopVoice();
+    };
+
+    speechRecog.onend = function() {
+      stopVoice();
+    };
+
+    speechRecog.start();
+  }
+
+  function stopVoice() {
+    isRecording = false;
+    var micBtn = document.getElementById('chatMic');
+    if (micBtn) micBtn.classList.remove('recording');
+    if (speechRecog) {
+      try { speechRecog.stop(); } catch(e) {}
+      speechRecog = null;
+    }
+  }
+
+  // Masquer le bouton micro si non supporté
+  (function() {
+    var SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (!SpeechRecognition) {
+      var mic = document.getElementById('chatMic');
+      if (mic) mic.style.display = 'none';
+    }
+  })();
 
   // Theme
   (function() {
