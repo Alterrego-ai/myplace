@@ -1428,6 +1428,89 @@ background: var(--primary); color: #fff; font-size: 26px; font-weight: 700; over
   object-fit: cover;
 }
 
+/* ── WALLET BOTTOM SHEET ── */
+.wallet-sheet {
+  position: fixed;
+  bottom: 0; left: 0; right: 0;
+  max-width: 600px;
+  margin: 0 auto;
+  background: var(--bg-card);
+  border-radius: 20px 20px 0 0;
+  box-shadow: 0 -8px 40px rgba(0,0,0,0.18);
+  z-index: 310;
+  transform: translateY(100%);
+  transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+  max-height: 92vh;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  padding-bottom: calc(16px + env(safe-area-inset-bottom, 0px));
+}
+.wallet-sheet.visible { transform: translateY(0); }
+.wallet-sheet .sheet-handle {
+  width: 36px; height: 4px; border-radius: 2px;
+  background: var(--border); margin: 10px auto 0;
+}
+.wallet-preview {
+  display: flex;
+  justify-content: center;
+  padding: 16px 0 8px;
+}
+.wallet-preview img {
+  max-height: 320px;
+  width: auto;
+  max-width: 85%;
+  object-fit: contain;
+  border-radius: 12px;
+}
+.wallet-form {
+  padding: 0 24px;
+}
+.wallet-form input {
+  width: 100%;
+  padding: 12px 14px;
+  border: 1.5px solid var(--border);
+  border-radius: 10px;
+  font-size: 14px;
+  font-family: var(--font);
+  background: var(--bg);
+  color: var(--text);
+  margin-bottom: 10px;
+  outline: none;
+  transition: border-color 0.2s;
+}
+.wallet-form input:focus { border-color: var(--primary); }
+.wallet-form input::placeholder { color: var(--text-tertiary); }
+.wallet-add-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  width: 100%;
+  padding: 14px;
+  border: none;
+  border-radius: 12px;
+  font-size: 15px;
+  font-weight: 700;
+  font-family: var(--font);
+  cursor: pointer;
+  transition: opacity 0.2s, transform 0.1s;
+  margin-top: 4px;
+}
+.wallet-add-btn:active { transform: scale(0.97); }
+.wallet-add-btn.apple {
+  background: #000;
+  color: #fff;
+}
+.wallet-add-btn.google {
+  background: #fff;
+  color: #000;
+  border: 1.5px solid #dadce0;
+}
+.wallet-add-btn img {
+  height: 28px;
+  width: auto;
+}
+
 /* ── ADMIN IFRAME OVERLAY ── */
 .admin-overlay {
   display: none;
@@ -1893,11 +1976,11 @@ margin: 20px 20px 0;
         </div>
       </div>
       <div style="display:flex;gap:10px;">
-        <button onclick="alert(I18N.t('wallet_bientot'))" style="flex:1;display:flex;align-items:center;justify-content:center;gap:8px;padding:12px;background:rgba(0,0,0,0.25);border:1px solid rgba(255,255,255,0.2);border-radius:10px;color:#fff;font-size:13px;font-weight:600;cursor:pointer;opacity:0.7;">
+        <button onclick="openWalletSheet('apple')" style="flex:1;display:flex;align-items:center;justify-content:center;gap:8px;padding:12px;background:rgba(0,0,0,0.25);border:1px solid rgba(255,255,255,0.2);border-radius:10px;color:#fff;font-size:13px;font-weight:600;cursor:pointer;transition:opacity 0.15s;">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg>
           <span data-i18n="wallet_apple">Apple Wallet</span>
         </button>
-        <button onclick="alert(I18N.t('wallet_bientot'))" style="flex:1;display:flex;align-items:center;justify-content:center;gap:8px;padding:12px;background:rgba(0,0,0,0.25);border:1px solid rgba(255,255,255,0.2);border-radius:10px;color:#fff;font-size:13px;font-weight:600;cursor:pointer;opacity:0.7;">
+        <button onclick="openWalletSheet('google')" style="flex:1;display:flex;align-items:center;justify-content:center;gap:8px;padding:12px;background:rgba(0,0,0,0.25);border:1px solid rgba(255,255,255,0.2);border-radius:10px;color:#fff;font-size:13px;font-weight:600;cursor:pointer;transition:opacity 0.15s;">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M3 20.5v-17c0-.83.67-1.5 1.5-1.5s1.5.67 1.5 1.5v17c0 .83-.67 1.5-1.5 1.5S3 21.33 3 20.5zm18-7.5l-6.75 7H8.5v-2.62L14.12 12 8.5 6.62V4h5.75L21 11v2z"/></svg>
           <span data-i18n="wallet_google">Google Wallet</span>
         </button>
@@ -2215,6 +2298,52 @@ margin: 20px 20px 0;
   <button class="sheet-cancel" onclick="closeAllSheets()" data-i18n="btn_fermer">Fermer</button>
 </div>
 
+<!-- WALLET SHEET — APPLE -->
+<div class="wallet-sheet" id="walletAppleSheet">
+  <div class="sheet-handle"></div>
+  <div class="wallet-preview">
+    <img src="/img/wallet_preview_apple.png" alt="Apple Wallet Preview">
+  </div>
+  <div style="text-align:center;padding:0 24px 8px;">
+    <div style="font-size:16px;font-weight:700;color:var(--text);">Carte de membre</div>
+    <div style="font-size:12px;color:var(--text-tertiary);margin-top:2px;">Personnalisez votre carte puis ajoutez-la à votre Wallet</div>
+  </div>
+  <div class="wallet-form">
+    <input type="text" id="walletAppleFirstName" placeholder="Prénom">
+    <input type="text" id="walletAppleLastName" placeholder="Nom">
+    <button class="wallet-add-btn apple" onclick="addToWallet('apple')">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg>
+      Ajouter à Apple Wallet
+    </button>
+  </div>
+  <div style="padding:12px 24px 0;">
+    <button class="sheet-cancel" onclick="closeWalletSheet()" style="width:100%;" data-i18n="btn_fermer">Fermer</button>
+  </div>
+</div>
+
+<!-- WALLET SHEET — GOOGLE -->
+<div class="wallet-sheet" id="walletGoogleSheet">
+  <div class="sheet-handle"></div>
+  <div class="wallet-preview">
+    <img src="/img/wallet_preview_google.png" alt="Google Wallet Preview">
+  </div>
+  <div style="text-align:center;padding:0 24px 8px;">
+    <div style="font-size:16px;font-weight:700;color:var(--text);">Carte de membre</div>
+    <div style="font-size:12px;color:var(--text-tertiary);margin-top:2px;">Personnalisez votre carte puis ajoutez-la à votre Wallet</div>
+  </div>
+  <div class="wallet-form">
+    <input type="text" id="walletGoogleFirstName" placeholder="Prénom">
+    <input type="text" id="walletGoogleLastName" placeholder="Nom">
+    <button class="wallet-add-btn google" onclick="addToWallet('google')">
+      <img src="/img/add_to_google_wallet.svg" alt="Google Wallet" style="height:24px;">
+      Ajouter à Google Wallet
+    </button>
+  </div>
+  <div style="padding:12px 24px 0;">
+    <button class="sheet-cancel" onclick="closeWalletSheet()" style="width:100%;" data-i18n="btn_fermer">Fermer</button>
+  </div>
+</div>
+
 <!-- BOTTOM SHEET LANGUE -->
 <div class="bottom-sheet" id="langSheet">
   <div class="sheet-handle"></div>
@@ -2435,6 +2564,10 @@ margin: 20px 20px 0;
     if (profileSheet) profileSheet.classList.remove('visible');
     var langSheet = document.getElementById('langSheet');
     if (langSheet) langSheet.classList.remove('visible');
+    var wa = document.getElementById('walletAppleSheet');
+    if (wa) wa.classList.remove('visible');
+    var wg = document.getElementById('walletGoogleSheet');
+    if (wg) wg.classList.remove('visible');
   }
 
   // ── Navigation par onglet (bottom bar) ──
@@ -2484,6 +2617,48 @@ margin: 20px 20px 0;
     setActiveNav('navAccueil');
     var s = document.querySelector('.phone-scroll') || document.documentElement;
     s.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  // ── Wallet Sheets ──
+  function openWalletSheet(type) {
+    closeAllSheets();
+    var overlay = document.getElementById('sheetOverlay');
+    var sheet = document.getElementById(type === 'apple' ? 'walletAppleSheet' : 'walletGoogleSheet');
+    if (!sheet) return;
+    // Pré-remplir avec le nom du user connecté si dispo
+    var user = getStoredUser();
+    if (user && user.name) {
+      var parts = user.name.split(' ');
+      var fnId = type === 'apple' ? 'walletAppleFirstName' : 'walletGoogleFirstName';
+      var lnId = type === 'apple' ? 'walletAppleLastName' : 'walletGoogleLastName';
+      var fnEl = document.getElementById(fnId);
+      var lnEl = document.getElementById(lnId);
+      if (fnEl && !fnEl.value) fnEl.value = parts[0] || '';
+      if (lnEl && !lnEl.value) lnEl.value = parts.slice(1).join(' ') || '';
+    }
+    if (overlay) overlay.classList.add('visible');
+    sheet.classList.add('visible');
+  }
+
+  function closeWalletSheet() {
+    var overlay = document.getElementById('sheetOverlay');
+    if (overlay) overlay.classList.remove('visible');
+    var apple = document.getElementById('walletAppleSheet');
+    var google = document.getElementById('walletGoogleSheet');
+    if (apple) apple.classList.remove('visible');
+    if (google) google.classList.remove('visible');
+  }
+
+  function addToWallet(type) {
+    var fnId = type === 'apple' ? 'walletAppleFirstName' : 'walletGoogleFirstName';
+    var lnId = type === 'apple' ? 'walletAppleLastName' : 'walletGoogleLastName';
+    var firstName = (document.getElementById(fnId) || {}).value || 'Jean';
+    var lastName = (document.getElementById(lnId) || {}).value || 'Profite';
+
+    // TODO : connecter à l'API Wallet réelle (Boostore)
+    // Pour le POC, on affiche un message de succès
+    alert('Carte de ' + firstName + ' ' + lastName + ' prête !\n\nL\'intégration Boostore Wallet sera disponible prochainement.');
+    closeWalletSheet();
   }
 
   // Share
