@@ -4373,14 +4373,22 @@
                 alert(data);
             }
 
-            // Auto-open depuis raccourci PWA (?action=scan ou ?action=resa)
+            // Auto-open depuis raccourci PWA (?action=scan, ?action=resa, ?section=carte)
             const urlParams = new URLSearchParams(window.location.search);
             const action = urlParams.get('action');
+            const sectionParam = urlParams.get('section');
             if (action === 'scan') {
                 setTimeout(() => openScanner(), 300);
                 history.replaceState(null, '', window.location.pathname);
             } else if (action === 'resa') {
                 setTimeout(() => document.getElementById('openAddResaBtn').click(), 300);
+                history.replaceState(null, '', window.location.pathname);
+            } else if (sectionParam) {
+                // Ouvrir directement sur l'onglet demandé (ex: ?section=carte)
+                const targetTab = document.querySelector(`.nav-tab[data-section="${sectionParam}"]`);
+                if (targetTab) {
+                    setTimeout(() => targetTab.click(), 100);
+                }
                 history.replaceState(null, '', window.location.pathname);
             }
         }

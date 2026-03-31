@@ -1379,6 +1379,8 @@ background: var(--primary); color: #fff; font-size: 26px; font-weight: 700; over
   z-index: 200;
   background: var(--bg);
   flex-direction: column;
+  /* iOS safe area : décaler sous la barre de statut */
+  padding-top: env(safe-area-inset-top, 0px);
 }
 .admin-overlay.visible { display: flex; }
 .admin-overlay iframe {
@@ -2680,7 +2682,7 @@ margin: 20px 20px 0;
       '</a>';
     // La Carte (FA book-open)
     html +=
-      '<a href="/menu/sauf-imprevu" onclick="return navigateAdmin(event, \'/menu/sauf-imprevu\')" style="display:flex;flex-direction:column;align-items:center;gap:6px;text-decoration:none;color:var(--text);padding:8px 4px;border-radius:12px;transition:background 0.15s;" onmouseover="this.style.background=\'var(--bg-subtle)\'" onmouseout="this.style.background=\'none\'">' +
+      '<a href="/admin?section=carte" onclick="return navigateAdmin(event, \'/admin?section=carte\')" style="display:flex;flex-direction:column;align-items:center;gap:6px;text-decoration:none;color:var(--text);padding:8px 4px;border-radius:12px;transition:background 0.15s;" onmouseover="this.style.background=\'var(--bg-subtle)\'" onmouseout="this.style.background=\'none\'">' +
         '<div style="width:52px;height:52px;border-radius:14px;background:linear-gradient(135deg,#2d6a4f,#52b788);display:flex;align-items:center;justify-content:center;">' +
           '<svg width="28" height="28" viewBox="0 0 640 640" fill="#fff"><path d="M276.4 169.8L296 178L296 522.4C248.4 505 198 496 147.2 496L112 496L112 144L147.2 144C191.6 144 235.5 152.8 276.4 169.8zM492.8 496C442 496 391.6 505 344 522.4L344 178L363.6 169.8C404.5 152.8 448.4 144 492.8 144L528 144L528 496L492.8 496zM320 136L294.9 125.5C248.1 106 197.9 96 147.2 96L112 96C85.5 96 64 117.5 64 144L64 496C64 522.5 85.5 544 112 544L147.2 544C197.9 544 248.1 554 294.9 573.5L307.7 578.8C315.6 582.1 324.4 582.1 332.3 578.8L345.1 573.5C391.9 554 442.1 544 492.8 544L528 544C554.5 544 576 522.5 576 496L576 144C576 117.5 554.5 96 528 96L492.8 96C442.1 96 391.9 106 345.1 125.5L320 136z"/></svg>' +
         '</div>' +
