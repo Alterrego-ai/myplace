@@ -120,6 +120,13 @@ var I18N = (function() {
     profil_adresse:     { fr:'Adresse', en:'Address', es:'Dirección', it:'Indirizzo', de:'Adresse', pt:'Morada' },
     profil_naissance:   { fr:'Date de naissance', en:'Date of birth', es:'Fecha de nacimiento', it:'Data di nascita', de:'Geburtsdatum', pt:'Data de nascimento' },
 
+    // ── Wallet / Pass ──
+    wallet_titre:       { fr:'Carte de membre', en:'Member card', es:'Tarjeta de miembro', it:'Tessera socio', de:'Mitgliedskarte', pt:'Cartão de membro' },
+    wallet_sous_titre:  { fr:'Accédez à vos avantages en un tap', en:'Access your benefits with one tap', es:'Acceda a sus ventajas con un toque', it:'Accedi ai vantaggi con un tap', de:'Zugriff auf Ihre Vorteile mit einem Tap', pt:'Aceda às suas vantagens com um toque' },
+    wallet_apple:       { fr:'Apple Wallet', en:'Apple Wallet', es:'Apple Wallet', it:'Apple Wallet', de:'Apple Wallet', pt:'Apple Wallet' },
+    wallet_google:      { fr:'Google Wallet', en:'Google Wallet', es:'Google Wallet', it:'Google Wallet', de:'Google Wallet', pt:'Google Wallet' },
+    wallet_bientot:     { fr:'Bientôt disponible !', en:'Coming soon!', es:'¡Próximamente!', it:'Prossimamente!', de:'Bald verfügbar!', pt:'Em breve!' },
+
     // ── Messages Maïa (bulles) ──
     maia_reste_la:      { fr:'Je reste là si vous avez besoin de moi !', en:'I\'m here if you need me!', es:'¡Estoy aquí si me necesita!', it:'Sono qui se hai bisogno!', de:'Ich bin hier, wenn Sie mich brauchen!', pt:'Estou aqui se precisar de mim!' },
     maia_table_soir:    { fr:'Une table ce soir ?', en:'A table tonight?', es:'¿Una mesa esta noche?', it:'Un tavolo stasera?', de:'Ein Tisch heute Abend?', pt:'Uma mesa esta noite?' },
