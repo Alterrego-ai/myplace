@@ -211,12 +211,13 @@ html, body {
   <div class="chat-header">
     <div class="chat-header-left">
       <img class="chat-header-avatar" src="/img/maia.png" alt="Maïa">
-      <button id="chatLangBtn" onclick="toggleChatLang()" style="background:rgba(255,255,255,0.15);border:none;border-radius:8px;padding:4px 8px;display:flex;align-items:center;gap:4px;cursor:pointer;color:#fff;font-size:11px;font-weight:600;">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
-        <span id="chatLangCode">FR</span>
-      </button>
       <div class="chat-header-info">
-        <h4>Maïa</h4>
+        <h4 style="display:flex;align-items:center;gap:6px;">Maïa
+          <button id="chatLangBtn" onclick="event.stopPropagation();toggleChatLang()" style="background:rgba(255,255,255,0.15);border:none;border-radius:6px;padding:2px 6px;display:inline-flex;align-items:center;gap:3px;cursor:pointer;color:rgba(255,255,255,0.8);font-size:10px;font-weight:600;vertical-align:middle;">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+            <span id="chatLangCode">FR</span>
+          </button>
+        </h4>
         <span data-i18n="chat_agent">Agent d'hospitalité · Sauf Imprévu Bar à vins</span>
       </div>
     </div>
@@ -515,7 +516,9 @@ html, body {
     // Mapper la langue i18n vers le code BCP47
     var langMap = { fr:'fr-FR', en:'en-US', es:'es-ES', it:'it-IT', de:'de-DE', pt:'pt-PT' };
     speechRecog.lang = langMap[I18N.getLang()] || 'fr-FR';
-    speechRecog.continuous = true;
+    // iOS Safari ne supporte pas continuous — désactiver
+    var isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+    speechRecog.continuous = !isIOS;
     speechRecog.interimResults = true;
 
     var micBtn = document.getElementById('chatMic');
@@ -545,15 +548,28 @@ html, body {
     };
 
     speechRecog.onerror = function(e) {
-      if (e.error !== 'no-speech') console.warn('Speech error:', e.error);
+      console.warn('Speech error:', e.error);
+      if (e.error === 'not-allowed' || e.error === 'service-not-allowed') {
+        alert('Veuillez autoriser l\'accès au microphone dans les réglages de votre navigateur.');
+      }
       stopVoice();
     };
 
     speechRecog.onend = function() {
+      // Sur iOS (non-continuous), relancer auto si l'utilisateur n'a pas arrêté
+      if (isIOS && isRecording && speechRecog) {
+        try { speechRecog.start(); return; } catch(e) {}
+      }
       stopVoice();
     };
 
-    speechRecog.start();
+    try {
+      speechRecog.start();
+    } catch(e) {
+      console.error('Speech start failed:', e);
+      alert('Impossible de démarrer la reconnaissance vocale. Vérifiez les permissions du microphone.');
+      stopVoice();
+    }
   }
 
   function stopVoice() {
