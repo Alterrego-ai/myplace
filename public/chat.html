@@ -212,7 +212,7 @@ html, body {
   <!-- Header -->
   <div class="chat-header">
     <div class="chat-header-left">
-      <img class="chat-header-avatar" src="/img/maia.png" alt="Maïa">
+      <img class="chat-header-avatar" src="/img/maia.png?v=2" alt="Maïa">
       <div class="chat-header-info">
         <h4 style="display:flex;align-items:center;gap:6px;">Maïa
           <button id="chatLangBtn" onclick="event.stopPropagation();toggleChatLang()" style="background:rgba(255,255,255,0.15);border:none;border-radius:6px;padding:2px 6px;display:inline-flex;align-items:center;gap:3px;cursor:pointer;color:rgba(255,255,255,0.8);font-size:10px;font-weight:600;vertical-align:middle;">
@@ -319,7 +319,7 @@ html, body {
 
     return '<div class="chat-welcome">' +
       '<div class="chat-welcome-top">' +
-        '<img src="/img/maia.png" alt="Maïa" style="width:72px;height:72px;border-radius:50%;margin-bottom:8px;object-fit:cover;background:#fff;border:2px solid var(--primary);">' +
+        '<img src="/img/maia.png?v=2" alt="Maïa" style="width:72px;height:72px;border-radius:50%;margin-bottom:8px;object-fit:cover;background:#fff;border:2px solid var(--primary);">' +
         '<h4 data-i18n="chat_bonjour">Bonjour !</h4>' +
         '<p data-i18n="chat_intro">Je suis Maïa, votre agent d\'hospitalité</p>' +
       '</div>' +
@@ -402,7 +402,7 @@ html, body {
       var row = document.createElement('div');
       row.style.cssText = 'display:flex;align-items:flex-end;gap:8px;align-self:flex-start;max-width:90%;';
       var avatar = document.createElement('img');
-      avatar.src = '/img/maia.png'; avatar.alt = 'Maïa';
+      avatar.src = '/img/maia.png?v=2'; avatar.alt = 'Maïa';
       avatar.style.cssText = 'width:36px;height:36px;border-radius:50%;flex-shrink:0;object-fit:cover;background:#fff;border:2px solid var(--primary);';
       var bubble = document.createElement('div');
       bubble.className = 'chat-bubble ' + role;
