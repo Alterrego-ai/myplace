@@ -315,11 +315,7 @@ html, body {
       (isLogged
         ? '' // Connecté : pas de bouton rejoindre
         : '<button class="cta-join" onclick="window.location.href=getSSOLoginUrl()" data-i18n="premium_join">Créer mon compte gratuitement</button>');
-    var fakeInput = !isLogged ?
-      '<div onclick="window.location.href=getSSOLoginUrl()" style="display:flex;align-items:center;gap:8px;margin-top:10px;padding:10px 14px;background:var(--bg);border:1px solid var(--border);border-radius:20px;cursor:pointer;opacity:0.5;">' +
-        '<span style="flex:1;font-size:14px;color:var(--text-tertiary);" data-i18n="chat_login_placeholder">Connectez-vous pour discuter...</span>' +
-        '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="color:var(--text-tertiary);"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>' +
-      '</div>' : '';
+    var fakeInput = '';
 
     return '<div class="chat-welcome">' +
       '<div class="chat-welcome-top">' +
@@ -330,6 +326,10 @@ html, body {
       '<button class="cta-main" onclick="startReservation()">' +
         '<div class="cta-icon"><svg width="24" height="24" viewBox="0 0 640 640" fill="#fff"><path d="M184 64C197.3 64 208 74.7 208 88L208 128L368 128L368 88C368 74.7 378.7 64 392 64C405.3 64 416 74.7 416 88L416 128L448 128C483.3 128 512 156.7 512 192L512 278C496.7 274.1 480.6 272 464 272C436.7 272 410.7 277.7 387.1 288L112 288L112 480C112 488.8 119.2 496 128 496L274.7 496C277.5 512.8 282.5 528.9 289.5 544L128 544C92.7 544 64 515.3 64 480L64 192C64 156.7 92.7 128 128 128L160 128L160 88C160 74.7 170.7 64 184 64zM184 176L128 176C119.2 176 112 183.2 112 192L112 240L464 240L464 192C464 183.2 456.8 176 448 176L184 176zM320 464C320 384.5 384.5 320 464 320C543.5 320 608 384.5 608 464C608 543.5 543.5 608 464 608C384.5 608 320 543.5 320 464zM464 384C455.2 384 448 391.2 448 400L448 464C448 472.8 455.2 480 464 480L512 480C520.8 480 528 472.8 528 464C528 455.2 520.8 448 512 448L480 448L480 400C480 391.2 472.8 384 464 384z"/></svg></div>' +
         '<div class="cta-text"><h4 data-i18n="chat_reserver">Réserver une table</h4><span data-i18n="chat_dispo">Disponibilité en temps réel</span></div>' +
+      '</button>' +
+      '<button class="cta-main" onclick="sendSuggestion(this)" data-msg="Je souhaite laisser un message" style="background:var(--bg-card);border:1px solid var(--border);">' +
+        '<div class="cta-icon" style="background:var(--bg-subtle);"><svg width="24" height="24" viewBox="0 0 640 640" fill="var(--primary)"><path d="M112 96C85.5 96 64 117.5 64 144L64 368C64 394.5 85.5 416 112 416L176 416L176 488C176 493.3 179 498.2 183.8 500.6C188.6 503 194.3 502.4 198.6 499.2L288 416L528 416C554.5 416 576 394.5 576 368L576 144C576 117.5 554.5 96 528 96L112 96zM192 208C205.3 208 216 218.7 216 232C216 245.3 205.3 256 192 256C178.7 256 168 245.3 168 232C168 218.7 178.7 208 192 208zM320 208C333.3 208 344 218.7 344 232C344 245.3 333.3 256 320 256C306.7 256 296 245.3 296 232C296 218.7 306.7 208 320 208zM448 208C461.3 208 472 218.7 472 232C472 245.3 461.3 256 448 256C434.7 256 424 245.3 424 232C424 218.7 434.7 208 448 208z"/></svg></div>' +
+        '<div class="cta-text"><h4 style="color:var(--text);">Laisser un message</h4><span style="color:var(--text-tertiary);">Nous vous répondrons rapidement</span></div>' +
       '</button>' +
       '<div style="min-height:30px;"></div>' +
       '<div class="zone-premium">' +
@@ -377,7 +377,7 @@ html, body {
     setTimeout(function() { sendMessage(); }, 300);
   } else if (!isLogged) {
     messages.innerHTML = buildWelcome();
-    inputBar.style.display = 'none';
+    chatInput.placeholder = I18N.t('chat_placeholder');
   } else {
     messages.innerHTML = buildWelcome();
     chatInput.placeholder = I18N.t('chat_placeholder');
@@ -502,10 +502,6 @@ html, body {
     }
   });
 
-  // Clic sur input bar quand disabled → login
-  inputBar.addEventListener('click', function() {
-    if (chatInput.disabled) window.location.href = getSSOLoginUrl();
-  });
 
   // ── Dictée vocale (Web Speech API) ──
   var speechRecog = null;
