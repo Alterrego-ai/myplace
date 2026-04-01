@@ -2768,6 +2768,9 @@ margin: 20px 20px 0;
         if (fr) fr.remove();
         window.removeEventListener('message', onShareClose);
       }
+      if (e.data === 'startSSOLogin') {
+        startSSOLogin();
+      }
     });
   }
 

@@ -166,15 +166,23 @@ html, body {
         <span>🤝</span> <span id="ambassLabel"></span>
       </div>
 
-      <!-- CTA devenir ambassadeur (non connecté) -->
-      <button class="ambass-cta" id="ambassCta" onclick="devenirAmbassadeur()">
-        <div class="ambass-cta-icon">🤝</div>
-        <div class="ambass-cta-text">
-          <strong>Devenir Ambassadeur</strong>
-          <span>Obtenez votre lien personnalisé</span>
+      <!-- Programme ambassadeur (non connecté) -->
+      <div id="ambassProgram">
+        <div style="margin-top:14px;padding:14px;background:var(--bg-subtle);border-radius:10px;">
+          <div style="font-size:14px;font-weight:700;color:var(--text);margin-bottom:8px;">Programme Ambassadeur</div>
+          <div style="font-size:12px;color:var(--text-secondary);line-height:1.6;">
+            Créez votre compte et obtenez votre lien personnalisé pour recommander l'établissement à vos proches. Suivez vos parrainages et accédez à des avantages exclusifs.
+          </div>
+          <button class="ambass-cta" onclick="devenirAmbassadeur()" style="margin-top:10px;">
+            <div class="ambass-cta-icon">🤝</div>
+            <div class="ambass-cta-text">
+              <strong>Devenir Ambassadeur</strong>
+              <span>Créer mon compte</span>
+            </div>
+            <div class="ambass-cta-arrow">›</div>
+          </button>
         </div>
-        <div class="ambass-cta-arrow">›</div>
-      </button>
+      </div>
     </div>
 
     <!-- 2. Partage : QR + aperçu + boutons -->
@@ -235,7 +243,7 @@ html, body {
   // ── Init UI ──
   if (isAmbassador) {
     var firstName = user.name.split(' ')[0];
-    document.getElementById('ambassCta').style.display = 'none';
+    document.getElementById('ambassProgram').style.display = 'none';
     document.getElementById('ambassBadge').style.display = '';
     document.getElementById('ambassLabel').textContent = firstName + ' · Ambassadeur';
   }
@@ -352,12 +360,15 @@ html, body {
     }
   }
 
-  // ── Devenir Ambassadeur ──
+  // ── Devenir Ambassadeur → déclencher la mire SSO ──
   function devenirAmbassadeur() {
     if (window.parent !== window) {
-      window.parent.postMessage('openLogin', '*');
+      // Desktop iframe : demander au parent de lancer le SSO
+      window.parent.postMessage('startSSOLogin', '*');
     } else {
-      window.location.href = '/#login';
+      // Mobile : rediriger vers la mire SSO
+      var returnTo = encodeURIComponent(window.location.origin + '/share.html');
+      window.location.href = '/auth/login?returnTo=' + returnTo;
     }
   }
 </script>
