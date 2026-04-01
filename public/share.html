@@ -130,16 +130,11 @@ html, body {
 .share-action-btn:active { opacity: 0.6; }
 .share-action-btn svg { flex-shrink: 0; }
 /* Ambassador section */
-.ambass-toggle {
-  display: flex; align-items: center; justify-content: space-between;
-  cursor: pointer; padding: 4px 0;
-}
 .ambass-badge {
   display: inline-flex; align-items: center; gap: 6px;
   background: var(--accent); color: #fff; font-size: 11px; font-weight: 700;
   padding: 3px 10px; border-radius: 20px; letter-spacing: 0.3px;
 }
-.ambass-form { margin-top: 16px; }
 .ambass-input {
   width: 100%; border: 1px solid var(--border); border-radius: 10px;
   padding: 10px 14px; font-size: 14px; font-family: var(--font);
@@ -147,17 +142,6 @@ html, body {
   margin-bottom: 10px;
 }
 .ambass-input:focus { border-color: var(--primary); }
-.ambass-chips {
-  display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 14px;
-}
-.ambass-chip {
-  background: var(--bg-subtle); border: 1px solid var(--border);
-  border-radius: 20px; padding: 6px 12px; font-size: 12px;
-  color: var(--text-secondary); cursor: pointer; transition: 0.15s;
-}
-.ambass-chip:active, .ambass-chip.active {
-  background: var(--primary); color: #fff; border-color: var(--primary);
-}
 /* Preview */
 .ambass-preview {
   background: var(--bg-subtle); border-radius: 12px; padding: 14px;
@@ -175,26 +159,6 @@ html, body {
   font-size: 12px; color: var(--primary); margin-top: 6px;
   word-break: break-all;
 }
-/* Share ambassador button */
-.ambass-share-btn {
-  width: 100%; padding: 14px; border: none; border-radius: 12px;
-  background: var(--primary); color: #fff; font-size: 14px; font-weight: 700;
-  cursor: pointer; margin-top: 14px; transition: opacity 0.15s;
-}
-.ambass-share-btn:active { opacity: 0.7; }
-/* Switch toggle */
-.toggle-switch {
-  width: 44px; height: 24px; background: var(--border);
-  border-radius: 12px; position: relative; cursor: pointer;
-  transition: background 0.2s; flex-shrink: 0;
-}
-.toggle-switch.on { background: var(--primary); }
-.toggle-switch::after {
-  content: ''; position: absolute; top: 2px; left: 2px;
-  width: 20px; height: 20px; background: #fff;
-  border-radius: 50%; transition: transform 0.2s;
-}
-.toggle-switch.on::after { transform: translateX(20px); }
 </style>
 </head>
 <body>
@@ -257,19 +221,12 @@ html, body {
     <!-- Tab 2: Ambassadeur -->
     <div id="panelAmbass" style="display:none;">
       <div class="share-section">
-        <div class="share-section-sub" style="margin-bottom:14px;">Personnalisez votre recommandation et partagez avec votre nom</div>
-
         <input class="ambass-input" id="ambassName" type="text" placeholder="Votre prénom" oninput="updatePreview()">
 
-        <div style="font-size:12px;font-weight:600;color:var(--text-secondary);margin-bottom:6px;">Votre message :</div>
-        <div class="ambass-chips" id="ambassChips">
-          <div class="ambass-chip active" onclick="selectChip(this)" data-msg="Je te recommande cet établissement">Je te recommande cet établissement</div>
-          <div class="ambass-chip" onclick="selectChip(this)" data-msg="Je serai là ce soir, viens !">Je serai là ce soir, viens !</div>
-          <div class="ambass-chip" onclick="selectChip(this)" data-msg="Tu devrais essayer, c'est top">Tu devrais essayer, c'est top</div>
-          <div class="ambass-chip" onclick="selectChip(this)" data-msg="Le meilleur bar à vins de Lyon">Le meilleur bar à vins de Lyon</div>
+        <div style="position:relative;">
+          <textarea class="ambass-input" id="ambassCustomMsg" rows="2" placeholder="Personnalisez votre recommandation..." oninput="updatePreview()" style="resize:none;padding-right:44px;"></textarea>
+          <button onclick="inspirMessage()" style="position:absolute;right:8px;top:8px;background:none;border:none;font-size:20px;cursor:pointer;padding:4px;border-radius:8px;transition:transform 0.2s;" title="Inspirer" id="inspireBtn">✨</button>
         </div>
-
-        <textarea class="ambass-input" id="ambassCustomMsg" rows="2" placeholder="Ou écrivez votre propre message..." oninput="updatePreview()" style="resize:none;"></textarea>
 
         <div class="ambass-preview" id="ambassPreview">
           <div class="ambass-preview-label">Aperçu du message</div>
@@ -398,18 +355,29 @@ html, body {
   }
 
   // ── Ambassador ──
-  function selectChip(el) {
-    document.querySelectorAll('.ambass-chip').forEach(function(c) { c.classList.remove('active'); });
-    el.classList.add('active');
-    document.getElementById('ambassCustomMsg').value = '';
+  var INSPIRE_MESSAGES = [
+    'Je te recommande cet établissement',
+    'Je serai là ce soir, viens !',
+    'Tu devrais essayer, c\'est top',
+    'Le meilleur bar à vins de Lyon',
+    'Un endroit que tu vas adorer',
+    'Rejoins-moi pour un verre !'
+  ];
+  var inspireIndex = 0;
+
+  function inspirMessage() {
+    var textarea = document.getElementById('ambassCustomMsg');
+    textarea.value = INSPIRE_MESSAGES[inspireIndex];
+    inspireIndex = (inspireIndex + 1) % INSPIRE_MESSAGES.length;
+    // Petit effet rotation sur le bouton
+    var btn = document.getElementById('inspireBtn');
+    btn.style.transform = 'rotate(360deg)';
+    setTimeout(function() { btn.style.transform = ''; }, 300);
     updatePreview();
   }
 
   function getSelectedMessage() {
-    var custom = document.getElementById('ambassCustomMsg').value.trim();
-    if (custom) return custom;
-    var active = document.querySelector('.ambass-chip.active');
-    return active ? active.dataset.msg : '';
+    return document.getElementById('ambassCustomMsg').value.trim();
   }
 
   function getAmbassadorName() {
