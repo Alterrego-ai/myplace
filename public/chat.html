@@ -120,6 +120,8 @@ html, body {
   padding: 10px 16px; font-size: 16px; font-family: var(--font);
   background: var(--bg); color: var(--text); outline: none;
   -webkit-appearance: none;
+  resize: none; overflow-y: auto; min-height: 40px; max-height: 120px;
+  line-height: 1.4; box-sizing: border-box;
 }
 .chat-input:focus { border-color: var(--primary); }
 .chat-send {
@@ -210,7 +212,7 @@ html, body {
   <!-- Header -->
   <div class="chat-header">
     <div class="chat-header-left">
-      <img class="chat-header-avatar" src="/img/maia.png" alt="Maïa">
+      <img class="chat-header-avatar" src="/img/maia-avatar.png" alt="Maïa">
       <div class="chat-header-info">
         <h4 style="display:flex;align-items:center;gap:6px;">Maïa
           <button id="chatLangBtn" onclick="event.stopPropagation();toggleChatLang()" style="background:rgba(255,255,255,0.15);border:none;border-radius:6px;padding:2px 6px;display:inline-flex;align-items:center;gap:3px;cursor:pointer;color:rgba(255,255,255,0.8);font-size:10px;font-weight:600;vertical-align:middle;">
@@ -234,7 +236,7 @@ html, body {
     <button class="chat-mic" id="chatMic" onclick="toggleVoice()" title="Dictée vocale">
       <svg width="20" height="20" viewBox="0 0 640 640" fill="currentColor"><path d="M320 112C346.5 112 368 133.5 368 160L368 288C368 314.5 346.5 336 320 336C293.5 336 272 314.5 272 288L272 160C272 133.5 293.5 112 320 112zM224 160L224 288C224 341 267 384 320 384C373 384 416 341 416 288L416 160C416 107 373 64 320 64C267 64 224 107 224 160zM176 248C176 234.7 165.3 224 152 224C138.7 224 128 234.7 128 248L128 288C128 385.9 201.3 466.7 296 478.5L296 528L248 528C234.7 528 224 538.7 224 552C224 565.3 234.7 576 248 576L392 576C405.3 576 416 565.3 416 552C416 538.7 405.3 528 392 528L344 528L344 478.5C438.7 466.7 512 385.9 512 288L512 248C512 234.7 501.3 224 488 224C474.7 224 464 234.7 464 248L464 288C464 367.5 399.5 432 320 432C240.5 432 176 367.5 176 288L176 248z"/></svg>
     </button>
-    <input type="text" class="chat-input" id="chatInput" placeholder="Votre message..." data-i18n-ph="chat_placeholder" maxlength="2000" autocomplete="off">
+    <textarea class="chat-input" id="chatInput" placeholder="Votre message..." data-i18n-ph="chat_placeholder" maxlength="2000" autocomplete="off" rows="1"></textarea>
     <button class="chat-send" id="chatSend" onclick="sendMessage()">
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
     </button>
@@ -321,7 +323,7 @@ html, body {
 
     return '<div class="chat-welcome">' +
       '<div class="chat-welcome-top">' +
-        '<img src="/img/maia.png" alt="Maïa" style="width:72px;height:72px;border-radius:0;margin-bottom:8px;object-fit:contain;">' +
+        '<img src="/img/maia-avatar.png" alt="Maïa" style="width:72px;height:72px;border-radius:0;margin-bottom:8px;object-fit:contain;">' +
         '<h4 data-i18n="chat_bonjour">Bonjour !</h4>' +
         '<p data-i18n="chat_intro">Je suis Maïa, votre agent d\'hospitalité</p>' +
       '</div>' +
@@ -354,6 +356,13 @@ html, body {
   var inputBar = document.getElementById('chatInputBar');
   var chatInput = document.getElementById('chatInput');
   var chatSend = document.getElementById('chatSend');
+
+  // Auto-resize textarea
+  function autoResizeInput() {
+    chatInput.style.height = 'auto';
+    chatInput.style.height = Math.min(chatInput.scrollHeight, 120) + 'px';
+  }
+  chatInput.addEventListener('input', autoResizeInput);
 
   // Vérifier si on arrive avec ?resa=1
   var autoResa = new URLSearchParams(window.location.search).get('resa') === '1';
@@ -393,7 +402,7 @@ html, body {
       var row = document.createElement('div');
       row.style.cssText = 'display:flex;align-items:flex-end;gap:8px;align-self:flex-start;max-width:90%;';
       var avatar = document.createElement('img');
-      avatar.src = '/img/maia.png'; avatar.alt = 'Maïa';
+      avatar.src = '/img/maia-avatar.png'; avatar.alt = 'Maïa';
       avatar.style.cssText = 'width:36px;height:36px;border-radius:0;flex-shrink:0;object-fit:contain;';
       var bubble = document.createElement('div');
       bubble.className = 'chat-bubble ' + role;
@@ -427,6 +436,7 @@ html, body {
 
     appendBubble(text, 'user');
     chatInput.value = '';
+    autoResizeInput();
     chatBusy = true;
     chatSend.disabled = true;
 
@@ -543,6 +553,7 @@ html, body {
       }
       if (final2) finalText += (finalText ? ' ' : '') + final2;
       input.value = finalText + (interim ? ' ' + interim : '');
+      autoResizeInput();
       // Activer le bouton envoi
       document.getElementById('chatSend').disabled = !input.value.trim();
     };
