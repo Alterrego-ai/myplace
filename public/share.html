@@ -197,7 +197,7 @@ html, body {
         <span>Sauf Imprévu Bar à vins</span>
       </div>
     </div>
-    <button class="share-header-close" onclick="window.parent.postMessage('closeShare','*');window.close();">&times;</button>
+    <button class="share-header-close" onclick="closeSharePage()">&times;</button>
   </div>
 
   <!-- Content -->
@@ -272,6 +272,21 @@ html, body {
 </div>
 
 <script>
+  // ── Close ──
+  function closeSharePage() {
+    // Desktop (iframe) : prévenir le parent
+    if (window.parent !== window) {
+      window.parent.postMessage('closeShare', '*');
+      return;
+    }
+    // Mobile : retour arrière
+    if (history.length > 1) {
+      history.back();
+    } else {
+      window.location.href = '/';
+    }
+  }
+
   // ── Config ──
   var BASE_URL = window.location.origin;
   var SHARE_URL = BASE_URL;
