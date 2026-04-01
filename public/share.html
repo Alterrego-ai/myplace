@@ -132,6 +132,52 @@ html, body {
 }
 .share-action-btn:active { opacity: 0.6; }
 .share-action-btn svg { flex-shrink: 0; }
+/* CTA row (bouton + bulb) */
+.ambass-cta-row {
+  display: flex; gap: 8px; margin-top: 10px; align-items: stretch;
+}
+.ambass-cta-row .ambass-cta { flex: 1; margin-top: 0; }
+.ambass-info-btn {
+  width: 48px; flex-shrink: 0; display: flex; align-items: center; justify-content: center;
+  background: var(--bg); border: 1px solid var(--accent); border-radius: 10px;
+  cursor: pointer; transition: background 0.15s; color: var(--accent); font-size: 20px;
+}
+.ambass-info-btn:active { background: var(--bg-subtle); }
+/* Popup overlay */
+.popup-overlay {
+  position: fixed; inset: 0; background: rgba(0,0,0,0.5);
+  display: none; align-items: center; justify-content: center;
+  z-index: 9999; padding: 16px;
+}
+.popup-overlay.visible { display: flex; }
+.popup-card {
+  background: var(--bg-card); border-radius: var(--radius);
+  max-width: 440px; width: 100%; max-height: 85vh;
+  overflow-y: auto; padding: 20px;
+  -webkit-overflow-scrolling: touch;
+}
+.popup-close {
+  float: right; background: var(--bg-subtle); border: none; color: var(--text-tertiary);
+  width: 28px; height: 28px; border-radius: 50%; font-size: 16px;
+  cursor: pointer; display: flex; align-items: center; justify-content: center;
+}
+.popup-title { font-size: 15px; font-weight: 700; color: var(--text); margin: 0 0 6px; }
+.popup-intro { font-size: 13px; color: var(--text-secondary); margin: 0 0 8px; line-height: 1.6; }
+.popup-tip {
+  display: flex; align-items: center; gap: 8px; margin-bottom: 16px;
+  padding: 8px 12px; background: var(--bg-subtle); border-radius: 8px;
+  border: 1px solid var(--border); font-size: 12px; color: var(--text-secondary); line-height: 1.4;
+}
+.popup-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 8px; }
+.popup-level {
+  border-radius: 8px; padding: 10px 12px; border: 1px solid var(--border);
+  background: var(--bg-subtle);
+}
+.popup-level-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 4px; }
+.popup-level-name { font-size: 11px; font-weight: 600; }
+.popup-level-seuil { font-size: 12px; margin-bottom: 4px; }
+.popup-level-reward { font-size: 12px; }
+.popup-note { font-size: 11px; color: var(--text-tertiary); margin: 12px 0 0; line-height: 1.5; }
 </style>
 </head>
 <body>
@@ -168,18 +214,17 @@ html, body {
 
       <!-- Programme ambassadeur (non connecté) -->
       <div id="ambassProgram">
-        <div style="margin-top:14px;padding:14px;background:var(--bg-subtle);border-radius:10px;">
-          <div style="font-size:14px;font-weight:700;color:var(--text);margin-bottom:8px;">Programme Ambassadeur</div>
-          <div style="font-size:12px;color:var(--text-secondary);line-height:1.6;">
-            Créez votre compte et obtenez votre lien personnalisé pour recommander l'établissement à vos proches. Suivez vos parrainages et accédez à des avantages exclusifs.
-          </div>
-          <button class="ambass-cta" onclick="devenirAmbassadeur()" style="margin-top:10px;">
+        <div class="ambass-cta-row">
+          <button class="ambass-cta" onclick="devenirAmbassadeur()">
             <div class="ambass-cta-icon">🤝</div>
             <div class="ambass-cta-text">
               <strong>Devenir Ambassadeur</strong>
               <span>Créer mon compte</span>
             </div>
             <div class="ambass-cta-arrow">›</div>
+          </button>
+          <button class="ambass-info-btn" onclick="openProgramPopup()" title="Découvrir le programme">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 1 1 7.072 0l-.548.547A3.374 3.374 0 0 0 14 18.469V19a2 2 0 1 1-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/></svg>
           </button>
         </div>
       </div>
@@ -209,6 +254,86 @@ html, body {
       </div>
     </div>
 
+  </div>
+</div>
+
+<!-- Popup Programme Ambassadeur -->
+<div class="popup-overlay" id="programPopup" onclick="if(event.target===this)closeProgramPopup()">
+  <div class="popup-card">
+    <button class="popup-close" onclick="closeProgramPopup()">&times;</button>
+    <div class="popup-title">Recommande Sauf Imprévu autour de toi</div>
+    <p class="popup-intro">Partagez notre page, vos amis cliquent — vous montez en statut et débloquez des avantages. Plus vous partagez, plus vous êtes récompensés.</p>
+    <div class="popup-tip">
+      <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M8 2l1.5 3 3.5.5-2.5 2.5.5 3.5L8 10l-3 1.5.5-3.5L3 5.5 6.5 5z" stroke="var(--primary)" stroke-width="1.3" stroke-linejoin="round"/><circle cx="12.5" cy="3.5" r="1.5" fill="var(--primary)"/></svg>
+      <span><strong>Astuce :</strong> un avis 5 étoiles sur Google = Ambassadeur étoile en 1 clic</span>
+    </div>
+    <div class="popup-grid">
+      <div class="popup-level" style="background:var(--bg-subtle);">
+        <div class="popup-level-header">
+          <span class="popup-level-name" style="color:var(--text-secondary);">Éclaireur</span>
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="5" r="2.5" stroke="var(--text-tertiary)" stroke-width="1.2"/><path d="M3 13c0-2.8 2.2-5 5-5s5 2.2 5 5" stroke="var(--text-tertiary)" stroke-width="1.2" stroke-linecap="round"/></svg>
+        </div>
+        <div class="popup-level-seuil" style="color:var(--text-tertiary);">dès le 1er clic</div>
+        <div class="popup-level-reward" style="color:var(--text-secondary);">Bienvenue dans le programme</div>
+      </div>
+      <div class="popup-level" style="background:#E1F5EE;border-color:#9FE1CB;">
+        <div class="popup-level-header">
+          <span class="popup-level-name" style="color:#085041;">Habitué</span>
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="6" stroke="#085041" stroke-width="1.2"/><path d="M6 8l3-2v4z" stroke="#085041" stroke-width="1.2" stroke-linejoin="round"/></svg>
+        </div>
+        <div class="popup-level-seuil" style="color:#0F6E56;">dès 10 clics</div>
+        <div class="popup-level-reward" style="color:#0F6E56;">Petite attention à la prochaine visite</div>
+      </div>
+      <div class="popup-level" style="background:#E1F5EE;border-color:#5DCAA5;">
+        <div class="popup-level-header">
+          <span class="popup-level-name" style="color:#085041;">Ambassadeur</span>
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 2l1.5 3 3.5.5-2.5 2.5.5 3.5L8 10l-3 1.5.5-3.5L3 5.5 6.5 5z" stroke="#085041" stroke-width="1.2" stroke-linejoin="round"/></svg>
+        </div>
+        <div class="popup-level-seuil" style="color:#0F6E56;">dès 50 clics</div>
+        <div class="popup-level-reward" style="color:#0F6E56;">10% sur ta prochaine addition</div>
+      </div>
+      <div class="popup-level" style="background:#E6F1FB;border-color:#85B7EB;">
+        <div class="popup-level-header">
+          <span class="popup-level-name" style="color:#0C447C;">Ambassadeur étoile</span>
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 2l1.5 3 3.5.5-2.5 2.5.5 3.5L8 10l-3 1.5.5-3.5L3 5.5 6.5 5z" stroke="#185FA5" stroke-width="1.2" stroke-linejoin="round"/><circle cx="12.5" cy="3.5" r="1.5" fill="#185FA5"/></svg>
+        </div>
+        <div class="popup-level-seuil" style="color:#185FA5;">dès 250 clics</div>
+        <div class="popup-level-reward" style="color:#185FA5;">Un cocktail offert</div>
+      </div>
+      <div class="popup-level" style="background:#FAECE7;border-color:#F0997B;">
+        <div class="popup-level-header">
+          <span class="popup-level-name" style="color:#712B13;">Influenceur</span>
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><rect x="2" y="4" width="12" height="8" rx="1.5" stroke="#993C1D" stroke-width="1.2"/><path d="M5 7.5h6M5 10h4" stroke="#993C1D" stroke-width="1.2" stroke-linecap="round"/><circle cx="8" cy="2" r="1" fill="#993C1D"/><path d="M8 3v1" stroke="#993C1D" stroke-width="1.2" stroke-linecap="round"/></svg>
+        </div>
+        <div class="popup-level-seuil" style="color:#993C1D;">dès 1 000 clics</div>
+        <div class="popup-level-reward" style="color:#993C1D;">10% de remise permanente</div>
+      </div>
+      <div class="popup-level" style="background:#EEEDFE;border-color:#AFA9EC;">
+        <div class="popup-level-header">
+          <span class="popup-level-name" style="color:#3C3489;">Légende</span>
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 2l1.2 2.5H13l-2 1.8.8 2.7L8 7.6l-3.8 1.4.8-2.7-2-1.8h3.8z" stroke="#534AB7" stroke-width="1.2" stroke-linejoin="round"/><path d="M5.5 11h5M7 13h2" stroke="#534AB7" stroke-width="1.2" stroke-linecap="round"/></svg>
+        </div>
+        <div class="popup-level-seuil" style="color:#534AB7;">dès 2 500 clics · à vie</div>
+        <div class="popup-level-reward" style="color:#534AB7;">Une surprise premium offerte</div>
+      </div>
+      <div class="popup-level" style="background:#FBEAF0;border-color:#ED93B1;">
+        <div class="popup-level-header">
+          <span class="popup-level-name" style="color:#72243E;">Top 50</span>
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 12l2.5-5 2.5 3 2-2.5 3 4.5" stroke="#993556" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/><path d="M8 3l.6 1.8H11l-1.5 1.1.6 1.8L8 6.6l-2.1 1.1.6-1.8L5 4.8h2.4z" stroke="#993556" stroke-width="1.1" stroke-linejoin="round"/></svg>
+        </div>
+        <div class="popup-level-seuil" style="color:#993556;">classement temps réel</div>
+        <div class="popup-level-reward" style="color:#993556;">Incentive exclusif · leaderboard</div>
+      </div>
+      <div class="popup-level" style="background:#FAEEDA;border:1px solid #EF9F27;">
+        <div class="popup-level-header">
+          <span class="popup-level-name" style="color:#633806;">GOAT</span>
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 2l.8 2.4H14l-2.1 1.6.8 2.5L8 7l-4.7 1.5.8-2.5L2 4.4h5.2z" stroke="#854F0B" stroke-width="1.2" stroke-linejoin="round"/><path d="M5.5 10v4M8 10v4M10.5 10v4" stroke="#854F0B" stroke-width="1.2" stroke-linecap="round"/><path d="M4.5 14h7" stroke="#854F0B" stroke-width="1.2" stroke-linecap="round"/></svg>
+        </div>
+        <div class="popup-level-seuil" style="color:#854F0B;">niveau ultime · à vie · unique</div>
+        <div class="popup-level-reward" style="color:#854F0B;">Réservé aux plus grands ambassadeurs</div>
+      </div>
+    </div>
+    <p class="popup-note">Un clic = un ami qui a ouvert votre page. Légende et GOAT sont acquis définitivement. Les autres se maintiennent en restant actif.</p>
   </div>
 </div>
 
@@ -363,13 +488,19 @@ html, body {
   // ── Devenir Ambassadeur → déclencher la mire SSO ──
   function devenirAmbassadeur() {
     if (window.parent !== window) {
-      // Desktop iframe : demander au parent de lancer le SSO
       window.parent.postMessage('startSSOLogin', '*');
     } else {
-      // Mobile : rediriger vers la mire SSO
       var returnTo = encodeURIComponent(window.location.origin + '/share.html');
       window.location.href = '/auth/login?returnTo=' + returnTo;
     }
+  }
+
+  // ── Popup programme ──
+  function openProgramPopup() {
+    document.getElementById('programPopup').classList.add('visible');
+  }
+  function closeProgramPopup() {
+    document.getElementById('programPopup').classList.remove('visible');
   }
 </script>
 </body>
