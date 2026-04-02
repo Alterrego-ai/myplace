@@ -519,7 +519,7 @@ max-width: 430px;
 background: var(--bg-card);
 border-radius: 24px 24px 0 0;
 z-index: 201;
-padding: 0 0 max(24px, env(safe-area-inset-bottom));
+padding: 0 0 env(safe-area-inset-bottom, 8px);
 transition: transform 0.35s cubic-bezier(0.32, 0.72, 0, 1);
 box-shadow: none;
 }
@@ -627,7 +627,7 @@ color: var(--text-tertiary);
 }
 
 .sheet-cancel {
-margin: 4px 12px 0;
+margin: 4px 12px 4px;
 padding: 14px;
 text-align: center;
 font-size: 15px;
@@ -3324,7 +3324,7 @@ margin: 20px 20px 0;
 
     // ── Sceau mySafe animé ──
     html +=
-      '<div style="display:flex;align-items:center;justify-content:center;gap:8px;padding:16px 20px 8px;">' +
+      '<div style="display:flex;align-items:center;justify-content:center;gap:8px;padding:8px 20px 0;">' +
         '<span style="font-size:10px;color:var(--text-tertiary);font-weight:500;">Vos données sont protégées par</span>' +
         '<div style="display:flex;align-items:center;gap:4px;">' +
           '<svg width="22" height="22" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg" style="filter:drop-shadow(0 1px 4px rgba(20,100,180,0.4));">' +
