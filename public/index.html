@@ -705,6 +705,66 @@ animation: none;
 50% { box-shadow: 0 2px 18px rgba(61,107,140,0.5), 0 0 30px rgba(61,107,140,0.1); }
 }
 
+/* ── Share sheet fullscreen ── */
+.share-scroll { flex: 1; overflow-y: auto; -webkit-overflow-scrolling: touch; padding: 16px; }
+.share-section {
+background: var(--bg-card); border-radius: var(--radius);
+border: 1px solid var(--border); padding: 20px; margin-bottom: 14px;
+}
+.share-msg-wrap { position: relative; }
+.share-msg-input {
+width: 100%; border: 1px solid var(--border); border-radius: 10px;
+padding: 12px 52px 12px 14px; font-size: 14px; font-family: var(--font);
+background: var(--bg); color: var(--text); outline: none; resize: none;
+}
+.share-msg-input:focus { border-color: var(--primary); }
+.share-inspire-btn {
+position: absolute; right: 8px; bottom: 8px;
+background: var(--bg-card); border: 1px solid var(--border);
+padding: 5px 10px; border-radius: 8px; cursor: pointer;
+font-size: 12px; font-weight: 600; color: var(--text-secondary);
+font-family: var(--font); transition: transform 0.2s;
+display: flex; align-items: center; gap: 4px;
+}
+.share-qr { display: flex; justify-content: center; margin-bottom: 14px; }
+.share-qr canvas { border-radius: 12px; }
+.share-link-url {
+font-size: 11px; color: var(--primary); text-align: center;
+word-break: break-all; margin-bottom: 14px; opacity: 0.7;
+}
+.share-actions-row { display: flex; gap: 10px; }
+.share-action-btn {
+flex: 1; display: flex; align-items: center; justify-content: center; gap: 8px;
+padding: 12px; background: var(--bg-subtle); border: 1px solid var(--border);
+border-radius: 10px; color: var(--text); font-size: 13px; font-weight: 600;
+cursor: pointer; transition: opacity 0.15s; font-family: var(--font);
+}
+.share-action-btn:active { opacity: 0.6; }
+.share-action-btn svg { flex-shrink: 0; }
+.share-ambass-cta-row { display: flex; gap: 8px; align-items: stretch; }
+.share-ambass-cta {
+flex: 1; display: flex; align-items: center; gap: 12px;
+background: var(--bg); border: 1px solid var(--accent);
+border-radius: 10px; padding: 12px 14px;
+cursor: pointer; text-align: left; transition: background 0.15s;
+}
+.share-ambass-cta:active { background: var(--bg-subtle); }
+.share-ambass-icon { font-size: 20px; flex-shrink: 0; }
+.share-ambass-text { flex: 1; }
+.share-ambass-text strong { font-size: 13px; color: var(--accent); display: block; }
+.share-ambass-text span { font-size: 11px; color: var(--text-tertiary); }
+.share-ambass-arrow { color: var(--accent); font-size: 16px; }
+.share-ambass-info {
+width: 48px; flex-shrink: 0; display: flex; align-items: center; justify-content: center;
+background: var(--bg); border: 1px solid var(--accent); border-radius: 10px;
+cursor: pointer; color: var(--accent); font-size: 20px;
+}
+.share-ambass-info:active { background: var(--bg-subtle); }
+.share-ambass-badge {
+display: inline-flex; align-items: center; gap: 6px;
+font-size: 12px; color: var(--accent); font-weight: 600;
+}
+
 /* Transport buttons */
 .loc-transport-grid {
 display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-bottom: 12px;
@@ -2611,46 +2671,92 @@ margin: 20px 20px 0;
   <button class="sheet-cancel" onclick="closeAllSheets()">Fermer</button>
 </div>
 
-<!-- BOTTOM SHEET PARTAGER -->
+<!-- BOTTOM SHEET PARTAGER (fullscreen) -->
 
-<div class="bottom-sheet" id="shareSheet">
+<div class="bottom-sheet bottom-sheet-full" id="shareSheet">
   <div class="sheet-handle"></div>
-  <div class="sheet-title" data-i18n="sheet_partager">Partager</div>
-  <div class="sheet-actions">
-    <!-- PWA install (iOS only, hidden par défaut) -->
-    <button class="sheet-action" id="shareSheetPwa" style="display:none;" onclick="showPwaInstructions()">
-      <div class="sheet-action-icon" style="background:none;padding:0;">
-        <img src="https://ciss-media-dev.s3.fr-par.scw.cloud/pointofsales/47408/15-vauban-brc-187.png" width="36" height="36" style="border-radius:8px;border:1px solid var(--border);" alt="Logo"/>
+
+  <!-- Header -->
+  <div class="loc-header">
+    <div class="loc-header-row">
+      <div class="loc-header-icon">
+        <img src="https://ciss-media-dev.s3.fr-par.scw.cloud/pointofsales/47408/15-vauban-brc-187.png" alt="Sauf Imprévu">
       </div>
-      <div class="sheet-action-text">
-        <div class="sheet-action-label" data-i18n="sheet_garder_ecran">Garder sur mon écran</div>
-        <div class="sheet-action-sub" data-i18n="sheet_raccourci">Un raccourci, rien à installer</div>
+      <div class="loc-header-text">
+        <div class="loc-header-name">Partager</div>
+        <div class="loc-header-addr">Sauf Imprévu · Bar à vins</div>
       </div>
-      <svg class="sheet-action-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg>
-    </button>
-    <!-- Partager natif -->
-    <button class="sheet-action" onclick="nativeShare()">
-      <div class="sheet-action-icon" style="background:var(--bg-subtle);">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--text-secondary)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12v8a2 2 0 002 2h12a2 2 0 002-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg>
-      </div>
-      <div class="sheet-action-text">
-        <div class="sheet-action-label" data-i18n="sheet_partager_lien">Partager le lien</div>
-        <div class="sheet-action-sub" data-i18n="sheet_envoyer_ami">Envoyer à un ami</div>
-      </div>
-      <svg class="sheet-action-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg>
-    </button>
-    <!-- Copier le lien -->
-    <button class="sheet-action" onclick="copyLink()">
-      <div class="sheet-action-icon copy" style="background:var(--bg-subtle);">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--text-secondary)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
-      </div>
-      <div class="sheet-action-text">
-        <div class="sheet-action-label" id="copyLinkLabel" data-i18n="sheet_copier_lien">Copier le lien</div>
-        <div class="sheet-action-sub">myplace.coach</div>
-      </div>
-    </button>
+      <button class="loc-header-close" onclick="closeAllSheets()">Fermer</button>
+    </div>
   </div>
-  <button class="sheet-cancel" onclick="closeAllSheets()" data-i18n="btn_annuler">Annuler</button>
+
+  <!-- Content scrollable -->
+  <div class="share-scroll">
+
+    <!-- Message personnalisé -->
+    <div class="share-section">
+      <div class="share-msg-wrap">
+        <textarea class="share-msg-input" id="shareMsgInput" rows="3" placeholder="Rejoins-moi boire un verre chez Sauf Imprévu, j'y serai ce soir à 18h30"></textarea>
+        <button class="share-inspire-btn" onclick="shareInspire()" id="shareInspireBtn">✨ Inspirer</button>
+      </div>
+    </div>
+
+    <!-- QR + lien + partage -->
+    <div class="share-section">
+      <div class="share-qr">
+        <canvas id="shareQrCanvas" width="180" height="180"></canvas>
+      </div>
+      <div class="share-link-url" id="shareLinkUrl"></div>
+      <div class="share-actions-row">
+        <button class="share-action-btn" onclick="shareWhatsApp()" style="background:#25D366;color:#fff;border-color:#25D366;flex:0 0 44px;padding:12px 0;">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+        </button>
+        <button class="share-action-btn" onclick="shareCopyLink()" style="flex:0 0 auto;padding:12px 16px;">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+          <span id="shareCopyLabel">Copier</span>
+        </button>
+        <button class="share-action-btn" onclick="shareNative()" style="flex:1;">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12v8a2 2 0 002 2h12a2 2 0 002-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg>
+          Partager
+        </button>
+      </div>
+    </div>
+
+    <!-- Ambassadeur -->
+    <div class="share-section" style="padding:14px 20px;">
+      <div class="share-ambass-badge" id="shareAmbassBadge" style="display:none;">
+        <span>🤝</span> <span id="shareAmbassLabel"></span>
+      </div>
+      <div id="shareAmbassProgram">
+        <div class="share-ambass-cta-row">
+          <button class="share-ambass-cta" onclick="shareDevenirAmbassadeur()">
+            <div class="share-ambass-icon">🤝</div>
+            <div class="share-ambass-text">
+              <strong>Devenir Ambassadeur</strong>
+              <span>Obtenez votre lien personnalisé</span>
+            </div>
+            <div class="share-ambass-arrow">›</div>
+          </button>
+          <button class="share-ambass-info" onclick="openProgramPopup()" title="Découvrir le programme">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 1 1 7.072 0l-.548.547A3.374 3.374 0 0 0 14 18.469V19a2 2 0 1 1-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/></svg>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- PWA install (iOS only) -->
+    <div class="share-section" id="shareSheetPwa" style="display:none;padding:14px 20px;">
+      <button style="display:flex;align-items:center;gap:12px;width:100%;background:none;border:none;cursor:pointer;text-align:left;" onclick="showPwaInstructions()">
+        <img src="https://ciss-media-dev.s3.fr-par.scw.cloud/pointofsales/47408/15-vauban-brc-187.png" width="36" height="36" style="border-radius:8px;border:1px solid var(--border);flex-shrink:0;" alt="Logo"/>
+        <div style="flex:1;">
+          <div style="font-size:13px;font-weight:600;color:var(--text);">Garder sur mon écran</div>
+          <div style="font-size:11px;color:var(--text-tertiary);">Un raccourci, rien à installer</div>
+        </div>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--text-tertiary)" stroke-width="2.5" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg>
+      </button>
+    </div>
+
+  </div>
 </div>
 
 <!-- BOTTOM SHEET PWA GUIDE -->
@@ -3205,32 +3311,136 @@ margin: 20px 20px 0;
   })();
 
   // Share
+  // ── Share sheet fullscreen ──
+  var _shareInited = false;
+  var SHARE_INSPIRE = [
+    'Je te recommande cet endroit, c\'est top !',
+    'Rejoins-moi pour un verre ce soir !',
+    'Le meilleur bar à vins de Lyon \uD83C\uDF77',
+    'Un endroit que tu vas adorer',
+    'Découvre Sauf Imprévu, bar à vins à Lyon 6e',
+    'On s\'y retrouve ? Tu ne seras pas déçu !'
+  ];
+  var _shareInspireIdx = 0;
+
+  function getShareUrl() {
+    var SSO_KEY = 'sauf_imprevu_user';
+    var u = null;
+    try { u = JSON.parse(localStorage.getItem(SSO_KEY)); } catch(e) {}
+    if (u && u.name) {
+      var fn = u.name.split(' ')[0];
+      return window.location.origin + '?ref=' + encodeURIComponent(fn.toLowerCase().replace(/\s+/g, '-'));
+    }
+    return window.location.origin;
+  }
+  function getShareText() {
+    var el = document.getElementById('shareMsgInput');
+    var val = el ? el.value.trim() : '';
+    return val || 'Découvre Sauf Imprévu, bar à vins à Lyon 6e';
+  }
+  function shareInspire() {
+    var ta = document.getElementById('shareMsgInput');
+    ta.value = SHARE_INSPIRE[_shareInspireIdx];
+    _shareInspireIdx = (_shareInspireIdx + 1) % SHARE_INSPIRE.length;
+    var btn = document.getElementById('shareInspireBtn');
+    btn.style.transform = 'rotate(360deg)';
+    setTimeout(function() { btn.style.transform = ''; }, 300);
+  }
+  function shareGenerateQR() {
+    var canvas = document.getElementById('shareQrCanvas');
+    if (!canvas) return;
+    var url = getShareUrl();
+    var linkEl = document.getElementById('shareLinkUrl');
+    if (linkEl) linkEl.textContent = url;
+    var img = new Image();
+    img.crossOrigin = 'anonymous';
+    img.onload = function() {
+      var ctx = canvas.getContext('2d');
+      ctx.clearRect(0, 0, 180, 180);
+      ctx.fillStyle = '#fff';
+      ctx.fillRect(0, 0, 180, 180);
+      ctx.drawImage(img, 15, 15, 150, 150);
+    };
+    img.onerror = function() {
+      var ctx = canvas.getContext('2d');
+      ctx.fillStyle = '#eee'; ctx.fillRect(0, 0, 180, 180);
+      ctx.fillStyle = '#999'; ctx.font = '12px sans-serif'; ctx.textAlign = 'center';
+      ctx.fillText('QR Code', 90, 95);
+    };
+    img.src = 'https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=' + encodeURIComponent(url);
+  }
+  function shareWhatsApp() {
+    window.open('https://wa.me/?text=' + encodeURIComponent(getShareText() + '\n' + getShareUrl()), '_blank');
+  }
+  function shareCopyLink() {
+    navigator.clipboard.writeText(getShareText() + '\n' + getShareUrl()).then(function() {
+      document.getElementById('shareCopyLabel').textContent = 'Copié !';
+      setTimeout(function() { document.getElementById('shareCopyLabel').textContent = 'Copier'; }, 2000);
+    });
+  }
+  function shareNative() {
+    if (navigator.share) {
+      navigator.share({ title: 'Sauf Imprévu Bar à vins', text: getShareText(), url: getShareUrl() });
+    } else { shareCopyLink(); }
+  }
+  function shareDevenirAmbassadeur() {
+    closeAllSheets();
+    startSSOLogin();
+  }
+  function initShareSheet() {
+    if (_shareInited) return;
+    _shareInited = true;
+    shareGenerateQR();
+    // PWA button iOS
+    if (_isIOS && !window.navigator.standalone) {
+      var pwa = document.getElementById('shareSheetPwa');
+      if (pwa) pwa.style.display = '';
+    }
+    // Ambassador badge
+    var SSO_KEY = 'sauf_imprevu_user';
+    var u = null;
+    try { u = JSON.parse(localStorage.getItem(SSO_KEY)); } catch(e) {}
+    if (u && u.name) {
+      var fn = u.name.split(' ')[0];
+      var prog = document.getElementById('shareAmbassProgram');
+      if (prog) prog.style.display = 'none';
+      var badge = document.getElementById('shareAmbassBadge');
+      if (badge) badge.style.display = '';
+      var lbl = document.getElementById('shareAmbassLabel');
+      if (lbl) lbl.textContent = fn + ' · Ambassadeur';
+    }
+  }
+
   function handleShare() {
-    var url = '/share.html';
-    if (!isDesktop) {
-      window.location.href = url;
+    if (isDesktop) {
+      var url = '/share.html';
+      var phoneScreen = document.querySelector('.phone-screen');
+      if (!phoneScreen) { window.location.href = url; return; }
+      var existing = document.getElementById('shareIframe');
+      if (existing) existing.remove();
+      var iframe = document.createElement('iframe');
+      iframe.id = 'shareIframe';
+      iframe.src = url;
+      iframe.style.cssText = 'position:absolute;top:0;left:0;width:100%;height:100%;border:none;border-radius:42px;z-index:9000;background:var(--bg);';
+      phoneScreen.appendChild(iframe);
+      window.addEventListener('message', function onShareClose(e) {
+        if (e.data === 'closeShare') {
+          var fr = document.getElementById('shareIframe');
+          if (fr) fr.remove();
+          window.removeEventListener('message', onShareClose);
+        }
+        if (e.data === 'startSSOLogin') { startSSOLogin(); }
+      });
       return;
     }
-    // Desktop : iframe dans le phone-screen
-    var phoneScreen = document.querySelector('.phone-screen');
-    if (!phoneScreen) { window.location.href = url; return; }
-    var existing = document.getElementById('shareIframe');
-    if (existing) existing.remove();
-    var iframe = document.createElement('iframe');
-    iframe.id = 'shareIframe';
-    iframe.src = url;
-    iframe.style.cssText = 'position:absolute;top:0;left:0;width:100%;height:100%;border:none;border-radius:42px;z-index:9000;background:var(--bg);';
-    phoneScreen.appendChild(iframe);
-    window.addEventListener('message', function onShareClose(e) {
-      if (e.data === 'closeShare') {
-        var fr = document.getElementById('shareIframe');
-        if (fr) fr.remove();
-        window.removeEventListener('message', onShareClose);
-      }
-      if (e.data === 'startSSOLogin') {
-        startSSOLogin();
-      }
-    });
+    // Mobile : bottom sheet fullscreen
+    closeAllSheets();
+    initShareSheet();
+    var sheet = document.getElementById('shareSheet');
+    if (sheet) {
+      document.documentElement.classList.add('sheet-open');
+      sheet.classList.add('visible');
+    }
   }
 
   function handleWallet() {
@@ -3282,25 +3492,7 @@ margin: 20px 20px 0;
     });
   }
 
-  function nativeShare() {
-    closeAllSheets();
-    if (navigator.share) {
-      navigator.share({
-        title: 'Sauf Imprévu Bar à vins',
-        text: 'Découvre Sauf Imprévu, bar à vins à Lyon 6e',
-        url: window.location.href
-      });
-    }
-  }
-
-  function copyLink() {
-    navigator.clipboard.writeText(window.location.href).then(function() {
-      document.getElementById('copyLinkLabel').textContent = 'Lien copié !';
-      setTimeout(function() {
-        document.getElementById('copyLinkLabel').textContent = 'Copier le lien';
-      }, 2000);
-    });
-  }
+  // nativeShare et copyLink remplacés par shareNative() et shareCopyLink() dans le share sheet
 
   function showPwaInstructions() {
     closeAllSheets();
