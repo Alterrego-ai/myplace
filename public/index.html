@@ -631,19 +631,71 @@ display: flex; align-items: center; justify-content: center; flex-shrink: 0;
 .loc-nav-label { font-size: 14px; font-weight: 600; }
 .loc-nav-sub { font-size: 11px; color: var(--text-tertiary); margin-top: 1px; }
 
-/* Distance badge */
-.loc-distance {
-display: flex; align-items: center; justify-content: center; gap: 10px;
+/* Compass card */
+.loc-compass-card {
+display: flex; align-items: center; gap: 20px;
+padding: 16px; margin-bottom: 12px;
+background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius);
+}
+.loc-compass-ring { width: 90px; height: 90px; flex-shrink: 0; }
+.loc-compass-svg { width: 100%; height: 100%; }
+.loc-compass-info { flex: 1; min-width: 0; }
+.loc-compass-dist {
+font-size: 28px; font-weight: 800; color: var(--text);
+letter-spacing: -0.02em; line-height: 1.1;
+}
+.loc-compass-label {
+font-size: 13px; color: var(--text-secondary); margin-top: 2px;
+}
+.loc-compass-time {
+font-size: 12px; color: var(--text-tertiary); margin-top: 6px;
+display: flex; gap: 10px; flex-wrap: wrap;
+}
+.loc-compass-time span {
+display: inline-flex; align-items: center; gap: 4px;
+}
+.loc-compass-card.loc-arrived {
+border-color: #059669;
+background: linear-gradient(135deg, rgba(16,185,129,0.08), rgba(5,150,105,0.04));
+}
+.loc-compass-card.loc-arrived .loc-compass-dist { color: #059669; }
+
+/* Transport buttons */
+.loc-transport-grid {
+display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-bottom: 12px;
+}
+.loc-transport-btn {
+display: flex; flex-direction: column; align-items: center; gap: 4px;
+padding: 12px 4px; background: var(--bg-card);
+border: 1px solid var(--border); border-radius: var(--radius-sm);
+color: var(--text-secondary); font-family: var(--font);
+font-size: 10px; font-weight: 600; cursor: pointer;
+transition: all 0.15s;
+}
+.loc-transport-btn:active { background: var(--bg-subtle); }
+.loc-transport-btn.active {
+border-color: var(--primary); color: var(--primary);
+background: rgba(61,107,140,0.08);
+}
+
+/* AR button */
+.loc-ar-btn {
+display: flex; align-items: center; gap: 14px; width: 100%;
 padding: 14px 16px; background: var(--bg-card);
 border: 1px solid var(--border); border-radius: var(--radius);
-font-size: 14px; font-weight: 600; color: var(--text-secondary);
+cursor: pointer; font-family: var(--font); text-align: left;
+color: var(--text); margin-bottom: 12px;
 }
-.loc-distance.loc-arrived {
-background: linear-gradient(135deg, #10b981, #059669);
-color: #fff; border-color: #059669;
-font-size: 16px; font-weight: 700;
+.loc-ar-btn:active { background: var(--bg-subtle); }
+.loc-ar-icon {
+width: 42px; height: 42px; border-radius: 11px;
+background: linear-gradient(135deg, #6366f1, #8b5cf6);
+display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+color: #fff;
 }
-.loc-dist-loading { color: var(--text-tertiary); font-weight: 400; font-size: 13px; }
+.loc-ar-text { flex: 1; }
+.loc-ar-label { font-size: 14px; font-weight: 600; }
+.loc-ar-sub { font-size: 11px; color: var(--text-tertiary); margin-top: 1px; }
 
 /* Desktop: constrain sheet inside phone-screen */
 @media (min-width: 769px) {
@@ -2399,11 +2451,68 @@ margin: 20px 20px 0;
       </a>
     </div>
 
-    <!-- Distance -->
-    <div class="loc-distance" id="locDistanceBadge">
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></svg>
-      <span id="locDistanceText" class="loc-dist-loading">Localisation en cours…</span>
+    <!-- Boussole + Distance + Temps -->
+    <div class="loc-compass-card" id="locCompassCard">
+      <div class="loc-compass-ring" id="locCompassRing">
+        <svg viewBox="0 0 120 120" class="loc-compass-svg">
+          <!-- Cercle extérieur -->
+          <circle cx="60" cy="60" r="56" fill="none" stroke="var(--border)" stroke-width="1.5"/>
+          <!-- Graduations -->
+          <g stroke="var(--text-tertiary)" stroke-width="0.8" opacity="0.5">
+            <line x1="60" y1="6" x2="60" y2="12"/><line x1="60" y1="108" x2="60" y2="114"/>
+            <line x1="6" y1="60" x2="12" y2="60"/><line x1="108" y1="60" x2="114" y2="60"/>
+          </g>
+          <!-- N/S/E/O labels -->
+          <text x="60" y="22" text-anchor="middle" fill="var(--text-tertiary)" font-size="8" font-weight="600">N</text>
+          <text x="60" y="115" text-anchor="middle" fill="var(--text-tertiary)" font-size="8" font-weight="600">S</text>
+          <text x="112" y="63" text-anchor="middle" fill="var(--text-tertiary)" font-size="8" font-weight="600">E</text>
+          <text x="8" y="63" text-anchor="middle" fill="var(--text-tertiary)" font-size="8" font-weight="600">O</text>
+          <!-- Flèche directionnelle (tournée par JS) -->
+          <g id="locCompassArrow" transform="rotate(0, 60, 60)">
+            <line x1="60" y1="60" x2="60" y2="28" stroke="var(--primary)" stroke-width="2.5" stroke-linecap="round"/>
+            <polygon points="60,24 54,36 66,36" fill="var(--primary)"/>
+            <circle cx="60" cy="60" r="4" fill="var(--primary)"/>
+          </g>
+        </svg>
+      </div>
+      <div class="loc-compass-info">
+        <div class="loc-compass-dist" id="locDistValue">—</div>
+        <div class="loc-compass-label" id="locDistLabel">Localisation…</div>
+        <div class="loc-compass-time" id="locTravelTime"></div>
+      </div>
     </div>
+
+    <!-- Transports -->
+    <div class="loc-transport-grid">
+      <button class="loc-transport-btn" id="locTransWalk" onclick="setLocTransport('walk')">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="5" r="2"/><path d="M10 22l2-7 3 3v6"/><path d="M14 13l-2-2-4 4"/><path d="M10 9l-2 8"/></svg>
+        <span>À pied</span>
+      </button>
+      <button class="loc-transport-btn" id="locTransBike" onclick="setLocTransport('bike')">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="5.5" cy="17.5" r="3.5"/><circle cx="18.5" cy="17.5" r="3.5"/><path d="M15 6a1 1 0 100-2 1 1 0 000 2zm-3 11.5V14l-3-3 4-3 2 3h3"/></svg>
+        <span>Vélo</span>
+      </button>
+      <button class="loc-transport-btn" id="locTransPublic" onclick="setLocTransport('public')">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="14" rx="2"/><path d="M3 10h18"/><path d="M7 21l2-4"/><path d="M17 21l-2-4"/><circle cx="7.5" cy="14" r="1"/><circle cx="16.5" cy="14" r="1"/></svg>
+        <span>Transports</span>
+      </button>
+      <button class="loc-transport-btn" id="locTransTaxi" onclick="openLocTaxi()">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 17h14v-5H5z"/><path d="M6 12V7h12v5"/><path d="M9 7V5h6v2"/><circle cx="7.5" cy="15" r="1"/><circle cx="16.5" cy="15" r="1"/><path d="M5 17l-1 2h2"/><path d="M19 17l1 2h-2"/></svg>
+        <span>Taxi</span>
+      </button>
+    </div>
+
+    <!-- Bouton AR -->
+    <button class="loc-ar-btn" id="locArBtn" onclick="openLocAR()">
+      <div class="loc-ar-icon">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 8V5a3 3 0 013-3h3"/><path d="M16 2h3a3 3 0 013 3v3"/><path d="M22 16v3a3 3 0 01-3 3h-3"/><path d="M8 22H5a3 3 0 01-3-3v-3"/><circle cx="12" cy="12" r="3"/><path d="M12 2v4M12 18v4M2 12h4M18 12h4"/></svg>
+      </div>
+      <div class="loc-ar-text">
+        <div class="loc-ar-label">Vue AR</div>
+        <div class="loc-ar-sub">Pointer la caméra pour voir la direction</div>
+      </div>
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--text-tertiary)" stroke-width="2.5" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg>
+    </button>
 
   </div>
 </div>
@@ -3184,11 +3293,12 @@ margin: 20px 20px 0;
       f.src = 'https://www.openstreetmap.org/export/embed.html?bbox=' + bbox + '&layer=mapnik&marker=' + LOC_LAT + ',' + LOC_LNG;
       _locMapLoaded = true;
     }
-    // Lancer la géoloc
+    // Lancer la géoloc + boussole
     if (navigator.geolocation && !_locGeoWatchId) {
       navigator.geolocation.getCurrentPosition(updateLocDistance, locGeoError, { enableHighAccuracy: true, timeout: 8000 });
       _locGeoWatchId = navigator.geolocation.watchPosition(updateLocDistance, function(){}, { enableHighAccuracy: true, maximumAge: 5000 });
     }
+    initLocCompass();
   }
 
   function closeAddressSheet() {
@@ -3207,7 +3317,11 @@ margin: 20px 20px 0;
       : '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--text)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/><line x1="21" y1="3" x2="14" y2="10"/><line x1="3" y1="21" x2="10" y2="14"/></svg>';
   }
 
-  // Géoloc & distance
+  // ── Géoloc, boussole, distance, temps de trajet ──
+  var _locUserLat = null, _locUserLng = null;
+  var _locTransport = 'walk';
+  var _locDeviceHeading = null;
+
   function haversineDistance(lat1, lon1, lat2, lon2) {
     var R = 6371000;
     var dLat = (lat2 - lat1) * Math.PI / 180;
@@ -3218,26 +3332,201 @@ margin: 20px 20px 0;
     return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
   }
 
+  function bearingTo(lat1, lon1, lat2, lon2) {
+    var dLon = (lon2 - lon1) * Math.PI / 180;
+    var y = Math.sin(dLon) * Math.cos(lat2 * Math.PI / 180);
+    var x = Math.cos(lat1 * Math.PI / 180) * Math.sin(lat2 * Math.PI / 180) -
+            Math.sin(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * Math.cos(dLon);
+    return (Math.atan2(y, x) * 180 / Math.PI + 360) % 360;
+  }
+
+  function formatLocDist(m) {
+    if (m < 1000) return Math.round(m) + ' m';
+    return (m / 1000).toFixed(1).replace('.0', '') + ' km';
+  }
+
+  function travelTimes(meters) {
+    var walk = Math.ceil(meters / 80); // ~5 km/h
+    var bike = Math.ceil(meters / 250); // ~15 km/h
+    var car = Math.max(1, Math.ceil(meters / 500)); // ~30 km/h en ville
+    return { walk: walk, bike: bike, car: car };
+  }
+
   function updateLocDistance(pos) {
-    var dist = haversineDistance(pos.coords.latitude, pos.coords.longitude, LOC_LAT, LOC_LNG);
-    var badge = document.getElementById('locDistanceBadge');
-    var text = document.getElementById('locDistanceText');
-    if (dist < 10) {
-      badge.classList.add('loc-arrived');
-      text.textContent = 'Vous y êtes !!';
+    _locUserLat = pos.coords.latitude;
+    _locUserLng = pos.coords.longitude;
+    var dist = haversineDistance(_locUserLat, _locUserLng, LOC_LAT, LOC_LNG);
+    var card = document.getElementById('locCompassCard');
+    var distVal = document.getElementById('locDistValue');
+    var distLabel = document.getElementById('locDistLabel');
+    var timeEl = document.getElementById('locTravelTime');
+
+    if (dist < 15) {
+      card.classList.add('loc-arrived');
+      distVal.textContent = 'Arrivé !';
+      distLabel.textContent = 'Vous êtes à Sauf Imprévu';
+      timeEl.innerHTML = '';
     } else {
-      badge.classList.remove('loc-arrived');
-      var icon = dist < 500 ? '' : dist < 5000 ? '' : '';
-      var formatted = dist < 1000 ? Math.round(dist) + ' m' : (dist / 1000).toFixed(1).replace('.0', '') + ' km';
-      text.textContent = icon + ' À ' + formatted + ' de Sauf Imprévu';
-      text.classList.remove('loc-dist-loading');
+      card.classList.remove('loc-arrived');
+      distVal.textContent = formatLocDist(dist);
+      distLabel.textContent = 'de Sauf Imprévu';
+      var t = travelTimes(dist);
+      timeEl.innerHTML =
+        '<span>🚶 ' + t.walk + ' min</span>' +
+        '<span>🚲 ' + t.bike + ' min</span>' +
+        '<span>🚗 ' + t.car + ' min</span>';
+    }
+
+    // Mettre à jour la boussole
+    updateLocCompass();
+  }
+
+  function updateLocCompass() {
+    if (_locUserLat === null) return;
+    var bearing = bearingTo(_locUserLat, _locUserLng, LOC_LAT, LOC_LNG);
+    var rotation = bearing;
+    // Si on a le heading du device, on soustrait pour pointer relativement
+    if (_locDeviceHeading !== null) {
+      rotation = bearing - _locDeviceHeading;
+    }
+    var arrow = document.getElementById('locCompassArrow');
+    if (arrow) {
+      arrow.setAttribute('transform', 'rotate(' + rotation.toFixed(1) + ', 60, 60)');
     }
   }
 
+  // DeviceOrientation pour la boussole
+  function initLocCompass() {
+    if (typeof DeviceOrientationEvent !== 'undefined' && typeof DeviceOrientationEvent.requestPermission === 'function') {
+      // iOS 13+ : besoin de permission
+      var card = document.getElementById('locCompassCard');
+      card.style.cursor = 'pointer';
+      card.addEventListener('click', function requestCompass() {
+        DeviceOrientationEvent.requestPermission().then(function(state) {
+          if (state === 'granted') {
+            window.addEventListener('deviceorientation', handleLocOrientation, true);
+            card.style.cursor = '';
+            card.removeEventListener('click', requestCompass);
+          }
+        }).catch(function(){});
+      });
+    } else if ('DeviceOrientationEvent' in window) {
+      window.addEventListener('deviceorientation', handleLocOrientation, true);
+    }
+  }
+
+  function handleLocOrientation(e) {
+    // webkitCompassHeading sur iOS, alpha ailleurs
+    if (e.webkitCompassHeading !== undefined) {
+      _locDeviceHeading = e.webkitCompassHeading;
+    } else if (e.alpha !== null) {
+      _locDeviceHeading = 360 - e.alpha;
+    }
+    updateLocCompass();
+  }
+
   function locGeoError() {
-    var text = document.getElementById('locDistanceText');
-    text.textContent = 'Activez la localisation pour voir la distance';
-    text.classList.remove('loc-dist-loading');
+    var distVal = document.getElementById('locDistValue');
+    var distLabel = document.getElementById('locDistLabel');
+    if (distVal) distVal.textContent = '—';
+    if (distLabel) distLabel.textContent = 'Activez la localisation';
+  }
+
+  // Transport mode
+  function setLocTransport(mode) {
+    _locTransport = mode;
+    document.querySelectorAll('.loc-transport-btn').forEach(function(b) {
+      b.classList.remove('active');
+    });
+    var btn = document.getElementById('locTrans' + mode.charAt(0).toUpperCase() + mode.slice(1));
+    if (btn) btn.classList.add('active');
+
+    // Ouvrir l'app de transport correspondante
+    var addr = '15+Rue+Vauban,+69006+Lyon';
+    if (mode === 'walk') {
+      window.open('https://maps.google.com/maps?daddr=' + addr + '&dirflg=w', '_blank');
+    } else if (mode === 'bike') {
+      window.open('https://maps.google.com/maps?daddr=' + addr + '&dirflg=b', '_blank');
+    } else if (mode === 'public') {
+      window.open('https://maps.google.com/maps?daddr=' + addr + '&dirflg=r', '_blank');
+    }
+  }
+
+  function openLocTaxi() {
+    // Uber deep link, fallback vers le site
+    var dest = 'latitude=' + LOC_LAT + '&longitude=' + LOC_LNG + '&dropoff[nickname]=Sauf Imprévu';
+    var uberUrl = 'uber://?action=setPickup&dropoff[' + dest + ']';
+    var webUrl = 'https://m.uber.com/ul/?drop[0]=' + encodeURIComponent('{"latitude":' + LOC_LAT + ',"longitude":' + LOC_LNG + ',"addressLine1":"Sauf Imprévu"}');
+    // Essayer le deep link, fallback web
+    var opened = false;
+    try {
+      window.location.href = uberUrl;
+      opened = true;
+    } catch(e) {}
+    setTimeout(function() {
+      if (!document.hidden) window.open(webUrl, '_blank');
+    }, 500);
+  }
+
+  // Vue AR
+  function openLocAR() {
+    if (_locUserLat === null) {
+      alert('Activez d\'abord la localisation pour utiliser la vue AR.');
+      return;
+    }
+    var bearing = bearingTo(_locUserLat, _locUserLng, LOC_LAT, LOC_LNG);
+    var dist = haversineDistance(_locUserLat, _locUserLng, LOC_LAT, LOC_LNG);
+    // Ouvrir une vue caméra fullscreen avec overlay directionnel
+    var arSheet = document.createElement('div');
+    arSheet.id = 'locArOverlay';
+    arSheet.style.cssText = 'position:fixed;inset:0;z-index:9999;background:#000;';
+    arSheet.innerHTML =
+      '<video id="locArVideo" autoplay playsinline style="width:100%;height:100%;object-fit:cover;"></video>' +
+      '<div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;pointer-events:none;">' +
+        '<svg id="locArArrow" width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.5" style="filter:drop-shadow(0 2px 8px rgba(0,0,0,0.5));transform:rotate(' + bearing + 'deg);transition:transform 0.3s;">' +
+          '<path d="M12 2l-4 8h8l-4-8z" fill="rgba(255,255,255,0.9)"/>' +
+          '<line x1="12" y1="10" x2="12" y2="20" stroke-width="2"/>' +
+        '</svg>' +
+        '<div style="margin-top:16px;color:#fff;font-size:24px;font-weight:800;text-shadow:0 2px 8px rgba(0,0,0,0.5);">' + formatLocDist(dist) + '</div>' +
+        '<div style="color:rgba(255,255,255,0.7);font-size:14px;text-shadow:0 1px 4px rgba(0,0,0,0.5);">vers Sauf Imprévu</div>' +
+      '</div>' +
+      '<button onclick="closeLocAR()" style="position:absolute;top:calc(16px + env(safe-area-inset-top,0px));right:16px;width:40px;height:40px;border-radius:50%;background:rgba(0,0,0,0.5);backdrop-filter:blur(8px);border:none;color:#fff;font-size:20px;cursor:pointer;z-index:1;display:flex;align-items:center;justify-content:center;">✕</button>';
+    document.body.appendChild(arSheet);
+
+    // Ouvrir la caméra arrière
+    navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } })
+      .then(function(stream) {
+        var video = document.getElementById('locArVideo');
+        if (video) { video.srcObject = stream; }
+      })
+      .catch(function() {
+        var v = document.getElementById('locArVideo');
+        if (v) v.style.background = '#111';
+      });
+
+    // Mettre à jour la flèche avec l'orientation
+    window._locArOrientHandler = function(e) {
+      var heading = e.webkitCompassHeading !== undefined ? e.webkitCompassHeading : (e.alpha ? 360 - e.alpha : 0);
+      var rel = bearing - heading;
+      var el = document.getElementById('locArArrow');
+      if (el) el.style.transform = 'rotate(' + rel + 'deg)';
+    };
+    window.addEventListener('deviceorientation', window._locArOrientHandler, true);
+  }
+
+  function closeLocAR() {
+    var overlay = document.getElementById('locArOverlay');
+    if (overlay) {
+      var video = overlay.querySelector('video');
+      if (video && video.srcObject) {
+        video.srcObject.getTracks().forEach(function(t) { t.stop(); });
+      }
+      overlay.remove();
+    }
+    if (window._locArOrientHandler) {
+      window.removeEventListener('deviceorientation', window._locArOrientHandler, true);
+      window._locArOrientHandler = null;
+    }
   }
 
   function copyAddress() {
