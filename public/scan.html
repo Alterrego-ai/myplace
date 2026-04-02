@@ -187,6 +187,65 @@ body {
   border-radius: 12px; padding: 16px; text-align: center;
   color: #ff6b6b; font-size: 13px; font-weight: 600;
 }
+
+/* Mode toggle */
+.scan-mode-toggle {
+  display: flex; gap: 0; margin: 0 16px 8px;
+  background: rgba(255,255,255,0.06); border-radius: 10px; padding: 3px;
+}
+.scan-mode-btn {
+  flex: 1; padding: 8px; border: none; background: none;
+  color: rgba(255,255,255,0.4); font-size: 12px; font-weight: 600;
+  border-radius: 8px; cursor: pointer; font-family: inherit;
+  transition: all 0.2s;
+}
+.scan-mode-btn.active {
+  background: rgba(255,255,255,0.1); color: #fff;
+}
+
+/* Product result */
+.product-result {
+  background: linear-gradient(135deg, #0d2a4a, #091828);
+  border: 1px solid rgba(100,180,255,0.15); border-radius: 18px;
+  padding: 20px; margin-bottom: 16px;
+}
+.pr-type {
+  font-size: 9px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase;
+  padding: 4px 10px; border-radius: 20px; display: inline-block; margin-bottom: 10px;
+}
+.pr-type--rouge { background: rgba(180,40,60,0.3); border: 1px solid rgba(220,60,80,0.3); color: #ff8a8a; }
+.pr-type--blanc { background: rgba(220,200,80,0.15); border: 1px solid rgba(220,200,80,0.3); color: #f0d060; }
+.pr-type--efferv { background: rgba(100,200,255,0.15); border: 1px solid rgba(100,200,255,0.3); color: #80d0ff; }
+.pr-type--soft { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); color: rgba(255,255,255,0.5); }
+.pr-name { font-size: 20px; font-weight: 800; letter-spacing: -0.02em; margin-bottom: 2px; }
+.pr-producer { font-size: 13px; color: rgba(255,255,255,0.4); margin-bottom: 12px; }
+.pr-details {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 14px;
+}
+.pr-detail {
+  background: rgba(255,255,255,0.04); border-radius: 10px; padding: 10px;
+}
+.pr-detail-lbl { font-size: 8px; color: rgba(255,255,255,0.3); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 2px; }
+.pr-detail-val { font-size: 14px; font-weight: 700; }
+.pr-prices {
+  display: flex; justify-content: space-between; align-items: center;
+  background: rgba(74,232,138,0.08); border: 1px solid rgba(74,232,138,0.2);
+  border-radius: 12px; padding: 12px 16px; margin-bottom: 14px;
+}
+.pr-price-buy { font-size: 12px; color: rgba(255,255,255,0.4); }
+.pr-price-buy strong { font-size: 16px; color: #fff; }
+.pr-price-sell { font-size: 12px; color: rgba(74,232,138,0.6); }
+.pr-price-sell strong { font-size: 22px; color: #4AE88A; font-weight: 800; }
+.pr-margin { font-size: 10px; color: rgba(100,180,255,0.6); text-align: center; }
+.pr-notes {
+  font-size: 12px; color: rgba(255,255,255,0.35); font-style: italic;
+  margin-top: 10px; line-height: 1.5;
+}
+.pr-stock { font-size: 11px; font-weight: 600; margin-top: 8px; }
+.pr-stock--ok { color: #4AE88A; }
+.pr-stock--low { color: #ffc107; }
+.pr-stock--out { color: #ff6b6b; }
+.pr-ean { font-size: 9px; color: rgba(255,255,255,0.2); font-family: monospace; margin-top: 6px; }
 </style>
 </head>
 <body>
@@ -213,7 +272,7 @@ body {
       </div>
     </div>
     <div class="scan-line"></div>
-    <div class="scan-hint" id="scanHint">Scannez la carte du client</div>
+    <div class="scan-hint" id="scanHint">QR membre ou code-barres produit</div>
   </div>
 </div>
 
@@ -240,6 +299,14 @@ body {
   </div>
 </div>
 
+<!-- STATE: Product found -->
+<div class="state" id="stateProduct">
+  <div class="scan-content">
+    <div class="product-result" id="productResult"></div>
+    <button class="new-scan-btn" style="width:100%;" onclick="resetScan()">Nouveau scan</button>
+  </div>
+</div>
+
 <!-- STATE: Error -->
 <div class="state" id="stateError">
   <div class="scan-content">
@@ -250,6 +317,18 @@ body {
 <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
 <script>
   var currentMember = null;
+  var productsDB = [];
+  var barcodeDetector = null;
+
+  // ── Load products ──
+  fetch('/products.json').then(function(r) { return r.json(); }).then(function(data) {
+    productsDB = data;
+  }).catch(function() { console.warn('products.json not loaded'); });
+
+  // ── BarcodeDetector init ──
+  if ('BarcodeDetector' in window) {
+    barcodeDetector = new BarcodeDetector({ formats: ['ean_13', 'ean_8', 'upc_a', 'upc_e', 'code_128', 'code_39'] });
+  }
 
   // ── Close ──
   function closeScanPage() {
@@ -304,12 +383,12 @@ body {
   function scanFrame() {
     if (!scanning) return;
     ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+    // 1. Try QR code (membre)
     var imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
     var code = jsQR(imageData.data, canvas.width, canvas.height, { inversionAttempts: 'attemptBoth' });
-
     if (code && code.data) {
-      var url = code.data;
-      var match = url.match(/[?&]token=([^&]+)/);
+      var match = code.data.match(/[?&]token=([^&]+)/);
       if (match) {
         scanning = false;
         stopCamera();
@@ -317,6 +396,20 @@ body {
         return;
       }
     }
+
+    // 2. Try barcode (produit) via BarcodeDetector
+    if (barcodeDetector) {
+      barcodeDetector.detect(canvas).then(function(barcodes) {
+        if (!scanning || !barcodes.length) return;
+        var ean = barcodes[0].rawValue;
+        if (ean) {
+          scanning = false;
+          stopCamera();
+          lookupProduct(ean);
+        }
+      }).catch(function() {});
+    }
+
     requestAnimationFrame(scanFrame);
   }
 
@@ -413,6 +506,54 @@ body {
       '<button class="new-scan-btn" onclick="resetScan()">Nouveau scan</button>';
 
     showState('stateSuccess');
+  }
+
+  // ── Product lookup ──
+  function lookupProduct(ean) {
+    var product = productsDB.find(function(p) { return p.ean === ean; });
+    if (product) {
+      showProduct(product);
+    } else {
+      showError('Produit non trouvé<br><span style="font-size:11px;color:rgba(255,255,255,0.3);font-weight:400;">EAN : ' + ean + '</span>');
+    }
+  }
+
+  function showProduct(p) {
+    var typeClass = 'pr-type--soft';
+    if (p.type.toLowerCase().indexOf('rouge') >= 0) typeClass = 'pr-type--rouge';
+    else if (p.type.toLowerCase().indexOf('blanc') >= 0) typeClass = 'pr-type--blanc';
+    else if (p.type.toLowerCase().indexOf('efferv') >= 0 || p.type.toLowerCase().indexOf('crémant') >= 0) typeClass = 'pr-type--efferv';
+
+    var margin = p.price_sell - p.price_buy;
+    var marginPct = ((margin / p.price_sell) * 100).toFixed(0);
+
+    var stockClass = p.stock > 10 ? 'pr-stock--ok' : (p.stock > 0 ? 'pr-stock--low' : 'pr-stock--out');
+    var stockText = p.stock > 10 ? 'En stock (' + p.stock + ')' : (p.stock > 0 ? 'Stock bas (' + p.stock + ')' : 'Rupture');
+
+    var html =
+      '<div class="pr-type ' + typeClass + '">' + p.type + '</div>' +
+      '<div class="pr-name">' + p.name + '</div>' +
+      '<div class="pr-producer">' + p.producer + (p.region ? ' · ' + p.region : '') + '</div>' +
+      '<div class="pr-details">';
+
+    if (p.grape) html += '<div class="pr-detail"><div class="pr-detail-lbl">Cépage</div><div class="pr-detail-val">' + p.grape + '</div></div>';
+    if (p.volume) html += '<div class="pr-detail"><div class="pr-detail-lbl">Volume</div><div class="pr-detail-val">' + p.volume + '</div></div>';
+    if (p.alcohol && p.alcohol !== '0%') html += '<div class="pr-detail"><div class="pr-detail-lbl">Alcool</div><div class="pr-detail-val">' + p.alcohol + '</div></div>';
+    html += '<div class="pr-detail"><div class="pr-detail-lbl">Stock</div><div class="pr-detail-val ' + stockClass + '">' + stockText + '</div></div>';
+    html += '</div>';
+
+    html +=
+      '<div class="pr-prices">' +
+        '<div class="pr-price-buy">Achat<br><strong>' + p.price_buy.toFixed(2) + ' \u20ac</strong></div>' +
+        '<div style="text-align:center;"><div class="pr-margin">Marge ' + marginPct + '%</div><div style="font-size:11px;color:rgba(255,255,255,0.2);">+' + margin.toFixed(2) + ' \u20ac</div></div>' +
+        '<div class="pr-price-sell">Vente<br><strong>' + p.price_sell.toFixed(2) + ' \u20ac</strong></div>' +
+      '</div>';
+
+    if (p.notes) html += '<div class="pr-notes">' + p.notes + '</div>';
+    html += '<div class="pr-ean">EAN ' + p.ean + '</div>';
+
+    document.getElementById('productResult').innerHTML = html;
+    showState('stateProduct');
   }
 
   // ── Reset ──
