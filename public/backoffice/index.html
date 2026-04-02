@@ -158,6 +158,8 @@
             max-height: 92vh;
             overflow-y: auto;
             box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.12);
+            transition: transform 0.3s cubic-bezier(0.2, 0.9, 0.3, 1);
+            will-change: transform;
         }
 
         .modal-handle {
@@ -3431,14 +3433,99 @@
         }
 
         function openModal(modal) {
+            // Fix scroll iOS : bloquer le body
             document.body.classList.add('modal-open');
+            document.body.style.position = 'fixed';
+            document.body.style.width = '100%';
+            document.body.dataset.scrollY = window.scrollY;
+            document.body.style.top = `-${window.scrollY}px`;
             modal.classList.add('active');
+            // Reset transform au cas où
+            const m = modal.querySelector('.modal');
+            if (m) m.style.transform = '';
         }
 
         function closeModal(modal) {
             modal.classList.remove('active');
             document.body.classList.remove('modal-open');
+            // Restore scroll iOS
+            document.body.style.position = '';
+            document.body.style.width = '';
+            document.body.style.top = '';
+            window.scrollTo(0, parseInt(document.body.dataset.scrollY || '0'));
         }
+
+        // ============================================================
+        // SWIPE-TO-DISMISS sur toutes les modals bottom-sheet
+        // ============================================================
+        (function initSwipeToDismiss() {
+            const overlays = document.querySelectorAll('.modal-overlay');
+
+            overlays.forEach(overlay => {
+                const modal = overlay.querySelector('.modal');
+                if (!modal) return;
+
+                let startY = 0;
+                let currentY = 0;
+                let isDragging = false;
+
+                // On écoute sur le handle ET le header (zone haute de la modal)
+                modal.addEventListener('touchstart', (e) => {
+                    // Ne swipe que si on est en haut du scroll OU si on touche le handle/header
+                    const target = e.target;
+                    const isHandle = target.classList.contains('modal-handle');
+                    const isHeader = target.closest('.modal-header');
+                    const isScrolledToTop = modal.scrollTop <= 0;
+
+                    if (isHandle || isHeader || isScrolledToTop) {
+                        startY = e.touches[0].clientY;
+                        currentY = startY;
+                        isDragging = true;
+                        modal.style.transition = 'none';
+                    }
+                }, { passive: true });
+
+                modal.addEventListener('touchmove', (e) => {
+                    if (!isDragging) return;
+                    currentY = e.touches[0].clientY;
+                    const deltaY = currentY - startY;
+
+                    // Seulement vers le bas
+                    if (deltaY > 0) {
+                        modal.style.transform = `translateY(${deltaY}px)`;
+                        // Opacité du backdrop proportionnelle
+                        const progress = Math.min(deltaY / 300, 1);
+                        overlay.style.backgroundColor = `rgba(26, 35, 50, ${0.5 * (1 - progress)})`;
+                    }
+                }, { passive: true });
+
+                modal.addEventListener('touchend', () => {
+                    if (!isDragging) return;
+                    isDragging = false;
+                    const deltaY = currentY - startY;
+
+                    modal.style.transition = 'transform 0.3s cubic-bezier(0.2, 0.9, 0.3, 1)';
+                    overlay.style.transition = 'background-color 0.3s ease';
+
+                    if (deltaY > 120) {
+                        // Seuil atteint → fermer
+                        modal.style.transform = `translateY(100%)`;
+                        overlay.style.backgroundColor = 'rgba(26, 35, 50, 0)';
+                        setTimeout(() => {
+                            closeModal(overlay);
+                            modal.style.transform = '';
+                            overlay.style.backgroundColor = '';
+                            overlay.style.transition = '';
+                        }, 300);
+                    } else {
+                        // Rebond → retour en place
+                        modal.style.transform = '';
+                        overlay.style.backgroundColor = '';
+                        setTimeout(() => { overlay.style.transition = ''; }, 300);
+                    }
+                }, { passive: true });
+            });
+        })();
 
         document.getElementById('openAddResaBtn').addEventListener('click', () => {
             clearResaForm();

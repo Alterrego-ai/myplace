@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Catalogue — Tous les types de fenêtres</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --primary: #3d5a80; --primary-light: #5c8db8; --bg: #f4f5f7;
+  --card: #fff; --text: #1a2332; --text2: #5a6a7e; --text3: #8a9bb0;
+  --border: #e8ecf1; --radius: 12px; --danger: #ef4444; --success: #22c55e;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'DM Sans',system-ui,sans-serif;background:var(--bg);color:var(--text);padding-bottom:4rem}
+
+/* Header */
+.header{background:#fff;padding:1.5rem 1rem 1rem;text-align:center;border-bottom:1px solid var(--border);position:sticky;top:0;z-index:50}
+.header h1{font-size:1.3rem;font-weight:800}
+.header p{font-size:0.8rem;color:var(--text3);margin-top:0.2rem}
+
+/* Category */
+.category{padding:1.25rem 1rem 0.5rem;max-width:540px;margin:0 auto}
+.category-title{font-size:0.7rem;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--text3);margin-bottom:0.6rem}
+
+/* Cards */
+.item{background:var(--card);border-radius:var(--radius);padding:1rem 1.1rem;margin-bottom:0.6rem;
+  box-shadow:0 1px 3px rgba(0,0,0,0.04);border:1px solid var(--border);
+  cursor:pointer;transition:all 0.15s;display:flex;align-items:center;gap:0.9rem}
+.item:hover{box-shadow:0 4px 12px rgba(0,0,0,0.08);transform:translateY(-1px)}
+.item:active{transform:scale(0.98)}
+.item-icon{font-size:1.6rem;flex-shrink:0;width:40px;text-align:center}
+.item-info{flex:1;min-width:0}
+.item-name{font-size:0.95rem;font-weight:700}
+.item-desc{font-size:0.78rem;color:var(--text2);margin-top:0.15rem;line-height:1.35}
+
+/* ============ SHARED ============ */
+.overlay{display:none;position:fixed;top:0;left:0;right:0;bottom:0;z-index:1000}
+.overlay.active{display:flex}
+.backdrop{position:absolute;top:0;left:0;right:0;bottom:0}
+.close-x{background:none;border:none;font-size:1.3rem;color:var(--text3);cursor:pointer;padding:0.2rem}
+
+/* Shared button styles */
+.dbtn{padding:0.65rem 1.2rem;border:none;border-radius:8px;font-family:inherit;font-size:0.9rem;font-weight:600;cursor:pointer}
+.dbtn-p{background:var(--primary);color:#fff}
+.dbtn-s{background:#f0f2f5;color:var(--primary)}
+.dbtn-d{background:var(--danger);color:#fff}
+.dbtn-g{background:var(--success);color:#fff}
+.dbtn-sm{padding:0.45rem 0.85rem;font-size:0.8rem}
+.dbtn-ghost{background:none;color:var(--primary);border:1px solid var(--border)}
+
+/* ============ 1. ALERT DIALOG ============ */
+#d-alert .backdrop{background:rgba(0,0,0,0.5)}
+#d-alert{align-items:center;justify-content:center;padding:1.5rem}
+.alert-box{background:#fff;border-radius:14px;padding:1.5rem;max-width:320px;width:100%;text-align:center;position:relative;z-index:1;box-shadow:0 20px 60px rgba(0,0,0,0.2)}
+.alert-icon{font-size:2.5rem;margin-bottom:0.6rem}
+.alert-title{font-size:1.1rem;font-weight:800;margin-bottom:0.4rem}
+.alert-msg{font-size:0.85rem;color:var(--text2);line-height:1.4;margin-bottom:1.2rem}
+.alert-actions{display:flex;gap:0.6rem;justify-content:center}
+
+/* ============ 2. CONFIRM DIALOG ============ */
+#d-confirm .backdrop{background:rgba(0,0,0,0.5)}
+#d-confirm{align-items:center;justify-content:center;padding:1.5rem}
+
+/* ============ 3. MODAL ============ */
+#d-modal .backdrop{background:rgba(26,35,50,0.5)}
+#d-modal{align-items:center;justify-content:center;padding:1rem}
+.modal-box{background:#fff;border-radius:var(--radius);padding:1.5rem;max-width:440px;width:100%;position:relative;z-index:1;box-shadow:0 20px 60px rgba(0,0,0,0.15);max-height:85vh;overflow-y:auto}
+.modal-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem}
+.modal-hdr h3{font-size:1.05rem;font-weight:700}
+.form-g{margin-bottom:0.9rem}
+.form-l{display:block;font-size:0.78rem;font-weight:600;color:var(--text2);margin-bottom:0.3rem}
+.form-i{width:100%;padding:0.65rem 0.75rem;border:1px solid var(--border);border-radius:8px;font-family:inherit;font-size:0.9rem}
+
+/* ============ 4. BOTTOM SHEET ============ */
+#d-bsheet .backdrop{background:rgba(0,0,0,0.4)}
+#d-bsheet{align-items:flex-end;justify-content:center}
+.bsheet{background:#fff;border-radius:16px 16px 0 0;padding:0.75rem 1.25rem 1.5rem;width:100%;max-width:480px;position:relative;z-index:1;box-shadow:0 -4px 20px rgba(0,0,0,0.12)}
+.bsheet-handle{width:36px;height:4px;background:#dde1e8;border-radius:2px;margin:0 auto 1rem}
+.bsheet-option{display:flex;align-items:center;gap:0.8rem;padding:0.85rem 0;border-bottom:1px solid #f4f5f7;font-size:0.95rem;font-weight:500}
+.bsheet-option:last-child{border:none}
+.bsheet-option-icon{font-size:1.2rem;width:28px;text-align:center}
+
+/* ============ 5. ACTION SHEET (iOS style) ============ */
+#d-action .backdrop{background:rgba(0,0,0,0.4)}
+#d-action{align-items:flex-end;justify-content:center;padding:0.6rem}
+.action-sheet{width:100%;max-width:400px;position:relative;z-index:1}
+.action-group{background:#fff;border-radius:14px;overflow:hidden;margin-bottom:0.5rem}
+.action-btn{width:100%;padding:0.9rem;border:none;background:none;font-family:inherit;font-size:1rem;color:var(--primary);cursor:pointer;border-bottom:1px solid #f0f1f3;font-weight:500}
+.action-btn:last-child{border:none}
+.action-btn.danger{color:var(--danger);font-weight:600}
+.action-cancel{background:#fff;border-radius:14px;overflow:hidden}
+.action-cancel .action-btn{font-weight:700}
+
+/* ============ 6. DRAWER (side panel) ============ */
+#d-drawer .backdrop{background:rgba(0,0,0,0.4)}
+#d-drawer{align-items:stretch;justify-content:flex-start}
+.drawer{background:#fff;width:280px;max-width:80vw;height:100%;position:relative;z-index:1;box-shadow:4px 0 20px rgba(0,0,0,0.1);display:flex;flex-direction:column}
+.drawer-hdr{padding:1.25rem;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.drawer-hdr h3{font-size:1rem;font-weight:700}
+.drawer-item{display:flex;align-items:center;gap:0.75rem;padding:0.85rem 1.25rem;font-size:0.9rem;font-weight:500;border-bottom:1px solid #f8f9fa;cursor:pointer}
+.drawer-item:hover{background:#f8f9fb}
+.drawer-item-icon{font-size:1.1rem;width:24px;text-align:center}
+
+/* ============ 7. FULLSCREEN OVERLAY ============ */
+#d-fullscreen .fs-overlay{position:absolute;top:0;left:0;right:0;bottom:0;background:linear-gradient(135deg,#1a1a2e,#16213e);z-index:1;display:flex;flex-direction:column}
+.fs-hdr{display:flex;align-items:center;justify-content:space-between;padding:1rem 1.25rem;color:#fff}
+.fs-hdr h3{font-weight:700;font-size:1rem}
+.fs-close{background:rgba(255,255,255,0.15);border:none;color:#fff;width:36px;height:36px;border-radius:50%;font-size:1.2rem;cursor:pointer}
+.fs-body{flex:1;display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,0.6);font-size:0.9rem;padding:2rem;text-align:center}
+
+/* ============ 8. TOAST ============ */
+.toast-demo{position:fixed;bottom:2rem;left:50%;transform:translateX(-50%);z-index:2000;
+  background:#1a2332;color:#fff;padding:0.75rem 1.25rem;border-radius:10px;font-size:0.88rem;font-weight:500;
+  box-shadow:0 8px 24px rgba(0,0,0,0.2);display:none;align-items:center;gap:0.6rem;white-space:nowrap}
+.toast-demo.active{display:flex}
+.toast-dot{width:8px;height:8px;border-radius:50%;background:var(--success);flex-shrink:0}
+
+/* ============ 9. SNACKBAR ============ */
+.snackbar-demo{position:fixed;bottom:2rem;left:1rem;right:1rem;z-index:2000;max-width:440px;margin:0 auto;
+  background:#323232;color:#fff;padding:0.85rem 1rem;border-radius:8px;font-size:0.88rem;
+  display:none;align-items:center;justify-content:space-between;gap:1rem;box-shadow:0 4px 16px rgba(0,0,0,0.25)}
+.snackbar-demo.active{display:flex}
+.snackbar-action{color:#82b1ff;font-weight:700;font-size:0.85rem;background:none;border:none;cursor:pointer;text-transform:uppercase;white-space:nowrap}
+
+/* ============ 10. TOOLTIP ============ */
+.tooltip-zone{position:relative;display:inline-block}
+.tooltip-bubble{position:absolute;bottom:calc(100% + 8px);left:50%;transform:translateX(-50%);
+  background:#1a2332;color:#fff;padding:0.5rem 0.75rem;border-radius:8px;font-size:0.78rem;white-space:nowrap;
+  box-shadow:0 4px 12px rgba(0,0,0,0.15);pointer-events:none;opacity:0;transition:opacity 0.2s}
+.tooltip-bubble::after{content:'';position:absolute;top:100%;left:50%;transform:translateX(-50%);
+  border:6px solid transparent;border-top-color:#1a2332}
+.tooltip-zone:hover .tooltip-bubble{opacity:1}
+
+/* ============ 11. POPOVER ============ */
+#d-popover{align-items:flex-start;justify-content:center;padding-top:8rem}
+#d-popover .backdrop{background:transparent}
+.popover-box{background:#fff;border-radius:var(--radius);padding:0.75rem 0;min-width:200px;position:relative;z-index:1;box-shadow:0 8px 30px rgba(0,0,0,0.15);border:1px solid var(--border)}
+.popover-item{padding:0.6rem 1rem;font-size:0.88rem;cursor:pointer;display:flex;align-items:center;gap:0.6rem}
+.popover-item:hover{background:#f4f6f8}
+.popover-sep{height:1px;background:var(--border);margin:0.3rem 0}
+
+/* ============ 12. DIALOG (native HTML) ============ */
+#d-native .backdrop{background:rgba(0,0,0,0.3)}
+#d-native{align-items:center;justify-content:center;padding:1.5rem}
+.native-dialog{background:#fff;border-radius:8px;padding:1.25rem;max-width:350px;width:100%;position:relative;z-index:1;box-shadow:0 4px 20px rgba(0,0,0,0.12);border:1px solid var(--border)}
+.native-dialog h4{font-size:1rem;font-weight:700;margin-bottom:0.5rem}
+.native-dialog p{font-size:0.85rem;color:var(--text2);margin-bottom:0.3rem}
+.native-dialog input{width:100%;padding:0.55rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;margin:0.5rem 0 1rem}
+
+/* ============ 13. NOTIFICATION BANNER ============ */
+.banner-demo{position:fixed;top:0;left:0;right:0;z-index:2000;
+  background:linear-gradient(135deg,var(--primary),var(--primary-light));color:#fff;
+  padding:0.85rem 1rem;display:none;align-items:center;gap:0.75rem;
+  box-shadow:0 4px 16px rgba(0,0,0,0.15)}
+.banner-demo.active{display:flex}
+.banner-demo-text{flex:1;font-size:0.88rem;font-weight:500}
+.banner-close{background:none;border:none;color:rgba(255,255,255,0.8);font-size:1.3rem;cursor:pointer}
+
+/* ============ 14. LIGHTBOX ============ */
+#d-lightbox .backdrop{background:rgba(0,0,0,0.9)}
+#d-lightbox{align-items:center;justify-content:center;flex-direction:column;gap:1rem}
+.lightbox-img{width:85vw;max-width:500px;aspect-ratio:4/3;background:linear-gradient(135deg,#2a3f5f,#3d5a80);
+  border-radius:8px;display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,0.5);
+  font-size:0.9rem;position:relative;z-index:1}
+.lightbox-caption{color:rgba(255,255,255,0.7);font-size:0.82rem;position:relative;z-index:1}
+.lightbox-close{position:absolute;top:1rem;right:1rem;z-index:2;background:rgba(255,255,255,0.15);
+  border:none;color:#fff;width:40px;height:40px;border-radius:50%;font-size:1.3rem;cursor:pointer}
+
+/* ============ 15. SLIDE-OVER (right panel) ============ */
+#d-slideover .backdrop{background:rgba(0,0,0,0.3)}
+#d-slideover{align-items:stretch;justify-content:flex-end}
+.slideover{background:#fff;width:340px;max-width:85vw;height:100%;position:relative;z-index:1;
+  box-shadow:-4px 0 20px rgba(0,0,0,0.08);display:flex;flex-direction:column}
+.slideover-hdr{padding:1.25rem;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.slideover-hdr h3{font-size:1rem;font-weight:700}
+.slideover-body{padding:1.25rem;flex:1;overflow-y:auto}
+.slideover-body p{font-size:0.85rem;color:var(--text2);line-height:1.5;margin-bottom:0.8rem}
+
+/* ============ 16. COMMAND PALETTE ============ */
+#d-cmd .backdrop{background:rgba(0,0,0,0.5)}
+#d-cmd{align-items:flex-start;justify-content:center;padding-top:15vh}
+.cmd-box{background:#fff;border-radius:var(--radius);width:100%;max-width:480px;position:relative;z-index:1;
+  box-shadow:0 20px 60px rgba(0,0,0,0.2);overflow:hidden}
+.cmd-input{width:100%;padding:1rem 1.25rem;border:none;font-family:inherit;font-size:1rem;border-bottom:1px solid var(--border);outline:none}
+.cmd-results{max-height:250px;overflow-y:auto}
+.cmd-item{padding:0.7rem 1.25rem;display:flex;align-items:center;gap:0.75rem;cursor:pointer;font-size:0.9rem}
+.cmd-item:hover,.cmd-item.active{background:#f4f6f8}
+.cmd-item-icon{color:var(--text3);font-size:1rem;width:24px;text-align:center}
+.cmd-item-key{margin-left:auto;font-size:0.7rem;color:var(--text3);background:#f0f2f5;padding:0.15rem 0.4rem;border-radius:4px;font-family:monospace}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>Catalogue des fenêtres</h1>
+  <p>Tous les patterns natifs de navigation UI</p>
+</div>
+
+<!-- ===== DIALOGS ===== -->
+<div class="category">
+  <div class="category-title">Dialogues & Alertes</div>
+  <div class="item" onclick="show('d-alert')">
+    <div class="item-icon">⚠️</div>
+    <div class="item-info"><div class="item-name">Alert Dialog</div><div class="item-desc">Message important, 1 seul bouton. Bloque l'interaction.</div></div>
+  </div>
+  <div class="item" onclick="show('d-confirm')">
+    <div class="item-icon">❓</div>
+    <div class="item-info"><div class="item-name">Confirm Dialog</div><div class="item-desc">Demande de confirmation avec 2 actions (annuler/confirmer).</div></div>
+  </div>
+  <div class="item" onclick="show('d-native')">
+    <div class="item-icon">✏️</div>
+    <div class="item-info"><div class="item-name">Prompt Dialog</div><div class="item-desc">Demande une saisie utilisateur dans un dialogue simple.</div></div>
+  </div>
+</div>
+
+<!-- ===== MODALS ===== -->
+<div class="category">
+  <div class="category-title">Modales & Sheets</div>
+  <div class="item" onclick="show('d-modal')">
+    <div class="item-icon">📋</div>
+    <div class="item-info"><div class="item-name">Modal (centered)</div><div class="item-desc">Formulaire ou contenu riche, centrée avec overlay. Le classique.</div></div>
+  </div>
+  <div class="item" onclick="show('d-bsheet')">
+    <div class="item-icon">📄</div>
+    <div class="item-info"><div class="item-name">Bottom Sheet</div><div class="item-desc">Remonte du bas. Standard mobile. Poignée drag, options ou formulaire.</div></div>
+  </div>
+  <div class="item" onclick="show('d-action')">
+    <div class="item-icon">📱</div>
+    <div class="item-info"><div class="item-name">Action Sheet (iOS)</div><div class="item-desc">Liste d'actions depuis le bas, groupées avec bouton annuler séparé.</div></div>
+  </div>
+</div>
+
+<!-- ===== PANELS ===== -->
+<div class="category">
+  <div class="category-title">Panneaux latéraux</div>
+  <div class="item" onclick="show('d-drawer')">
+    <div class="item-icon">☰</div>
+    <div class="item-info"><div class="item-name">Drawer (left)</div><div class="item-desc">Menu de navigation latéral gauche. Slide depuis le bord.</div></div>
+  </div>
+  <div class="item" onclick="show('d-slideover')">
+    <div class="item-icon">→</div>
+    <div class="item-info"><div class="item-name">Slide-over (right)</div><div class="item-desc">Panel de détail glissant depuis la droite. Contenu secondaire.</div></div>
+  </div>
+</div>
+
+<!-- ===== OVERLAYS ===== -->
+<div class="category">
+  <div class="category-title">Overlays plein écran</div>
+  <div class="item" onclick="show('d-fullscreen')">
+    <div class="item-icon">⬜</div>
+    <div class="item-info"><div class="item-name">Fullscreen Overlay</div><div class="item-desc">Prise de contrôle totale : scanner, caméra, expérience immersive.</div></div>
+  </div>
+  <div class="item" onclick="show('d-lightbox')">
+    <div class="item-icon">🖼️</div>
+    <div class="item-info"><div class="item-name">Lightbox</div><div class="item-desc">Affichage d'image/media en plein écran sur fond noir.</div></div>
+  </div>
+</div>
+
+<!-- ===== NOTIFICATIONS ===== -->
+<div class="category">
+  <div class="category-title">Notifications éphémères</div>
+  <div class="item" onclick="showToast()">
+    <div class="item-icon">✅</div>
+    <div class="item-info"><div class="item-name">Toast</div><div class="item-desc">Message court auto-disparaissant. Succès, info, erreur.</div></div>
+  </div>
+  <div class="item" onclick="showSnackbar()">
+    <div class="item-icon">↩️</div>
+    <div class="item-info"><div class="item-name">Snackbar</div><div class="item-desc">Comme un toast mais avec une action (ex: "Annuler"). Material Design.</div></div>
+  </div>
+  <div class="item" onclick="showBanner()">
+    <div class="item-icon">🔔</div>
+    <div class="item-info"><div class="item-name">Notification Banner</div><div class="item-desc">Bandeau fixe en haut de page. Infos importantes ou promotions.</div></div>
+  </div>
+</div>
+
+<!-- ===== CONTEXTUAL ===== -->
+<div class="category">
+  <div class="category-title">Contextuels</div>
+  <div class="item" onclick="show('d-popover')">
+    <div class="item-icon">💬</div>
+    <div class="item-info"><div class="item-name">Popover / Dropdown</div><div class="item-desc">Menu flottant ancré à un élément. Options, filtres, menus.</div></div>
+  </div>
+  <div class="item tooltip-zone">
+    <div class="item-icon">💡</div>
+    <div class="item-info"><div class="item-name">Tooltip</div><div class="item-desc">Survolez cette carte ! Bulle d'aide au hover.</div></div>
+    <div class="tooltip-bubble">Je suis un tooltip natif !</div>
+  </div>
+  <div class="item" onclick="show('d-cmd')">
+    <div class="item-icon">⌘</div>
+    <div class="item-info"><div class="item-name">Command Palette</div><div class="item-desc">Recherche/actions rapides type Cmd+K. Power users.</div></div>
+  </div>
+</div>
+
+<!-- ============ DEMO OVERLAYS ============ -->
+
+<!-- Alert -->
+<div class="overlay" id="d-alert">
+  <div class="backdrop" onclick="hide('d-alert')"></div>
+  <div class="alert-box">
+    <div class="alert-icon">⚠️</div>
+    <div class="alert-title">Session expirée</div>
+    <div class="alert-msg">Votre session a expiré. Veuillez vous reconnecter pour continuer.</div>
+    <div class="alert-actions"><button class="dbtn dbtn-p" onclick="hide('d-alert')">Compris</button></div>
+  </div>
+</div>
+
+<!-- Confirm -->
+<div class="overlay" id="d-confirm">
+  <div class="backdrop" onclick="hide('d-confirm')"></div>
+  <div class="alert-box">
+    <div class="alert-icon">🗑️</div>
+    <div class="alert-title">Supprimer cette réservation ?</div>
+    <div class="alert-msg">Cette action est irréversible. La réservation de M. Dupont pour 4 couverts sera définitivement supprimée.</div>
+    <div class="alert-actions">
+      <button class="dbtn dbtn-s" onclick="hide('d-confirm')">Annuler</button>
+      <button class="dbtn dbtn-d" onclick="hide('d-confirm')">Supprimer</button>
+    </div>
+  </div>
+</div>
+
+<!-- Prompt (native style) -->
+<div class="overlay" id="d-native">
+  <div class="backdrop" onclick="hide('d-native')"></div>
+  <div class="native-dialog">
+    <h4>Renommer la catégorie</h4>
+    <p>Entrez le nouveau nom :</p>
+    <input type="text" value="Entrées" readonly>
+    <div style="display:flex;gap:0.5rem;justify-content:flex-end">
+      <button class="dbtn dbtn-s dbtn-sm" onclick="hide('d-native')">Annuler</button>
+      <button class="dbtn dbtn-p dbtn-sm" onclick="hide('d-native')">OK</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal centered -->
+<div class="overlay" id="d-modal">
+  <div class="backdrop" onclick="hide('d-modal')"></div>
+  <div class="modal-box">
+    <div class="modal-hdr"><h3>Nouvelle réservation</h3><button class="close-x" onclick="hide('d-modal')">✕</button></div>
+    <div class="form-g"><label class="form-l">Nom</label><input class="form-i" value="Dupont" readonly></div>
+    <div class="form-g"><label class="form-l">Couverts</label><input class="form-i" value="4" readonly></div>
+    <div class="form-g"><label class="form-l">Notes</label><input class="form-i" value="Terrasse si possible" readonly></div>
+    <div style="display:flex;gap:0.6rem;justify-content:flex-end;margin-top:1rem">
+      <button class="dbtn dbtn-s" onclick="hide('d-modal')">Annuler</button>
+      <button class="dbtn dbtn-p" onclick="hide('d-modal')">Confirmer</button>
+    </div>
+  </div>
+</div>
+
+<!-- Bottom Sheet -->
+<div class="overlay" id="d-bsheet">
+  <div class="backdrop" onclick="hide('d-bsheet')"></div>
+  <div class="bsheet">
+    <div class="bsheet-handle"></div>
+    <div class="bsheet-option"><span class="bsheet-option-icon">📸</span>Prendre une photo</div>
+    <div class="bsheet-option"><span class="bsheet-option-icon">🖼️</span>Choisir dans la galerie</div>
+    <div class="bsheet-option"><span class="bsheet-option-icon">📎</span>Joindre un fichier</div>
+    <div class="bsheet-option"><span class="bsheet-option-icon">🔗</span>Coller un lien</div>
+    <div class="bsheet-option" style="color:var(--danger)" onclick="hide('d-bsheet')"><span class="bsheet-option-icon">✕</span>Annuler</div>
+  </div>
+</div>
+
+<!-- Action Sheet -->
+<div class="overlay" id="d-action">
+  <div class="backdrop" onclick="hide('d-action')"></div>
+  <div class="action-sheet">
+    <div class="action-group">
+      <button class="action-btn">Modifier</button>
+      <button class="action-btn">Dupliquer</button>
+      <button class="action-btn">Partager</button>
+      <button class="action-btn danger">Supprimer</button>
+    </div>
+    <div class="action-cancel"><button class="action-btn" onclick="hide('d-action')">Annuler</button></div>
+  </div>
+</div>
+
+<!-- Drawer -->
+<div class="overlay" id="d-drawer">
+  <div class="backdrop" onclick="hide('d-drawer')"></div>
+  <div class="drawer">
+    <div class="drawer-hdr"><h3>Menu</h3><button class="close-x" onclick="hide('d-drawer')">✕</button></div>
+    <div class="drawer-item"><span class="drawer-item-icon">🏠</span>Accueil</div>
+    <div class="drawer-item"><span class="drawer-item-icon">📅</span>Réservations</div>
+    <div class="drawer-item"><span class="drawer-item-icon">📖</span>Carte</div>
+    <div class="drawer-item"><span class="drawer-item-icon">📊</span>Statistiques</div>
+    <div class="drawer-item"><span class="drawer-item-icon">⚙️</span>Paramètres</div>
+    <div style="flex:1"></div>
+    <div class="drawer-item" style="color:var(--danger)"><span class="drawer-item-icon">🚪</span>Déconnexion</div>
+  </div>
+</div>
+
+<!-- Slide-over -->
+<div class="overlay" id="d-slideover">
+  <div class="backdrop" onclick="hide('d-slideover')"></div>
+  <div class="slideover">
+    <div class="slideover-hdr"><h3>Détails réservation</h3><button class="close-x" onclick="hide('d-slideover')">✕</button></div>
+    <div class="slideover-body">
+      <p><strong>M. Dupont</strong> — 4 couverts</p>
+      <p>Service du soir · 20h00</p>
+      <p>Table 7 · Terrasse</p>
+      <p style="color:var(--text3);font-style:italic">« Anniversaire de mariage, prévoir bougie sur dessert »</p>
+      <div style="margin-top:1rem;display:flex;gap:0.5rem">
+        <button class="dbtn dbtn-p dbtn-sm" onclick="hide('d-slideover')">Confirmer</button>
+        <button class="dbtn dbtn-ghost dbtn-sm">Modifier</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Fullscreen -->
+<div class="overlay" id="d-fullscreen">
+  <div class="fs-overlay">
+    <div class="fs-hdr"><h3>Scanner QR Code</h3><button class="fs-close" onclick="hide('d-fullscreen')">✕</button></div>
+    <div class="fs-body">
+      <div>
+        <div style="font-size:3rem;margin-bottom:1rem">📷</div>
+        Pointez la caméra vers un QR code<br><br>
+        <span style="font-size:0.8rem;opacity:0.5">Plein écran immersif — aucune distraction</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Lightbox -->
+<div class="overlay" id="d-lightbox">
+  <div class="backdrop" onclick="hide('d-lightbox')"></div>
+  <button class="lightbox-close" onclick="hide('d-lightbox')">✕</button>
+  <div class="lightbox-img">[ Photo du plat ]</div>
+  <div class="lightbox-caption">Tartare de bœuf — coupé au couteau, frites maison</div>
+</div>
+
+<!-- Popover -->
+<div class="overlay" id="d-popover">
+  <div class="backdrop" onclick="hide('d-popover')"></div>
+  <div class="popover-box">
+    <div class="popover-item" onclick="hide('d-popover')">✏️ Modifier</div>
+    <div class="popover-item" onclick="hide('d-popover')">📋 Dupliquer</div>
+    <div class="popover-item" onclick="hide('d-popover')">📤 Exporter</div>
+    <div class="popover-sep"></div>
+    <div class="popover-item" style="color:var(--danger)" onclick="hide('d-popover')">🗑️ Supprimer</div>
+  </div>
+</div>
+
+<!-- Command Palette -->
+<div class="overlay" id="d-cmd">
+  <div class="backdrop" onclick="hide('d-cmd')"></div>
+  <div class="cmd-box">
+    <input class="cmd-input" placeholder="Rechercher une action..." value="" readonly>
+    <div class="cmd-results">
+      <div class="cmd-item active"><span class="cmd-item-icon">➕</span>Nouvelle réservation<span class="cmd-item-key">⌘N</span></div>
+      <div class="cmd-item"><span class="cmd-item-icon">🔍</span>Rechercher un client<span class="cmd-item-key">⌘F</span></div>
+      <div class="cmd-item"><span class="cmd-item-icon">📖</span>Ouvrir la carte<span class="cmd-item-key">⌘K</span></div>
+      <div class="cmd-item"><span class="cmd-item-icon">📊</span>Voir les stats du jour</div>
+      <div class="cmd-item"><span class="cmd-item-icon">⚙️</span>Paramètres</div>
+    </div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast-demo" id="toast"><div class="toast-dot"></div>Réservation confirmée !</div>
+
+<!-- Snackbar -->
+<div class="snackbar-demo" id="snackbar">Réservation supprimée<button class="snackbar-action" onclick="hideSnackbar()">ANNULER</button></div>
+
+<!-- Banner -->
+<div class="banner-demo" id="banner">
+  <span style="font-size:1.1rem">🎉</span>
+  <span class="banner-demo-text">Nouvelle mise à jour disponible — version 2.4</span>
+  <button class="banner-close" onclick="hideBanner()">✕</button>
+</div>
+
+<script>
+function show(id){document.getElementById(id).classList.add('active')}
+function hide(id){document.getElementById(id).classList.remove('active')}
+document.addEventListener('keydown',e=>{if(e.key==='Escape')document.querySelectorAll('.overlay.active').forEach(el=>el.classList.remove('active'))});
+
+function showToast(){const t=document.getElementById('toast');t.classList.add('active');setTimeout(()=>t.classList.remove('active'),2500)}
+function showSnackbar(){const s=document.getElementById('snackbar');s.classList.add('active');setTimeout(()=>s.classList.remove('active'),4000)}
+function hideSnackbar(){document.getElementById('snackbar').classList.remove('active')}
+function showBanner(){document.getElementById('banner').classList.add('active')}
+function hideBanner(){document.getElementById('banner').classList.remove('active')}
+</script>
+</body>
+</html>
