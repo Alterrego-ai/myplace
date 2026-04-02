@@ -3253,9 +3253,9 @@ margin: 20px 20px 0;
 
     // ── Sceau mySafe ──
     html +=
-      '<a href="https://mysafe.services' + (user._token ? '#auth=' + user._token : '') + '" target="_blank" style="display:flex;align-items:center;justify-content:center;gap:8px;padding:16px 20px 8px;text-decoration:none;">' +
-        '<img src="/img/Logo%20mySafe%20(500%20x%20150%20px).png" alt="mySafe" style="height:18px;opacity:0.5;">' +
-        '<span style="font-size:11px;color:var(--text-tertiary);font-weight:500;">Vos données sont protégées</span>' +
+      '<a href="https://mysafe.services' + (user._token ? '#auth=' + user._token : '') + '" target="_blank" style="display:flex;flex-direction:column;align-items:center;gap:4px;padding:16px 20px 8px;text-decoration:none;">' +
+        '<img src="/img/mysafe-logo.png" alt="mySafe" style="height:20px;opacity:0.4;">' +
+        '<span style="font-size:10px;color:var(--text-tertiary);font-weight:500;">Vos données sont protégées</span>' +
       '</a>';
 
     content.innerHTML = html;
