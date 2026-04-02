@@ -148,13 +148,6 @@
             overscroll-behavior: contain;
         }
 
-        body.modal-open {
-            position: fixed;
-            width: 100%;
-            overflow: hidden;
-            touch-action: none;
-            -webkit-overflow-scrolling: none;
-        }
         body.modal-open .reservations-content,
         body.modal-open .carte-content {
             overflow: hidden;
@@ -3442,31 +3435,64 @@
             submitAddResaBtn.textContent = 'Réserver';
         }
 
-        // Bloquer le scroll sur l'overlay (pas dans la modal elle-même)
-        document.querySelectorAll('.modal-overlay').forEach(ov => {
-            ov.addEventListener('touchmove', (e) => {
-                // Si le touch est sur l'overlay backdrop (pas dans .modal), bloquer
-                if (e.target === ov || !e.target.closest('.modal')) {
-                    e.preventDefault();
-                }
-            }, { passive: false });
-        });
+        // ============================================================
+        // SCROLL LOCK — approche JS robuste pour iOS
+        // On intercepte touchmove au niveau document quand une modal
+        // est ouverte, et on ne laisse passer que les scrolls DANS
+        // la .modal elle-même.
+        // ============================================================
+        let _modalScrollLockActive = false;
+        let _savedScrollY = 0;
+
+        function _handleTouchMove(e) {
+            if (!_modalScrollLockActive) return;
+            const modalContent = e.target.closest('.modal');
+            if (!modalContent) {
+                e.preventDefault();
+                return;
+            }
+            // Si la modal n'a pas de scroll possible, bloquer aussi
+            const isScrollable = modalContent.scrollHeight > modalContent.clientHeight;
+            if (!isScrollable) {
+                e.preventDefault();
+                return;
+            }
+            // Si on est en haut et qu'on scroll vers le haut, ou en bas et vers le bas → bloquer
+            const top = modalContent.scrollTop;
+            const bottom = modalContent.scrollHeight - modalContent.clientHeight - top;
+            const deltaY = e.touches[0].clientY - (_lastTouchY || e.touches[0].clientY);
+            if ((top <= 0 && deltaY > 0) || (bottom <= 0 && deltaY < 0)) {
+                e.preventDefault();
+            }
+        }
+        let _lastTouchY = 0;
+        document.addEventListener('touchstart', (e) => {
+            _lastTouchY = e.touches[0].clientY;
+        }, { passive: true });
+        document.addEventListener('touchmove', _handleTouchMove, { passive: false });
 
         function openModal(modal) {
-            document.body.dataset.scrollY = window.scrollY;
-            document.body.style.top = `-${window.scrollY}px`;
+            _savedScrollY = window.scrollY;
+            _modalScrollLockActive = true;
             document.body.classList.add('modal-open');
+            document.body.style.top = `-${_savedScrollY}px`;
+            document.body.style.position = 'fixed';
+            document.body.style.left = '0';
+            document.body.style.right = '0';
             modal.classList.add('active');
-            // Reset transform au cas où (swipe-to-dismiss)
             const m = modal.querySelector('.modal');
             if (m) m.style.transform = '';
         }
 
         function closeModal(modal) {
             modal.classList.remove('active');
+            _modalScrollLockActive = false;
             document.body.classList.remove('modal-open');
+            document.body.style.position = '';
             document.body.style.top = '';
-            window.scrollTo(0, parseInt(document.body.dataset.scrollY || '0'));
+            document.body.style.left = '';
+            document.body.style.right = '';
+            window.scrollTo(0, _savedScrollY);
         }
 
         // ============================================================
