@@ -268,264 +268,13 @@ body {
     document.getElementById(id).classList.add('active');
   }
 
-  // ════════════════════════════════════════════════════
-  // ── DOT CONSTELLATION DECODER ──
-  // Lit une grille 14x14 de dots lumineux depuis la caméra
-  // Même protocole que wallet.html : 4 coins sync, bordure, 12x12 data
-  // ════════════════════════════════════════════════════
-
-  var GRID = 14;
-
-  // ── Sample brightness at a point (average of small area) ──
-  function sampleBrightness(data, w, cx, cy, radius) {
-    var sum = 0, count = 0;
-    var r = Math.round(radius);
-    var ix = Math.round(cx), iy = Math.round(cy);
-    for (var dy = -r; dy <= r; dy++) {
-      for (var dx = -r; dx <= r; dx++) {
-        var px = ix + dx, py = iy + dy;
-        if (px < 0 || py < 0 || px >= w || py >= Math.floor(data.length / 4 / w)) continue;
-        var idx = (py * w + px) * 4;
-        // Luminance weighted (the dots are blue-cyan, so emphasize blue channel)
-        sum += data[idx] * 0.2 + data[idx + 1] * 0.3 + data[idx + 2] * 0.5;
-        count++;
-      }
-    }
-    return count > 0 ? sum / count : 0;
-  }
-
-  // ── Find the card region by looking for the 4 bright corner sync dots ──
-  // Strategy: scan the frame for clusters of bright pixels, find 4 that form a square
-  function findCorners(data, w, h) {
-    // The crosshair guide is 220x220 centered in the camera view
-    // We expect the card to be roughly in the center ~60% of frame
-    var margin = Math.min(w, h) * 0.15;
-    var searchW = w - margin * 2;
-    var searchH = h - margin * 2;
-
-    // Step: scan in a grid to find bright spots
-    var step = Math.max(4, Math.floor(Math.min(w, h) / 80));
-    var brightSpots = [];
-
-    for (var y = margin; y < h - margin; y += step) {
-      for (var x = margin; x < w - margin; x += step) {
-        var b = sampleBrightness(data, w, x, y, 2);
-        if (b > 130) { // bright enough to be a dot
-          brightSpots.push({ x: x, y: y, b: b });
-        }
-      }
-    }
-
-    if (brightSpots.length < 4) return null;
-
-    // Sort by brightness descending
-    brightSpots.sort(function(a, b) { return b.b - a.b; });
-
-    // Cluster nearby spots (merge within 20px)
-    var clusters = [];
-    var used = {};
-    for (var i = 0; i < brightSpots.length; i++) {
-      if (used[i]) continue;
-      var cl = { x: brightSpots[i].x, y: brightSpots[i].y, b: brightSpots[i].b, n: 1 };
-      used[i] = true;
-      for (var j = i + 1; j < brightSpots.length; j++) {
-        if (used[j]) continue;
-        var dx = brightSpots[j].x - cl.x / cl.n * cl.n;
-        var dy = brightSpots[j].y - cl.y / cl.n * cl.n;
-        // Simpler: distance to cluster center
-        var dcx = brightSpots[j].x - cl.x / cl.n;
-        var dcy = brightSpots[j].y - cl.y / cl.n;
-        if (Math.abs(brightSpots[j].x - cl.x / cl.n) < 25 &&
-            Math.abs(brightSpots[j].y - cl.y / cl.n) < 25) {
-          cl.x += brightSpots[j].x;
-          cl.y += brightSpots[j].y;
-          cl.b = Math.max(cl.b, brightSpots[j].b);
-          cl.n++;
-          used[j] = true;
-        }
-      }
-      clusters.push({ x: cl.x / cl.n, y: cl.y / cl.n, b: cl.b });
-    }
-
-    if (clusters.length < 4) return null;
-
-    // Find best 4 clusters that form a roughly square shape
-    // Take the 8 brightest, try combinations of 4
-    var top = clusters.slice(0, Math.min(12, clusters.length));
-
-    var bestScore = Infinity;
-    var bestCorners = null;
-
-    // Try all combinations of 4 from top clusters
-    for (var a = 0; a < top.length - 3; a++) {
-      for (var b = a + 1; b < top.length - 2; b++) {
-        for (var c = b + 1; c < top.length - 1; c++) {
-          for (var d = c + 1; d < top.length; d++) {
-            var pts = [top[a], top[b], top[c], top[d]];
-            var sq = evaluateSquare(pts);
-            if (sq && sq.score < bestScore) {
-              bestScore = sq.score;
-              bestCorners = sq.corners;
-            }
-          }
-        }
-      }
-    }
-
-    return bestCorners;
-  }
-
-  // ── Evaluate if 4 points form a square-ish shape ──
-  function evaluateSquare(pts) {
-    // Sort: top-left, top-right, bottom-left, bottom-right
-    pts.sort(function(a, b) { return a.y - b.y; });
-    var topTwo = pts.slice(0, 2).sort(function(a, b) { return a.x - b.x; });
-    var botTwo = pts.slice(2, 4).sort(function(a, b) { return a.x - b.x; });
-    var tl = topTwo[0], tr = topTwo[1], bl = botTwo[0], br = botTwo[1];
-
-    // Check it's roughly square (aspect ratio 0.6-1.6)
-    var topW = Math.sqrt(Math.pow(tr.x - tl.x, 2) + Math.pow(tr.y - tl.y, 2));
-    var leftH = Math.sqrt(Math.pow(bl.x - tl.x, 2) + Math.pow(bl.y - tl.y, 2));
-    if (topW < 30 || leftH < 30) return null; // too small
-    var ratio = topW / leftH;
-    if (ratio < 0.6 || ratio > 1.6) return null;
-
-    // Check diagonals are similar length
-    var d1 = Math.sqrt(Math.pow(br.x - tl.x, 2) + Math.pow(br.y - tl.y, 2));
-    var d2 = Math.sqrt(Math.pow(bl.x - tr.x, 2) + Math.pow(bl.y - tr.y, 2));
-    var diagRatio = d1 / d2;
-    if (diagRatio < 0.7 || diagRatio > 1.4) return null;
-
-    // Score: how close to a perfect square (lower = better)
-    var score = Math.abs(ratio - 1) + Math.abs(diagRatio - 1);
-    return { score: score, corners: { tl: tl, tr: tr, bl: bl, br: br } };
-  }
-
-  // ── Read the constellation grid using corner positions ──
-  function readConstellationGrid(data, w, h, corners) {
-    var grid = [];
-    var allBrightness = [];
-
-    for (var r = 0; r < GRID; r++) {
-      grid[r] = [];
-      for (var c = 0; c < GRID; c++) {
-        // Bilinear interpolation from corners to find cell center
-        var fx = (c + 0.5) / GRID;
-        var fy = (r + 0.5) / GRID;
-        var topX = corners.tl.x + (corners.tr.x - corners.tl.x) * fx;
-        var topY = corners.tl.y + (corners.tr.y - corners.tl.y) * fx;
-        var botX = corners.bl.x + (corners.br.x - corners.bl.x) * fx;
-        var botY = corners.bl.y + (corners.br.y - corners.bl.y) * fx;
-        var px = topX + (botX - topX) * fy;
-        var py = topY + (botY - topY) * fy;
-
-        var bright = sampleBrightness(data, w, px, py, 3);
-        grid[r][c] = bright;
-        allBrightness.push(bright);
-      }
-    }
-
-    // Validate sync corners are bright
-    var cornerBright = [grid[0][0], grid[0][GRID - 1], grid[GRID - 1][0], grid[GRID - 1][GRID - 1]];
-    var avgCorner = (cornerBright[0] + cornerBright[1] + cornerBright[2] + cornerBright[3]) / 4;
-    if (avgCorner < 80) return null; // Corners not bright enough
-
-    // Calculate threshold using border sync pattern
-    // Border dots alternate: even positions = ON, odd = OFF
-    var onVals = [], offVals = [];
-    for (var c = 1; c < GRID - 1; c++) {
-      if (c % 2 === 0) { onVals.push(grid[0][c]); onVals.push(grid[GRID - 1][c]); }
-      else { offVals.push(grid[0][c]); offVals.push(grid[GRID - 1][c]); }
-    }
-    for (var r = 1; r < GRID - 1; r++) {
-      if (r % 2 === 0) { onVals.push(grid[r][0]); onVals.push(grid[r][GRID - 1]); }
-      else { offVals.push(grid[r][0]); offVals.push(grid[r][GRID - 1]); }
-    }
-
-    if (onVals.length === 0 || offVals.length === 0) return null;
-    var avgOn = onVals.reduce(function(a, b) { return a + b; }, 0) / onVals.length;
-    var avgOff = offVals.reduce(function(a, b) { return a + b; }, 0) / offVals.length;
-
-    // Need reasonable separation between ON and OFF
-    if (avgOn - avgOff < 15) return null; // Not enough contrast
-
-    var threshold = (avgOn + avgOff) / 2;
-
-    // Read interior 12x12 data bits
-    var bits = [];
-    for (var r = 1; r <= 12; r++) {
-      for (var c = 1; c <= 12; c++) {
-        bits.push(grid[r][c] > threshold ? 1 : 0);
-      }
-    }
-
-    return bits;
-  }
-
-  // ── Decode bits → member payload ──
-  function decodeBitsToMember(bits) {
-    if (bits.length < 120) return null;
-
-    // Convert 120 bits → 15 bytes
-    var bytes = new Uint8Array(15);
-    for (var i = 0; i < 15; i++) {
-      var byte = 0;
-      for (var b = 0; b < 8; b++) {
-        byte = (byte << 1) | bits[i * 8 + b];
-      }
-      bytes[i] = byte;
-    }
-
-    // Check magic byte
-    if (bytes[0] !== 0xAA) return null;
-
-    // Check XOR checksum
-    var xor = 0;
-    for (var i = 0; i < 14; i++) xor ^= bytes[i];
-    if (xor !== bytes[14]) return null;
-
-    // Decode fields
-    var id = String.fromCharCode(bytes[1], bytes[2], bytes[3], bytes[4]);
-    var levelCode = (bytes[5] >> 5) & 0x07;
-    var level = levelCode === 1 ? 'GOLD' : levelCode === 2 ? 'PLATINUM' : 'SILVER';
-    var remise = bytes[5] & 0x1F;
-    var visits = (bytes[6] << 8) | bytes[7];
-    var avg_basket = (bytes[8] << 8) | bytes[9];
-    var tips = (bytes[10] << 8) | bytes[11];
-    var secSinceMidnight = (bytes[12] << 8) | bytes[13];
-
-    // Freshness check: timestamp should be within last 90 seconds
-    var now = new Date();
-    var nowSec = now.getHours() * 3600 + now.getMinutes() * 60 + now.getSeconds();
-    var diff = Math.abs(nowSec - secSinceMidnight);
-    if (diff > 86400 / 2) diff = 86400 - diff; // handle midnight wrap
-    if (diff > 90) return null; // expired
-
-    return {
-      id: id,
-      name: 'Membre ' + id, // POC: name not in compact payload, would come from server
-      level: level,
-      visits: visits,
-      avg_basket: avg_basket,
-      remise: remise,
-      tips: tips,
-      network: ['SAUF_IMPREVU']
-    };
-  }
-
-  // ════════════════════════════════════════════════════
-  // ── CAMERA + SCANNING ──
-  // ════════════════════════════════════════════════════
-
+  // ── Camera + QR scanning ──
   var video, canvas, ctx, camStream, scanning = false;
-  var constellationAttempts = 0;
-  var MAX_CONSTELLATION_ATTEMPTS = 5; // frames between constellation decode tries (expensive)
 
   function startCamera() {
     video = document.getElementById('camVideo');
     canvas = document.getElementById('camCanvas');
     ctx = canvas.getContext('2d', { willReadFrequently: true });
-    constellationAttempts = 0;
 
     navigator.mediaDevices.getUserMedia({
       video: { facingMode: 'environment', width: { ideal: 640 }, height: { ideal: 640 } }
@@ -556,12 +305,11 @@ body {
     if (!scanning) return;
     ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
     var imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-    var w = canvas.width, h = canvas.height;
+    var code = jsQR(imageData.data, canvas.width, canvas.height, { inversionAttempts: 'attemptBoth' });
 
-    // ── 1. Try QR code (fast, backwards compatible) ──
-    var code = jsQR(imageData.data, w, h, { inversionAttempts: 'attemptBoth' });
     if (code && code.data) {
-      var match = code.data.match(/[?&]token=([^&]+)/);
+      var url = code.data;
+      var match = url.match(/[?&]token=([^&]+)/);
       if (match) {
         scanning = false;
         stopCamera();
@@ -569,44 +317,24 @@ body {
         return;
       }
     }
-
-    // ── 2. Try constellation decode (every N frames — heavier computation) ──
-    constellationAttempts++;
-    if (constellationAttempts >= MAX_CONSTELLATION_ATTEMPTS) {
-      constellationAttempts = 0;
-      var corners = findCorners(imageData.data, w, h);
-      if (corners) {
-        var bits = readConstellationGrid(imageData.data, w, h, corners);
-        if (bits) {
-          var member = decodeBitsToMember(bits);
-          if (member) {
-            scanning = false;
-            stopCamera();
-            document.getElementById('scanHint').textContent = 'Carte détectée !';
-            currentMember = member;
-            showMember(member);
-            return;
-          }
-        }
-      }
-    }
-
     requestAnimationFrame(scanFrame);
   }
 
-  // ── Legacy token decode (QR fallback) ──
+  // ── Token decode ──
   function processToken(token) {
     try {
       var json = decodeURIComponent(escape(atob(token)));
       var data = JSON.parse(json);
+
       if (data.exp && Date.now() > data.exp) {
         showError('Token expiré. Demandez au client de renouveler.');
         return;
       }
+
       currentMember = data;
       showMember(data);
     } catch(e) {
-      showError('Carte invalide.');
+      showError('QR code invalide.');
     }
   }
 
@@ -622,7 +350,7 @@ body {
     var networkLabel = m.network && m.network[0] ? m.network[0].replace(/_/g, ' ') : 'OK Snap';
     var html =
       '<div class="mr-top">' +
-        '<div><div class="mr-name">' + (m.name || 'Membre') + '</div><div class="mr-id">' + m.id + '</div></div>' +
+        '<div><div class="mr-name">' + m.name + '</div><div class="mr-id">' + m.id + '</div></div>' +
         '<div class="mr-badge">' + m.level + '</div>' +
       '</div>' +
       '<div class="mr-stats">' +
@@ -679,7 +407,7 @@ body {
     document.getElementById('successCard').innerHTML =
       '<div class="success-icon">\u2705</div>' +
       '<div class="success-title">Paiement valid\u00e9</div>' +
-      '<div class="success-sub">' + (currentMember.name || 'Membre') + ' \u00b7 ' + currentMember.level + '</div>' +
+      '<div class="success-sub">' + currentMember.name + ' \u00b7 ' + currentMember.level + '</div>' +
       '<div class="success-amount">' + total.toFixed(2) + ' &euro;</div>' +
       '<div class="success-detail">Montant initial ' + amount.toFixed(2) + ' &euro; \u00b7 Remise \u2212' + discount.toFixed(2) + ' &euro;</div>' +
       '<button class="new-scan-btn" onclick="resetScan()">Nouveau scan</button>';

@@ -329,71 +329,47 @@ body {
   </div>
 </div>
 
-<!-- Premium QR Image (intégrée dans la carte) -->
-<div class="premium-qr-section" id="premiumQRSection">
-  <div class="pqr-header">
-    <div class="pqr-label">SNAP PAY</div>
-    <div class="pqr-status" id="pqrStatus">
-      <div class="pqr-dot"></div>
-      <span id="pqrTimer">Prêt</span>
-    </div>
+<!-- QR Overlay -->
+<div class="qr-overlay" id="qrOverlay" onclick="if(event.target===this)closeQR()">
+  <div class="qr-card">
+    <div class="qr-title">Présentez au commerçant</div>
+    <div class="qr-frame"><img id="qrImg" width="200" height="200" alt="QR"/></div>
+    <div class="qr-sub" id="qrSub">Valide 60 secondes</div>
+    <div class="qr-timer" id="qrTimer"></div>
+    <button class="qr-close" onclick="closeQR()">Fermer</button>
   </div>
-  <div class="pqr-canvas-wrap" id="pqrCanvasWrap">
-    <canvas id="premiumQRCanvas" width="280" height="280"></canvas>
-    <div class="pqr-hint" id="pqrHint">Tapez le sceau pour activer</div>
-  </div>
-  <div class="pqr-footer">Présentez l'image au commerçant</div>
 </div>
 
 </div><!-- /wallet-scroll -->
 
 <style>
-/* ─── PREMIUM QR IMAGE ─────────────────────────── */
-.premium-qr-section {
-  width: 100%; max-width: 380px;
-  background: linear-gradient(145deg, #0a1828 0%, #0d2040 50%, #081420 100%);
-  border-radius: 18px; overflow: hidden;
-  border: 1px solid rgba(100,180,255,0.1);
-  box-shadow: 0 20px 60px rgba(0,0,0,0.4), 0 0 40px rgba(20,100,180,0.08);
+.qr-overlay {
+  position: fixed; inset: 0; background: rgba(0,0,0,0.85);
+  display: none; align-items: center; justify-content: center;
+  z-index: 9999; padding: 16px; backdrop-filter: blur(8px);
 }
-.pqr-header {
-  display: flex; justify-content: space-between; align-items: center;
-  padding: 14px 18px 10px;
+.qr-overlay.visible { display: flex; }
+.qr-card {
+  background: #0d1f33; border: 1px solid rgba(100,180,255,0.2);
+  border-radius: 22px; padding: 28px; text-align: center;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.5), 0 0 40px rgba(20,100,180,0.15);
 }
-.pqr-label {
-  font-size: 10px; font-weight: 800; letter-spacing: 0.2em;
-  color: rgba(100,180,255,0.6); text-transform: uppercase;
+.qr-title {
+  font-size: 14px; font-weight: 700; color: #fff;
+  letter-spacing: 0.02em; margin-bottom: 20px;
 }
-.pqr-status { display: flex; align-items: center; gap: 5px; }
-.pqr-dot {
-  width: 5px; height: 5px; border-radius: 50%;
-  background: rgba(255,255,255,0.15); transition: background 0.3s, box-shadow 0.3s;
+.qr-frame {
+  background: #fff; border-radius: 16px; padding: 16px;
+  display: inline-block; margin-bottom: 16px;
 }
-.pqr-dot.active { background: #4AE88A; box-shadow: 0 0 6px rgba(74,232,138,0.5); animation: live-pulse 1.5s ease-in-out infinite; }
-.pqr-dot.expiring { background: #ff6b6b; box-shadow: 0 0 6px rgba(255,107,107,0.5); animation: live-pulse 0.8s ease-in-out infinite; }
-#pqrTimer { font-size: 10px; color: rgba(255,255,255,0.3); font-weight: 600; letter-spacing: 0.08em; font-variant-numeric: tabular-nums; }
-#pqrTimer.active { color: #4AE88A; }
-#pqrTimer.expiring { color: #ff6b6b; }
-.pqr-canvas-wrap {
-  position: relative; display: flex; justify-content: center;
-  padding: 0 18px 10px;
-}
-#premiumQRCanvas {
-  width: 100%; max-width: 280px; height: auto; border-radius: 14px;
-  opacity: 0.3; transition: opacity 0.6s ease;
-  box-shadow: 0 8px 30px rgba(0,0,0,0.5), 0 0 40px rgba(20,80,160,0.1);
-}
-#premiumQRCanvas.active { opacity: 1; }
-.pqr-hint {
-  position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
-  font-size: 11px; font-weight: 600; color: rgba(255,255,255,0.25);
-  letter-spacing: 0.06em; pointer-events: none; transition: opacity 0.4s;
-  text-align: center; white-space: nowrap;
-}
-.pqr-hint.hidden { opacity: 0; }
-.pqr-footer {
-  text-align: center; padding: 6px 18px 14px;
-  font-size: 9px; color: rgba(255,255,255,0.15); letter-spacing: 0.1em; text-transform: uppercase;
+.qr-frame img { display: block; border-radius: 4px; }
+.qr-sub { font-size: 11px; color: rgba(255,255,255,0.35); margin-bottom: 4px; }
+.qr-timer { font-size: 28px; font-weight: 800; color: #4AE88A; margin-bottom: 16px; font-variant-numeric: tabular-nums; }
+.qr-close {
+  background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.12);
+  color: rgba(255,255,255,0.6); padding: 10px 28px; border-radius: 24px;
+  font-size: 13px; font-weight: 600; cursor: pointer;
+  font-family: 'Plus Jakarta Sans', sans-serif;
 }
 </style>
 
@@ -418,279 +394,73 @@ body {
 
   // ── Member payload (POC — hardcoded, sera dynamique) ──
   var memberData = {
-    id: '8F2A',
+    v: '1.0',
+    type: 'MEMBER_CARD',
+    id: 'USR_8F2A',
     name: (user && user.name) || 'Romaric A.',
     level: 'GOLD',
     visits: 47,
     avg_basket: 68,
     remise: 15,
-    tips: 3460
+    tips: 3460,
+    network: ['SAUF_IMPREVU'],
+    ts: 0,
+    exp: 0
   };
 
-  // ════════════════════════════════════════════════════
-  // ── DOT CONSTELLATION ENCODER ──
-  // Encode les données membre en 15 bytes binaires
-  // Rendu : grille 14x14 de dots lumineux sur fond dark navy
-  // 4 coins = sync markers (toujours allumés, extra bright)
-  // Bordure = pattern fixe (validation)
-  // Intérieur 12x12 = 144 bits data (120 utiles + 24 padding)
-  // ════════════════════════════════════════════════════
-
-  var GRID = 14;          // 14x14 grid
-  var CANVAS_SIZE = 280;  // pixels
-  var CELL = CANVAS_SIZE / GRID; // 20px per cell
-
-  // ── Binary payload : 15 bytes ──
-  function encodeMemberPayload() {
-    var b = new Uint8Array(15);
-    b[0] = 0xAA; // magic
-    b[1] = memberData.id.charCodeAt(0);
-    b[2] = memberData.id.charCodeAt(1);
-    b[3] = memberData.id.charCodeAt(2);
-    b[4] = memberData.id.charCodeAt(3);
-    var lvl = memberData.level === 'GOLD' ? 1 : memberData.level === 'PLATINUM' ? 2 : 0;
-    b[5] = (lvl << 5) | (memberData.remise & 0x1F);
-    b[6] = (memberData.visits >> 8) & 0xFF;
-    b[7] = memberData.visits & 0xFF;
-    b[8] = (memberData.avg_basket >> 8) & 0xFF;
-    b[9] = memberData.avg_basket & 0xFF;
-    b[10] = (memberData.tips >> 8) & 0xFF;
-    b[11] = memberData.tips & 0xFF;
-    // timestamp : secondes depuis minuit (max 86400 = fits uint16)
-    var now = new Date();
-    var secSinceMidnight = now.getHours() * 3600 + now.getMinutes() * 60 + now.getSeconds();
-    b[12] = (secSinceMidnight >> 8) & 0xFF;
-    b[13] = secSinceMidnight & 0xFF;
-    // XOR checksum
-    var xor = 0;
-    for (var i = 0; i < 14; i++) xor ^= b[i];
-    b[14] = xor;
-    return b;
+  // ── Generate token (base64 JSON — POC) ──
+  function generateToken() {
+    memberData.ts = Date.now();
+    memberData.exp = memberData.ts + 60000;
+    var json = JSON.stringify(memberData);
+    return btoa(unescape(encodeURIComponent(json)));
   }
 
-  // ── Bytes → bit array ──
-  function bytesToBits(bytes) {
-    var bits = [];
-    for (var i = 0; i < bytes.length; i++) {
-      for (var bit = 7; bit >= 0; bit--) {
-        bits.push((bytes[i] >> bit) & 1);
-      }
-    }
-    return bits;
+  // ── QR Timer ──
+  var qrInterval = null;
+  var qrExpiry = 0;
+
+  function showQR() {
+    var token = generateToken();
+    var verifyUrl = window.location.origin + '/scan.html?token=' + token;
+    var qrApiUrl = 'https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=' + encodeURIComponent(verifyUrl);
+    document.getElementById('qrImg').src = qrApiUrl;
+    document.getElementById('qrOverlay').classList.add('visible');
+
+    qrExpiry = Date.now() + 60000;
+    clearInterval(qrInterval);
+    qrInterval = setInterval(updateTimer, 200);
+    updateTimer();
   }
 
-  // ── Build 14x14 grid matrix ──
-  // Returns grid[row][col] = 0 or 1
-  function buildGrid(bits) {
-    var grid = [];
-    for (var r = 0; r < GRID; r++) {
-      grid[r] = [];
-      for (var c = 0; c < GRID; c++) {
-        // Corners : toujours 1 (sync markers)
-        if ((r === 0 || r === GRID - 1) && (c === 0 || c === GRID - 1)) {
-          grid[r][c] = 2; // 2 = sync marker (extra bright)
-          continue;
-        }
-        // Border top/bottom : alternating pattern (validation)
-        if (r === 0 || r === GRID - 1) {
-          grid[r][c] = (c % 2 === 0) ? 1 : 0;
-          continue;
-        }
-        // Border left/right : alternating pattern
-        if (c === 0 || c === GRID - 1) {
-          grid[r][c] = (r % 2 === 0) ? 1 : 0;
-          continue;
-        }
-        // Interior : data bits (rows 1-12, cols 1-12)
-        var idx = (r - 1) * 12 + (c - 1);
-        grid[r][c] = (idx < bits.length) ? bits[idx] : 0;
-      }
-    }
-    return grid;
-  }
-
-  // ── Render constellation on canvas ──
-  function renderConstellation(grid) {
-    var canvas = document.getElementById('premiumQRCanvas');
-    var ctx = canvas.getContext('2d');
-    canvas.width = CANVAS_SIZE;
-    canvas.height = CANVAS_SIZE;
-    var S = CANVAS_SIZE;
-
-    // ── 1. Background : deep navy gradient ──
-    var bg = ctx.createRadialGradient(S * 0.4, S * 0.35, 0, S * 0.5, S * 0.5, S * 0.7);
-    bg.addColorStop(0, '#0d2240');
-    bg.addColorStop(0.5, '#091a32');
-    bg.addColorStop(1, '#050e1c');
-    ctx.fillStyle = bg;
-    ctx.fillRect(0, 0, S, S);
-
-    // ── 2. Subtle nebula glow ──
-    var neb1 = ctx.createRadialGradient(S * 0.3, S * 0.3, 0, S * 0.3, S * 0.3, S * 0.35);
-    neb1.addColorStop(0, 'rgba(20,80,160,0.08)');
-    neb1.addColorStop(1, 'rgba(0,0,0,0)');
-    ctx.fillStyle = neb1;
-    ctx.fillRect(0, 0, S, S);
-    var neb2 = ctx.createRadialGradient(S * 0.7, S * 0.65, 0, S * 0.7, S * 0.65, S * 0.3);
-    neb2.addColorStop(0, 'rgba(60,40,120,0.06)');
-    neb2.addColorStop(1, 'rgba(0,0,0,0)');
-    ctx.fillStyle = neb2;
-    ctx.fillRect(0, 0, S, S);
-
-    // ── 3. Decorative dust (tiny random static dots for texture) ──
-    // Utilise un seed fixe pour que le fond soit constant
-    var rng = 42;
-    function nextRng() { rng = (rng * 1103515245 + 12345) & 0x7fffffff; return rng / 0x7fffffff; }
-    ctx.fillStyle = 'rgba(100,160,220,0.07)';
-    for (var i = 0; i < 60; i++) {
-      var dx = nextRng() * S, dy = nextRng() * S;
-      ctx.beginPath();
-      ctx.arc(dx, dy, 0.5 + nextRng() * 0.5, 0, Math.PI * 2);
-      ctx.fill();
-    }
-
-    // ── 4. Data dots (constellation) ──
-    for (var r = 0; r < GRID; r++) {
-      for (var c = 0; c < GRID; c++) {
-        var val = grid[r][c];
-        if (val === 0) continue;
-
-        var cx = (c + 0.5) * CELL;
-        var cy = (r + 0.5) * CELL;
-
-        if (val === 2) {
-          // ── Sync corners : large, white, strong glow ──
-          // Outer glow
-          var sg = ctx.createRadialGradient(cx, cy, 0, cx, cy, 8);
-          sg.addColorStop(0, 'rgba(200,230,255,0.4)');
-          sg.addColorStop(1, 'rgba(200,230,255,0)');
-          ctx.fillStyle = sg;
-          ctx.fillRect(cx - 8, cy - 8, 16, 16);
-          // Core dot
-          ctx.fillStyle = 'rgba(220,240,255,0.95)';
-          ctx.beginPath();
-          ctx.arc(cx, cy, 3.5, 0, Math.PI * 2);
-          ctx.fill();
-        } else {
-          // ── Data dot = 1 : bright blue dot with glow ──
-          // Glow
-          var dg = ctx.createRadialGradient(cx, cy, 0, cx, cy, 6);
-          dg.addColorStop(0, 'rgba(80,160,255,0.3)');
-          dg.addColorStop(1, 'rgba(80,160,255,0)');
-          ctx.fillStyle = dg;
-          ctx.fillRect(cx - 6, cy - 6, 12, 12);
-          // Core dot
-          ctx.fillStyle = 'rgba(140,200,255,0.9)';
-          ctx.beginPath();
-          ctx.arc(cx, cy, 2.5, 0, Math.PI * 2);
-          ctx.fill();
-        }
-      }
-    }
-
-    // ── 5. Connection lines between nearby active dots (constellation look) ──
-    ctx.strokeStyle = 'rgba(80,150,230,0.06)';
-    ctx.lineWidth = 0.5;
-    var activeDots = [];
-    for (var r = 0; r < GRID; r++) {
-      for (var c = 0; c < GRID; c++) {
-        if (grid[r][c] > 0) activeDots.push({ x: (c + 0.5) * CELL, y: (r + 0.5) * CELL });
-      }
-    }
-    for (var i = 0; i < activeDots.length; i++) {
-      for (var j = i + 1; j < activeDots.length; j++) {
-        var dx = activeDots[i].x - activeDots[j].x;
-        var dy = activeDots[i].y - activeDots[j].y;
-        var dist = Math.sqrt(dx * dx + dy * dy);
-        if (dist < CELL * 2.2 && dist > CELL * 0.8) {
-          ctx.beginPath();
-          ctx.moveTo(activeDots[i].x, activeDots[i].y);
-          ctx.lineTo(activeDots[j].x, activeDots[j].y);
-          ctx.stroke();
-        }
-      }
-    }
-
-    // ── 6. Brand watermark ──
-    ctx.save();
-    ctx.globalAlpha = 0.04;
-    ctx.font = '800 18px "Plus Jakarta Sans", sans-serif';
-    ctx.fillStyle = '#fff';
-    ctx.textAlign = 'center';
-    ctx.textBaseline = 'middle';
-    ctx.fillText('OK SNAP', S / 2, S / 2);
-    ctx.restore();
-
-    // ── 7. Subtle frame border ──
-    ctx.strokeStyle = 'rgba(100,180,255,0.1)';
-    ctx.lineWidth = 1;
-    ctx.beginPath();
-    ctx.roundRect(1, 1, S - 2, S - 2, 12);
-    ctx.stroke();
-  }
-
-  // ── Premium QR Timer ──
-  var pqrInterval = null;
-  var pqrExpiry = 0;
-
-  function activateConstellation() {
-    var payload = encodeMemberPayload();
-    var bits = bytesToBits(payload);
-    var grid = buildGrid(bits);
-    renderConstellation(grid);
-
-    // Activer visuellement
-    document.getElementById('premiumQRCanvas').classList.add('active');
-    document.getElementById('pqrHint').classList.add('hidden');
-
-    var dot = document.querySelector('.pqr-dot');
-    var timer = document.getElementById('pqrTimer');
-    dot.className = 'pqr-dot active';
-    timer.className = 'active';
-
-    // Timer 60s
-    pqrExpiry = Date.now() + 60000;
-    clearInterval(pqrInterval);
-    pqrInterval = setInterval(updatePremiumTimer, 200);
-    updatePremiumTimer();
-
-    document.getElementById('premiumQRSection').scrollIntoView({ behavior: 'smooth', block: 'center' });
-  }
-
-  function updatePremiumTimer() {
-    var remaining = Math.max(0, pqrExpiry - Date.now());
+  function updateTimer() {
+    var remaining = Math.max(0, qrExpiry - Date.now());
     var secs = Math.ceil(remaining / 1000);
-    var timer = document.getElementById('pqrTimer');
-    var dot = document.querySelector('.pqr-dot');
+    var el = document.getElementById('qrTimer');
+    el.textContent = secs + 's';
+    if (remaining <= 10000) el.style.color = '#ff6b6b';
+    else el.style.color = '#4AE88A';
 
     if (remaining <= 0) {
-      clearInterval(pqrInterval);
-      timer.textContent = 'Expiré';
-      timer.className = 'expiring';
-      dot.className = 'pqr-dot expiring';
-      document.getElementById('premiumQRCanvas').classList.remove('active');
-      document.getElementById('pqrHint').textContent = 'Tapez le sceau pour renouveler';
-      document.getElementById('pqrHint').classList.remove('hidden');
-      return;
-    }
-
-    timer.textContent = secs + 's';
-    if (remaining <= 10000) {
-      timer.className = 'expiring';
-      dot.className = 'pqr-dot expiring';
-    } else {
-      timer.className = 'active';
-      dot.className = 'pqr-dot active';
+      clearInterval(qrInterval);
+      el.textContent = 'Expiré';
+      el.style.color = '#ff6b6b';
+      document.getElementById('qrSub').textContent = 'Tapez le sceau pour renouveler';
     }
   }
 
-  // ── Seal tap → flash + Constellation ──
+  function closeQR() {
+    document.getElementById('qrOverlay').classList.remove('visible');
+    clearInterval(qrInterval);
+  }
+
+  // ── Seal tap → flash + QR ──
   function scanSeal() {
     var flash = document.getElementById('flashEl');
     flash.classList.remove('active');
     void flash.offsetWidth;
     flash.classList.add('active');
-    activateConstellation();
+    showQR();
   }
 </script>
 </body>
