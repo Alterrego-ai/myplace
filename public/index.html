@@ -617,18 +617,20 @@ display: flex; align-items: center; justify-content: center; flex-shrink: 0;
 /* Nav buttons */
 .loc-nav-grid { display: flex; gap: 8px; margin-bottom: 12px; }
 .loc-nav-btn {
-flex: 1; display: flex; flex-direction: column; align-items: center; gap: 6px;
-padding: 12px 8px; background: var(--bg-card);
+flex: 1; display: flex; align-items: center; gap: 8px;
+padding: 10px 12px; background: var(--bg-card);
 border: 1px solid var(--border); border-radius: var(--radius);
-text-decoration: none; color: var(--text); text-align: center;
+text-decoration: none; color: var(--text);
+white-space: nowrap; overflow: hidden;
 }
 .loc-nav-btn:active { background: var(--bg-subtle); }
 .loc-nav-full { flex: 1; }
 .loc-nav-icon {
-width: 36px; height: 36px; border-radius: 10px;
+width: 28px; height: 28px; border-radius: 7px;
 display: flex; align-items: center; justify-content: center; flex-shrink: 0;
 }
-.loc-nav-label { font-size: 12px; font-weight: 600; }
+.loc-nav-icon svg { width: 18px; height: 18px; }
+.loc-nav-label { font-size: 12px; font-weight: 600; overflow: hidden; text-overflow: ellipsis; }
 .loc-nav-sub { display: none; }
 
 /* Compass card */
