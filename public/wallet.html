@@ -3,15 +3,27 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-<meta name="theme-color" content="#060e1a">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#060e1a" media="(prefers-color-scheme: dark)">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
 <title>Mon Compte — Sauf Imprévu</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
+:root {
+  color-scheme: light dark;
+  --bg: #ffffff; --bg-card: #f5f6f8; --text: #1a1a2e; --text-sub: rgba(0,0,0,0.45);
+  --border: rgba(0,0,0,0.08); --close-bg: rgba(0,0,0,0.05); --close-color: rgba(0,0,0,0.4);
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #060e1a; --bg-card: #0a1828; --text: #ffffff; --text-sub: rgba(255,255,255,0.4);
+    --border: rgba(255,255,255,0.08); --close-bg: rgba(255,255,255,0.08); --close-color: rgba(255,255,255,0.6);
+  }
+}
 *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 body {
-  background: #060e1a;
+  background: var(--bg); color: var(--text);
   display: flex; flex-direction: column; align-items: center;
   min-height: 100dvh; min-height: 100vh;
   font-family: 'Plus Jakarta Sans', 'Helvetica Neue', sans-serif;
@@ -27,10 +39,17 @@ body {
   background: transparent; flex-shrink: 0;
 }
 .wallet-header-left { display: flex; align-items: center; gap: 10px; }
-.wallet-header-left h4 { font-size: 15px; font-weight: 700; color: #fff; margin: 0; }
-.wallet-header-left span { font-size: 11px; color: rgba(255,255,255,0.4); }
+.wallet-header-avatar {
+  width: 36px; height: 36px; border-radius: 50%; flex-shrink: 0;
+  background: linear-gradient(135deg, #1464B4, #2888d8);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 13px; font-weight: 800; color: #fff; letter-spacing: -0.02em;
+  background-size: cover; background-position: center;
+}
+.wallet-header-left h4 { font-size: 15px; font-weight: 700; color: var(--text); margin: 0; }
+.wallet-header-left span { font-size: 11px; color: var(--text-sub); }
 .wallet-header-close {
-  background: rgba(255,255,255,0.08); border: none; color: rgba(255,255,255,0.6);
+  background: var(--close-bg); border: none; color: var(--close-color);
   width: 32px; height: 32px; border-radius: 50%;
   display: flex; align-items: center; justify-content: center;
   font-size: 20px; cursor: pointer;
@@ -42,36 +61,6 @@ body {
   padding: 10px 20px 40px; gap: 24px;
   -webkit-overflow-scrolling: touch;
 }
-/* ─── PROFIL ──────────────────────────────────── */
-.profile-section {
-  width: 100%; max-width: 380px;
-  display: flex; align-items: center; gap: 12px;
-  padding: 4px 0 8px;
-}
-.profile-avatar {
-  width: 48px; height: 48px; border-radius: 50%; flex-shrink: 0;
-  background: linear-gradient(135deg, #1464B4, #2888d8);
-  display: flex; align-items: center; justify-content: center;
-  font-size: 18px; font-weight: 800; color: #fff; letter-spacing: -0.02em;
-  border: 2px solid rgba(100,180,255,0.25);
-}
-.profile-info { flex: 1; min-width: 0; }
-.profile-name {
-  font-size: 16px; font-weight: 700; color: #fff;
-  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-}
-.profile-email {
-  font-size: 11px; color: rgba(255,255,255,0.3); margin-top: 1px;
-  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-}
-.profile-edit {
-  display: flex; align-items: center; gap: 4px; flex-shrink: 0;
-  font-size: 10px; font-weight: 600; color: rgba(100,180,255,0.6);
-  text-decoration: none; padding: 6px 10px; border-radius: 20px;
-  background: rgba(100,180,255,0.06); border: 1px solid rgba(100,180,255,0.1);
-  transition: background 0.15s;
-}
-.profile-edit:active { background: rgba(100,180,255,0.12); }
 /* ─── CARTE ───────────────────────────────────── */
 .card {
   width: 100%; max-width: 380px;
@@ -227,10 +216,10 @@ body {
 <!-- HEADER -->
 <div class="wallet-header">
   <div class="wallet-header-left">
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M20 21a8 8 0 1 0-16 0"/></svg>
+    <div class="wallet-header-avatar" id="headerAvatar">?</div>
     <div>
-      <h4>Mon Compte</h4>
-      <span>OK Snap Tips</span>
+      <h4 id="headerName">Membre</h4>
+      <span id="headerEmail">OK Snap Tips</span>
     </div>
   </div>
   <button class="wallet-header-close" onclick="closeWalletPage()">&times;</button>
@@ -238,19 +227,6 @@ body {
 
 <!-- SCROLL -->
 <div class="wallet-scroll">
-
-<!-- PROFIL -->
-<div class="profile-section">
-  <div class="profile-avatar" id="profileAvatar">?</div>
-  <div class="profile-info">
-    <div class="profile-name" id="profileName">Membre</div>
-    <div class="profile-email" id="profileEmail"></div>
-  </div>
-  <a class="profile-edit" id="profileEdit" href="#">
-    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17l-4 4"/><path d="M17 7l-10 10"/><circle cx="19" cy="5" r="3"/></svg>
-    <span>mySafe</span>
-  </a>
-</div>
 
 <!-- CARTE -->
 <div class="card">
@@ -433,10 +409,10 @@ body {
   var user = null;
   try { user = JSON.parse(localStorage.getItem(SSO_KEY)); } catch(e) {}
 
-  // Profil section
+  // Header + carte
   if (user) {
     var name = user.name || 'Membre';
-    document.getElementById('profileName').textContent = name;
+    document.getElementById('headerName').textContent = name;
     document.getElementById('porteurName').textContent = name;
 
     // Avatar : initiales
@@ -444,16 +420,16 @@ body {
     var initials = parts.length > 1
       ? (parts[0][0] + parts[parts.length - 1][0]).toUpperCase()
       : name.substring(0, 2).toUpperCase();
-    document.getElementById('profileAvatar').textContent = initials;
+    document.getElementById('headerAvatar').textContent = initials;
 
-    // Email
+    // Email sous le nom dans le header
     if (user.email) {
-      document.getElementById('profileEmail').textContent = user.email;
+      document.getElementById('headerEmail').textContent = user.email;
     }
 
     // Photo SSO (si dispo)
     if (user.picture) {
-      var av = document.getElementById('profileAvatar');
+      var av = document.getElementById('headerAvatar');
       av.textContent = '';
       av.style.backgroundImage = 'url(' + user.picture + ')';
       av.style.backgroundSize = 'cover';
