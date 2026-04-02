@@ -2436,62 +2436,21 @@ margin: 20px 20px 0;
       <!-- Apple Maps (masqué sur Android) -->
       <a class="loc-nav-btn" id="locNavApple" href="https://maps.apple.com/?address=15+Rue+Vauban,+69006+Lyon&ll=45.7649859,4.8434166" target="_blank">
         <div class="loc-nav-icon">
-          <svg viewBox="0 0 100 100">
-            <defs>
-              <clipPath id="amClip"><rect width="100" height="100" rx="0"/></clipPath>
-            </defs>
-            <g clip-path="url(#amClip)">
-              <!-- Fond carte — zones de couleur irrégulières comme la vraie icône -->
-              <rect width="100" height="100" fill="#F2C94C"/>
-              <polygon points="0,0 55,0 40,45 0,55" fill="#4CD964"/>
-              <polygon points="0,55 40,45 35,100 0,100" fill="#5AC8FA"/>
-              <polygon points="55,0 100,0 100,40 60,50" fill="#FFCC02"/>
-              <polygon points="60,50 100,40 100,100 65,100" fill="#FF6B81"/>
-              <polygon points="40,45 55,0 60,50 35,100 65,100" fill="#F5A623" opacity="0.3"/>
-              <!-- Routes blanches -->
-              <line x1="0" y1="22" x2="100" y2="28" stroke="#fff" stroke-width="2.5" opacity="0.7"/>
-              <line x1="0" y1="48" x2="45" y2="45" stroke="#fff" stroke-width="2" opacity="0.5"/>
-              <line x1="55" y1="52" x2="100" y2="55" stroke="#fff" stroke-width="2" opacity="0.5"/>
-              <line x1="0" y1="75" x2="100" y2="72" stroke="#fff" stroke-width="2" opacity="0.5"/>
-              <line x1="22" y1="0" x2="25" y2="100" stroke="#fff" stroke-width="2" opacity="0.6"/>
-              <line x1="50" y1="0" x2="48" y2="38" stroke="#fff" stroke-width="1.5" opacity="0.4"/>
-              <line x1="52" y1="62" x2="50" y2="100" stroke="#fff" stroke-width="1.5" opacity="0.4"/>
-              <line x1="75" y1="0" x2="78" y2="100" stroke="#fff" stroke-width="2" opacity="0.5"/>
-              <!-- Petites routes diagonales -->
-              <line x1="10" y1="0" x2="40" y2="30" stroke="#fff" stroke-width="1.2" opacity="0.3"/>
-              <line x1="70" y1="65" x2="100" y2="90" stroke="#fff" stroke-width="1.2" opacity="0.3"/>
-              <!-- Cercle bleu central avec bordure blanche -->
-              <circle cx="50" cy="50" r="18" fill="#007AFF"/>
-              <circle cx="50" cy="50" r="16" fill="#007AFF" stroke="#fff" stroke-width="2.5"/>
-              <!-- Flèche navigation (pointant vers le haut) -->
-              <path d="M50 36 L58 55 L50 50 L42 55 Z" fill="#fff"/>
-            </g>
-          </svg>
+          <img src="https://developer.apple.com/news/images/og/maps-og.jpg" alt="Plans" style="width:100%;height:100%;object-fit:cover;border-radius:12px;">
         </div>
         <div class="loc-nav-text"><div class="loc-nav-label">Plans</div><div class="loc-nav-sub">Apple Maps</div></div>
       </a>
       <!-- Google Maps -->
       <a class="loc-nav-btn" id="locNavGoogle" href="https://maps.google.com/?q=Sauf+Imprévu,+15+Rue+Vauban,+69006+Lyon" target="_blank">
-        <div class="loc-nav-icon" style="background:#fff;">
-          <svg viewBox="0 0 92 92" fill="none"><path d="M46 8C30.5 8 18 20.5 18 36c0 24 28 48 28 48s28-24 28-48C74 20.5 61.5 8 46 8z" fill="#EA4335"/><path d="M46 8v40l28-12C74 20.5 61.5 8 46 8z" fill="#DE3023" opacity="0.3"/><path d="M46 8C30.5 8 18 20.5 18 36l28 12V8z" fill="#C52828" opacity="0.1"/><circle cx="46" cy="36" r="12" fill="#fff"/><circle cx="46" cy="36" r="6" fill="#EA4335"/></svg>
+        <div class="loc-nav-icon">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/aa/Google_Maps_icon_%282020%29.svg/200px-Google_Maps_icon_%282020%29.svg.png" alt="Google Maps" style="width:100%;height:100%;object-fit:cover;border-radius:12px;">
         </div>
         <div class="loc-nav-text"><div class="loc-nav-label">Google Maps</div><div class="loc-nav-sub">Carte & itinéraire</div></div>
       </a>
       <!-- Waze -->
       <a class="loc-nav-btn loc-nav-full" id="locNavWaze" href="https://waze.com/ul?q=15+Rue+Vauban,+69006+Lyon&navigate=yes" target="_blank">
-        <div class="loc-nav-icon" style="background:#33CCFF;">
-          <svg viewBox="0 0 100 100">
-            <!-- Ghost body -->
-            <path d="M50 12C30 12 16 28 16 48c0 10 3.5 18.5 9 25l-4 8c-1 2 .5 3 2 2.5l9-4c5 2.5 11 4 18 4 20 0 36-16 36-36S70 12 50 12z" fill="#fff" stroke="#111" stroke-width="3"/>
-            <!-- Eyes -->
-            <circle cx="39" cy="44" r="5" fill="#111"/>
-            <circle cx="61" cy="44" r="5" fill="#111"/>
-            <!-- Smile -->
-            <path d="M37 58c0 0 5 8 13 8s13-8 13-8" stroke="#111" stroke-width="3" stroke-linecap="round" fill="none"/>
-            <!-- Wheels -->
-            <circle cx="35" cy="82" r="6" fill="#111"/>
-            <circle cx="65" cy="82" r="6" fill="#111"/>
-          </svg>
+        <div class="loc-nav-icon">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/e7/Waze_logo.svg/200px-Waze_logo.svg.png" alt="Waze" style="width:100%;height:100%;object-fit:cover;border-radius:12px;background:#33CCFF;">
         </div>
         <div class="loc-nav-text"><div class="loc-nav-label">Waze</div><div class="loc-nav-sub">Navigation temps réel</div></div>
       </a>
