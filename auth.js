@@ -80,7 +80,6 @@ async function initOIDC() {
   if (client) return client;
 
   const issuer = await Issuer.discover('https://openid.mysafe.services');
-  console.log('✓ OIDC Issuer discovered:', issuer.metadata.issuer);
 
   client = new issuer.Client({
     client_id: process.env.OIDC_CLIENT_ID,
@@ -180,17 +179,13 @@ function authRoutes(router) {
       );
 
       // Récupérer les infos utilisateur
-      console.log('✓ OIDC token claims:', JSON.stringify(tokenSet.claims(), null, 2));
-      console.log('✓ OIDC access_token exists:', !!tokenSet.access_token);
       let userInfo = tokenSet.claims(); // fallback = claims du id_token
       try {
         const uinfo = await oidcClient.userinfo(tokenSet.access_token);
-        console.log('✓ OIDC userinfo response:', JSON.stringify(uinfo, null, 2));
         userInfo = { ...userInfo, ...uinfo }; // merge claims + userinfo
       } catch (e) {
         console.warn('⚠ userinfo fetch failed, using token claims only:', e.message);
       }
-      console.log('✓ OIDC final userInfo:', JSON.stringify(userInfo));
 
       // mySafe imbrique les données utilisateur dans userInfo.data
       const d = userInfo.data || {};

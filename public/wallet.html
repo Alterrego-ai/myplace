@@ -329,8 +329,74 @@ body {
   </div>
 </div>
 
+<!-- Premium QR Image (intégrée dans la carte) -->
+<div class="premium-qr-section" id="premiumQRSection">
+  <div class="pqr-header">
+    <div class="pqr-label">SNAP PAY</div>
+    <div class="pqr-status" id="pqrStatus">
+      <div class="pqr-dot"></div>
+      <span id="pqrTimer">Prêt</span>
+    </div>
+  </div>
+  <div class="pqr-canvas-wrap" id="pqrCanvasWrap">
+    <canvas id="premiumQRCanvas" width="280" height="280"></canvas>
+    <div class="pqr-hint" id="pqrHint">Tapez le sceau pour activer</div>
+  </div>
+  <div class="pqr-footer">Présentez l'image au commerçant</div>
+</div>
+
 </div><!-- /wallet-scroll -->
 
+<style>
+/* ─── PREMIUM QR IMAGE ─────────────────────────── */
+.premium-qr-section {
+  width: 100%; max-width: 380px;
+  background: linear-gradient(145deg, #0a1828 0%, #0d2040 50%, #081420 100%);
+  border-radius: 18px; overflow: hidden;
+  border: 1px solid rgba(100,180,255,0.1);
+  box-shadow: 0 20px 60px rgba(0,0,0,0.4), 0 0 40px rgba(20,100,180,0.08);
+}
+.pqr-header {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 14px 18px 10px;
+}
+.pqr-label {
+  font-size: 10px; font-weight: 800; letter-spacing: 0.2em;
+  color: rgba(100,180,255,0.6); text-transform: uppercase;
+}
+.pqr-status { display: flex; align-items: center; gap: 5px; }
+.pqr-dot {
+  width: 5px; height: 5px; border-radius: 50%;
+  background: rgba(255,255,255,0.15); transition: background 0.3s, box-shadow 0.3s;
+}
+.pqr-dot.active { background: #4AE88A; box-shadow: 0 0 6px rgba(74,232,138,0.5); animation: live-pulse 1.5s ease-in-out infinite; }
+.pqr-dot.expiring { background: #ff6b6b; box-shadow: 0 0 6px rgba(255,107,107,0.5); animation: live-pulse 0.8s ease-in-out infinite; }
+#pqrTimer { font-size: 10px; color: rgba(255,255,255,0.3); font-weight: 600; letter-spacing: 0.08em; font-variant-numeric: tabular-nums; }
+#pqrTimer.active { color: #4AE88A; }
+#pqrTimer.expiring { color: #ff6b6b; }
+.pqr-canvas-wrap {
+  position: relative; display: flex; justify-content: center;
+  padding: 0 18px 10px;
+}
+#premiumQRCanvas {
+  width: 100%; max-width: 280px; height: auto; border-radius: 12px;
+  opacity: 0.25; transition: opacity 0.6s ease;
+}
+#premiumQRCanvas.active { opacity: 1; }
+.pqr-hint {
+  position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+  font-size: 11px; font-weight: 600; color: rgba(255,255,255,0.25);
+  letter-spacing: 0.06em; pointer-events: none; transition: opacity 0.4s;
+  text-align: center; white-space: nowrap;
+}
+.pqr-hint.hidden { opacity: 0; }
+.pqr-footer {
+  text-align: center; padding: 6px 18px 14px;
+  font-size: 9px; color: rgba(255,255,255,0.15); letter-spacing: 0.1em; text-transform: uppercase;
+}
+</style>
+
+<script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.min.js"></script>
 <script>
   // ── Close ──
   function closeWalletPage() {
@@ -350,12 +416,218 @@ body {
     document.getElementById('porteurName').textContent = user.name;
   }
 
-  // ── Seal flash ──
+  // ── Member payload (POC — hardcoded, sera dynamique) ──
+  var memberData = {
+    v: '1.0',
+    type: 'MEMBER_CARD',
+    id: 'USR_8F2A',
+    name: (user && user.name) || 'Romaric A.',
+    level: 'GOLD',
+    visits: 47,
+    avg_basket: 68,
+    remise: 15,
+    tips: 3460,
+    network: ['SAUF_IMPREVU'],
+    ts: 0, // set at scan time
+    exp: 0  // expiration
+  };
+
+  // ── Generate token (base64 JSON — POC, pas de vrai JWT) ──
+  function generateToken() {
+    memberData.ts = Date.now();
+    memberData.exp = memberData.ts + 60000; // 60s
+    var json = JSON.stringify(memberData);
+    return btoa(unescape(encodeURIComponent(json)));
+  }
+
+  // ── Premium QR Canvas Renderer ──
+  // Dessine un QR "invisible" : l'image ressemble à un visuel premium branded
+  // mais les modules QR sont encodés en variations subtiles de couleur
+  // Lisible par caméra (jsQR), invisible à l'œil
+
+  function renderPremiumQR(dataUrl) {
+    var canvas = document.getElementById('premiumQRCanvas');
+    var ctx = canvas.getContext('2d');
+    var size = 280;
+    canvas.width = size;
+    canvas.height = size;
+
+    // Génère la matrice QR
+    var qr = qrcode(0, 'M'); // auto type-number, medium ECC
+    qr.addData(dataUrl);
+    qr.make();
+    var modCount = qr.getModuleCount();
+    var modSize = size / modCount;
+
+    // ── 1. Background : gradient premium dark ──
+    var bgGrad = ctx.createLinearGradient(0, 0, size, size);
+    bgGrad.addColorStop(0, '#0c1e38');
+    bgGrad.addColorStop(0.4, '#0f2848');
+    bgGrad.addColorStop(0.7, '#0a1a30');
+    bgGrad.addColorStop(1, '#081428');
+    ctx.fillStyle = bgGrad;
+    ctx.fillRect(0, 0, size, size);
+
+    // ── 2. Subtle texture lines (fond de carte) ──
+    ctx.strokeStyle = 'rgba(100,180,255,0.018)';
+    ctx.lineWidth = 0.5;
+    for (var i = 0; i < size; i += 8) {
+      ctx.beginPath();
+      ctx.moveTo(0, i);
+      ctx.lineTo(size, i);
+      ctx.stroke();
+    }
+
+    // ── 3. QR modules rendus en variations de couleur subtiles ──
+    // Modules "dark" = légèrement plus clair (encoded data)
+    // Modules "light" = fond (presque identique au background)
+    // Le contraste est calculé pour être lisible par caméra mais discret à l'œil
+    for (var row = 0; row < modCount; row++) {
+      for (var col = 0; col < modCount; col++) {
+        var x = col * modSize;
+        var y = row * modSize;
+        var isDark = qr.isDark(row, col);
+
+        if (isDark) {
+          // Module sombre : variation bleu clair — visible caméra
+          // On utilise un gradient radial subtil par module pour l'effet premium
+          var cx = x + modSize / 2;
+          var cy = y + modSize / 2;
+          var mgr = ctx.createRadialGradient(cx, cy, 0, cx, cy, modSize * 0.7);
+          mgr.addColorStop(0, 'rgba(55,100,160,0.85)');
+          mgr.addColorStop(1, 'rgba(40,80,140,0.65)');
+          ctx.fillStyle = mgr;
+          // Arrondi léger sur chaque module
+          var r = modSize * 0.15;
+          var ms = modSize * 0.95;
+          var mx = x + (modSize - ms) / 2;
+          var my = y + (modSize - ms) / 2;
+          ctx.beginPath();
+          ctx.roundRect(mx, my, ms, ms, r);
+          ctx.fill();
+        } else {
+          // Module clair : même fond que le background
+          ctx.fillStyle = 'rgba(10,24,44,0.9)';
+          ctx.fillRect(x, y, modSize, modSize);
+        }
+      }
+    }
+
+    // ── 4. Overlay holographique (sweep diagonal) ──
+    var sweepGrad = ctx.createLinearGradient(0, 0, size, size);
+    sweepGrad.addColorStop(0, 'rgba(100,200,255,0)');
+    sweepGrad.addColorStop(0.35, 'rgba(120,180,255,0.04)');
+    sweepGrad.addColorStop(0.5, 'rgba(180,140,255,0.06)');
+    sweepGrad.addColorStop(0.65, 'rgba(100,230,200,0.04)');
+    sweepGrad.addColorStop(1, 'rgba(100,200,255,0)');
+    ctx.fillStyle = sweepGrad;
+    ctx.fillRect(0, 0, size, size);
+
+    // ── 5. Glow central subtil ──
+    var glowGrad = ctx.createRadialGradient(size * 0.5, size * 0.45, 0, size * 0.5, size * 0.45, size * 0.5);
+    glowGrad.addColorStop(0, 'rgba(20,100,180,0.06)');
+    glowGrad.addColorStop(1, 'rgba(0,0,0,0)');
+    ctx.fillStyle = glowGrad;
+    ctx.fillRect(0, 0, size, size);
+
+    // ── 6. Brand watermark centre (très subtil) ──
+    ctx.save();
+    ctx.globalAlpha = 0.04;
+    ctx.font = '800 32px "Plus Jakarta Sans", sans-serif';
+    ctx.fillStyle = '#fff';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText('OK', size / 2, size / 2 - 8);
+    ctx.font = '600 10px "Plus Jakarta Sans", sans-serif';
+    ctx.fillText('SNAP TIPS', size / 2, size / 2 + 14);
+    ctx.restore();
+
+    // ── 7. Border subtile ──
+    ctx.strokeStyle = 'rgba(100,180,255,0.12)';
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.roundRect(0.5, 0.5, size - 1, size - 1, 12);
+    ctx.stroke();
+
+    // ── 8. Corner accents ──
+    var cl = 16;
+    ctx.strokeStyle = 'rgba(100,180,255,0.2)';
+    ctx.lineWidth = 1.5;
+    // Top-left
+    ctx.beginPath(); ctx.moveTo(2, cl); ctx.lineTo(2, 6); ctx.arcTo(2, 2, 6, 2, 4); ctx.lineTo(cl, 2); ctx.stroke();
+    // Top-right
+    ctx.beginPath(); ctx.moveTo(size - cl, 2); ctx.lineTo(size - 6, 2); ctx.arcTo(size - 2, 2, size - 2, 6, 4); ctx.lineTo(size - 2, cl); ctx.stroke();
+    // Bottom-left
+    ctx.beginPath(); ctx.moveTo(2, size - cl); ctx.lineTo(2, size - 6); ctx.arcTo(2, size - 2, 6, size - 2, 4); ctx.lineTo(cl, size - 2); ctx.stroke();
+    // Bottom-right
+    ctx.beginPath(); ctx.moveTo(size - cl, size - 2); ctx.lineTo(size - 6, size - 2); ctx.arcTo(size - 2, size - 2, size - 2, size - 6, 4); ctx.lineTo(size - 2, size - cl); ctx.stroke();
+  }
+
+  // ── Premium QR Timer ──
+  var pqrInterval = null;
+  var pqrExpiry = 0;
+
+  function activatePremiumQR() {
+    var token = generateToken();
+    var verifyUrl = window.location.origin + '/scan.html?token=' + token;
+
+    // Render le QR invisible dans le canvas
+    renderPremiumQR(verifyUrl);
+
+    // Activer visuellement
+    var canvas = document.getElementById('premiumQRCanvas');
+    canvas.classList.add('active');
+    document.getElementById('pqrHint').classList.add('hidden');
+
+    var dot = document.querySelector('.pqr-dot');
+    var timer = document.getElementById('pqrTimer');
+    dot.className = 'pqr-dot active';
+    timer.className = 'active';
+
+    // Timer 60s
+    pqrExpiry = Date.now() + 60000;
+    clearInterval(pqrInterval);
+    pqrInterval = setInterval(updatePremiumTimer, 200);
+    updatePremiumTimer();
+
+    // Scroll vers l'image
+    document.getElementById('premiumQRSection').scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }
+
+  function updatePremiumTimer() {
+    var remaining = Math.max(0, pqrExpiry - Date.now());
+    var secs = Math.ceil(remaining / 1000);
+    var timer = document.getElementById('pqrTimer');
+    var dot = document.querySelector('.pqr-dot');
+
+    if (remaining <= 0) {
+      clearInterval(pqrInterval);
+      timer.textContent = 'Expiré';
+      timer.className = 'expiring';
+      dot.className = 'pqr-dot expiring';
+      document.getElementById('premiumQRCanvas').classList.remove('active');
+      document.getElementById('pqrHint').textContent = 'Tapez le sceau pour renouveler';
+      document.getElementById('pqrHint').classList.remove('hidden');
+      return;
+    }
+
+    timer.textContent = secs + 's';
+    if (remaining <= 10000) {
+      timer.className = 'expiring';
+      dot.className = 'pqr-dot expiring';
+    } else {
+      timer.className = 'active';
+      dot.className = 'pqr-dot active';
+    }
+  }
+
+  // ── Seal tap → flash + Premium QR ──
   function scanSeal() {
     var flash = document.getElementById('flashEl');
     flash.classList.remove('active');
     void flash.offsetWidth;
     flash.classList.add('active');
+    activatePremiumQR();
   }
 </script>
 </body>

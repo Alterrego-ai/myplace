@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="theme-color" content="#060e1a">
+<title>Scanner — Sauf Imprévu</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  background: #060e1a; color: #fff; min-height: 100dvh; min-height: 100vh;
+  font-family: 'Plus Jakarta Sans', -apple-system, sans-serif;
+  display: flex; flex-direction: column;
+  -webkit-font-smoothing: antialiased;
+}
+/* Header */
+.scan-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 14px 16px; padding-top: calc(14px + env(safe-area-inset-top, 0px));
+  flex-shrink: 0;
+}
+.scan-header h4 { font-size: 15px; font-weight: 700; }
+.scan-header span { font-size: 11px; color: rgba(255,255,255,0.4); }
+.scan-close {
+  background: rgba(255,255,255,0.08); border: none; color: rgba(255,255,255,0.6);
+  width: 32px; height: 32px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 20px; cursor: pointer;
+}
+/* Camera view */
+.camera-wrap {
+  position: relative; width: 100%; max-width: 600px; margin: 0 auto;
+  aspect-ratio: 1; max-height: 50vh; overflow: hidden;
+  border-radius: 0; background: #000;
+}
+.camera-wrap video { width: 100%; height: 100%; object-fit: cover; }
+.camera-wrap canvas { display: none; }
+.scan-crosshair {
+  position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
+  pointer-events: none;
+}
+.crosshair-box {
+  width: 220px; height: 220px; border: 2px solid rgba(100,200,255,0.5);
+  border-radius: 16px; position: relative;
+  box-shadow: 0 0 0 9999px rgba(0,0,0,0.4);
+}
+.crosshair-corner { position: absolute; width: 24px; height: 24px; }
+.crosshair-corner::before, .crosshair-corner::after {
+  content: ''; position: absolute; background: #4AE88A;
+}
+.crosshair-corner::before { width: 24px; height: 3px; border-radius: 2px; }
+.crosshair-corner::after  { width: 3px; height: 24px; border-radius: 2px; }
+.cc-tl { top: -1px; left: -1px; }
+.cc-tr { top: -1px; right: -1px; }
+.cc-tr::before { right: 0; }
+.cc-tr::after { right: 0; }
+.cc-bl { bottom: -1px; left: -1px; }
+.cc-bl::before { bottom: 0; }
+.cc-bl::after { bottom: 0; }
+.cc-br { bottom: -1px; right: -1px; }
+.cc-br::before { right: 0; bottom: 0; }
+.cc-br::after { right: 0; bottom: 0; }
+.scan-hint {
+  position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%);
+  font-size: 12px; color: rgba(255,255,255,0.6); background: rgba(0,0,0,0.6);
+  padding: 6px 16px; border-radius: 20px; white-space: nowrap;
+  backdrop-filter: blur(8px);
+}
+.scan-line {
+  position: absolute; left: 10%; width: 80%; height: 2px;
+  background: linear-gradient(90deg, transparent, #4AE88A, transparent);
+  animation: scan-move 2s ease-in-out infinite;
+  box-shadow: 0 0 8px rgba(74,232,138,0.5);
+}
+@keyframes scan-move { 0%,100% { top: 30%; } 50% { top: 70%; } }
+
+/* Scroll area */
+.scan-content {
+  flex: 1; overflow-y: auto; padding: 16px;
+  max-width: 600px; width: 100%; margin: 0 auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* States */
+.state { display: none; }
+.state.active { display: block; }
+
+/* Member card (after scan) */
+.member-result {
+  background: linear-gradient(135deg, #0d2a4a, #091828);
+  border: 1px solid rgba(100,180,255,0.15); border-radius: 18px;
+  padding: 20px; margin-bottom: 16px;
+}
+.mr-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 14px; }
+.mr-name { font-size: 22px; font-weight: 800; letter-spacing: -0.02em; }
+.mr-id { font-size: 9px; color: rgba(255,255,255,0.3); font-family: monospace; margin-top: 3px; }
+.mr-badge {
+  font-size: 9px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase;
+  padding: 4px 10px; border-radius: 20px;
+  background: linear-gradient(135deg, #8a6a20, #b8920a); border: 1px solid rgba(220,180,60,0.4);
+}
+.mr-stats {
+  display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-bottom: 14px;
+}
+.mr-stat {
+  background: rgba(255,255,255,0.04); border-radius: 10px; padding: 10px;
+  text-align: center;
+}
+.mr-stat-val { font-size: 18px; font-weight: 800; }
+.mr-stat-lbl { font-size: 8px; color: rgba(255,255,255,0.3); text-transform: uppercase; letter-spacing: 0.1em; margin-top: 2px; }
+.mr-remise {
+  background: rgba(74,232,138,0.08); border: 1px solid rgba(74,232,138,0.2);
+  border-radius: 12px; padding: 12px 16px;
+  display: flex; justify-content: space-between; align-items: center;
+  margin-bottom: 14px;
+}
+.mr-remise-left { display: flex; flex-direction: column; gap: 2px; }
+.mr-remise-label { font-size: 8px; color: rgba(255,255,255,0.3); text-transform: uppercase; letter-spacing: 0.1em; }
+.mr-remise-pct { font-size: 28px; font-weight: 800; color: #4AE88A; }
+.mr-tips { font-size: 13px; font-weight: 600; color: rgba(100,180,255,0.8); }
+.mr-tips small { font-size: 10px; color: rgba(255,255,255,0.3); }
+.verified-badge {
+  display: flex; align-items: center; gap: 6px;
+  font-size: 10px; color: #4AE88A; letter-spacing: 0.08em;
+}
+.v-dot { width: 6px; height: 6px; border-radius: 50%; background: #4AE88A; animation: vp 1.5s ease-in-out infinite; }
+@keyframes vp { 0%,100% { box-shadow: 0 0 0 0 rgba(74,232,138,0.5); } 50% { box-shadow: 0 0 0 4px rgba(74,232,138,0); } }
+
+/* Payment form */
+.pay-form {
+  background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 18px; padding: 20px;
+}
+.pay-title { font-size: 13px; font-weight: 700; margin-bottom: 14px; color: rgba(255,255,255,0.8); }
+.pay-amount-wrap {
+  display: flex; align-items: baseline; gap: 4px; margin-bottom: 16px;
+  justify-content: center;
+}
+.pay-amount-input {
+  background: none; border: none; outline: none; color: #fff;
+  font-size: 48px; font-weight: 800; text-align: right;
+  width: 160px; font-family: 'Plus Jakarta Sans', sans-serif;
+  letter-spacing: -0.03em;
+}
+.pay-amount-input::placeholder { color: rgba(255,255,255,0.15); }
+.pay-currency { font-size: 24px; font-weight: 600; color: rgba(255,255,255,0.4); }
+.pay-summary {
+  background: rgba(255,255,255,0.04); border-radius: 10px;
+  padding: 12px; margin-bottom: 16px;
+}
+.pay-row { display: flex; justify-content: space-between; padding: 4px 0; font-size: 13px; }
+.pay-row-label { color: rgba(255,255,255,0.4); }
+.pay-row-val { font-weight: 600; }
+.pay-row-val.green { color: #4AE88A; }
+.pay-row.total { border-top: 1px solid rgba(255,255,255,0.08); margin-top: 6px; padding-top: 8px; font-size: 15px; }
+.pay-row.total .pay-row-val { font-size: 18px; font-weight: 800; }
+.pay-btn {
+  width: 100%; padding: 16px; border: none; border-radius: 14px;
+  background: linear-gradient(135deg, #1464B4, #2888d8);
+  color: #fff; font-size: 16px; font-weight: 700;
+  cursor: pointer; font-family: 'Plus Jakarta Sans', sans-serif;
+  transition: opacity 0.15s;
+}
+.pay-btn:active { opacity: 0.7; }
+.pay-btn:disabled { opacity: 0.3; cursor: default; }
+
+/* Success state */
+.success-card {
+  text-align: center; padding: 40px 20px;
+}
+.success-icon { font-size: 64px; margin-bottom: 16px; }
+.success-title { font-size: 22px; font-weight: 800; margin-bottom: 6px; }
+.success-sub { font-size: 14px; color: rgba(255,255,255,0.4); margin-bottom: 24px; }
+.success-amount { font-size: 42px; font-weight: 800; color: #4AE88A; margin-bottom: 6px; }
+.success-detail { font-size: 12px; color: rgba(255,255,255,0.3); margin-bottom: 24px; }
+.new-scan-btn {
+  background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.12);
+  color: #fff; padding: 12px 32px; border-radius: 28px;
+  font-size: 14px; font-weight: 600; cursor: pointer;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+}
+
+/* Error */
+.error-msg {
+  background: rgba(255,80,80,0.1); border: 1px solid rgba(255,80,80,0.2);
+  border-radius: 12px; padding: 16px; text-align: center;
+  color: #ff6b6b; font-size: 13px; font-weight: 600;
+}
+</style>
+</head>
+<body>
+
+<div class="scan-header">
+  <div>
+    <h4>Scanner</h4>
+    <span>OK Snap · Encaissement</span>
+  </div>
+  <button class="scan-close" onclick="closeScanPage()">&times;</button>
+</div>
+
+<!-- STATE: Camera -->
+<div class="state active" id="stateScan">
+  <div class="camera-wrap">
+    <video id="camVideo" autoplay playsinline muted></video>
+    <canvas id="camCanvas"></canvas>
+    <div class="scan-crosshair">
+      <div class="crosshair-box">
+        <div class="crosshair-corner cc-tl"></div>
+        <div class="crosshair-corner cc-tr"></div>
+        <div class="crosshair-corner cc-bl"></div>
+        <div class="crosshair-corner cc-br"></div>
+      </div>
+    </div>
+    <div class="scan-line"></div>
+    <div class="scan-hint" id="scanHint">Scannez le QR du client</div>
+  </div>
+</div>
+
+<!-- STATE: Member found → payment -->
+<div class="state" id="statePay">
+  <div class="scan-content">
+    <div class="member-result" id="memberResult"></div>
+    <div class="pay-form">
+      <div class="pay-title">Encaissement</div>
+      <div class="pay-amount-wrap">
+        <input type="number" class="pay-amount-input" id="payAmount" placeholder="0" inputmode="decimal" step="0.01" oninput="updatePaySummary()">
+        <span class="pay-currency">&euro;</span>
+      </div>
+      <div class="pay-summary" id="paySummary"></div>
+      <button class="pay-btn" id="payBtn" onclick="processPayment()" disabled>Encaisser</button>
+    </div>
+  </div>
+</div>
+
+<!-- STATE: Success -->
+<div class="state" id="stateSuccess">
+  <div class="scan-content">
+    <div class="success-card" id="successCard"></div>
+  </div>
+</div>
+
+<!-- STATE: Error -->
+<div class="state" id="stateError">
+  <div class="scan-content">
+    <div class="error-msg" id="errorMsg"></div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
+<script>
+  var currentMember = null;
+
+  // ── Close ──
+  function closeScanPage() {
+    stopCamera();
+    if (window.parent !== window) {
+      window.parent.postMessage('closeScan', '*');
+      return;
+    }
+    if (history.length > 1) history.back();
+    else window.location.href = '/';
+  }
+
+  // ── State machine ──
+  function showState(id) {
+    document.querySelectorAll('.state').forEach(function(s) { s.classList.remove('active'); });
+    document.getElementById(id).classList.add('active');
+  }
+
+  // ── Camera + QR scanning ──
+  var video, canvas, ctx, camStream, scanning = false;
+
+  function startCamera() {
+    video = document.getElementById('camVideo');
+    canvas = document.getElementById('camCanvas');
+    ctx = canvas.getContext('2d', { willReadFrequently: true });
+
+    navigator.mediaDevices.getUserMedia({
+      video: { facingMode: 'environment', width: { ideal: 640 }, height: { ideal: 640 } }
+    }).then(function(stream) {
+      camStream = stream;
+      video.srcObject = stream;
+      video.onloadedmetadata = function() {
+        canvas.width = video.videoWidth;
+        canvas.height = video.videoHeight;
+        scanning = true;
+        scanFrame();
+      };
+    }).catch(function(err) {
+      document.getElementById('scanHint').textContent = 'Caméra non disponible';
+      // Check URL for token param (fallback: direct link)
+      checkUrlToken();
+    });
+  }
+
+  function stopCamera() {
+    scanning = false;
+    if (camStream) {
+      camStream.getTracks().forEach(function(t) { t.stop(); });
+      camStream = null;
+    }
+  }
+
+  function scanFrame() {
+    if (!scanning) return;
+    ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+    var imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+    var code = jsQR(imageData.data, canvas.width, canvas.height, { inversionAttempts: 'attemptBoth' });
+
+    if (code && code.data) {
+      var url = code.data;
+      var match = url.match(/[?&]token=([^&]+)/);
+      if (match) {
+        scanning = false;
+        stopCamera();
+        processToken(match[1]);
+        return;
+      }
+    }
+    requestAnimationFrame(scanFrame);
+  }
+
+  // ── Token decode ──
+  function processToken(token) {
+    try {
+      var json = decodeURIComponent(escape(atob(token)));
+      var data = JSON.parse(json);
+
+      // Check expiry
+      if (data.exp && Date.now() > data.exp) {
+        showError('Token expiré. Demandez au client de renouveler.');
+        return;
+      }
+
+      currentMember = data;
+      showMember(data);
+    } catch(e) {
+      showError('QR code invalide.');
+    }
+  }
+
+  function showError(msg) {
+    document.getElementById('errorMsg').innerHTML = msg +
+      '<br><button class="new-scan-btn" style="margin-top:16px;" onclick="resetScan()">Nouveau scan</button>';
+    showState('stateError');
+  }
+
+  // ── Show member ──
+  function showMember(m) {
+    var tipsEur = (m.tips / 100).toFixed(2).replace('.', ',');
+    var html =
+      '<div class="mr-top">' +
+        '<div><div class="mr-name">' + m.name + '</div><div class="mr-id">' + m.id + '</div></div>' +
+        '<div class="mr-badge">' + m.level + '</div>' +
+      '</div>' +
+      '<div class="mr-stats">' +
+        '<div class="mr-stat"><div class="mr-stat-val">' + m.visits + '</div><div class="mr-stat-lbl">Visites</div></div>' +
+        '<div class="mr-stat"><div class="mr-stat-val">' + m.avg_basket + '&euro;</div><div class="mr-stat-lbl">Panier moy.</div></div>' +
+        '<div class="mr-stat"><div class="mr-stat-val">' + m.remise + '%</div><div class="mr-stat-lbl">Remise</div></div>' +
+      '</div>' +
+      '<div class="mr-remise">' +
+        '<div class="mr-remise-left">' +
+          '<div class="mr-remise-label">Remise accord\u00e9e</div>' +
+          '<div class="mr-remise-pct">' + m.remise + '%</div>' +
+        '</div>' +
+        '<div class="mr-tips">' + tipsEur + ' &euro;<br><small>Cagnotte Tips</small></div>' +
+      '</div>' +
+      '<div class="verified-badge"><div class="v-dot"></div> Certifi\u00e9 OK Snap &middot; ' + m.network[0].replace('_', ' ') + '</div>';
+
+    document.getElementById('memberResult').innerHTML = html;
+    document.getElementById('payAmount').value = '';
+    updatePaySummary();
+    showState('statePay');
+    document.getElementById('payAmount').focus();
+  }
+
+  // ── Payment ──
+  function updatePaySummary() {
+    var amount = parseFloat(document.getElementById('payAmount').value) || 0;
+    var btn = document.getElementById('payBtn');
+    var summary = document.getElementById('paySummary');
+
+    if (!currentMember || amount <= 0) {
+      summary.innerHTML = '';
+      btn.disabled = true;
+      return;
+    }
+
+    var remise = currentMember.remise;
+    var discount = amount * remise / 100;
+    var total = amount - discount;
+
+    summary.innerHTML =
+      '<div class="pay-row"><span class="pay-row-label">Montant</span><span class="pay-row-val">' + amount.toFixed(2) + ' &euro;</span></div>' +
+      '<div class="pay-row"><span class="pay-row-label">Remise ' + remise + '%</span><span class="pay-row-val green">&minus; ' + discount.toFixed(2) + ' &euro;</span></div>' +
+      '<div class="pay-row total"><span class="pay-row-label">À payer</span><span class="pay-row-val">' + total.toFixed(2) + ' &euro;</span></div>';
+
+    btn.disabled = false;
+    btn.textContent = 'Encaisser ' + total.toFixed(2) + ' \u20ac';
+  }
+
+  function processPayment() {
+    var amount = parseFloat(document.getElementById('payAmount').value) || 0;
+    var discount = amount * currentMember.remise / 100;
+    var total = amount - discount;
+
+    document.getElementById('successCard').innerHTML =
+      '<div class="success-icon">\u2705</div>' +
+      '<div class="success-title">Paiement valid\u00e9</div>' +
+      '<div class="success-sub">' + currentMember.name + ' &middot; ' + currentMember.level + '</div>' +
+      '<div class="success-amount">' + total.toFixed(2) + ' &euro;</div>' +
+      '<div class="success-detail">Montant initial ' + amount.toFixed(2) + ' &euro; &middot; Remise &minus;' + discount.toFixed(2) + ' &euro;</div>' +
+      '<button class="new-scan-btn" onclick="resetScan()">Nouveau scan</button>';
+
+    showState('stateSuccess');
+  }
+
+  // ── Reset ──
+  function resetScan() {
+    currentMember = null;
+    showState('stateScan');
+    startCamera();
+  }
+
+  // ── Check URL token (if opened via direct link) ──
+  function checkUrlToken() {
+    var params = new URLSearchParams(window.location.search);
+    var token = params.get('token');
+    if (token) {
+      processToken(token);
+    }
+  }
+
+  // ── Init ──
+  checkUrlToken();
+  if (!new URLSearchParams(window.location.search).get('token')) {
+    startCamera();
+  }
+</script>
+</body>
+</html>

@@ -4302,7 +4302,6 @@
             }
 
             function handleQRResult(data) {
-                console.log('QR scanné:', data);
                 alert(data);
             }
 
@@ -4343,7 +4342,7 @@
                 // Le navigateur check le SW toutes les 24h automatiquement
                 // + à chaque navigation. Le controllerchange ci-dessus gère le reload.
             }).catch(err => {
-                console.log('Service worker registration failed:', err);
+                console.warn('Service worker registration failed:', err);
             });
         }
 
