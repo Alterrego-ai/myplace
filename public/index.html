@@ -507,7 +507,6 @@ html.sheet-open,
 html.sheet-open body {
 overflow: hidden !important;
 height: 100% !important;
-touch-action: none;
 }
 
 .bottom-sheet {
@@ -2667,12 +2666,8 @@ margin: 20px 20px 0;
   // ── Scroll lock helpers pour bottom sheets ──
   var _sheetScrollY = 0;
   var _sheetTouchHandler = function(e) {
-    // Laisser scroller dans le sheet content lui-même
-    var sheet = e.target.closest('.bottom-sheet');
-    if (sheet) {
-      var scrollable = sheet.scrollHeight > sheet.clientHeight;
-      if (scrollable) return; // laisser le scroll interne
-    }
+    // Laisser passer les touches dans le bottom-sheet (scroll interne + swipe-to-dismiss)
+    if (e.target.closest('.bottom-sheet')) return;
     e.preventDefault();
   };
 
