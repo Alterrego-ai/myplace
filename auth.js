@@ -222,7 +222,7 @@ function authRoutes(router) {
       delete req.session.oidc;
 
       // Rediriger vers la page d'origine ou le backoffice
-      const returnTo = req.session.returnTo || '/admin';
+      const returnTo = req.session.returnTo || '/';
       delete req.session.returnTo;
 
       // Si returnTo est une URL externe (cross-domain), envoyer un token signé en hash
