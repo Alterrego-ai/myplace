@@ -3251,12 +3251,34 @@ margin: 20px 20px 0;
         '</div>' +
       '</div>';
 
-    // ── Sceau mySafe ──
+    // ── Sceau mySafe animé ──
     html +=
-      '<div style="display:flex;align-items:center;justify-content:center;gap:6px;padding:16px 20px 8px;">' +
+      '<div style="display:flex;align-items:center;justify-content:center;gap:8px;padding:16px 20px 8px;">' +
         '<span style="font-size:10px;color:var(--text-tertiary);font-weight:500;">Vos données sont protégées par</span>' +
-        '<img src="/img/mysafe-logo.png" alt="mySafe" style="height:14px;opacity:0.7;">' +
-      '</div>';
+        '<div style="display:flex;align-items:center;gap:4px;">' +
+          '<svg width="22" height="22" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg" style="filter:drop-shadow(0 1px 4px rgba(20,100,180,0.4));">' +
+            '<defs>' +
+              '<clipPath id="msClip"><circle cx="24" cy="24" r="20"/></clipPath>' +
+              '<radialGradient id="msGrad" cx="40%" cy="35%" r="70%"><stop offset="0%" stop-color="#1a3060"/><stop offset="40%" stop-color="#0a1a3a"/><stop offset="100%" stop-color="#040e1c"/></radialGradient>' +
+              '<linearGradient id="msSweep" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="rgba(100,200,255,0)"/><stop offset="50%" stop-color="rgba(180,140,255,0.18)"/><stop offset="100%" stop-color="rgba(100,200,255,0)"/></linearGradient>' +
+            '</defs>' +
+            '<circle cx="24" cy="24" r="20" fill="url(#msGrad)"/>' +
+            '<rect x="4" y="4" width="40" height="40" fill="url(#msSweep)" clip-path="url(#msClip)" style="transform-origin:24px 24px;animation:ms-holo 4s linear infinite;"/>' +
+            '<circle cx="24" cy="24" r="20" fill="none" stroke="rgba(150,220,255,0.5)" stroke-width="0.8" style="animation:ms-border 4s linear infinite;"/>' +
+            '<path d="M20 23 Q20 17 24 17 Q28 17 28 23" fill="none" stroke="rgba(255,255,255,0.95)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" style="filter:drop-shadow(0 0 2px rgba(200,240,255,1));animation:ms-bounce 5s ease-in-out infinite;transform-origin:24px 21px;"/>' +
+            '<rect x="18.5" y="23" width="11" height="9" rx="1.8" fill="rgba(255,255,255,0.06)" stroke="rgba(255,255,255,0.92)" stroke-width="1.5" stroke-linejoin="round" style="filter:drop-shadow(0 0 1.5px rgba(200,240,255,0.8));"/>' +
+            '<circle cx="24" cy="27" r="1.4" fill="rgba(255,255,255,0.85)" style="animation:ms-pulse 5s ease-in-out infinite;"/>' +
+            '<rect x="23.3" y="27.6" width="1.4" height="2.2" rx="0.5" fill="rgba(255,255,255,0.85)"/>' +
+          '</svg>' +
+          '<span style="font-size:10px;color:var(--text-tertiary);font-weight:600;letter-spacing:0.3px;">mysafe</span>' +
+        '</div>' +
+      '</div>' +
+      '<style>' +
+        '@keyframes ms-holo{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}' +
+        '@keyframes ms-border{0%{stroke:rgba(150,220,255,0.5)}50%{stroke:rgba(100,220,200,0.6)}100%{stroke:rgba(150,220,255,0.5)}}' +
+        '@keyframes ms-bounce{0%,100%{transform:translateY(0)}30%{transform:translateY(-2px)}60%{transform:translateY(0)}}' +
+        '@keyframes ms-pulse{0%,100%{fill:rgba(255,255,255,0.7)}50%{fill:rgba(255,255,255,1)}}' +
+      '</style>';
 
     content.innerHTML = html;
     document.getElementById('sheetOverlay').classList.add('visible');
