@@ -711,7 +711,7 @@ animation: none;
 background: var(--bg-card); border-radius: var(--radius);
 border: 1px solid var(--border); padding: 20px; margin-bottom: 14px;
 }
-.share-msg-wrap { position: relative; }
+.share-msg-wrap { position: relative; margin-bottom: 14px; }
 .share-msg-input {
 width: 100%; border: 1px solid var(--border); border-radius: 10px;
 padding: 12px 52px 12px 14px; font-size: 14px; font-family: var(--font);
@@ -2694,11 +2694,9 @@ margin: 20px 20px 0;
   <div class="share-scroll">
 
     <!-- Message personnalisé -->
-    <div class="share-section">
-      <div class="share-msg-wrap">
-        <textarea class="share-msg-input" id="shareMsgInput" rows="3" placeholder="Rejoins-moi boire un verre chez Sauf Imprévu, j'y serai ce soir à 18h30"></textarea>
-        <button class="share-inspire-btn" onclick="shareInspire()" id="shareInspireBtn">✨ Inspirer</button>
-      </div>
+    <div class="share-msg-wrap">
+      <textarea class="share-msg-input" id="shareMsgInput" rows="3" placeholder="Rejoins-moi boire un verre chez Sauf Imprévu, j'y serai ce soir à 18h30"></textarea>
+      <button class="share-inspire-btn" onclick="shareInspire()" id="shareInspireBtn">✨ Inspirer</button>
     </div>
 
     <!-- QR + lien + partage -->
