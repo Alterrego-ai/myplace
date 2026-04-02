@@ -503,12 +503,11 @@ backdrop-filter: blur(2px);
 opacity: 1;
 pointer-events: all;
 }
-body.sheet-open {
-overflow: hidden;
-position: fixed;
-width: 100%;
-left: 0;
-right: 0;
+html.sheet-open,
+html.sheet-open body {
+overflow: hidden !important;
+height: 100% !important;
+touch-action: none;
 }
 
 .bottom-sheet {
@@ -2667,14 +2666,24 @@ margin: 20px 20px 0;
 
   // ── Scroll lock helpers pour bottom sheets ──
   var _sheetScrollY = 0;
+  var _sheetTouchHandler = function(e) {
+    // Laisser scroller dans le sheet content lui-même
+    var sheet = e.target.closest('.bottom-sheet');
+    if (sheet) {
+      var scrollable = sheet.scrollHeight > sheet.clientHeight;
+      if (scrollable) return; // laisser le scroll interne
+    }
+    e.preventDefault();
+  };
+
   function lockBodyScroll() {
     _sheetScrollY = window.scrollY;
-    document.body.classList.add('sheet-open');
-    document.body.style.top = '-' + _sheetScrollY + 'px';
+    document.documentElement.classList.add('sheet-open');
+    document.addEventListener('touchmove', _sheetTouchHandler, { passive: false });
   }
   function unlockBodyScroll() {
-    document.body.classList.remove('sheet-open');
-    document.body.style.top = '';
+    document.documentElement.classList.remove('sheet-open');
+    document.removeEventListener('touchmove', _sheetTouchHandler);
     window.scrollTo(0, _sheetScrollY);
   }
 
@@ -2698,6 +2707,54 @@ margin: 20px 20px 0;
     var wg = document.getElementById('walletGoogleSheet');
     if (wg) wg.classList.remove('visible');
   }
+
+  // ── Swipe-to-dismiss sur tous les bottom sheets ──
+  (function initSheetSwipe() {
+    var sheets = document.querySelectorAll('.bottom-sheet');
+    sheets.forEach(function(sheet) {
+      var startY = 0, currentY = 0, dragging = false;
+
+      sheet.addEventListener('touchstart', function(e) {
+        // Swipe uniquement depuis le handle ou le haut du sheet
+        var t = e.target;
+        var isHandle = t.classList.contains('sheet-handle');
+        var atTop = sheet.scrollTop <= 0;
+        if (isHandle || atTop) {
+          startY = e.touches[0].clientY;
+          currentY = startY;
+          dragging = true;
+          sheet.style.transition = 'none';
+        }
+      }, { passive: true });
+
+      sheet.addEventListener('touchmove', function(e) {
+        if (!dragging) return;
+        currentY = e.touches[0].clientY;
+        var dy = currentY - startY;
+        if (dy > 0) {
+          sheet.style.transform = 'translateX(-50%) translateY(' + dy + 'px)';
+        }
+      }, { passive: true });
+
+      sheet.addEventListener('touchend', function() {
+        if (!dragging) return;
+        dragging = false;
+        var dy = currentY - startY;
+        sheet.style.transition = 'transform 0.35s cubic-bezier(0.32, 0.72, 0, 1)';
+        if (dy > 100) {
+          // Fermer
+          sheet.style.transform = 'translateX(-50%) translateY(100%)';
+          setTimeout(function() {
+            closeAllSheets();
+            sheet.style.transform = '';
+          }, 350);
+        } else {
+          // Rebond
+          sheet.style.transform = 'translateX(-50%) translateY(0)';
+        }
+      }, { passive: true });
+    });
+  })();
 
   // ── Navigation par onglet (bottom bar) ──
   function setActiveNav(id) {
