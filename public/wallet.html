@@ -526,10 +526,14 @@ body {
       : name.substring(0, 2).toUpperCase();
     avatarEl.textContent = initials;
 
-    // Photo SSO (si dispo)
-    if (user.picture) {
+    // Photo : SSO ou fallback avatar pour démo
+    var pic = user.picture
+      || (user.email === 'rriquoir@me.com' ? 'img/avatar_RR.jpg' : null);
+    if (pic) {
       avatarEl.textContent = '';
-      avatarEl.style.backgroundImage = 'url(' + user.picture + ')';
+      avatarEl.style.backgroundImage = 'url(' + pic + ')';
+      avatarEl.style.backgroundSize = 'cover';
+      avatarEl.style.backgroundPosition = 'center';
     }
 
     // Afficher "Mes informations" + remplir
