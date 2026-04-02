@@ -530,8 +530,8 @@ box-shadow: 0 -8px 40px rgba(0,0,0,0.2);
 
 /* Fullscreen bottom sheet (location) */
 .bottom-sheet-full {
-height: 95vh;
-height: 95dvh;
+height: calc(95dvh - env(safe-area-inset-top, 0px));
+height: calc(95vh - env(safe-area-inset-top, 0px));
 display: flex;
 flex-direction: column;
 padding: 0 !important;
