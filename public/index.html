@@ -519,7 +519,7 @@ max-width: 430px;
 background: var(--bg-card);
 border-radius: 24px 24px 0 0;
 z-index: 201;
-padding: 0 0 env(safe-area-inset-bottom, 8px);
+padding: 0;
 transition: transform 0.35s cubic-bezier(0.32, 0.72, 0, 1);
 box-shadow: none;
 }
@@ -627,7 +627,7 @@ color: var(--text-tertiary);
 }
 
 .sheet-cancel {
-margin: 4px 12px 4px;
+margin: 4px 12px calc(4px + env(safe-area-inset-bottom, 0px));
 padding: 14px;
 text-align: center;
 font-size: 15px;
