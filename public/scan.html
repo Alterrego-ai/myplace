@@ -508,49 +508,102 @@ body {
     showState('stateSuccess');
   }
 
-  // ── Product lookup ──
+  // ── Product lookup : local → Open Food Facts ──
   function lookupProduct(ean) {
     var product = productsDB.find(function(p) { return p.ean === ean; });
     if (product) {
       showProduct(product);
-    } else {
-      showError('Produit non trouvé<br><span style="font-size:11px;color:rgba(255,255,255,0.3);font-weight:400;">EAN : ' + ean + '</span>');
+      return;
     }
+    // Fallback : Open Food Facts API
+    document.getElementById('scanHint').textContent = 'Recherche produit…';
+    fetch('https://world.openfoodfacts.org/api/v2/product/' + ean + '.json')
+      .then(function(r) { return r.json(); })
+      .then(function(data) {
+        if (data.status === 1 && data.product) {
+          var p = data.product;
+          var offProduct = {
+            ean: ean,
+            name: p.product_name_fr || p.product_name || 'Produit inconnu',
+            producer: p.brands || '',
+            region: p.origins || '',
+            type: p.categories_tags ? p.categories_tags[0].replace('en:', '').replace(/-/g, ' ') : '',
+            grape: '',
+            volume: p.quantity || '',
+            alcohol: p.alcohol_100g ? p.alcohol_100g + '%' : '',
+            price_buy: 0,
+            price_sell: 0,
+            stock: -1,
+            notes: '',
+            image: p.image_front_small_url || '',
+            nutriscore: p.nutriscore_grade || '',
+            source: 'openfoodfacts'
+          };
+          showProduct(offProduct);
+        } else {
+          showError('Produit non trouvé<br><span style="font-size:11px;color:rgba(255,255,255,0.3);font-weight:400;">EAN : ' + ean + '</span>');
+        }
+      })
+      .catch(function() {
+        showError('Produit non trouvé<br><span style="font-size:11px;color:rgba(255,255,255,0.3);font-weight:400;">EAN : ' + ean + '</span>');
+      });
   }
 
   function showProduct(p) {
     var typeClass = 'pr-type--soft';
-    if (p.type.toLowerCase().indexOf('rouge') >= 0) typeClass = 'pr-type--rouge';
-    else if (p.type.toLowerCase().indexOf('blanc') >= 0) typeClass = 'pr-type--blanc';
-    else if (p.type.toLowerCase().indexOf('efferv') >= 0 || p.type.toLowerCase().indexOf('crémant') >= 0) typeClass = 'pr-type--efferv';
+    var typeLower = (p.type || '').toLowerCase();
+    if (typeLower.indexOf('rouge') >= 0) typeClass = 'pr-type--rouge';
+    else if (typeLower.indexOf('blanc') >= 0) typeClass = 'pr-type--blanc';
+    else if (typeLower.indexOf('efferv') >= 0 || typeLower.indexOf('cr\u00e9mant') >= 0) typeClass = 'pr-type--efferv';
 
-    var margin = p.price_sell - p.price_buy;
-    var marginPct = ((margin / p.price_sell) * 100).toFixed(0);
+    var html = '';
 
-    var stockClass = p.stock > 10 ? 'pr-stock--ok' : (p.stock > 0 ? 'pr-stock--low' : 'pr-stock--out');
-    var stockText = p.stock > 10 ? 'En stock (' + p.stock + ')' : (p.stock > 0 ? 'Stock bas (' + p.stock + ')' : 'Rupture');
+    // Image (Open Food Facts)
+    if (p.image) {
+      html += '<div style="text-align:center;margin-bottom:14px;"><img src="' + p.image + '" style="max-height:120px;border-radius:12px;"></div>';
+    }
 
-    var html =
-      '<div class="pr-type ' + typeClass + '">' + p.type + '</div>' +
-      '<div class="pr-name">' + p.name + '</div>' +
-      '<div class="pr-producer">' + p.producer + (p.region ? ' · ' + p.region : '') + '</div>' +
-      '<div class="pr-details">';
+    if (p.type) html += '<div class="pr-type ' + typeClass + '">' + p.type + '</div>';
+    html += '<div class="pr-name">' + p.name + '</div>';
+    if (p.producer) html += '<div class="pr-producer">' + p.producer + (p.region ? ' \u00b7 ' + p.region : '') + '</div>';
 
-    if (p.grape) html += '<div class="pr-detail"><div class="pr-detail-lbl">Cépage</div><div class="pr-detail-val">' + p.grape + '</div></div>';
+    // Nutriscore (OFF)
+    if (p.nutriscore) {
+      var nsColors = { a: '#038141', b: '#85BB2F', c: '#FECB02', d: '#EE8100', e: '#E63E11' };
+      var nsColor = nsColors[p.nutriscore] || '#888';
+      html += '<div style="margin:8px 0 12px;"><span style="display:inline-block;background:' + nsColor + ';color:#fff;font-size:11px;font-weight:800;padding:3px 10px;border-radius:6px;text-transform:uppercase;">Nutri-Score ' + p.nutriscore.toUpperCase() + '</span></div>';
+    }
+
+    // Détails
+    html += '<div class="pr-details">';
+    if (p.grape) html += '<div class="pr-detail"><div class="pr-detail-lbl">C\u00e9page</div><div class="pr-detail-val">' + p.grape + '</div></div>';
     if (p.volume) html += '<div class="pr-detail"><div class="pr-detail-lbl">Volume</div><div class="pr-detail-val">' + p.volume + '</div></div>';
     if (p.alcohol && p.alcohol !== '0%') html += '<div class="pr-detail"><div class="pr-detail-lbl">Alcool</div><div class="pr-detail-val">' + p.alcohol + '</div></div>';
-    html += '<div class="pr-detail"><div class="pr-detail-lbl">Stock</div><div class="pr-detail-val ' + stockClass + '">' + stockText + '</div></div>';
+    if (p.stock >= 0) {
+      var stockClass = p.stock > 10 ? 'pr-stock--ok' : (p.stock > 0 ? 'pr-stock--low' : 'pr-stock--out');
+      var stockText = p.stock > 10 ? 'En stock (' + p.stock + ')' : (p.stock > 0 ? 'Stock bas (' + p.stock + ')' : 'Rupture');
+      html += '<div class="pr-detail"><div class="pr-detail-lbl">Stock</div><div class="pr-detail-val ' + stockClass + '">' + stockText + '</div></div>';
+    }
     html += '</div>';
 
-    html +=
-      '<div class="pr-prices">' +
-        '<div class="pr-price-buy">Achat<br><strong>' + p.price_buy.toFixed(2) + ' \u20ac</strong></div>' +
-        '<div style="text-align:center;"><div class="pr-margin">Marge ' + marginPct + '%</div><div style="font-size:11px;color:rgba(255,255,255,0.2);">+' + margin.toFixed(2) + ' \u20ac</div></div>' +
-        '<div class="pr-price-sell">Vente<br><strong>' + p.price_sell.toFixed(2) + ' \u20ac</strong></div>' +
-      '</div>';
+    // Prix (seulement si renseignés)
+    if (p.price_sell > 0) {
+      var margin = p.price_sell - p.price_buy;
+      var marginPct = ((margin / p.price_sell) * 100).toFixed(0);
+      html +=
+        '<div class="pr-prices">' +
+          '<div class="pr-price-buy">Achat<br><strong>' + p.price_buy.toFixed(2) + ' \u20ac</strong></div>' +
+          '<div style="text-align:center;"><div class="pr-margin">Marge ' + marginPct + '%</div><div style="font-size:11px;color:rgba(255,255,255,0.2);">+' + margin.toFixed(2) + ' \u20ac</div></div>' +
+          '<div class="pr-price-sell">Vente<br><strong>' + p.price_sell.toFixed(2) + ' \u20ac</strong></div>' +
+        '</div>';
+    }
 
     if (p.notes) html += '<div class="pr-notes">' + p.notes + '</div>';
-    html += '<div class="pr-ean">EAN ' + p.ean + '</div>';
+
+    // Source
+    html += '<div class="pr-ean">EAN ' + p.ean;
+    if (p.source === 'openfoodfacts') html += ' \u00b7 <span style="color:rgba(100,180,255,0.5);">via Open Food Facts</span>';
+    html += '</div>';
 
     document.getElementById('productResult').innerHTML = html;
     showState('stateProduct');
