@@ -506,7 +506,6 @@ pointer-events: all;
 html.sheet-open,
 html.sheet-open body {
 overflow: hidden !important;
-height: 100% !important;
 }
 
 .bottom-sheet {
@@ -519,7 +518,7 @@ max-width: 430px;
 background: var(--bg-card);
 border-radius: 24px 24px 0 0;
 z-index: 201;
-padding: 0;
+padding: 0 0 max(24px, env(safe-area-inset-bottom));
 transition: transform 0.35s cubic-bezier(0.32, 0.72, 0, 1);
 box-shadow: none;
 }
@@ -627,7 +626,7 @@ color: var(--text-tertiary);
 }
 
 .sheet-cancel {
-margin: 4px 12px calc(4px + env(safe-area-inset-bottom, 0px));
+margin: 4px 12px 0;
 padding: 14px;
 text-align: center;
 font-size: 15px;
