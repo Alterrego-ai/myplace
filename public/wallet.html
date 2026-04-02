@@ -62,18 +62,39 @@ body {
   font-size: 20px; font-weight: 700; color: var(--text);
   margin: 4px 0 0; text-align: center;
 }
-/* ─── MES INFORMATIONS (lien chevron) ────────── */
-.wallet-info-link {
+/* ─── MES INFORMATIONS (carte dépliable) ─────── */
+.info-card {
   width: 100%; max-width: 380px;
-  display: flex; align-items: center; justify-content: space-between;
-  padding: 13px 16px; border-radius: 14px;
+  border-radius: 16px; overflow: hidden;
   background: var(--bg-card); border: 1px solid var(--border);
-  text-decoration: none; color: var(--text);
-  font-size: 14px; font-weight: 600;
-  transition: opacity 0.15s;
 }
-.wallet-info-link:active { opacity: 0.7; }
-.wallet-info-link svg { flex-shrink: 0; color: var(--text-sub); }
+.info-card-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 14px 16px; cursor: pointer; -webkit-tap-highlight-color: transparent;
+}
+.info-card-header:active { opacity: 0.7; }
+.info-card-left { display: flex; align-items: center; gap: 10px; }
+.info-card-left svg { flex-shrink: 0; color: var(--text-sub); }
+.info-card-left span { font-size: 14px; font-weight: 600; color: var(--text); }
+.info-card-chevron {
+  flex-shrink: 0; color: var(--text-sub);
+  transition: transform 0.25s ease;
+}
+.info-card.open .info-card-chevron { transform: rotate(90deg); }
+.info-card-body {
+  max-height: 0; overflow: hidden;
+  transition: max-height 0.3s ease;
+}
+.info-card.open .info-card-body { max-height: 200px; }
+.info-row {
+  display: flex; align-items: center; gap: 12px;
+  padding: 11px 16px;
+  border-top: 1px solid var(--border);
+}
+.info-row svg { flex-shrink: 0; color: var(--text-sub); width: 20px; height: 20px; }
+.info-row-content { display: flex; flex-direction: column; gap: 1px; }
+.info-row-label { font-size: 9px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: #1464B4; }
+.info-row-value { font-size: 13px; font-weight: 500; color: var(--text); }
 /* ─── LOGIN PROMPT (déconnecté) ──────────────── */
 .login-prompt {
   width: 100%; max-width: 380px; text-align: center;
@@ -276,10 +297,31 @@ body {
 </div>
 
 <!-- MES INFORMATIONS -->
-<a class="wallet-info-link" id="infoLink" href="#" style="display:none">
-  <span>Mes informations</span>
-  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
-</a>
+<div class="info-card" id="infoCard" style="display:none">
+  <div class="info-card-header" onclick="toggleInfoCard()">
+    <div class="info-card-left">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M20 21a8 8 0 1 0-16 0"/></svg>
+      <span>Mes informations</span>
+    </div>
+    <svg class="info-card-chevron" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+  </div>
+  <div class="info-card-body">
+    <div class="info-row">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+      <div class="info-row-content">
+        <span class="info-row-label">Email</span>
+        <span class="info-row-value" id="infoEmail">—</span>
+      </div>
+    </div>
+    <div class="info-row">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6A19.79 19.79 0 0 1 2.12 4.18 2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.362 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.338 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+      <div class="info-row-content">
+        <span class="info-row-label">Téléphone</span>
+        <span class="info-row-value" id="infoPhone">—</span>
+      </div>
+    </div>
+  </div>
+</div>
 
 <!-- CARTE -->
 <div class="card">
@@ -448,6 +490,10 @@ body {
 
 <script>
   // ── Close ──
+  function toggleInfoCard() {
+    document.getElementById('infoCard').classList.toggle('open');
+  }
+
   function closeWalletPage() {
     if (window.parent !== window) {
       window.parent.postMessage('closeWallet', '*');
@@ -486,8 +532,10 @@ body {
       avatarEl.style.backgroundImage = 'url(' + user.picture + ')';
     }
 
-    // Afficher "Mes informations"
-    document.getElementById('infoLink').style.display = '';
+    // Afficher "Mes informations" + remplir
+    document.getElementById('infoCard').style.display = '';
+    if (user.email) document.getElementById('infoEmail').textContent = user.email;
+    if (user.phone) document.getElementById('infoPhone').textContent = user.phone;
   } else {
     // ── Déconnecté ──
     document.getElementById('loginPrompt').style.display = '';
