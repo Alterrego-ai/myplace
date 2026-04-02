@@ -228,11 +228,18 @@ overflow: hidden;
 border-radius: 0;
 }
 
-/* PWA standalone + Capacitor + mobile: hero sous la status bar */
-@media (max-width: 768px), (display-mode: standalone) {
+/* PWA standalone + Capacitor: hero sous la status bar */
+@media (display-mode: standalone) {
   .hero {
     height: calc(220px + env(safe-area-inset-top, 0px));
+    margin-top: calc(-1 * env(safe-area-inset-top, 0px));
+    padding-top: 0;
   }
+}
+/* Capacitor native: même comportement via classe JS */
+body.capacitor-native .hero {
+  height: calc(220px + env(safe-area-inset-top, 0px));
+  margin-top: calc(-1 * env(safe-area-inset-top, 0px));
 }
 
 /* On desktop, clip the hero top corners to match phone screen */
