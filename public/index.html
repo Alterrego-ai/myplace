@@ -1570,7 +1570,7 @@ background: var(--primary); color: #fff; font-size: 26px; font-weight: 700; over
   }
 }
 
-/* ── BOTTOM BAR ── */
+/* ── BOTTOM BAR (iOS glass style) ── */
 .bottom-bar {
 position: fixed;
 bottom: 0;
@@ -1579,17 +1579,27 @@ right: 0;
 width: 100%;
 max-width: 600px;
 margin: 0 auto;
-background: var(--bg-card);
-border-top: 1px solid var(--border);
+background: rgba(255,255,255,0.72);
+-webkit-backdrop-filter: saturate(180%) blur(20px);
+backdrop-filter: saturate(180%) blur(20px);
+border-top: 0.5px solid rgba(0,0,0,0.08);
 display: flex;
 align-items: center;
 justify-content: space-around;
-padding: 8px 0;
-/* iOS safe area: fallback 8px, then env() override */
-padding-bottom: 8px;
-padding-bottom: constant(safe-area-inset-bottom); /* iOS < 11.2 */
-padding-bottom: calc(8px + env(safe-area-inset-bottom, 0px));
+padding: 6px 0;
+padding-bottom: calc(6px + env(safe-area-inset-bottom, 0px));
 z-index: 100;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .bottom-bar {
+    background: rgba(26,38,54,0.75);
+    border-top-color: rgba(255,255,255,0.06);
+  }
+}
+[data-theme="dark"] .bottom-bar {
+  background: rgba(26,38,54,0.75);
+  border-top-color: rgba(255,255,255,0.06);
 }
 
 /* Desktop: absolute inside phone-screen (outside phone-scroll) */
@@ -1608,25 +1618,25 @@ z-index: 100;
 display: flex;
 flex-direction: column;
 align-items: center;
-gap: 2px;
-padding: 2px 16px;
+gap: 1px;
+padding: 4px 16px;
 cursor: pointer;
 border: none;
 background: none;
-color: var(--text-tertiary);
-transition: var(--transition);
-border-radius: var(--radius-sm);
+color: #8e8e93;
+transition: color 0.2s ease;
 text-decoration: none;
+-webkit-tap-highlight-color: transparent;
 }
 
 .nav-item.active { color: var(--primary); }
 
-.nav-item svg { width: 28px; height: 28px; display: block; }
+.nav-item svg { width: 26px; height: 26px; display: block; }
 
 .nav-label {
-font-size: 11px;
-font-weight: 600;
-letter-spacing: 0.02em;
+font-size: 10px;
+font-weight: 500;
+letter-spacing: 0.01em;
 }
 
 .nav-dot {
@@ -2552,7 +2562,7 @@ margin: 20px 20px 0;
         '.phone-screen { background: #1a2636 !important; color: #eef2f7 !important; }' +
         '.phone-scroll { background: #0f1923 !important; color: #eef2f7 !important; }' +
         '.spacer { background: #0f1923 !important; }' +
-        '.bottom-bar { background: #1a2636 !important; }' +
+        '.bottom-bar { background: rgba(26,38,54,0.75) !important; -webkit-backdrop-filter: saturate(180%) blur(20px) !important; backdrop-filter: saturate(180%) blur(20px) !important; border-top-color: rgba(255,255,255,0.06) !important; }' +
         '.logo-wrap, .section, .user-row, .google-row { background: #1a2636 !important; }' +
         '.info, .identity, .ctas { color: #eef2f7 !important; }' +
         '.merchant-name, .address-text, h2, h3 { color: #eef2f7 !important; }' +
