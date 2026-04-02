@@ -528,6 +528,125 @@ transform: translateX(-50%) translateY(0);
 box-shadow: 0 -8px 40px rgba(0,0,0,0.2);
 }
 
+/* Fullscreen bottom sheet (location) */
+.bottom-sheet-full {
+height: 95vh;
+height: 95dvh;
+display: flex;
+flex-direction: column;
+padding: 0 !important;
+overflow: hidden;
+}
+.bottom-sheet-full .sheet-handle {
+margin: 8px auto 0;
+flex-shrink: 0;
+}
+
+/* Location sheet styles */
+.loc-header {
+position: relative; overflow: hidden;
+padding: 12px 20px 18px;
+background: linear-gradient(160deg, #1a2636 0%, var(--primary-dark, #2a4f6b) 40%, var(--primary) 100%);
+color: #fff; flex-shrink: 0;
+}
+.loc-header::before {
+content: ''; position: absolute; top: -40%; right: -20%;
+width: 240px; height: 240px; border-radius: 50%;
+background: radial-gradient(circle, rgba(200,169,110,0.12) 0%, transparent 70%);
+pointer-events: none;
+}
+.loc-header-top {
+display: flex; align-items: center; justify-content: space-between;
+margin-bottom: 10px; position: relative; z-index: 1;
+}
+.loc-header-badge {
+display: inline-flex; align-items: center; gap: 6px;
+background: rgba(255,255,255,0.1); backdrop-filter: blur(8px);
+-webkit-backdrop-filter: blur(8px);
+padding: 5px 12px; border-radius: 20px;
+font-size: 11px; font-weight: 500; letter-spacing: 0.03em; color: #fff;
+}
+.loc-header-info { position: relative; z-index: 1; }
+.loc-header-info h4 { font-size: 22px; font-weight: 700; margin: 0; letter-spacing: -0.02em; }
+.loc-header-info p { font-size: 13px; opacity: 0.7; margin-top: 3px; font-weight: 400; }
+.loc-header-accent {
+position: absolute; bottom: 0; left: 0; right: 0; height: 3px;
+background: linear-gradient(90deg, var(--accent, #c8a96e), rgba(200,169,110,0.2), transparent);
+}
+
+/* Map */
+.loc-map {
+flex-shrink: 0; position: relative;
+height: 38vh; min-height: 180px;
+background: var(--bg-subtle);
+transition: height 0.3s ease;
+}
+.loc-map.loc-expanded { height: 70vh; }
+.loc-map iframe { width: 100%; height: 100%; border: none; }
+.loc-map-toggle {
+position: absolute; bottom: 10px; right: 10px; z-index: 10;
+width: 34px; height: 34px; border-radius: 8px;
+background: var(--bg-card); border: 1px solid var(--border);
+display: flex; align-items: center; justify-content: center;
+cursor: pointer; box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+}
+
+/* Scrollable content */
+.loc-scroll {
+flex: 1; overflow-y: auto; padding: 14px 16px;
+-webkit-overflow-scrolling: touch;
+overscroll-behavior: contain;
+}
+
+/* Address card */
+.loc-address {
+background: var(--bg-card); border-radius: var(--radius);
+border: 1px solid var(--border); padding: 14px 16px;
+margin-bottom: 12px; display: flex; align-items: center; gap: 12px;
+cursor: pointer;
+}
+.loc-address:active { background: var(--bg-subtle); }
+.loc-address-icon {
+width: 42px; height: 42px; border-radius: 11px;
+background: linear-gradient(135deg, var(--primary), var(--primary-light, #5a8aab));
+display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+}
+.loc-address-text { flex: 1; }
+.loc-street { font-size: 15px; font-weight: 700; color: var(--text); }
+.loc-city { font-size: 12px; color: var(--text-secondary); margin-top: 2px; }
+.loc-copy { font-size: 11px; color: var(--text-tertiary); display: flex; align-items: center; gap: 4px; flex-shrink: 0; }
+
+/* Nav buttons */
+.loc-nav-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 12px; }
+.loc-nav-btn {
+display: flex; align-items: center; gap: 12px;
+padding: 14px 16px; background: var(--bg-card);
+border: 1px solid var(--border); border-radius: var(--radius);
+text-decoration: none; color: var(--text);
+}
+.loc-nav-btn:active { background: var(--bg-subtle); }
+.loc-nav-full { grid-column: 1 / -1; }
+.loc-nav-icon {
+width: 40px; height: 40px; border-radius: 10px;
+display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+}
+.loc-nav-label { font-size: 14px; font-weight: 600; }
+.loc-nav-sub { font-size: 11px; color: var(--text-tertiary); margin-top: 1px; }
+
+/* Distance badge */
+.loc-distance {
+display: flex; align-items: center; justify-content: center; gap: 10px;
+padding: 14px 16px; background: var(--bg-card);
+border: 1px solid var(--border); border-radius: var(--radius);
+font-size: 14px; font-weight: 600; color: var(--text-secondary);
+}
+.loc-distance.loc-arrived {
+background: linear-gradient(135deg, #10b981, #059669);
+color: #fff; border-color: #059669;
+font-size: 16px; font-weight: 700;
+}
+.loc-dist-loading { color: var(--text-tertiary); font-weight: 400; font-size: 13px; }
+
 /* Desktop: constrain sheet inside phone-screen */
 @media (min-width: 769px) {
   .sheet-overlay {
@@ -2218,46 +2337,81 @@ margin: 20px 20px 0;
 
 <div class="sheet-overlay" id="sheetOverlay" onclick="closeAllSheets()"></div>
 
-<!-- BOTTOM SHEET ADRESSE -->
+<!-- BOTTOM SHEET ADRESSE (fullscreen) -->
 
-<div class="bottom-sheet" id="addressSheet">
+<div class="bottom-sheet bottom-sheet-full" id="addressSheet">
   <div class="sheet-handle"></div>
-  <div class="sheet-title" data-i18n="sheet_adresse">Adresse</div>
-  <div class="sheet-address">15 Rue Vauban · 69006 Lyon</div>
-  <div class="sheet-actions">
-    <a class="sheet-action" href="https://maps.apple.com/?address=15+Rue+Vauban,+69006+Lyon" target="_blank" onclick="closeAddressSheet()">
-      <div class="sheet-action-icon apple">🗺️</div>
-      <div class="sheet-action-text">
-        <div class="sheet-action-label" data-i18n="sheet_plans">Plans</div>
-        <div class="sheet-action-sub">Apple Maps</div>
+
+  <!-- Header premium -->
+  <div class="loc-header">
+    <div class="loc-header-top">
+      <div class="loc-header-badge">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+        Localisation
       </div>
-      <svg class="sheet-action-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg>
-    </a>
-    <a class="sheet-action" href="https://maps.google.com/?q=15+Rue+Vauban,+69006+Lyon" target="_blank" onclick="closeAddressSheet()">
-      <div class="sheet-action-icon google">📍</div>
-      <div class="sheet-action-text">
-        <div class="sheet-action-label">Google Maps</div>
-        <div class="sheet-action-sub" data-i18n="sheet_voir_carte">Voir sur la carte ou itinéraire</div>
-      </div>
-      <svg class="sheet-action-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg>
-    </a>
-    <a class="sheet-action" href="https://waze.com/ul?q=15+Rue+Vauban,+69006+Lyon&navigate=yes" target="_blank" onclick="closeAddressSheet()">
-      <div class="sheet-action-icon waze">🚗</div>
-      <div class="sheet-action-text">
-        <div class="sheet-action-label">Waze</div>
-        <div class="sheet-action-sub" data-i18n="sheet_nav_temps">Navigation temps réel</div>
-      </div>
-      <svg class="sheet-action-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg>
-    </a>
-    <button class="sheet-action" onclick="copyAddress()">
-      <div class="sheet-action-icon copy">📋</div>
-      <div class="sheet-action-text">
-        <div class="sheet-action-label" id="copyLabel" data-i18n="sheet_copier_adresse">Copier l'adresse</div>
-        <div class="sheet-action-sub">15 Rue Vauban · 69006 Lyon</div>
-      </div>
-    </button>
+    </div>
+    <div class="loc-header-info">
+      <h4>Nous trouver</h4>
+      <p>Sauf Imprévu — Bar à vins, Lyon 6e</p>
+    </div>
+    <div class="loc-header-accent"></div>
   </div>
-  <button class="sheet-cancel" onclick="closeAllSheets()" data-i18n="btn_annuler">Annuler</button>
+
+  <!-- Map -->
+  <div class="loc-map" id="locMap">
+    <button class="loc-map-toggle" onclick="toggleLocMap()" id="locMapToggle" title="Agrandir">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--text)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" id="locMapIcon"><polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/><line x1="21" y1="3" x2="14" y2="10"/><line x1="3" y1="21" x2="10" y2="14"/></svg>
+    </button>
+    <iframe src="about:blank" id="locMapFrame" loading="lazy" referrerpolicy="no-referrer"></iframe>
+  </div>
+
+  <!-- Content scrollable -->
+  <div class="loc-scroll">
+
+    <!-- Adresse (tap to copy) -->
+    <div class="loc-address" onclick="copyAddress()">
+      <div class="loc-address-icon">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+      </div>
+      <div class="loc-address-text">
+        <div class="loc-street">15 Rue Vauban</div>
+        <div class="loc-city">69006 Lyon, France</div>
+      </div>
+      <div class="loc-copy" id="locCopyLabel">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+        Copier
+      </div>
+    </div>
+
+    <!-- Navigation buttons -->
+    <div class="loc-nav-grid">
+      <a class="loc-nav-btn" href="https://maps.apple.com/?address=15+Rue+Vauban,+69006+Lyon&ll=45.7649859,4.8434166" target="_blank">
+        <div class="loc-nav-icon" style="background:#000;">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polygon points="3 11 22 2 13 21 11 13 3 11"/></svg>
+        </div>
+        <div class="loc-nav-text"><div class="loc-nav-label">Plans</div><div class="loc-nav-sub">Apple Maps</div></div>
+      </a>
+      <a class="loc-nav-btn" href="https://maps.google.com/?q=Sauf+Imprévu,+15+Rue+Vauban,+69006+Lyon" target="_blank">
+        <div class="loc-nav-icon" style="background:#fff;border:1px solid var(--border);">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z" fill="#EA4335"/><circle cx="12" cy="9" r="2.5" fill="#fff"/></svg>
+        </div>
+        <div class="loc-nav-text"><div class="loc-nav-label">Google Maps</div><div class="loc-nav-sub">Carte & itinéraire</div></div>
+      </a>
+      <a class="loc-nav-btn loc-nav-full" href="https://waze.com/ul?q=15+Rue+Vauban,+69006+Lyon&navigate=yes" target="_blank">
+        <div class="loc-nav-icon" style="background:#33ccff;">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="#fff"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14.5c-.55 0-1-.45-1-1s.45-1 1-1 1 .45 1 1-.45 1-1 1zm4 0c-.55 0-1-.45-1-1s.45-1 1-1 1 .45 1 1-.45 1-1 1zM12 6c2.76 0 5 2.24 5 5h-2c0-1.66-1.34-3-3-3S9 9.34 9 11H7c0-2.76 2.24-5 5-5z"/></svg>
+        </div>
+        <div class="loc-nav-text"><div class="loc-nav-label">Waze</div><div class="loc-nav-sub">Navigation temps réel</div></div>
+      </a>
+    </div>
+
+    <!-- Distance -->
+    <div class="loc-distance" id="locDistanceBadge">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></svg>
+      <span id="locDistanceText" class="loc-dist-loading">Localisation en cours…</span>
+    </div>
+
+  </div>
 </div>
 
 <!-- BOTTOM SHEET HORAIRES -->
@@ -3004,47 +3158,89 @@ margin: 20px 20px 0;
   }
 
 
-  // Address → pleine page location.html
+  // Address → bottom sheet fullscreen avec map
+  var _locMapLoaded = false;
+  var _locGeoWatchId = null;
+  var LOC_LAT = 45.7649859;
+  var LOC_LNG = 4.8434166;
+
   function openAddressSheet() {
-    var url = '/location.html';
-    if (!isDesktop) {
-      window.location.href = url;
-      return;
+    lockBodyScroll();
+    document.getElementById('sheetOverlay').classList.add('visible');
+    document.getElementById('addressSheet').classList.add('visible');
+    // Charger la map au premier ouverture
+    if (!_locMapLoaded) {
+      var f = document.getElementById('locMapFrame');
+      var bbox = (LOC_LNG - 0.003) + ',' + (LOC_LAT - 0.002) + ',' + (LOC_LNG + 0.003) + ',' + (LOC_LAT + 0.002);
+      f.src = 'https://www.openstreetmap.org/export/embed.html?bbox=' + bbox + '&layer=mapnik&marker=' + LOC_LAT + ',' + LOC_LNG;
+      _locMapLoaded = true;
     }
-    // Desktop : iframe dans le phone-screen
-    var phoneScreen = document.querySelector('.phone-screen');
-    if (!phoneScreen) { window.location.href = url; return; }
-    var existing = document.getElementById('locationIframe');
-    if (existing) existing.remove();
-    var iframe = document.createElement('iframe');
-    iframe.id = 'locationIframe';
-    iframe.src = url;
-    iframe.style.cssText = 'position:absolute;top:0;left:0;width:100%;height:100%;border:none;border-radius:42px;z-index:9000;background:var(--bg);';
-    phoneScreen.appendChild(iframe);
-    window.addEventListener('message', function onLocClose(e) {
-      if (e.data === 'closeLocation') {
-        var fr = document.getElementById('locationIframe');
-        if (fr) fr.remove();
-        window.removeEventListener('message', onLocClose);
-      }
-    });
+    // Lancer la géoloc
+    if (navigator.geolocation && !_locGeoWatchId) {
+      navigator.geolocation.getCurrentPosition(updateLocDistance, locGeoError, { enableHighAccuracy: true, timeout: 8000 });
+      _locGeoWatchId = navigator.geolocation.watchPosition(updateLocDistance, function(){}, { enableHighAccuracy: true, maximumAge: 5000 });
+    }
   }
 
   function closeAddressSheet() {
     closeAllSheets();
-    document.body.style.overflow = '';
+  }
+
+  // Toggle map size
+  var _locMapExpanded = false;
+  function toggleLocMap() {
+    var map = document.getElementById('locMap');
+    _locMapExpanded = !_locMapExpanded;
+    map.classList.toggle('loc-expanded', _locMapExpanded);
+    var btn = document.getElementById('locMapToggle');
+    btn.innerHTML = _locMapExpanded
+      ? '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--text)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 14 10 14 10 20"/><polyline points="20 10 14 10 14 4"/><line x1="14" y1="10" x2="21" y2="3"/><line x1="3" y1="21" x2="10" y2="14"/></svg>'
+      : '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--text)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/><line x1="21" y1="3" x2="14" y2="10"/><line x1="3" y1="21" x2="10" y2="14"/></svg>';
+  }
+
+  // Géoloc & distance
+  function haversineDistance(lat1, lon1, lat2, lon2) {
+    var R = 6371000;
+    var dLat = (lat2 - lat1) * Math.PI / 180;
+    var dLon = (lon2 - lon1) * Math.PI / 180;
+    var a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+            Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+            Math.sin(dLon/2) * Math.sin(dLon/2);
+    return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+  }
+
+  function updateLocDistance(pos) {
+    var dist = haversineDistance(pos.coords.latitude, pos.coords.longitude, LOC_LAT, LOC_LNG);
+    var badge = document.getElementById('locDistanceBadge');
+    var text = document.getElementById('locDistanceText');
+    if (dist < 10) {
+      badge.classList.add('loc-arrived');
+      text.textContent = 'Vous y êtes !!';
+    } else {
+      badge.classList.remove('loc-arrived');
+      var icon = dist < 500 ? '' : dist < 5000 ? '' : '';
+      var formatted = dist < 1000 ? Math.round(dist) + ' m' : (dist / 1000).toFixed(1).replace('.0', '') + ' km';
+      text.textContent = icon + ' À ' + formatted + ' de Sauf Imprévu';
+      text.classList.remove('loc-dist-loading');
+    }
+  }
+
+  function locGeoError() {
+    var text = document.getElementById('locDistanceText');
+    text.textContent = 'Activez la localisation pour voir la distance';
+    text.classList.remove('loc-dist-loading');
   }
 
   function copyAddress() {
-    navigator.clipboard.writeText('15 Rue Vauban, 69006 Lyon').then(() => {
-      const label = document.getElementById('copyLabel');
-      label.textContent = 'Adresse copiée ✓';
-      label.style.color = 'var(--open-color)';
-      setTimeout(() => {
-        label.textContent = "Copier l'adresse";
-        label.style.color = '';
-        closeAddressSheet();
-      }, 1500);
+    navigator.clipboard.writeText('15 Rue Vauban, 69006 Lyon').then(function() {
+      var el = document.getElementById('locCopyLabel');
+      if (!el) return;
+      el.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--open-color)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Copié !';
+      el.style.color = 'var(--open-color)';
+      setTimeout(function() {
+        el.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg> Copier';
+        el.style.color = '';
+      }, 2000);
     });
   }
 
