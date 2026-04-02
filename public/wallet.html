@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="fr" data-theme="auto">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
@@ -15,8 +15,12 @@
   --bg: #ffffff; --bg-card: #f5f6f8; --text: #1a1a2e; --text-sub: rgba(0,0,0,0.45);
   --border: rgba(0,0,0,0.08); --close-bg: rgba(0,0,0,0.05); --close-color: rgba(0,0,0,0.4);
 }
+[data-theme="dark"] {
+  --bg: #060e1a; --bg-card: #0a1828; --text: #ffffff; --text-sub: rgba(255,255,255,0.4);
+  --border: rgba(255,255,255,0.08); --close-bg: rgba(255,255,255,0.08); --close-color: rgba(255,255,255,0.6);
+}
 @media (prefers-color-scheme: dark) {
-  :root {
+  :root:not([data-theme="light"]) {
     --bg: #060e1a; --bg-card: #0a1828; --text: #ffffff; --text-sub: rgba(255,255,255,0.4);
     --border: rgba(255,255,255,0.08); --close-bg: rgba(255,255,255,0.08); --close-color: rgba(255,255,255,0.6);
   }
@@ -451,6 +455,17 @@ body {
 </style>
 
 <script>
+  // ── Theme sync (même logique que index.html) ──
+  (function() {
+    var saved = localStorage.getItem('theme') || 'auto';
+    if (saved === 'auto') {
+      var sys = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+      document.documentElement.setAttribute('data-theme', sys);
+    } else {
+      document.documentElement.setAttribute('data-theme', saved);
+    }
+  })();
+
   // ── Close ──
   function closeWalletPage() {
     if (window.parent !== window) {
