@@ -380,10 +380,10 @@ body {
 }
 #premiumQRCanvas {
   width: 100%; max-width: 280px; height: auto; border-radius: 14px;
-  opacity: 0.2; filter: brightness(0.6); transition: opacity 0.6s ease, filter 0.6s ease;
-  box-shadow: 0 4px 20px rgba(0,0,0,0.3), inset 0 0 0 1px rgba(100,180,255,0.08);
+  opacity: 0.3; transition: opacity 0.6s ease;
+  box-shadow: 0 8px 30px rgba(0,0,0,0.5), 0 0 40px rgba(20,80,160,0.1);
 }
-#premiumQRCanvas.active { opacity: 1; filter: brightness(1); }
+#premiumQRCanvas.active { opacity: 1; }
 .pqr-hint {
   position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
   font-size: 11px; font-weight: 600; color: rgba(255,255,255,0.25);
@@ -397,7 +397,6 @@ body {
 }
 </style>
 
-<script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.min.js"></script>
 <script>
   // ── Close ──
   function closeWalletPage() {
@@ -419,152 +418,229 @@ body {
 
   // ── Member payload (POC — hardcoded, sera dynamique) ──
   var memberData = {
-    v: '1.0',
-    type: 'MEMBER_CARD',
-    id: 'USR_8F2A',
+    id: '8F2A',
     name: (user && user.name) || 'Romaric A.',
     level: 'GOLD',
     visits: 47,
     avg_basket: 68,
     remise: 15,
-    tips: 3460,
-    network: ['SAUF_IMPREVU'],
-    ts: 0, // set at scan time
-    exp: 0  // expiration
+    tips: 3460
   };
 
-  // ── Generate token (base64 JSON — POC, pas de vrai JWT) ──
-  function generateToken() {
-    memberData.ts = Date.now();
-    memberData.exp = memberData.ts + 60000; // 60s
-    var json = JSON.stringify(memberData);
-    return btoa(unescape(encodeURIComponent(json)));
+  // ════════════════════════════════════════════════════
+  // ── DOT CONSTELLATION ENCODER ──
+  // Encode les données membre en 15 bytes binaires
+  // Rendu : grille 14x14 de dots lumineux sur fond dark navy
+  // 4 coins = sync markers (toujours allumés, extra bright)
+  // Bordure = pattern fixe (validation)
+  // Intérieur 12x12 = 144 bits data (120 utiles + 24 padding)
+  // ════════════════════════════════════════════════════
+
+  var GRID = 14;          // 14x14 grid
+  var CANVAS_SIZE = 280;  // pixels
+  var CELL = CANVAS_SIZE / GRID; // 20px per cell
+
+  // ── Binary payload : 15 bytes ──
+  function encodeMemberPayload() {
+    var b = new Uint8Array(15);
+    b[0] = 0xAA; // magic
+    b[1] = memberData.id.charCodeAt(0);
+    b[2] = memberData.id.charCodeAt(1);
+    b[3] = memberData.id.charCodeAt(2);
+    b[4] = memberData.id.charCodeAt(3);
+    var lvl = memberData.level === 'GOLD' ? 1 : memberData.level === 'PLATINUM' ? 2 : 0;
+    b[5] = (lvl << 5) | (memberData.remise & 0x1F);
+    b[6] = (memberData.visits >> 8) & 0xFF;
+    b[7] = memberData.visits & 0xFF;
+    b[8] = (memberData.avg_basket >> 8) & 0xFF;
+    b[9] = memberData.avg_basket & 0xFF;
+    b[10] = (memberData.tips >> 8) & 0xFF;
+    b[11] = memberData.tips & 0xFF;
+    // timestamp : secondes depuis minuit (max 86400 = fits uint16)
+    var now = new Date();
+    var secSinceMidnight = now.getHours() * 3600 + now.getMinutes() * 60 + now.getSeconds();
+    b[12] = (secSinceMidnight >> 8) & 0xFF;
+    b[13] = secSinceMidnight & 0xFF;
+    // XOR checksum
+    var xor = 0;
+    for (var i = 0; i < 14; i++) xor ^= b[i];
+    b[14] = xor;
+    return b;
   }
 
-  // ── Premium QR Canvas Renderer ──
-  // QR branded : modules en bleu lumineux sur fond dark navy
-  // Finder patterns (3 coins) renforcés pour détection jsQR fiable
-  // Résultat : QR "design" lisible par caméra, look premium
-
-  function isFinderPattern(row, col, modCount) {
-    // Les 3 finder patterns QR : top-left, top-right, bottom-left (7x7 modules chacun)
-    if (row < 7 && col < 7) return true;                       // top-left
-    if (row < 7 && col >= modCount - 7) return true;            // top-right
-    if (row >= modCount - 7 && col < 7) return true;            // bottom-left
-    return false;
+  // ── Bytes → bit array ──
+  function bytesToBits(bytes) {
+    var bits = [];
+    for (var i = 0; i < bytes.length; i++) {
+      for (var bit = 7; bit >= 0; bit--) {
+        bits.push((bytes[i] >> bit) & 1);
+      }
+    }
+    return bits;
   }
 
-  function renderPremiumQR(dataUrl) {
+  // ── Build 14x14 grid matrix ──
+  // Returns grid[row][col] = 0 or 1
+  function buildGrid(bits) {
+    var grid = [];
+    for (var r = 0; r < GRID; r++) {
+      grid[r] = [];
+      for (var c = 0; c < GRID; c++) {
+        // Corners : toujours 1 (sync markers)
+        if ((r === 0 || r === GRID - 1) && (c === 0 || c === GRID - 1)) {
+          grid[r][c] = 2; // 2 = sync marker (extra bright)
+          continue;
+        }
+        // Border top/bottom : alternating pattern (validation)
+        if (r === 0 || r === GRID - 1) {
+          grid[r][c] = (c % 2 === 0) ? 1 : 0;
+          continue;
+        }
+        // Border left/right : alternating pattern
+        if (c === 0 || c === GRID - 1) {
+          grid[r][c] = (r % 2 === 0) ? 1 : 0;
+          continue;
+        }
+        // Interior : data bits (rows 1-12, cols 1-12)
+        var idx = (r - 1) * 12 + (c - 1);
+        grid[r][c] = (idx < bits.length) ? bits[idx] : 0;
+      }
+    }
+    return grid;
+  }
+
+  // ── Render constellation on canvas ──
+  function renderConstellation(grid) {
     var canvas = document.getElementById('premiumQRCanvas');
     var ctx = canvas.getContext('2d');
-    var size = 280;
-    canvas.width = size;
-    canvas.height = size;
+    canvas.width = CANVAS_SIZE;
+    canvas.height = CANVAS_SIZE;
+    var S = CANVAS_SIZE;
 
-    // Génère la matrice QR
-    var qr = qrcode(0, 'M');
-    qr.addData(dataUrl);
-    qr.make();
-    var modCount = qr.getModuleCount();
+    // ── 1. Background : deep navy gradient ──
+    var bg = ctx.createRadialGradient(S * 0.4, S * 0.35, 0, S * 0.5, S * 0.5, S * 0.7);
+    bg.addColorStop(0, '#0d2240');
+    bg.addColorStop(0.5, '#091a32');
+    bg.addColorStop(1, '#050e1c');
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, S, S);
 
-    // Quiet zone (marge blanche obligatoire pour détection QR)
-    var quietZone = 2;
-    var totalMods = modCount + quietZone * 2;
-    var modSize = size / totalMods;
-    var offset = quietZone * modSize;
+    // ── 2. Subtle nebula glow ──
+    var neb1 = ctx.createRadialGradient(S * 0.3, S * 0.3, 0, S * 0.3, S * 0.3, S * 0.35);
+    neb1.addColorStop(0, 'rgba(20,80,160,0.08)');
+    neb1.addColorStop(1, 'rgba(0,0,0,0)');
+    ctx.fillStyle = neb1;
+    ctx.fillRect(0, 0, S, S);
+    var neb2 = ctx.createRadialGradient(S * 0.7, S * 0.65, 0, S * 0.7, S * 0.65, S * 0.3);
+    neb2.addColorStop(0, 'rgba(60,40,120,0.06)');
+    neb2.addColorStop(1, 'rgba(0,0,0,0)');
+    ctx.fillStyle = neb2;
+    ctx.fillRect(0, 0, S, S);
 
-    // ── 1. Fond clair (quiet zone + modules light) ──
-    // jsQR a besoin de contraste fort : fond clair, modules sombres
-    ctx.fillStyle = '#e8edf4'; // gris-bleu très clair
-    ctx.fillRect(0, 0, size, size);
-
-    // ── 2. Subtle texture de fond ──
-    ctx.strokeStyle = 'rgba(100,140,200,0.06)';
-    ctx.lineWidth = 0.5;
-    for (var i = 0; i < size; i += 6) {
-      ctx.beginPath(); ctx.moveTo(0, i); ctx.lineTo(size, i); ctx.stroke();
+    // ── 3. Decorative dust (tiny random static dots for texture) ──
+    // Utilise un seed fixe pour que le fond soit constant
+    var rng = 42;
+    function nextRng() { rng = (rng * 1103515245 + 12345) & 0x7fffffff; return rng / 0x7fffffff; }
+    ctx.fillStyle = 'rgba(100,160,220,0.07)';
+    for (var i = 0; i < 60; i++) {
+      var dx = nextRng() * S, dy = nextRng() * S;
+      ctx.beginPath();
+      ctx.arc(dx, dy, 0.5 + nextRng() * 0.5, 0, Math.PI * 2);
+      ctx.fill();
     }
 
-    // ── 3. QR modules ──
-    for (var row = 0; row < modCount; row++) {
-      for (var col = 0; col < modCount; col++) {
-        var x = offset + col * modSize;
-        var y = offset + row * modSize;
-        var isDark = qr.isDark(row, col);
+    // ── 4. Data dots (constellation) ──
+    for (var r = 0; r < GRID; r++) {
+      for (var c = 0; c < GRID; c++) {
+        var val = grid[r][c];
+        if (val === 0) continue;
 
-        if (!isDark) continue; // fond déjà dessiné
+        var cx = (c + 0.5) * CELL;
+        var cy = (r + 0.5) * CELL;
 
-        var isFinder = isFinderPattern(row, col, modCount);
-        var ms = modSize;
-
-        if (isFinder) {
-          // Finder patterns : contraste maximum — bleu très sombre
-          ctx.fillStyle = '#0a1832';
-          ctx.fillRect(x, y, ms, ms);
-        } else {
-          // Data modules : bleu navy premium avec léger arrondi
-          var r = ms * 0.12;
-          var pad = ms * 0.04;
-          ctx.fillStyle = '#142d52';
+        if (val === 2) {
+          // ── Sync corners : large, white, strong glow ──
+          // Outer glow
+          var sg = ctx.createRadialGradient(cx, cy, 0, cx, cy, 8);
+          sg.addColorStop(0, 'rgba(200,230,255,0.4)');
+          sg.addColorStop(1, 'rgba(200,230,255,0)');
+          ctx.fillStyle = sg;
+          ctx.fillRect(cx - 8, cy - 8, 16, 16);
+          // Core dot
+          ctx.fillStyle = 'rgba(220,240,255,0.95)';
           ctx.beginPath();
-          ctx.roundRect(x + pad, y + pad, ms - pad * 2, ms - pad * 2, r);
+          ctx.arc(cx, cy, 3.5, 0, Math.PI * 2);
+          ctx.fill();
+        } else {
+          // ── Data dot = 1 : bright blue dot with glow ──
+          // Glow
+          var dg = ctx.createRadialGradient(cx, cy, 0, cx, cy, 6);
+          dg.addColorStop(0, 'rgba(80,160,255,0.3)');
+          dg.addColorStop(1, 'rgba(80,160,255,0)');
+          ctx.fillStyle = dg;
+          ctx.fillRect(cx - 6, cy - 6, 12, 12);
+          // Core dot
+          ctx.fillStyle = 'rgba(140,200,255,0.9)';
+          ctx.beginPath();
+          ctx.arc(cx, cy, 2.5, 0, Math.PI * 2);
           ctx.fill();
         }
       }
     }
 
-    // ── 4. Overlay holographique très léger (ne casse pas le contraste) ──
-    var sweepGrad = ctx.createLinearGradient(0, 0, size, size);
-    sweepGrad.addColorStop(0, 'rgba(100,180,255,0)');
-    sweepGrad.addColorStop(0.4, 'rgba(100,160,230,0.03)');
-    sweepGrad.addColorStop(0.6, 'rgba(140,120,220,0.03)');
-    sweepGrad.addColorStop(1, 'rgba(100,180,255,0)');
-    ctx.fillStyle = sweepGrad;
-    ctx.fillRect(0, 0, size, size);
+    // ── 5. Connection lines between nearby active dots (constellation look) ──
+    ctx.strokeStyle = 'rgba(80,150,230,0.06)';
+    ctx.lineWidth = 0.5;
+    var activeDots = [];
+    for (var r = 0; r < GRID; r++) {
+      for (var c = 0; c < GRID; c++) {
+        if (grid[r][c] > 0) activeDots.push({ x: (c + 0.5) * CELL, y: (r + 0.5) * CELL });
+      }
+    }
+    for (var i = 0; i < activeDots.length; i++) {
+      for (var j = i + 1; j < activeDots.length; j++) {
+        var dx = activeDots[i].x - activeDots[j].x;
+        var dy = activeDots[i].y - activeDots[j].y;
+        var dist = Math.sqrt(dx * dx + dy * dy);
+        if (dist < CELL * 2.2 && dist > CELL * 0.8) {
+          ctx.beginPath();
+          ctx.moveTo(activeDots[i].x, activeDots[i].y);
+          ctx.lineTo(activeDots[j].x, activeDots[j].y);
+          ctx.stroke();
+        }
+      }
+    }
 
-    // ── 5. Brand watermark centre (très subtil, dans la zone "safe" du QR) ──
+    // ── 6. Brand watermark ──
     ctx.save();
-    ctx.globalAlpha = 0.06;
-    ctx.font = '800 22px "Plus Jakarta Sans", sans-serif';
-    ctx.fillStyle = '#0a1832';
+    ctx.globalAlpha = 0.04;
+    ctx.font = '800 18px "Plus Jakarta Sans", sans-serif';
+    ctx.fillStyle = '#fff';
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
-    ctx.fillText('OK', size / 2, size / 2 - 6);
-    ctx.font = '600 7px "Plus Jakarta Sans", sans-serif';
-    ctx.fillText('SNAP TIPS', size / 2, size / 2 + 10);
+    ctx.fillText('OK SNAP', S / 2, S / 2);
     ctx.restore();
 
-    // ── 6. Border premium ──
-    ctx.strokeStyle = 'rgba(20,45,82,0.25)';
-    ctx.lineWidth = 1.5;
+    // ── 7. Subtle frame border ──
+    ctx.strokeStyle = 'rgba(100,180,255,0.1)';
+    ctx.lineWidth = 1;
     ctx.beginPath();
-    ctx.roundRect(1, 1, size - 2, size - 2, 14);
+    ctx.roundRect(1, 1, S - 2, S - 2, 12);
     ctx.stroke();
-
-    // ── 7. Corner accents bleu ──
-    var cl = 20;
-    ctx.strokeStyle = 'rgba(20,100,180,0.35)';
-    ctx.lineWidth = 2;
-    ctx.beginPath(); ctx.moveTo(3, cl); ctx.lineTo(3, 7); ctx.arcTo(3, 3, 7, 3, 5); ctx.lineTo(cl, 3); ctx.stroke();
-    ctx.beginPath(); ctx.moveTo(size - cl, 3); ctx.lineTo(size - 7, 3); ctx.arcTo(size - 3, 3, size - 3, 7, 5); ctx.lineTo(size - 3, cl); ctx.stroke();
-    ctx.beginPath(); ctx.moveTo(3, size - cl); ctx.lineTo(3, size - 7); ctx.arcTo(3, size - 3, 7, size - 3, 5); ctx.lineTo(cl, size - 3); ctx.stroke();
-    ctx.beginPath(); ctx.moveTo(size - cl, size - 3); ctx.lineTo(size - 7, size - 3); ctx.arcTo(size - 3, size - 3, size - 3, size - 7, 5); ctx.lineTo(size - 3, size - cl); ctx.stroke();
   }
 
   // ── Premium QR Timer ──
   var pqrInterval = null;
   var pqrExpiry = 0;
 
-  function activatePremiumQR() {
-    var token = generateToken();
-    var verifyUrl = window.location.origin + '/scan.html?token=' + token;
-
-    // Render le QR invisible dans le canvas
-    renderPremiumQR(verifyUrl);
+  function activateConstellation() {
+    var payload = encodeMemberPayload();
+    var bits = bytesToBits(payload);
+    var grid = buildGrid(bits);
+    renderConstellation(grid);
 
     // Activer visuellement
-    var canvas = document.getElementById('premiumQRCanvas');
-    canvas.classList.add('active');
+    document.getElementById('premiumQRCanvas').classList.add('active');
     document.getElementById('pqrHint').classList.add('hidden');
 
     var dot = document.querySelector('.pqr-dot');
@@ -578,7 +654,6 @@ body {
     pqrInterval = setInterval(updatePremiumTimer, 200);
     updatePremiumTimer();
 
-    // Scroll vers l'image
     document.getElementById('premiumQRSection').scrollIntoView({ behavior: 'smooth', block: 'center' });
   }
 
@@ -609,13 +684,13 @@ body {
     }
   }
 
-  // ── Seal tap → flash + Premium QR ──
+  // ── Seal tap → flash + Constellation ──
   function scanSeal() {
     var flash = document.getElementById('flashEl');
     flash.classList.remove('active');
     void flash.offsetWidth;
     flash.classList.add('active');
-    activatePremiumQR();
+    activateConstellation();
   }
 </script>
 </body>
