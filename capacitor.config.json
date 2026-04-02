@@ -1,0 +1,13 @@
+{
+  "appId": "coach.myplace.app",
+  "appName": "myPlace",
+  "webDir": "public",
+  "server": {
+    "url": "https://www.myplace.coach",
+    "cleartext": false
+  },
+  "ios": {
+    "contentInset": "always",
+    "allowsLinkPreview": false
+  }
+}
