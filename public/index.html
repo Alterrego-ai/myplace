@@ -2686,21 +2686,13 @@ margin: 20px 20px 0;
   function closeAllSheets() {
     unlockBodyScroll();
     document.getElementById('sheetOverlay').classList.remove('visible');
-    document.getElementById('addressSheet').classList.remove('visible');
-    document.getElementById('hoursSheet').classList.remove('visible');
-    document.getElementById('shareSheet').classList.remove('visible');
-    var pwaGuide = document.getElementById('pwaGuideSheet');
-    if (pwaGuide) pwaGuide.classList.remove('visible');
-    var chatSheet = document.getElementById('chatSheet');
-    if (chatSheet) chatSheet.classList.remove('visible');
-    var profileSheet = document.getElementById('profileSheet');
-    if (profileSheet) profileSheet.classList.remove('visible');
-    var langSheet = document.getElementById('langSheet');
-    if (langSheet) langSheet.classList.remove('visible');
-    var wa = document.getElementById('walletAppleSheet');
-    if (wa) wa.classList.remove('visible');
-    var wg = document.getElementById('walletGoogleSheet');
-    if (wg) wg.classList.remove('visible');
+    // Reset tous les sheets : retirer .visible + nettoyer styles inline du swipe
+    var allSheets = document.querySelectorAll('.bottom-sheet');
+    allSheets.forEach(function(s) {
+      s.classList.remove('visible');
+      s.style.transform = '';
+      s.style.transition = '';
+    });
   }
 
   // ── Swipe-to-dismiss sur tous les bottom sheets ──
@@ -2741,11 +2733,15 @@ margin: 20px 20px 0;
           sheet.style.transform = 'translateX(-50%) translateY(100%)';
           setTimeout(function() {
             closeAllSheets();
-            sheet.style.transform = '';
           }, 350);
         } else {
           // Rebond
           sheet.style.transform = 'translateX(-50%) translateY(0)';
+          // Nettoyer les styles inline après l'animation de rebond
+          setTimeout(function() {
+            sheet.style.transform = '';
+            sheet.style.transition = '';
+          }, 350);
         }
       }, { passive: true });
     });
