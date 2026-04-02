@@ -2484,6 +2484,19 @@ margin: 20px 20px 0;
 
 <script src="/i18n.js"></script>
 <script>
+  // Capacitor: status bar overlay (hero sous la barre de statut)
+  (function() {
+    if (window.Capacitor && window.Capacitor.isNativePlatform && window.Capacitor.isNativePlatform()) {
+      document.body.classList.add('capacitor-native');
+      // Status bar overlay
+      if (window.Capacitor.Plugins && window.Capacitor.Plugins.StatusBar) {
+        var StatusBar = window.Capacitor.Plugins.StatusBar;
+        StatusBar.setOverlaysWebView({ overlay: true });
+        StatusBar.setStyle({ style: 'LIGHT' }); // texte blanc sur le hero
+      }
+    }
+  })();
+
   // Phone frame : scale dynamique à 90% de la hauteur viewport
   (function() {
     const frame = document.querySelector('.phone-frame');
