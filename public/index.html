@@ -1587,30 +1587,18 @@ align-items: center;
 justify-content: space-around;
 padding: 8px 8px;
 z-index: 100;
-box-shadow: 0 1px 8px rgba(0,0,0,0.06);
-}
-/* Gradient fade above pill bar to hide content smoothly */
-.bottom-bar::before {
-content: '';
-position: fixed;
-bottom: 0;
-left: 0;
-right: 0;
-height: calc(80px + env(safe-area-inset-bottom, 0px));
-background: linear-gradient(to bottom, transparent, var(--bg) 65%);
-pointer-events: none;
-z-index: 99;
+box-shadow: none;
 }
 
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) .bottom-bar {
     background: rgba(30,36,46,0.88);
-    box-shadow: 0 1px 8px rgba(0,0,0,0.2);
+    box-shadow: none;
   }
 }
 [data-theme="dark"] .bottom-bar {
   background: rgba(30,36,46,0.88);
-  box-shadow: 0 1px 8px rgba(0,0,0,0.2);
+  box-shadow: none;
 }
 
 /* Desktop: absolute inside phone-screen */
@@ -2583,7 +2571,7 @@ margin: 20px 20px 0;
         '.phone-screen { background: #1a2636 !important; color: #eef2f7 !important; }' +
         '.phone-scroll { background: #0f1923 !important; color: #eef2f7 !important; }' +
         '.spacer { background: #0f1923 !important; }' +
-        '.bottom-bar { background: rgba(30,36,46,0.88) !important; box-shadow: 0 1px 8px rgba(0,0,0,0.2) !important; }' +
+        '.bottom-bar { background: rgba(30,36,46,0.88) !important; box-shadow: none !important; }' +
         '.logo-wrap, .section, .user-row, .google-row { background: #1a2636 !important; }' +
         '.info, .identity, .ctas { color: #eef2f7 !important; }' +
         '.merchant-name, .address-text, h2, h3 { color: #eef2f7 !important; }' +
