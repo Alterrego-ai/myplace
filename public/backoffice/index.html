@@ -144,7 +144,17 @@
         .modal-overlay.active {
             display: flex;
         }
+        .modal-overlay.active > .modal {
+            overscroll-behavior: contain;
+        }
 
+        body.modal-open {
+            position: fixed;
+            width: 100%;
+            overflow: hidden;
+            touch-action: none;
+            -webkit-overflow-scrolling: none;
+        }
         body.modal-open .reservations-content,
         body.modal-open .carte-content {
             overflow: hidden;
@@ -2575,7 +2585,7 @@
             }
 
             renderTagPicker();
-            itemModal.classList.add('active');
+            openModal(itemModal);
         }
 
         function renderTagPicker() {
@@ -2682,9 +2692,9 @@
             });
         }
 
-        closeItemModalBtn.addEventListener('click', () => itemModal.classList.remove('active'));
+        closeItemModalBtn.addEventListener('click', () => closeModal(itemModal));
 
-        cancelItemBtn.addEventListener('click', () => itemModal.classList.remove('active'));
+        cancelItemBtn.addEventListener('click', () => closeModal(itemModal));
 
         submitItemBtn.addEventListener('click', async () => {
             const name = itemName.value.trim();
@@ -2738,7 +2748,7 @@
                     });
                     showToast('Plat créé');
                 }
-                itemModal.classList.remove('active');
+                closeModal(itemModal);
                 loadCarteData();
             } catch (err) {
                 showToast('Erreur lors de l\'enregistrement', 'error');
@@ -2806,7 +2816,7 @@
             }
 
             updateCategoryFamilySelect();
-            categoryModal.classList.add('active');
+            openModal(categoryModal);
         }
 
         function updateCategoryFamilySelect() {
@@ -2819,8 +2829,8 @@
             });
         }
 
-        closeCategoryModalBtn.addEventListener('click', () => categoryModal.classList.remove('active'));
-        cancelCategoryBtn.addEventListener('click', () => categoryModal.classList.remove('active'));
+        closeCategoryModalBtn.addEventListener('click', () => closeModal(categoryModal));
+        cancelCategoryBtn.addEventListener('click', () => closeModal(categoryModal));
 
         submitCategoryBtn.addEventListener('click', async () => {
             const name = categoryName.value.trim();
@@ -2876,7 +2886,7 @@
                     });
                     showToast('Catégorie créée');
                 }
-                categoryModal.classList.remove('active');
+                closeModal(categoryModal);
                 loadCarteData();
             } catch (err) {
                 showToast('Erreur lors de l\'enregistrement', 'error');
@@ -2933,11 +2943,11 @@
                 familyPhotoPreview.classList.add('empty');
             }
 
-            familyModal.classList.add('active');
+            openModal(familyModal);
         }
 
-        closeFamilyModalBtn.addEventListener('click', () => familyModal.classList.remove('active'));
-        cancelFamilyBtn.addEventListener('click', () => familyModal.classList.remove('active'));
+        closeFamilyModalBtn.addEventListener('click', () => closeModal(familyModal));
+        cancelFamilyBtn.addEventListener('click', () => closeModal(familyModal));
         addFamilyBtn.addEventListener('click', () => openFamilyModal(null));
 
         submitFamilyBtn.addEventListener('click', async () => {
@@ -2989,7 +2999,7 @@
                     });
                     showToast('Famille créée');
                 }
-                familyModal.classList.remove('active');
+                closeModal(familyModal);
                 loadCarteData();
             } catch (err) {
                 showToast('Erreur lors de l\'enregistrement', 'error');
@@ -3094,7 +3104,7 @@
                     categoryPhotoPreview.classList.add('empty');
                     categoryPhoto.value = '';
                     document.querySelector('input[name="categoryVisibility"]').checked = true;
-                    categoryModal.classList.add('active');
+                    openModal(categoryModal);
                 });
                 controls.appendChild(addCatBtn);
 
@@ -3432,15 +3442,22 @@
             submitAddResaBtn.textContent = 'Réserver';
         }
 
+        // Bloquer le scroll sur l'overlay (pas dans la modal elle-même)
+        document.querySelectorAll('.modal-overlay').forEach(ov => {
+            ov.addEventListener('touchmove', (e) => {
+                // Si le touch est sur l'overlay backdrop (pas dans .modal), bloquer
+                if (e.target === ov || !e.target.closest('.modal')) {
+                    e.preventDefault();
+                }
+            }, { passive: false });
+        });
+
         function openModal(modal) {
-            // Fix scroll iOS : bloquer le body
-            document.body.classList.add('modal-open');
-            document.body.style.position = 'fixed';
-            document.body.style.width = '100%';
             document.body.dataset.scrollY = window.scrollY;
             document.body.style.top = `-${window.scrollY}px`;
+            document.body.classList.add('modal-open');
             modal.classList.add('active');
-            // Reset transform au cas où
+            // Reset transform au cas où (swipe-to-dismiss)
             const m = modal.querySelector('.modal');
             if (m) m.style.transform = '';
         }
@@ -3448,9 +3465,6 @@
         function closeModal(modal) {
             modal.classList.remove('active');
             document.body.classList.remove('modal-open');
-            // Restore scroll iOS
-            document.body.style.position = '';
-            document.body.style.width = '';
             document.body.style.top = '';
             window.scrollTo(0, parseInt(document.body.dataset.scrollY || '0'));
         }
