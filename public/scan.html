@@ -374,270 +374,43 @@ body {
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
-<script src="https://unpkg.com/@nicktomlin/barcode-scanner@0.1.1/dist/index.umd.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@aspect-build/aspect-barcode@0.1.0/dist/zxing.min.js" onerror="console.log('zxing optional')"></script>
+<script src="https://cdn.jsdelivr.net/npm/@ericblade/quagga2@1.8.4/dist/quagga.min.js"></script>
 <script>
   var currentMember = null;
   var productsDB = [];
-  var barcodeDetector = null;
   var lastBarcodeCheck = 0;
-  var BARCODE_CHECK_INTERVAL = 300; // ms between barcode checks
+  var BARCODE_CHECK_INTERVAL = 400; // ms between barcode checks
+  var quaggaReady = typeof Quagga !== 'undefined';
 
   // ── Load products ──
   fetch('/products.json').then(function(r) { return r.json(); }).then(function(data) {
     productsDB = data;
   }).catch(function() { console.warn('products.json not loaded'); });
 
-  // ── BarcodeDetector init (native, if available) ──
-  if ('BarcodeDetector' in window) {
-    try {
-      barcodeDetector = new BarcodeDetector({ formats: ['ean_13', 'ean_8', 'upc_a', 'upc_e', 'code_128', 'code_39'] });
-    } catch(e) { barcodeDetector = null; }
-  }
+  // ── Quagga2 barcode detection from canvas ──
+  function detectBarcodeQuagga(canvas, callback) {
+    if (!quaggaReady) { callback(null); return; }
 
-  // ── Manual 1D barcode detection from image data ──
-  // Scans horizontal lines through the center of the image for EAN-13 patterns
-  function detectBarcodeManual(imageData, width, height) {
-    // Sample multiple horizontal scan lines around the center
-    var scanLines = [
-      Math.floor(height * 0.4),
-      Math.floor(height * 0.45),
-      Math.floor(height * 0.5),
-      Math.floor(height * 0.55),
-      Math.floor(height * 0.6)
-    ];
+    // Convert canvas to data URL for Quagga static decode
+    var dataUrl = canvas.toDataURL('image/jpeg', 0.8);
 
-    for (var sl = 0; sl < scanLines.length; sl++) {
-      var y = scanLines[sl];
-      var row = [];
-      // Get luminance for each pixel in the row
-      for (var x = 0; x < width; x++) {
-        var idx = (y * width + x) * 4;
-        var lum = imageData.data[idx] * 0.299 + imageData.data[idx+1] * 0.587 + imageData.data[idx+2] * 0.114;
-        row.push(lum);
+    Quagga.decodeSingle({
+      src: dataUrl,
+      numOfWorkers: 0, // no workers needed for single decode
+      locate: true,
+      inputStream: {
+        size: 800
+      },
+      decoder: {
+        readers: ['ean_reader', 'ean_8_reader', 'upc_reader', 'upc_e_reader', 'code_128_reader']
       }
-
-      // Convert to bars (binary: 0=black, 1=white) using adaptive threshold
-      var windowSize = Math.max(20, Math.floor(width / 20));
-      var bars = [];
-      for (var x = 0; x < width; x++) {
-        var start = Math.max(0, x - windowSize);
-        var end = Math.min(width - 1, x + windowSize);
-        var sum = 0;
-        for (var j = start; j <= end; j++) sum += row[j];
-        var avg = sum / (end - start + 1);
-        bars.push(row[x] < avg * 0.85 ? 0 : 1); // 0 = dark bar
+    }, function(result) {
+      if (result && result.codeResult && result.codeResult.code) {
+        callback(result.codeResult.code);
+      } else {
+        callback(null);
       }
-
-      // Find runs of consecutive same-color bars
-      var runs = [];
-      var currentVal = bars[0];
-      var count = 1;
-      for (var x = 1; x < width; x++) {
-        if (bars[x] === currentVal) {
-          count++;
-        } else {
-          runs.push({ val: currentVal, len: count });
-          currentVal = bars[x];
-          count = 1;
-        }
-      }
-      runs.push({ val: currentVal, len: count });
-
-      // Try to find EAN-13 start guard (1,0,1 pattern = dark,light,dark)
-      var result = tryDecodeEAN13(runs);
-      if (result) return result;
-    }
-    return null;
-  }
-
-  // EAN-13 encoding patterns (L-codes)
-  var EAN_L = [
-    [0,0,0,1,1,0,1], // 0
-    [0,0,1,1,0,0,1], // 1
-    [0,0,1,0,0,1,1], // 2
-    [0,1,1,1,1,0,1], // 3
-    [0,1,0,0,0,1,1], // 4
-    [0,1,1,0,0,0,1], // 5
-    [0,1,0,1,1,1,1], // 6
-    [0,1,1,1,0,1,1], // 7
-    [0,1,1,0,1,1,1], // 8
-    [0,0,0,1,0,1,1]  // 9
-  ];
-  var EAN_G = [
-    [0,1,0,0,1,1,1], // 0
-    [0,1,1,0,0,1,1], // 1
-    [0,0,1,1,0,1,1], // 2
-    [0,1,0,0,0,0,1], // 3
-    [0,0,1,1,1,0,1], // 4
-    [0,1,1,1,0,0,1], // 5
-    [0,0,0,0,1,0,1], // 6
-    [0,0,1,0,0,0,1], // 7
-    [0,0,0,1,0,0,1], // 8
-    [0,1,0,0,1,0,1]  // 9
-  ];
-  var EAN_R = [
-    [1,1,1,0,0,1,0], // 0
-    [1,1,0,0,1,1,0], // 1
-    [1,1,0,1,1,0,0], // 2
-    [1,0,0,0,0,1,0], // 3
-    [1,0,1,1,1,0,0], // 4
-    [1,0,0,1,1,1,0], // 5
-    [1,0,1,0,0,0,0], // 6
-    [1,0,0,0,1,0,0], // 7
-    [1,0,0,1,0,0,0], // 8
-    [1,1,1,0,1,0,0]  // 9
-  ];
-  var EAN_PARITY = [
-    'LLLLLL', 'LLGLGG', 'LLGGLG', 'LLGGGL', 'LGLLGG',
-    'LGGLLG', 'LGGGLL', 'LGLGLG', 'LGLGGL', 'LGGLGL'
-  ];
-
-  function tryDecodeEAN13(runs) {
-    // Need at least 59 runs for EAN-13 (3+42+5+42+3 = 95 modules)
-    if (runs.length < 30) return null;
-
-    // Find potential start guards: look for 3 thin runs (dark-light-dark) of similar width
-    for (var i = 0; i < runs.length - 56; i++) {
-      if (runs[i].val !== 0) continue; // must start with dark
-
-      var u = runs[i].len; // unit width
-      if (u < 1) continue;
-
-      // Check start guard: 1-0-1 (dark, light, dark of similar width)
-      if (Math.abs(runs[i+1].len - u) > u * 0.6) continue;
-      if (runs[i+1].val !== 1) continue;
-      if (Math.abs(runs[i+2].len - u) > u * 0.6) continue;
-      if (runs[i+2].val !== 0) continue;
-
-      // Average unit width from start guard
-      var unitW = (runs[i].len + runs[i+1].len + runs[i+2].len) / 3;
-
-      // Try to decode 12 digits (6 left + 6 right)
-      var digits = [];
-      var parityPattern = '';
-      var ri = i + 3; // run index after start guard
-
-      // Decode left 6 digits
-      var ok = true;
-      for (var d = 0; d < 6 && ok; d++) {
-        var bestDigit = -1;
-        var bestParity = '';
-        var bestScore = 999;
-
-        // Collect 4 runs for this digit (each digit = 7 modules = 2 bars + 2 spaces = 4 runs)
-        if (ri + 3 >= runs.length) { ok = false; break; }
-        var modules = [];
-        for (var r = 0; r < 4; r++) {
-          modules.push(Math.round(runs[ri + r].len / unitW));
-        }
-        // Normalize to 7 modules total
-        var total = modules[0] + modules[1] + modules[2] + modules[3];
-        if (total === 0) { ok = false; break; }
-        var scale = 7 / total;
-        var norm = modules.map(function(m) { return Math.round(m * scale); });
-
-        // Convert to 7-bit pattern
-        var pattern = [];
-        var val = runs[ri].val === 0 ? 0 : 1;
-        for (var r = 0; r < 4; r++) {
-          for (var b = 0; b < norm[r]; b++) pattern.push(val);
-          val = 1 - val;
-        }
-        if (pattern.length !== 7) {
-          // Adjust
-          while (pattern.length < 7) pattern.push(val);
-          pattern = pattern.slice(0, 7);
-        }
-
-        // Match against L, G patterns
-        for (var dig = 0; dig < 10; dig++) {
-          var scoreL = 0, scoreG = 0;
-          for (var b = 0; b < 7; b++) {
-            if (pattern[b] !== EAN_L[dig][b]) scoreL++;
-            if (pattern[b] !== EAN_G[dig][b]) scoreG++;
-          }
-          if (scoreL < bestScore) { bestScore = scoreL; bestDigit = dig; bestParity = 'L'; }
-          if (scoreG < bestScore) { bestScore = scoreG; bestDigit = dig; bestParity = 'G'; }
-        }
-
-        if (bestScore > 2) { ok = false; break; }
-        digits.push(bestDigit);
-        parityPattern += bestParity;
-        ri += 4;
-      }
-
-      if (!ok || digits.length !== 6) continue;
-
-      // Check middle guard (0,1,0,1,0 = light-dark-light-dark-light)
-      if (ri + 4 >= runs.length) continue;
-      if (runs[ri].val !== 1) continue; // should be light
-      ri += 5; // skip middle guard (5 runs)
-
-      // Decode right 6 digits
-      var rightDigits = [];
-      for (var d = 0; d < 6 && ok; d++) {
-        if (ri + 3 >= runs.length) { ok = false; break; }
-        var modules = [];
-        for (var r = 0; r < 4; r++) {
-          modules.push(Math.round(runs[ri + r].len / unitW));
-        }
-        var total = modules[0] + modules[1] + modules[2] + modules[3];
-        if (total === 0) { ok = false; break; }
-        var scale = 7 / total;
-        var norm = modules.map(function(m) { return Math.round(m * scale); });
-
-        var pattern = [];
-        var val = runs[ri].val === 0 ? 0 : 1;
-        for (var r = 0; r < 4; r++) {
-          for (var b = 0; b < norm[r]; b++) pattern.push(val);
-          val = 1 - val;
-        }
-        if (pattern.length !== 7) {
-          while (pattern.length < 7) pattern.push(val);
-          pattern = pattern.slice(0, 7);
-        }
-
-        var bestDigit = -1;
-        var bestScore = 999;
-        for (var dig = 0; dig < 10; dig++) {
-          var score = 0;
-          for (var b = 0; b < 7; b++) {
-            if (pattern[b] !== EAN_R[dig][b]) score++;
-          }
-          if (score < bestScore) { bestScore = score; bestDigit = dig; }
-        }
-
-        if (bestScore > 2) { ok = false; break; }
-        rightDigits.push(bestDigit);
-        ri += 4;
-      }
-
-      if (!ok || rightDigits.length !== 6) continue;
-
-      // Determine first digit from parity pattern
-      var firstDigit = -1;
-      for (var fd = 0; fd < 10; fd++) {
-        if (EAN_PARITY[fd] === parityPattern) { firstDigit = fd; break; }
-      }
-      if (firstDigit < 0) continue;
-
-      // Build full EAN-13
-      var ean = '' + firstDigit;
-      for (var d = 0; d < 6; d++) ean += digits[d];
-      for (var d = 0; d < 6; d++) ean += rightDigits[d];
-
-      // Verify checksum
-      var sum = 0;
-      for (var c = 0; c < 12; c++) {
-        sum += parseInt(ean[c]) * (c % 2 === 0 ? 1 : 3);
-      }
-      var check = (10 - (sum % 10)) % 10;
-      if (check === parseInt(ean[12])) {
-        return ean;
-      }
-    }
-    return null;
+    });
   }
 
   // ── Close ──
@@ -708,34 +481,19 @@ body {
       }
     }
 
-    // 2. Try barcode detection (throttled)
+    // 2. Try barcode detection via Quagga2 (throttled)
     var now = Date.now();
     if (now - lastBarcodeCheck >= BARCODE_CHECK_INTERVAL) {
       lastBarcodeCheck = now;
 
-      // Try native BarcodeDetector first
-      if (barcodeDetector) {
-        barcodeDetector.detect(canvas).then(function(barcodes) {
-          if (!scanning || !barcodes.length) return;
-          var ean = barcodes[0].rawValue;
-          if (ean && /^\d{8,14}$/.test(ean)) {
-            scanning = false;
-            stopCamera();
-            triggerScanSuccess();
-            lookupProduct(ean);
-          }
-        }).catch(function() {});
-      }
-
-      // Also try manual barcode detection (works everywhere)
-      var ean = detectBarcodeManual(imageData, canvas.width, canvas.height);
-      if (ean && scanning) {
-        scanning = false;
-        stopCamera();
-        triggerScanSuccess();
-        lookupProduct(ean);
-        return;
-      }
+      detectBarcodeQuagga(canvas, function(ean) {
+        if (ean && scanning && /^\d{8,14}$/.test(ean)) {
+          scanning = false;
+          stopCamera();
+          triggerScanSuccess();
+          lookupProduct(ean);
+        }
+      });
     }
 
     requestAnimationFrame(scanFrame);
