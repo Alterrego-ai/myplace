@@ -2453,8 +2453,24 @@ margin: 20px 20px 0;
     <div class="loc-nav-grid">
       <!-- Apple Maps (masqué sur Android) -->
       <a class="loc-nav-btn" id="locNavApple" href="https://maps.apple.com/?address=15+Rue+Vauban,+69006+Lyon&ll=45.7649859,4.8434166" target="_blank">
-        <div class="loc-nav-icon" style="background:linear-gradient(135deg,#52D726,#3ABF38,#2BA84A);border-radius:10px;">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M12 2L3 7v10l9 5 9-5V7l-9-5z" fill="rgba(255,255,255,0.25)"/><path d="M12 5l-6 3.5v7L12 19l6-3.5v-7L12 5z" fill="rgba(255,255,255,0.15)"/><path d="M12 8.5l3.5 2v4L12 16.5 8.5 14.5v-4L12 8.5z" fill="rgba(255,255,255,0.2)"/><circle cx="12" cy="10" r="2.5" fill="#fff"/><path d="M12 12.5v4" stroke="#fff" stroke-width="1.5" stroke-linecap="round"/><path d="M12 3v2M12 19v2" stroke="rgba(255,255,255,0.5)" stroke-width="1"/><polygon points="12,6 13,8.5 11,8.5" fill="#E8432A"/><polygon points="12,14 13,11.5 11,11.5" fill="#fff"/></svg>
+        <div class="loc-nav-icon" style="background:none;border-radius:7px;overflow:hidden;padding:0;">
+          <svg width="28" height="28" viewBox="0 0 100 100">
+            <!-- Fond carte colorée -->
+            <rect x="0" y="0" width="50" height="50" fill="#6DD400"/>
+            <rect x="50" y="0" width="50" height="50" fill="#FDD100"/>
+            <rect x="0" y="50" width="50" height="50" fill="#4CC2F1"/>
+            <rect x="50" y="50" width="50" height="50" fill="#F09EA0"/>
+            <!-- Routes -->
+            <line x1="0" y1="30" x2="100" y2="35" stroke="#fff" stroke-width="3" opacity="0.6"/>
+            <line x1="25" y1="0" x2="30" y2="100" stroke="#fff" stroke-width="2.5" opacity="0.5"/>
+            <line x1="65" y1="0" x2="70" y2="100" stroke="#fff" stroke-width="2" opacity="0.4"/>
+            <line x1="0" y1="70" x2="100" y2="65" stroke="#fff" stroke-width="2" opacity="0.4"/>
+            <!-- Cercle bleu central -->
+            <circle cx="50" cy="50" r="16" fill="#007AFF"/>
+            <circle cx="50" cy="50" r="14.5" fill="#007AFF" stroke="#fff" stroke-width="2"/>
+            <!-- Flèche blanche -->
+            <polygon points="50,38 57,56 50,52 43,56" fill="#fff"/>
+          </svg>
         </div>
         <div class="loc-nav-text"><div class="loc-nav-label">Plans</div><div class="loc-nav-sub">Apple Maps</div></div>
       </a>
