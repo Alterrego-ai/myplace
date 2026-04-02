@@ -516,11 +516,12 @@ border-radius: 24px 24px 0 0;
 z-index: 201;
 padding: 0 0 max(24px, env(safe-area-inset-bottom));
 transition: transform 0.35s cubic-bezier(0.32, 0.72, 0, 1);
-box-shadow: 0 -8px 40px rgba(0,0,0,0.2);
+box-shadow: none;
 }
 
 .bottom-sheet.visible {
 transform: translateX(-50%) translateY(0);
+box-shadow: 0 -8px 40px rgba(0,0,0,0.2);
 }
 
 /* Desktop: constrain sheet inside phone-screen */
@@ -1438,7 +1439,7 @@ background: var(--primary); color: #fff; font-size: 26px; font-weight: 700; over
   margin: 0 auto;
   background: var(--bg-card);
   border-radius: 20px 20px 0 0;
-  box-shadow: 0 -8px 40px rgba(0,0,0,0.18);
+  box-shadow: none;
   z-index: 310;
   transform: translateY(100%);
   transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
@@ -1447,7 +1448,7 @@ background: var(--primary); color: #fff; font-size: 26px; font-weight: 700; over
   -webkit-overflow-scrolling: touch;
   padding-bottom: calc(16px + env(safe-area-inset-bottom, 0px));
 }
-.wallet-sheet.visible { transform: translateY(0); }
+.wallet-sheet.visible { transform: translateY(0); box-shadow: 0 -8px 40px rgba(0,0,0,0.18); }
 /* Desktop: inside phone-screen */
 @media (min-width: 769px) {
   .wallet-sheet {
