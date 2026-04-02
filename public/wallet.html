@@ -379,10 +379,11 @@ body {
   padding: 0 18px 10px;
 }
 #premiumQRCanvas {
-  width: 100%; max-width: 280px; height: auto; border-radius: 12px;
-  opacity: 0.25; transition: opacity 0.6s ease;
+  width: 100%; max-width: 280px; height: auto; border-radius: 14px;
+  opacity: 0.2; filter: brightness(0.6); transition: opacity 0.6s ease, filter 0.6s ease;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.3), inset 0 0 0 1px rgba(100,180,255,0.08);
 }
-#premiumQRCanvas.active { opacity: 1; }
+#premiumQRCanvas.active { opacity: 1; filter: brightness(1); }
 .pqr-hint {
   position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
   font-size: 11px; font-weight: 600; color: rgba(255,255,255,0.25);
@@ -441,9 +442,17 @@ body {
   }
 
   // ── Premium QR Canvas Renderer ──
-  // Dessine un QR "invisible" : l'image ressemble à un visuel premium branded
-  // mais les modules QR sont encodés en variations subtiles de couleur
-  // Lisible par caméra (jsQR), invisible à l'œil
+  // QR branded : modules en bleu lumineux sur fond dark navy
+  // Finder patterns (3 coins) renforcés pour détection jsQR fiable
+  // Résultat : QR "design" lisible par caméra, look premium
+
+  function isFinderPattern(row, col, modCount) {
+    // Les 3 finder patterns QR : top-left, top-right, bottom-left (7x7 modules chacun)
+    if (row < 7 && col < 7) return true;                       // top-left
+    if (row < 7 && col >= modCount - 7) return true;            // top-right
+    if (row >= modCount - 7 && col < 7) return true;            // bottom-left
+    return false;
+  }
 
   function renderPremiumQR(dataUrl) {
     var canvas = document.getElementById('premiumQRCanvas');
@@ -453,114 +462,93 @@ body {
     canvas.height = size;
 
     // Génère la matrice QR
-    var qr = qrcode(0, 'M'); // auto type-number, medium ECC
+    var qr = qrcode(0, 'M');
     qr.addData(dataUrl);
     qr.make();
     var modCount = qr.getModuleCount();
-    var modSize = size / modCount;
 
-    // ── 1. Background : gradient premium dark ──
-    var bgGrad = ctx.createLinearGradient(0, 0, size, size);
-    bgGrad.addColorStop(0, '#0c1e38');
-    bgGrad.addColorStop(0.4, '#0f2848');
-    bgGrad.addColorStop(0.7, '#0a1a30');
-    bgGrad.addColorStop(1, '#081428');
-    ctx.fillStyle = bgGrad;
+    // Quiet zone (marge blanche obligatoire pour détection QR)
+    var quietZone = 2;
+    var totalMods = modCount + quietZone * 2;
+    var modSize = size / totalMods;
+    var offset = quietZone * modSize;
+
+    // ── 1. Fond clair (quiet zone + modules light) ──
+    // jsQR a besoin de contraste fort : fond clair, modules sombres
+    ctx.fillStyle = '#e8edf4'; // gris-bleu très clair
     ctx.fillRect(0, 0, size, size);
 
-    // ── 2. Subtle texture lines (fond de carte) ──
-    ctx.strokeStyle = 'rgba(100,180,255,0.018)';
+    // ── 2. Subtle texture de fond ──
+    ctx.strokeStyle = 'rgba(100,140,200,0.06)';
     ctx.lineWidth = 0.5;
-    for (var i = 0; i < size; i += 8) {
-      ctx.beginPath();
-      ctx.moveTo(0, i);
-      ctx.lineTo(size, i);
-      ctx.stroke();
+    for (var i = 0; i < size; i += 6) {
+      ctx.beginPath(); ctx.moveTo(0, i); ctx.lineTo(size, i); ctx.stroke();
     }
 
-    // ── 3. QR modules rendus en variations de couleur subtiles ──
-    // Modules "dark" = légèrement plus clair (encoded data)
-    // Modules "light" = fond (presque identique au background)
-    // Le contraste est calculé pour être lisible par caméra mais discret à l'œil
+    // ── 3. QR modules ──
     for (var row = 0; row < modCount; row++) {
       for (var col = 0; col < modCount; col++) {
-        var x = col * modSize;
-        var y = row * modSize;
+        var x = offset + col * modSize;
+        var y = offset + row * modSize;
         var isDark = qr.isDark(row, col);
 
-        if (isDark) {
-          // Module sombre : variation bleu clair — visible caméra
-          // On utilise un gradient radial subtil par module pour l'effet premium
-          var cx = x + modSize / 2;
-          var cy = y + modSize / 2;
-          var mgr = ctx.createRadialGradient(cx, cy, 0, cx, cy, modSize * 0.7);
-          mgr.addColorStop(0, 'rgba(55,100,160,0.85)');
-          mgr.addColorStop(1, 'rgba(40,80,140,0.65)');
-          ctx.fillStyle = mgr;
-          // Arrondi léger sur chaque module
-          var r = modSize * 0.15;
-          var ms = modSize * 0.95;
-          var mx = x + (modSize - ms) / 2;
-          var my = y + (modSize - ms) / 2;
-          ctx.beginPath();
-          ctx.roundRect(mx, my, ms, ms, r);
-          ctx.fill();
+        if (!isDark) continue; // fond déjà dessiné
+
+        var isFinder = isFinderPattern(row, col, modCount);
+        var ms = modSize;
+
+        if (isFinder) {
+          // Finder patterns : contraste maximum — bleu très sombre
+          ctx.fillStyle = '#0a1832';
+          ctx.fillRect(x, y, ms, ms);
         } else {
-          // Module clair : même fond que le background
-          ctx.fillStyle = 'rgba(10,24,44,0.9)';
-          ctx.fillRect(x, y, modSize, modSize);
+          // Data modules : bleu navy premium avec léger arrondi
+          var r = ms * 0.12;
+          var pad = ms * 0.04;
+          ctx.fillStyle = '#142d52';
+          ctx.beginPath();
+          ctx.roundRect(x + pad, y + pad, ms - pad * 2, ms - pad * 2, r);
+          ctx.fill();
         }
       }
     }
 
-    // ── 4. Overlay holographique (sweep diagonal) ──
+    // ── 4. Overlay holographique très léger (ne casse pas le contraste) ──
     var sweepGrad = ctx.createLinearGradient(0, 0, size, size);
-    sweepGrad.addColorStop(0, 'rgba(100,200,255,0)');
-    sweepGrad.addColorStop(0.35, 'rgba(120,180,255,0.04)');
-    sweepGrad.addColorStop(0.5, 'rgba(180,140,255,0.06)');
-    sweepGrad.addColorStop(0.65, 'rgba(100,230,200,0.04)');
-    sweepGrad.addColorStop(1, 'rgba(100,200,255,0)');
+    sweepGrad.addColorStop(0, 'rgba(100,180,255,0)');
+    sweepGrad.addColorStop(0.4, 'rgba(100,160,230,0.03)');
+    sweepGrad.addColorStop(0.6, 'rgba(140,120,220,0.03)');
+    sweepGrad.addColorStop(1, 'rgba(100,180,255,0)');
     ctx.fillStyle = sweepGrad;
     ctx.fillRect(0, 0, size, size);
 
-    // ── 5. Glow central subtil ──
-    var glowGrad = ctx.createRadialGradient(size * 0.5, size * 0.45, 0, size * 0.5, size * 0.45, size * 0.5);
-    glowGrad.addColorStop(0, 'rgba(20,100,180,0.06)');
-    glowGrad.addColorStop(1, 'rgba(0,0,0,0)');
-    ctx.fillStyle = glowGrad;
-    ctx.fillRect(0, 0, size, size);
-
-    // ── 6. Brand watermark centre (très subtil) ──
+    // ── 5. Brand watermark centre (très subtil, dans la zone "safe" du QR) ──
     ctx.save();
-    ctx.globalAlpha = 0.04;
-    ctx.font = '800 32px "Plus Jakarta Sans", sans-serif';
-    ctx.fillStyle = '#fff';
+    ctx.globalAlpha = 0.06;
+    ctx.font = '800 22px "Plus Jakarta Sans", sans-serif';
+    ctx.fillStyle = '#0a1832';
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
-    ctx.fillText('OK', size / 2, size / 2 - 8);
-    ctx.font = '600 10px "Plus Jakarta Sans", sans-serif';
-    ctx.fillText('SNAP TIPS', size / 2, size / 2 + 14);
+    ctx.fillText('OK', size / 2, size / 2 - 6);
+    ctx.font = '600 7px "Plus Jakarta Sans", sans-serif';
+    ctx.fillText('SNAP TIPS', size / 2, size / 2 + 10);
     ctx.restore();
 
-    // ── 7. Border subtile ──
-    ctx.strokeStyle = 'rgba(100,180,255,0.12)';
-    ctx.lineWidth = 1;
+    // ── 6. Border premium ──
+    ctx.strokeStyle = 'rgba(20,45,82,0.25)';
+    ctx.lineWidth = 1.5;
     ctx.beginPath();
-    ctx.roundRect(0.5, 0.5, size - 1, size - 1, 12);
+    ctx.roundRect(1, 1, size - 2, size - 2, 14);
     ctx.stroke();
 
-    // ── 8. Corner accents ──
-    var cl = 16;
-    ctx.strokeStyle = 'rgba(100,180,255,0.2)';
-    ctx.lineWidth = 1.5;
-    // Top-left
-    ctx.beginPath(); ctx.moveTo(2, cl); ctx.lineTo(2, 6); ctx.arcTo(2, 2, 6, 2, 4); ctx.lineTo(cl, 2); ctx.stroke();
-    // Top-right
-    ctx.beginPath(); ctx.moveTo(size - cl, 2); ctx.lineTo(size - 6, 2); ctx.arcTo(size - 2, 2, size - 2, 6, 4); ctx.lineTo(size - 2, cl); ctx.stroke();
-    // Bottom-left
-    ctx.beginPath(); ctx.moveTo(2, size - cl); ctx.lineTo(2, size - 6); ctx.arcTo(2, size - 2, 6, size - 2, 4); ctx.lineTo(cl, size - 2); ctx.stroke();
-    // Bottom-right
-    ctx.beginPath(); ctx.moveTo(size - cl, size - 2); ctx.lineTo(size - 6, size - 2); ctx.arcTo(size - 2, size - 2, size - 2, size - 6, 4); ctx.lineTo(size - 2, size - cl); ctx.stroke();
+    // ── 7. Corner accents bleu ──
+    var cl = 20;
+    ctx.strokeStyle = 'rgba(20,100,180,0.35)';
+    ctx.lineWidth = 2;
+    ctx.beginPath(); ctx.moveTo(3, cl); ctx.lineTo(3, 7); ctx.arcTo(3, 3, 7, 3, 5); ctx.lineTo(cl, 3); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(size - cl, 3); ctx.lineTo(size - 7, 3); ctx.arcTo(size - 3, 3, size - 3, 7, 5); ctx.lineTo(size - 3, cl); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(3, size - cl); ctx.lineTo(3, size - 7); ctx.arcTo(3, size - 3, 7, size - 3, 5); ctx.lineTo(cl, size - 3); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(size - cl, size - 3); ctx.lineTo(size - 7, size - 3); ctx.arcTo(size - 3, size - 3, size - 3, size - 7, 5); ctx.lineTo(size - 3, size - cl); ctx.stroke();
   }
 
   // ── Premium QR Timer ──
