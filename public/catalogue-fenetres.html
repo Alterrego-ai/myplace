@@ -292,6 +292,53 @@ body{font-family:'DM Sans',system-ui,sans-serif;background:var(--bg);color:var(-
   </div>
 </div>
 
+<!-- ===== BACKOFFICE — Ce qu'on utilise ===== -->
+<div class="category">
+  <div class="category-title" style="color:var(--primary);border-bottom:2px solid var(--primary);padding-bottom:4px">✦ Utilisés dans le backoffice Sauf Imprévu</div>
+  <div class="item" onclick="show('d-bsheet')" style="border-left:3px solid var(--primary)">
+    <div class="item-icon">📋</div>
+    <div class="item-info">
+      <div class="item-name">Modal Bottom Sheet → Réservations, Carte</div>
+      <div class="item-desc">Formulaire nouvelle réservation, ajout élément/catégorie/famille. Bottom-sheet mobile, centré desktop. Poignée drag + swipe-to-dismiss.</div>
+    </div>
+  </div>
+  <div class="item" style="border-left:3px solid var(--primary);cursor:default">
+    <div class="item-icon">📍</div>
+    <div class="item-info">
+      <div class="item-name">Geo Panel → Géolocalisation</div>
+      <div class="item-desc">Panel centré 380px avec carte Leaflet, distance en temps réel. Overlay sombre, border-radius 12px.</div>
+    </div>
+  </div>
+  <div class="item" onclick="show('d-fullscreen')" style="border-left:3px solid var(--primary)">
+    <div class="item-icon">📷</div>
+    <div class="item-info">
+      <div class="item-name">Scanner Overlay → QR Code</div>
+      <div class="item-desc">Plein écran noir, z-index 2000, cadre de scan avec coins blancs animés, header/footer semi-transparents.</div>
+    </div>
+  </div>
+  <div class="item" style="border-left:3px solid var(--primary);cursor:default">
+    <div class="item-icon">🏷️</div>
+    <div class="item-info">
+      <div class="item-name">Tag Detail Popup → Carte des tags</div>
+      <div class="item-desc">Popup dynamique léger, carte blanche 360px centrée, pas de header formel. Clic extérieur pour fermer.</div>
+    </div>
+  </div>
+  <div class="item" style="border-left:3px solid var(--primary);cursor:default">
+    <div class="item-icon">✨</div>
+    <div class="item-info">
+      <div class="item-name">AR Experience → Menu immersif</div>
+      <div class="item-desc">Plein écran caméra + Lottie + feux d'artifice canvas + cartes flottantes parallax gyroscope. Texte bienvenue animé.</div>
+    </div>
+  </div>
+  <div class="item" onclick="showToast()" style="border-left:3px solid var(--primary)">
+    <div class="item-icon">✅</div>
+    <div class="item-info">
+      <div class="item-name">Toast → Confirmations</div>
+      <div class="item-desc">Message court auto-disparaissant après actions (réservation créée, élément modifié, etc.)</div>
+    </div>
+  </div>
+</div>
+
 <!-- ============ DEMO OVERLAYS ============ -->
 
 <!-- Alert -->
