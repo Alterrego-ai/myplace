@@ -6,7 +6,7 @@
 <meta name="theme-color" content="#060e1a">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<title>Ma Carte — Sauf Imprévu</title>
+<title>Mon Compte — Sauf Imprévu</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
 *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
@@ -42,6 +42,36 @@ body {
   padding: 10px 20px 40px; gap: 24px;
   -webkit-overflow-scrolling: touch;
 }
+/* ─── PROFIL ──────────────────────────────────── */
+.profile-section {
+  width: 100%; max-width: 380px;
+  display: flex; align-items: center; gap: 12px;
+  padding: 4px 0 8px;
+}
+.profile-avatar {
+  width: 48px; height: 48px; border-radius: 50%; flex-shrink: 0;
+  background: linear-gradient(135deg, #1464B4, #2888d8);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px; font-weight: 800; color: #fff; letter-spacing: -0.02em;
+  border: 2px solid rgba(100,180,255,0.25);
+}
+.profile-info { flex: 1; min-width: 0; }
+.profile-name {
+  font-size: 16px; font-weight: 700; color: #fff;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.profile-email {
+  font-size: 11px; color: rgba(255,255,255,0.3); margin-top: 1px;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.profile-edit {
+  display: flex; align-items: center; gap: 4px; flex-shrink: 0;
+  font-size: 10px; font-weight: 600; color: rgba(100,180,255,0.6);
+  text-decoration: none; padding: 6px 10px; border-radius: 20px;
+  background: rgba(100,180,255,0.06); border: 1px solid rgba(100,180,255,0.1);
+  transition: background 0.15s;
+}
+.profile-edit:active { background: rgba(100,180,255,0.12); }
 /* ─── CARTE ───────────────────────────────────── */
 .card {
   width: 100%; max-width: 380px;
@@ -197,9 +227,9 @@ body {
 <!-- HEADER -->
 <div class="wallet-header">
   <div class="wallet-header-left">
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/></svg>
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M20 21a8 8 0 1 0-16 0"/></svg>
     <div>
-      <h4>Ma Carte</h4>
+      <h4>Mon Compte</h4>
       <span>OK Snap Tips</span>
     </div>
   </div>
@@ -209,6 +239,20 @@ body {
 <!-- SCROLL -->
 <div class="wallet-scroll">
 
+<!-- PROFIL -->
+<div class="profile-section">
+  <div class="profile-avatar" id="profileAvatar">?</div>
+  <div class="profile-info">
+    <div class="profile-name" id="profileName">Membre</div>
+    <div class="profile-email" id="profileEmail"></div>
+  </div>
+  <a class="profile-edit" id="profileEdit" href="#">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17l-4 4"/><path d="M17 7l-10 10"/><circle cx="19" cy="5" r="3"/></svg>
+    <span>mySafe</span>
+  </a>
+</div>
+
+<!-- CARTE -->
 <div class="card">
   <div class="card-header">
     <div class="header-glow"></div>
@@ -388,8 +432,33 @@ body {
   var SSO_KEY = 'sauf_imprevu_user';
   var user = null;
   try { user = JSON.parse(localStorage.getItem(SSO_KEY)); } catch(e) {}
-  if (user && user.name) {
-    document.getElementById('porteurName').textContent = user.name;
+
+  // Profil section
+  if (user) {
+    var name = user.name || 'Membre';
+    document.getElementById('profileName').textContent = name;
+    document.getElementById('porteurName').textContent = name;
+
+    // Avatar : initiales
+    var parts = name.trim().split(/\s+/);
+    var initials = parts.length > 1
+      ? (parts[0][0] + parts[parts.length - 1][0]).toUpperCase()
+      : name.substring(0, 2).toUpperCase();
+    document.getElementById('profileAvatar').textContent = initials;
+
+    // Email
+    if (user.email) {
+      document.getElementById('profileEmail').textContent = user.email;
+    }
+
+    // Photo SSO (si dispo)
+    if (user.picture) {
+      var av = document.getElementById('profileAvatar');
+      av.textContent = '';
+      av.style.backgroundImage = 'url(' + user.picture + ')';
+      av.style.backgroundSize = 'cover';
+      av.style.backgroundPosition = 'center';
+    }
   }
 
   // ── Member payload (POC — hardcoded, sera dynamique) ──
