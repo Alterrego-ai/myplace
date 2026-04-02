@@ -228,10 +228,17 @@ overflow: hidden;
 border-radius: 0;
 }
 
-/* PWA standalone: extend hero to cover safe area */
+/* PWA standalone + Capacitor: extend hero under status bar */
 @media (display-mode: standalone) {
   .hero {
-    height: calc(200px + env(safe-area-inset-top, 0px));
+    height: calc(220px + env(safe-area-inset-top, 0px));
+    padding-top: env(safe-area-inset-top, 0px);
+  }
+}
+/* Mobile: always extend hero under safe area for premium look */
+@media (max-width: 768px) {
+  .hero {
+    height: calc(220px + env(safe-area-inset-top, 0px));
   }
 }
 
