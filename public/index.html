@@ -503,6 +503,13 @@ backdrop-filter: blur(2px);
 opacity: 1;
 pointer-events: all;
 }
+body.sheet-open {
+overflow: hidden;
+position: fixed;
+width: 100%;
+left: 0;
+right: 0;
+}
 
 .bottom-sheet {
 position: fixed;
@@ -2653,12 +2660,27 @@ margin: 20px 20px 0;
 
   // Hours sheet
   function toggleHours() {
+    lockBodyScroll();
     document.getElementById('sheetOverlay').classList.add('visible');
     document.getElementById('hoursSheet').classList.add('visible');
   }
 
+  // ── Scroll lock helpers pour bottom sheets ──
+  var _sheetScrollY = 0;
+  function lockBodyScroll() {
+    _sheetScrollY = window.scrollY;
+    document.body.classList.add('sheet-open');
+    document.body.style.top = '-' + _sheetScrollY + 'px';
+  }
+  function unlockBodyScroll() {
+    document.body.classList.remove('sheet-open');
+    document.body.style.top = '';
+    window.scrollTo(0, _sheetScrollY);
+  }
+
   // Close all sheets
   function closeAllSheets() {
+    unlockBodyScroll();
     document.getElementById('sheetOverlay').classList.remove('visible');
     document.getElementById('addressSheet').classList.remove('visible');
     document.getElementById('hoursSheet').classList.remove('visible');
@@ -2928,7 +2950,8 @@ margin: 20px 20px 0;
     document.getElementById('pwaGuideSteps').innerHTML = steps;
 
     setTimeout(function() {
-      document.getElementById('sheetOverlay').classList.add('visible');
+      lockBodyScroll();
+    document.getElementById('sheetOverlay').classList.add('visible');
       document.getElementById('pwaGuideSheet').classList.add('visible');
     }, 350);
   }
@@ -3281,6 +3304,7 @@ margin: 20px 20px 0;
       '</style>';
 
     content.innerHTML = html;
+    lockBodyScroll();
     document.getElementById('sheetOverlay').classList.add('visible');
     sheet.classList.add('visible');
   }
@@ -3412,6 +3436,7 @@ margin: 20px 20px 0;
     html += '</div></div>';
 
     content.innerHTML = html;
+    lockBodyScroll();
     document.getElementById('sheetOverlay').classList.add('visible');
     sheet.classList.add('visible');
   }
@@ -3503,6 +3528,7 @@ margin: 20px 20px 0;
     }
     html += '</div>';
     content.innerHTML = html;
+    lockBodyScroll();
     document.getElementById('sheetOverlay').classList.add('visible');
     sheet.classList.add('visible');
   }
