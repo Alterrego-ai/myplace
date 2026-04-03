@@ -3133,7 +3133,7 @@ margin: 20px 20px 0;
 
 <!-- OVERLAY -->
 
-<div class="sheet-overlay" id="sheetOverlay" onclick="closeAllSheets()"></div>
+<div class="sheet-overlay" id="sheetOverlay" onclick="if(!window._sheetSwitching)closeAllSheets()"></div>
 
 <!-- BOTTOM SHEET ADRESSE (fullscreen) -->
 
@@ -4482,13 +4482,11 @@ margin: 20px 20px 0;
   var _resaSlotId = null;
 
   function openResaForm(slotId, dateStr) {
-    console.log('[RESA] openResaForm called:', slotId, dateStr);
     var slot = null;
     if (AGENDA_DATA && AGENDA_DATA.services) {
       slot = AGENDA_DATA.services.find(function(s) { return s.id === slotId; });
     }
-    console.log('[RESA] slot found:', !!slot, slot ? slot.booking : 'no slot');
-    if (!slot || !slot.booking || !slot.booking.enabled) { console.log('[RESA] ABORTED - no slot or booking disabled'); return; }
+    if (!slot || !slot.booking || !slot.booking.enabled) return;
 
     _resaSlotId = slotId;
     _resaCouverts = 2;
@@ -4573,6 +4571,7 @@ margin: 20px 20px 0;
     }
 
     // Open sheet — close other sheets but keep overlay, then show resa
+    window._sheetSwitching = true;
     var allSheets = document.querySelectorAll('.bottom-sheet');
     allSheets.forEach(function(s) {
       if (s.id !== 'resaSheet') {
@@ -4583,14 +4582,10 @@ margin: 20px 20px 0;
     });
     lockBodyScroll();
     document.getElementById('sheetOverlay').classList.add('visible');
-    // Small delay to let closing sheet animate out
-    console.log('[RESA] about to show resaSheet in 50ms');
     setTimeout(function() {
-      var rs = document.getElementById('resaSheet');
-      console.log('[RESA] resaSheet found:', !!rs, rs ? rs.className : 'null');
-      rs.classList.add('visible');
-      console.log('[RESA] resaSheet class after:', rs.className);
-    }, 50);
+      document.getElementById('resaSheet').classList.add('visible');
+      window._sheetSwitching = false;
+    }, 80);
   }
 
   // Sésame interactive callbacks
