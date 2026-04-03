@@ -947,46 +947,33 @@ max-height: 300px;
 }
 
 /* ── Hours sheet premium ── */
-.hrs-live {
-  display: flex; align-items: center; gap: 10px;
-  padding: 10px 14px; border-radius: 12px; margin-bottom: 12px;
-}
-.hrs-live--open {
-  background: linear-gradient(135deg, rgba(74,232,138,0.1), rgba(74,232,138,0.04));
-  border: 1px solid rgba(74,232,138,0.2);
-}
-.hrs-live--closed {
-  background: linear-gradient(135deg, rgba(255,100,100,0.08), rgba(255,100,100,0.03));
-  border: 1px solid rgba(255,100,100,0.15);
-}
-.hrs-live-dot {
-  width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0;
-}
-.hrs-live--open .hrs-live-dot {
-  background: #4AE88A;
-  box-shadow: 0 0 0 0 rgba(74,232,138,0.5);
-  animation: hrs-pulse 2s ease-in-out infinite;
-}
-.hrs-live--closed .hrs-live-dot { background: #ff6b6b; }
-@keyframes hrs-pulse { 0%,100% { box-shadow: 0 0 0 0 rgba(74,232,138,0.4); } 50% { box-shadow: 0 0 0 6px rgba(74,232,138,0); } }
-.hrs-live-text { flex: 1; }
-.hrs-live-status { font-size: 14px; font-weight: 700; }
-.hrs-live--open .hrs-live-status { color: #4AE88A; }
-.hrs-live--closed .hrs-live-status { color: #ff6b6b; }
-.hrs-live-countdown { font-size: 11px; color: var(--text-tertiary); margin-top: 1px; }
+@keyframes hrs-pulse { 0%,100% { box-shadow: 0 0 0 0 rgba(255,255,255,0.4); } 50% { box-shadow: 0 0 0 5px rgba(255,255,255,0); } }
 
 .hrs-today-card {
   background: linear-gradient(135deg, var(--primary), color-mix(in srgb, var(--primary) 70%, #000));
   border-radius: 14px; padding: 14px 16px; color: #fff; margin-bottom: 12px;
   position: relative; overflow: hidden;
 }
+.hrs-today--open { background: linear-gradient(135deg, #0d6e4e, #059669); }
+.hrs-today--closed { background: linear-gradient(135deg, #7f1d1d, #b91c1c); }
 .hrs-today-card::before {
   content: ‘’; position: absolute; top: -30px; right: -30px;
   width: 80px; height: 80px; border-radius: 50%;
   background: rgba(255,255,255,0.08);
 }
-.hrs-today-label { font-size: 10px; font-weight: 600; opacity: 0.7; letter-spacing: 0.05em; text-transform: uppercase; margin-bottom: 2px; }
+.hrs-today-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px; }
+.hrs-today-label { font-size: 10px; font-weight: 600; opacity: 0.7; letter-spacing: 0.05em; text-transform: uppercase; }
+.hrs-today-badge {
+  display: flex; align-items: center; gap: 6px;
+  font-size: 11px; font-weight: 700; letter-spacing: 0.03em;
+  background: rgba(255,255,255,0.15); padding: 3px 10px; border-radius: 20px;
+}
+.hrs-today-dot {
+  width: 7px; height: 7px; border-radius: 50%; background: #fff;
+}
+.hrs-today--open .hrs-today-dot { animation: hrs-pulse 2s ease-in-out infinite; }
 .hrs-today-hours { font-size: 22px; font-weight: 800; letter-spacing: -0.02em; }
+.hrs-today-countdown { font-size: 11px; opacity: 0.65; margin-top: 2px; }
 .hrs-today-meta { display: flex; gap: 10px; margin-top: 6px; font-size: 11px; opacity: 0.7; }
 .hrs-today-meta span { display: flex; align-items: center; gap: 4px; }
 
@@ -3295,15 +3282,6 @@ margin: 20px 20px 0;
     var status = getHoursStatus();
     var html = '';
 
-    // ── Live status badge ──
-    html += '<div class="hrs-live hrs-live--' + (status.isOpen ? 'open' : 'closed') + '">';
-    html += '  <div class="hrs-live-dot"></div>';
-    html += '  <div class="hrs-live-text">';
-    html += '    <div class="hrs-live-status">' + (status.isOpen ? 'Ouvert maintenant' : 'Fermé') + '</div>';
-    if (status.countdown) html += '    <div class="hrs-live-countdown">' + status.countdown + '</div>';
-    html += '  </div>';
-    html += '</div>';
-
     // ── Weather (async, placeholder) ──
     html += '<div class="hrs-weather" id="hrsWeather" style="display:none;">';
     html += '  <div class="hrs-weather-icon" id="hrsWeatherIcon"></div>';
@@ -3313,10 +3291,14 @@ margin: 20px 20px 0;
     html += '  </div>';
     html += '</div>';
 
-    // ── Today card ──
-    html += '<div class="hrs-today-card">';
-    html += '  <div class="hrs-today-label">Aujourd\'hui · ' + status.todayLabel + '</div>';
+    // ── Today card (avec statut live intégré) ──
+    html += '<div class="hrs-today-card hrs-today--' + (status.isOpen ? 'open' : 'closed') + '">';
+    html += '  <div class="hrs-today-top">';
+    html += '    <div class="hrs-today-label">Aujourd\'hui · ' + status.todayLabel + '</div>';
+    html += '    <div class="hrs-today-badge"><span class="hrs-today-dot"></span>' + (status.isOpen ? 'Ouvert' : 'Fermé') + '</div>';
+    html += '  </div>';
     html += '  <div class="hrs-today-hours">' + status.todayHours + '</div>';
+    if (status.countdown) html += '  <div class="hrs-today-countdown">' + status.countdown + '</div>';
     // Build meta tags from agenda promos
     var metaTags = '<span><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg> Service continu</span>';
     if (AGENDA_DATA && AGENDA_DATA.services) {
