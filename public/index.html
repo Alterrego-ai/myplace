@@ -1018,19 +1018,41 @@ max-height: 300px;
 .hrs-ag-slot {
   position: absolute; left: 48px; right: 8px;
   border-radius: 8px; padding: 6px 10px;
-  font-size: 12px; font-weight: 600; color: #fff;
+  font-size: 12px; font-weight: 600; color: var(--text);
   overflow: hidden; z-index: 1;
   display: flex; flex-direction: column; justify-content: center;
 }
 .hrs-ag-slot-label { font-weight: 700; font-size: 12px; }
-.hrs-ag-slot-time { font-size: 10px; opacity: 0.8; margin-top: 1px; }
+.hrs-ag-slot-time { font-size: 10px; opacity: 0.7; margin-top: 1px; }
 .hrs-ag-reserve-btn {
-  background: rgba(255,255,255,0.25); color: #fff; border: 1px solid rgba(255,255,255,0.4);
   border-radius: 6px; padding: 4px 10px; font-size: 11px; font-weight: 700;
   font-family: inherit; cursor: pointer; white-space: nowrap;
-  transition: background 0.15s;
+  transition: all 0.15s; border-width: 1px; border-style: solid;
 }
-.hrs-ag-reserve-btn:active { background: rgba(255,255,255,0.45); }
+.hrs-ag-reserve-btn:active { opacity: 0.7; }
+
+/* Slot fermé / clos */
+.hrs-ag-slot--closed {
+  background: var(--bg-card) !important; border: 1.5px dashed var(--border) !important;
+  opacity: 0.5;
+}
+.hrs-ag-slot--closed .hrs-ag-slot-label { color: var(--text-tertiary); }
+.hrs-ag-slot--closed .hrs-ag-slot-time { color: var(--text-tertiary); font-style: italic; }
+
+/* Promo (Happy Hour) — bandeau vertical à droite */
+.hrs-ag-slot--promo {
+  left: auto !important; right: 8px !important; width: 38px;
+  border-radius: 8px; padding: 6px 4px;
+  background: linear-gradient(180deg, #f59e0b22 0%, #f59e0b11 100%);
+  border: 1.5px solid #f59e0b40;
+  display: flex; align-items: center; justify-content: center;
+}
+.hrs-ag-slot--promo-label {
+  writing-mode: vertical-rl; text-orientation: mixed;
+  transform: rotate(180deg);
+  font-size: 10px; font-weight: 700; color: #f59e0b;
+  letter-spacing: 0.5px; white-space: nowrap;
+}
 .hrs-ag-event {
   position: absolute; left: 48px; right: 8px;
   border-radius: 8px; padding: 6px 10px;
@@ -4091,7 +4113,8 @@ margin: 20px 20px 0;
       return;
     }
 
-    var slots = isPastDay ? [] : getSlotsForDay(idx);
+    var allSlots = getSlotsForDay(idx);
+    var slots = allSlots; // show all, mark closed ones later
     var ROW_H = 44; // px per hour
 
     // Time range: round down open hour, round up close hour
@@ -4113,7 +4136,18 @@ margin: 20px 20px 0;
       h += '</div>';
     }
 
-    // Slots (déjeuner, happy hour, dîner) as colored blocks
+    // Check which slots overlap with a promo (happy hour)
+    var promoSlots = slots.filter(function(s) { return s.type === 'promo'; });
+    var hasPromo = promoSlots.length > 0;
+
+    // Determine if a slot's time is fully past (closed)
+    var nowMin = (function() {
+      var n = new Date(); return n.getHours() * 60 + n.getMinutes();
+    })();
+    var isCurrentDay = selStr === todayStr;
+    var selDateISO = selDate.toISOString().slice(0,10);
+
+    // Slots (déjeuner, dîner) as colored blocks — promos rendered separately
     slots.forEach(function(s) {
       var rec = s.recurrence;
       var sMin = parseTimeToMin(rec.start);
@@ -4121,20 +4155,41 @@ margin: 20px 20px 0;
       if (eMin <= sMin) eMin += 1440;
       var top = ((sMin - startH * 60) / (totalH * 60)) * (totalH * ROW_H);
       var height = ((eMin - sMin) / (totalH * 60)) * (totalH * ROW_H);
-      var opacity = s.type === 'promo' ? '0.6' : '0.85';
-      var selDateISO = selDate.toISOString().slice(0,10);
       var hasBooking = s.booking && s.booking.enabled;
-      h += '<div class="hrs-ag-slot" style="top:' + top + 'px;height:' + height + 'px;background:' + (s.color || '#3D6B8C') + ';opacity:' + opacity + ';">';
-      h += '  <div style="display:flex;justify-content:space-between;align-items:flex-start;">';
-      h += '    <div>';
-      h += '      <div class="hrs-ag-slot-label">' + (s.icon ? s.icon + ' ' : '') + s.label + '</div>';
-      h += '      <div class="hrs-ag-slot-time">' + rec.start.replace(':','h') + ' – ' + rec.end.replace(':','h') + '</div>';
-      h += '    </div>';
-      if (hasBooking) {
-        h += '    <button class="hrs-ag-reserve-btn" onclick="event.stopPropagation();openResaForm(\'' + s.id + '\',\'' + selDateISO + '\')">Réserver</button>';
+
+      // Is this slot closed? (past day, or today and end time passed)
+      var isClosed = isPastDay || (isCurrentDay && eMin <= nowMin);
+
+      if (s.type === 'promo') {
+        // Render promo as vertical sidebar on the right
+        h += '<div class="hrs-ag-slot hrs-ag-slot--promo" style="top:' + top + 'px;height:' + height + 'px;' + (isClosed ? 'opacity:0.3;' : '') + '">';
+        h += '  <div class="hrs-ag-slot--promo-label">' + (s.icon ? s.icon + ' ' : '') + s.label + '</div>';
+        h += '</div>';
+      } else {
+        // Normal slot — reduce width if promo overlaps
+        var rightOffset = hasPromo ? '52px' : '8px';
+        if (isClosed) {
+          // Closed: ghost style
+          h += '<div class="hrs-ag-slot hrs-ag-slot--closed" style="top:' + top + 'px;height:' + height + 'px;right:' + rightOffset + ';">';
+          h += '  <div>';
+          h += '    <div class="hrs-ag-slot-label">' + (s.icon ? s.icon + ' ' : '') + s.label + '</div>';
+          h += '    <div class="hrs-ag-slot-time" style="opacity:0.5;">Ce service est clos</div>';
+          h += '  </div>';
+          h += '</div>';
+        } else {
+          h += '<div class="hrs-ag-slot" style="top:' + top + 'px;height:' + height + 'px;background:' + (s.color || '#3D6B8C') + '20;border:1.5px solid ' + (s.color || '#3D6B8C') + '60;right:' + rightOffset + ';">';
+          h += '  <div style="display:flex;justify-content:space-between;align-items:flex-start;">';
+          h += '    <div>';
+          h += '      <div class="hrs-ag-slot-label" style="color:' + (s.color || '#3D6B8C') + ';">' + (s.icon ? s.icon + ' ' : '') + s.label + '</div>';
+          h += '      <div class="hrs-ag-slot-time" style="color:' + (s.color || '#3D6B8C') + ';opacity:0.7;">' + rec.start.replace(':','h') + ' – ' + rec.end.replace(':','h') + '</div>';
+          h += '    </div>';
+          if (hasBooking) {
+            h += '    <button class="hrs-ag-reserve-btn" style="color:' + (s.color || '#3D6B8C') + ';border-color:' + (s.color || '#3D6B8C') + '50;background:' + (s.color || '#3D6B8C') + '15;" onclick="event.stopPropagation();openResaForm(\'' + s.id + '\',\'' + selDateISO + '\')">Réserver</button>';
+          }
+          h += '  </div>';
+          h += '</div>';
+        }
       }
-      h += '  </div>';
-      h += '</div>';
     });
 
     // Events for this day (use selDate computed from week offset)
