@@ -1025,30 +1025,44 @@ max-height: 300px;
 }
 @keyframes hrs-pulse-green { 0%,100% { box-shadow: 0 0 0 0 rgba(74,232,138,0.4); } 50% { box-shadow: 0 0 0 5px rgba(74,232,138,0); } }
 
-/* Week strip */
+/* Week strip – Apple Calendar style */
 .hrs-week-strip {
-  display: flex; justify-content: space-between; gap: 4px; margin-bottom: 8px;
+  display: flex; justify-content: space-between; gap: 0; margin-bottom: 0;
+  border-bottom: 1px solid var(--border); background: var(--bg-card);
 }
-.hrs-day-circle {
-  width: 38px; height: 38px; border-radius: 50%; border: 1.5px solid var(--border);
-  background: var(--bg-subtle); color: var(--text-secondary);
-  font-size: 13px; font-weight: 600; font-family: inherit;
-  cursor: pointer; transition: all 0.2s;
+.hrs-day-col {
+  flex: 1; display: flex; flex-direction: column; align-items: center;
+  padding: 6px 0 8px; cursor: pointer; transition: all 0.15s;
+  -webkit-tap-highlight-color: transparent;
+}
+.hrs-day-col:active { opacity: 0.7; }
+.hrs-day-initial {
+  font-size: 10px; font-weight: 600; color: var(--text-tertiary);
+  text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 4px;
+}
+.hrs-day-num {
+  width: 32px; height: 32px; border-radius: 50%;
   display: flex; align-items: center; justify-content: center;
+  font-size: 15px; font-weight: 600; color: var(--text);
+  transition: all 0.15s;
 }
-.hrs-day-circle:active { transform: scale(0.92); }
-.hrs-day-circle--today {
-  background: var(--primary); color: #fff; border-color: var(--primary);
-  font-weight: 700; box-shadow: 0 2px 8px color-mix(in srgb, var(--primary) 35%, transparent);
+.hrs-day-col--today .hrs-day-num {
+  background: var(--primary); color: #fff; font-weight: 700;
 }
-.hrs-day-circle--closed { color: var(--text-tertiary); opacity: 0.5; }
-.hrs-day-circle--closed.hrs-day-circle--today { opacity: 1; }
-.hrs-day-circle--selected {
-  border-color: var(--primary); background: color-mix(in srgb, var(--primary) 12%, transparent);
+.hrs-day-col--closed .hrs-day-initial,
+.hrs-day-col--closed .hrs-day-num { opacity: 0.4; }
+.hrs-day-col--closed.hrs-day-col--today .hrs-day-num { opacity: 1; }
+.hrs-day-col--selected .hrs-day-num {
+  background: color-mix(in srgb, var(--primary) 15%, transparent);
   color: var(--primary); font-weight: 700;
 }
-.hrs-day-circle--today.hrs-day-circle--selected {
+.hrs-day-col--today.hrs-day-col--selected .hrs-day-num {
   background: var(--primary); color: #fff;
+}
+.hrs-selected-date {
+  padding: 8px 16px 6px; font-size: 13px; font-weight: 700;
+  color: var(--text); background: var(--bg-card);
+  border-bottom: 1px solid var(--border);
 }
 
 /* (legacy horizontal timeline removed — now using vertical agenda) */
@@ -3697,12 +3711,26 @@ margin: 20px 20px 0;
   }
 
   function selectHrsDay(idx) {
-    // Update circle selection
-    document.querySelectorAll('.hrs-day-circle').forEach(function(el) {
-      el.classList.remove('hrs-day-circle--selected');
+    // Update column selection
+    document.querySelectorAll('.hrs-day-col').forEach(function(el) {
+      el.classList.remove('hrs-day-col--selected');
     });
-    var btn = document.querySelector('.hrs-day-circle[data-day-idx="' + idx + '"]');
-    if (btn) btn.classList.add('hrs-day-circle--selected');
+    var col = document.querySelector('.hrs-day-col[data-day-idx="' + idx + '"]');
+    if (col) col.classList.add('hrs-day-col--selected');
+
+    // Update date label (ex: "Vendredi 3 avril 2026")
+    var now = new Date();
+    var todayJsDay = now.getDay();
+    var todayMapped = todayJsDay === 0 ? 6 : todayJsDay - 1;
+    var mondayDate = new Date(now);
+    mondayDate.setDate(mondayDate.getDate() - todayMapped);
+    var selDate = new Date(mondayDate);
+    selDate.setDate(mondayDate.getDate() + idx);
+    var moisFr = ['janvier','février','mars','avril','mai','juin','juillet','août','septembre','octobre','novembre','décembre'];
+    var joursFr = ['Dimanche','Lundi','Mardi','Mercredi','Jeudi','Vendredi','Samedi'];
+    var dateLabel = joursFr[selDate.getDay()] + ' ' + selDate.getDate() + ' ' + moisFr[selDate.getMonth()] + ' ' + selDate.getFullYear();
+    var dateLabelEl = document.getElementById('hrsSelectedDateLabel');
+    if (dateLabelEl) dateLabelEl.textContent = dateLabel;
 
     var container = document.getElementById('hrsTimelineContainer');
     if (!container) return;
@@ -3820,19 +3848,31 @@ margin: 20px 20px 0;
     hdr += '</div>';
 
     var dayInitials = ['L','M','M','J','V','S','D'];
-    hdr += '<div class="hrs-week-strip" style="padding:8px 16px 4px;">';
+    // Compute dates for this week (Mon-Sun)
+    var now = new Date();
+    var todayJsDay = now.getDay(); // 0=dim
+    var todayMapped = todayJsDay === 0 ? 6 : todayJsDay - 1; // 0=lun
+    var mondayDate = new Date(now);
+    mondayDate.setDate(mondayDate.getDate() - todayMapped);
+
+    hdr += '<div class="hrs-week-strip">';
     for (var i = 0; i < HOURS_DATA.regular.length; i++) {
       var d = HOURS_DATA.regular[i];
       var isToday = i === status.dayIdx;
       var isClosed = !d.open;
-      var cls = 'hrs-day-circle';
-      if (isToday) cls += ' hrs-day-circle--today';
-      if (isClosed) cls += ' hrs-day-circle--closed';
-      hdr += '<button class="' + cls + '" data-day-idx="' + i + '" onclick="selectHrsDay(' + i + ')">';
-      hdr += dayInitials[i];
-      hdr += '</button>';
+      var dayDate = new Date(mondayDate);
+      dayDate.setDate(mondayDate.getDate() + i);
+      var dayNum = dayDate.getDate();
+      var cls = 'hrs-day-col';
+      if (isToday) cls += ' hrs-day-col--today';
+      if (isClosed) cls += ' hrs-day-col--closed';
+      hdr += '<div class="' + cls + '" data-day-idx="' + i + '" onclick="selectHrsDay(' + i + ')">';
+      hdr += '  <div class="hrs-day-initial">' + dayInitials[i] + '</div>';
+      hdr += '  <div class="hrs-day-num">' + dayNum + '</div>';
+      hdr += '</div>';
     }
     hdr += '</div>';
+    hdr += '<div class="hrs-selected-date" id="hrsSelectedDateLabel"></div>';
     document.getElementById('hoursSheetHeader').innerHTML = hdr;
 
     // ── Scrollable content: agenda + specials ──
