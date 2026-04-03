@@ -948,8 +948,8 @@ max-height: 300px;
 
 /* ── Hours sheet premium ── */
 .hrs-live {
-  display: flex; align-items: center; gap: 12px;
-  padding: 14px 16px; border-radius: 14px; margin-bottom: 16px;
+  display: flex; align-items: center; gap: 10px;
+  padding: 10px 14px; border-radius: 12px; margin-bottom: 12px;
 }
 .hrs-live--open {
   background: linear-gradient(135deg, rgba(74,232,138,0.1), rgba(74,232,138,0.04));
@@ -977,24 +977,24 @@ max-height: 300px;
 
 .hrs-today-card {
   background: linear-gradient(135deg, var(--primary), color-mix(in srgb, var(--primary) 70%, #000));
-  border-radius: 16px; padding: 18px 20px; color: #fff; margin-bottom: 16px;
+  border-radius: 14px; padding: 14px 16px; color: #fff; margin-bottom: 12px;
   position: relative; overflow: hidden;
 }
 .hrs-today-card::before {
   content: ‘’; position: absolute; top: -30px; right: -30px;
-  width: 100px; height: 100px; border-radius: 50%;
+  width: 80px; height: 80px; border-radius: 50%;
   background: rgba(255,255,255,0.08);
 }
-.hrs-today-label { font-size: 11px; font-weight: 600; opacity: 0.7; letter-spacing: 0.05em; text-transform: uppercase; margin-bottom: 4px; }
-.hrs-today-hours { font-size: 26px; font-weight: 800; letter-spacing: -0.02em; }
-.hrs-today-meta { display: flex; gap: 12px; margin-top: 10px; font-size: 12px; opacity: 0.7; }
+.hrs-today-label { font-size: 10px; font-weight: 600; opacity: 0.7; letter-spacing: 0.05em; text-transform: uppercase; margin-bottom: 2px; }
+.hrs-today-hours { font-size: 22px; font-weight: 800; letter-spacing: -0.02em; }
+.hrs-today-meta { display: flex; gap: 10px; margin-top: 6px; font-size: 11px; opacity: 0.7; }
 .hrs-today-meta span { display: flex; align-items: center; gap: 4px; }
 
-.hrs-week-title { font-size: 11px; font-weight: 600; color: var(--text-tertiary); margin-bottom: 8px; letter-spacing: 0.03em; text-transform: uppercase; }
+.hrs-week-title { font-size: 10px; font-weight: 600; color: var(--text-tertiary); margin-bottom: 6px; letter-spacing: 0.04em; text-transform: uppercase; }
 
 .hrs-row {
   display: flex; justify-content: space-between; align-items: center;
-  padding: 10px 14px; font-size: 13px;
+  padding: 8px 14px; font-size: 13px;
   border-bottom: 1px solid var(--border);
   transition: background 0.15s;
 }
@@ -1013,24 +1013,24 @@ max-height: 300px;
 .hrs-time { color: var(--text); font-weight: 500; font-variant-numeric: tabular-nums; }
 .hrs-time--closed { color: var(--text-tertiary); font-style: italic; font-weight: 400; }
 
-.hrs-special { margin-top: 16px; }
-.hrs-special-title { font-size: 11px; font-weight: 600; color: var(--text-tertiary); margin-bottom: 8px; letter-spacing: 0.03em; text-transform: uppercase; display: flex; align-items: center; gap: 6px; }
+.hrs-special { margin-top: 12px; }
+.hrs-special-title { font-size: 10px; font-weight: 600; color: var(--text-tertiary); margin-bottom: 6px; letter-spacing: 0.04em; text-transform: uppercase; display: flex; align-items: center; gap: 6px; }
 .hrs-special-item {
-  display: flex; align-items: center; gap: 12px;
-  padding: 10px 14px; background: var(--bg-subtle); border-radius: 10px; margin-bottom: 6px;
-  font-size: 13px;
+  display: flex; align-items: center; gap: 10px;
+  padding: 8px 12px; background: var(--bg-subtle); border-radius: 10px; margin-bottom: 4px;
+  font-size: 12px;
 }
-.hrs-special-icon { font-size: 18px; flex-shrink: 0; }
+.hrs-special-icon { font-size: 16px; flex-shrink: 0; }
 .hrs-special-info { flex: 1; }
 .hrs-special-date { font-weight: 600; color: var(--text); }
 .hrs-special-label { font-size: 11px; color: var(--text-tertiary); margin-top: 1px; }
 
 .hrs-weather {
-  display: flex; align-items: center; gap: 10px;
-  padding: 12px 16px; background: var(--bg-subtle); border-radius: 12px; margin-bottom: 16px;
+  display: flex; align-items: center; gap: 8px;
+  padding: 8px 14px; background: var(--bg-subtle); border-radius: 10px; margin-bottom: 12px;
 }
-.hrs-weather-icon { font-size: 28px; }
-.hrs-weather-temp { font-size: 18px; font-weight: 700; color: var(--text); }
+.hrs-weather-icon { font-size: 22px; }
+.hrs-weather-temp { font-size: 14px; font-weight: 700; color: var(--text); }
 .hrs-weather-desc { font-size: 11px; color: var(--text-tertiary); }
 
 /* legacy day-name/hours/closed kept for compat */
@@ -2709,12 +2709,12 @@ margin: 20px 20px 0;
 
 <!-- BOTTOM SHEET HORAIRES -->
 
-<div class="bottom-sheet" id="hoursSheet">
+<div class="bottom-sheet" id="hoursSheet" style="max-height:85vh;display:flex;flex-direction:column;">
   <div class="sheet-handle"></div>
-  <div style="padding:0 20px;" id="hoursSheetContent">
+  <div style="padding:0 20px;overflow-y:auto;flex:1;-webkit-overflow-scrolling:touch;padding-bottom:8px;" id="hoursSheetContent">
     <!-- Rempli dynamiquement par buildHoursSheet() -->
   </div>
-  <button class="sheet-cancel" onclick="closeAllSheets()">Fermer</button>
+  <button class="sheet-cancel" onclick="closeAllSheets()" style="flex-shrink:0;">Fermer</button>
 </div>
 
 <!-- BOTTOM SHEET PARTAGER (fullscreen) -->
@@ -3178,25 +3178,75 @@ margin: 20px 20px 0;
     applyTheme(next);
   }
 
-  // ── Hours data & logic ──
-  var HOURS_DATA = {
-    regular: [
-      { day: 'Lundi',    open: '16:30', close: '00:00' },
-      { day: 'Mardi',    open: '16:30', close: '00:00' },
-      { day: 'Mercredi', open: '16:30', close: '01:00' },
-      { day: 'Jeudi',    open: '16:30', close: '01:00' },
-      { day: 'Vendredi', open: '16:30', close: '01:00' },
-      { day: 'Samedi',   open: null, close: null },
-      { day: 'Dimanche', open: null, close: null }
-    ],
-    special: [
-      { date: '2026-05-01', label: 'Fête du Travail', closed: true },
-      { date: '2026-05-14', label: 'Ascension', hours: '18:00 – 02:00' },
-      { date: '2026-06-21', label: 'Fête de la Musique', hours: '16:00 – 03:00' }
-    ]
-  };
-
+  // ── Hours data from agenda.json ──
+  var HOURS_DATA = { regular: [], special: [] };
+  var AGENDA_DATA = null;
   var DAY_NAMES_FR = ['Dimanche','Lundi','Mardi','Mercredi','Jeudi','Vendredi','Samedi'];
+  var RRULE_DAYS = { SU:0, MO:1, TU:2, WE:3, TH:4, FR:5, SA:6 };
+
+  // Parse agenda.json → HOURS_DATA (retrocompat)
+  function parseAgenda(agenda) {
+    AGENDA_DATA = agenda;
+    var week = [
+      { day:'Lundi',    open:null, close:null },
+      { day:'Mardi',    open:null, close:null },
+      { day:'Mercredi', open:null, close:null },
+      { day:'Jeudi',    open:null, close:null },
+      { day:'Vendredi', open:null, close:null },
+      { day:'Samedi',   open:null, close:null },
+      { day:'Dimanche', open:null, close:null }
+    ];
+    // Map: JS day (0=dim) → week index (0=lun)
+    var dayMap = { 1:0, 2:1, 3:2, 4:3, 5:4, 6:5, 0:6 };
+
+    // Parse services → fill regular hours
+    (agenda.services || []).forEach(function(s) {
+      if (s.type !== 'service') return;
+      var rec = s.recurrence;
+      if (!rec || !rec.rrule) return;
+      var match = rec.rrule.match(/BYDAY=([A-Z,]+)/);
+      if (!match) return;
+      match[1].split(',').forEach(function(d) {
+        var jsDay = RRULE_DAYS[d];
+        if (jsDay === undefined) return;
+        var idx = dayMap[jsDay];
+        // Keep widest window
+        if (!week[idx].open || rec.start < week[idx].open) week[idx].open = rec.start;
+        if (!week[idx].close || rec.end > week[idx].close) week[idx].close = rec.end;
+        // Handle past-midnight
+        if (rec.end <= rec.start && (!week[idx].close || rec.end > week[idx].close || week[idx].close <= week[idx].open)) {
+          week[idx].close = rec.end;
+        }
+      });
+    });
+
+    HOURS_DATA.regular = week;
+
+    // Parse specials
+    HOURS_DATA.special = (agenda.specials || []).map(function(sp) {
+      return {
+        date: sp.date,
+        label: sp.label,
+        closed: sp.type === 'closure',
+        hours: sp.start ? sp.start.replace(':','h') + ' – ' + sp.end.replace(':','h') : null,
+        icon: sp.icon || (sp.type === 'closure' ? '🚫' : '🎉')
+      };
+    });
+  }
+
+  // Load agenda.json
+  fetch('/agenda.json').then(function(r) { return r.json(); }).then(parseAgenda).catch(function() {
+    console.warn('agenda.json not loaded, using defaults');
+    HOURS_DATA.regular = [
+      { day:'Lundi', open:'16:30', close:'00:00' },
+      { day:'Mardi', open:'16:30', close:'00:00' },
+      { day:'Mercredi', open:'16:30', close:'01:00' },
+      { day:'Jeudi', open:'16:30', close:'01:00' },
+      { day:'Vendredi', open:'16:30', close:'01:00' },
+      { day:'Samedi', open:null, close:null },
+      { day:'Dimanche', open:null, close:null }
+    ];
+  });
 
   function getHoursStatus() {
     var now = new Date();
@@ -3267,10 +3317,23 @@ margin: 20px 20px 0;
     html += '<div class="hrs-today-card">';
     html += '  <div class="hrs-today-label">Aujourd\'hui · ' + status.todayLabel + '</div>';
     html += '  <div class="hrs-today-hours">' + status.todayHours + '</div>';
-    html += '  <div class="hrs-today-meta">';
-    html += '    <span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg> Service continu</span>';
-    html += '    <span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg> Happy Hour 16h30–18h</span>';
-    html += '  </div>';
+    // Build meta tags from agenda promos
+    var metaTags = '<span><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg> Service continu</span>';
+    if (AGENDA_DATA && AGENDA_DATA.services) {
+      AGENDA_DATA.services.forEach(function(s) {
+        if (s.type !== 'promo') return;
+        var rec = s.recurrence;
+        if (!rec || !rec.rrule) return;
+        var match = rec.rrule.match(/BYDAY=([A-Z,]+)/);
+        if (!match) return;
+        var now = new Date();
+        var dayCode = ['SU','MO','TU','WE','TH','FR','SA'][now.getDay()];
+        if (match[1].split(',').indexOf(dayCode) >= 0) {
+          metaTags += '<span><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/></svg> ' + s.label + ' ' + rec.start.replace(':','h') + '–' + rec.end.replace(':','h') + '</span>';
+        }
+      });
+    }
+    html += '  <div class="hrs-today-meta">' + metaTags + '</div>';
     html += '</div>';
 
     // ── Week grid ──
@@ -3302,7 +3365,7 @@ margin: 20px 20px 0;
         var spDate = new Date(sp.date);
         var spDay = spDate.getDate() + ' ' + ['jan','fév','mar','avr','mai','jun','jul','aoû','sep','oct','nov','déc'][spDate.getMonth()];
         html += '<div class="hrs-special-item">';
-        html += '  <div class="hrs-special-icon">' + (sp.closed ? '🚫' : '🎉') + '</div>';
+        html += '  <div class="hrs-special-icon">' + (sp.icon || (sp.closed ? '🚫' : '🎉')) + '</div>';
         html += '  <div class="hrs-special-info">';
         html += '    <div class="hrs-special-date">' + spDay + ' · ' + sp.label + '</div>';
         html += '    <div class="hrs-special-label">' + (sp.closed ? 'Fermé' : sp.hours) + '</div>';
@@ -3310,6 +3373,33 @@ margin: 20px 20px 0;
         html += '</div>';
       }
       html += '</div>';
+    }
+
+    // ── Upcoming events from agenda ──
+    if (AGENDA_DATA && AGENDA_DATA.events) {
+      var todayStr = new Date().toISOString().slice(0,10);
+      var upcomingEv = AGENDA_DATA.events.filter(function(e) { return e.date >= todayStr; }).slice(0, 3);
+      if (upcomingEv.length > 0) {
+        html += '<div class="hrs-special" style="margin-top:12px;">';
+        html += '  <div class="hrs-special-title"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 8v4l3 3"/><circle cx="12" cy="12" r="10"/></svg> Prochains événements</div>';
+        for (var k = 0; k < upcomingEv.length; k++) {
+          var ev = upcomingEv[k];
+          var evDate = new Date(ev.date);
+          var evDay = evDate.getDate() + ' ' + ['jan','fév','mar','avr','mai','jun','jul','aoû','sep','oct','nov','déc'][evDate.getMonth()];
+          var catIcons = { musique:'🎵', 'dégustation':'🍷', soirée:'🎉' };
+          html += '<div class="hrs-special-item">';
+          html += '  <div class="hrs-special-icon">' + (catIcons[ev.category] || '📅') + '</div>';
+          html += '  <div class="hrs-special-info">';
+          html += '    <div class="hrs-special-date">' + evDay + ' · ' + ev.title + '</div>';
+          html += '    <div class="hrs-special-label">' + ev.start.replace(':','h') + ' – ' + ev.end.replace(':','h');
+          if (ev.price) html += ' · ' + ev.price + '€';
+          if (ev.reservable) html += ' · <span style="color:var(--primary);">Réservable</span>';
+          html += '</div>';
+          html += '  </div>';
+          html += '</div>';
+        }
+        html += '</div>';
+      }
     }
 
     document.getElementById('hoursSheetContent').innerHTML = html;

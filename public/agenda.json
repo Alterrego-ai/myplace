@@ -1,0 +1,122 @@
+{
+  "venue": {
+    "name": "Sauf Imprévu",
+    "address": "15 Rue Vauban, 69006 Lyon",
+    "timezone": "Europe/Paris",
+    "coords": { "lat": 45.7676, "lng": 4.8507 }
+  },
+
+  "services": [
+    {
+      "id": "service-bar",
+      "label": "Bar à vins",
+      "type": "service",
+      "color": "#3D6B8C",
+      "recurrence": {
+        "rrule": "FREQ=WEEKLY;BYDAY=MO,TU",
+        "start": "16:30",
+        "end": "00:00"
+      }
+    },
+    {
+      "id": "service-bar-extended",
+      "label": "Bar à vins",
+      "type": "service",
+      "color": "#3D6B8C",
+      "recurrence": {
+        "rrule": "FREQ=WEEKLY;BYDAY=WE,TH,FR",
+        "start": "16:30",
+        "end": "01:00"
+      }
+    },
+    {
+      "id": "happy-hour",
+      "label": "Happy Hour",
+      "type": "promo",
+      "color": "#f59e0b",
+      "recurrence": {
+        "rrule": "FREQ=WEEKLY;BYDAY=MO,TU,WE,TH,FR",
+        "start": "16:30",
+        "end": "18:00"
+      }
+    }
+  ],
+
+  "closures": [
+    { "id": "closed-sat", "recurrence": { "rrule": "FREQ=WEEKLY;BYDAY=SA" }, "label": "Fermé" },
+    { "id": "closed-sun", "recurrence": { "rrule": "FREQ=WEEKLY;BYDAY=SU" }, "label": "Fermé" }
+  ],
+
+  "specials": [
+    {
+      "id": "sp-travail-2026",
+      "date": "2026-05-01",
+      "label": "Fête du Travail",
+      "type": "closure",
+      "icon": "🚫"
+    },
+    {
+      "id": "sp-ascension-2026",
+      "date": "2026-05-14",
+      "label": "Ascension",
+      "type": "modified_hours",
+      "start": "18:00",
+      "end": "02:00",
+      "icon": "🎉"
+    },
+    {
+      "id": "sp-fete-musique-2026",
+      "date": "2026-06-21",
+      "label": "Fête de la Musique",
+      "type": "event",
+      "start": "16:00",
+      "end": "03:00",
+      "icon": "🎉",
+      "description": "Soirée spéciale avec artistes live"
+    }
+  ],
+
+  "events": [
+    {
+      "id": "ev-jazz-01",
+      "title": "Soirée Jazz Manouche",
+      "date": "2026-04-10",
+      "start": "20:00",
+      "end": "23:00",
+      "type": "event",
+      "category": "musique",
+      "image": null,
+      "description": "Trio jazz avec Django Revival",
+      "reservable": true,
+      "capacity": 45
+    },
+    {
+      "id": "ev-degustation-01",
+      "title": "Dégustation Côtes du Rhône",
+      "date": "2026-04-17",
+      "start": "18:30",
+      "end": "20:30",
+      "type": "event",
+      "category": "dégustation",
+      "image": null,
+      "description": "5 domaines, 12 cuvées à découvrir",
+      "reservable": true,
+      "capacity": 25,
+      "price": 15
+    }
+  ],
+
+  "reservations": {
+    "enabled": true,
+    "slot_duration_min": 30,
+    "max_party_size": 12,
+    "min_advance_hours": 2,
+    "max_advance_days": 30,
+    "services": ["service-bar", "service-bar-extended"],
+    "zones": [
+      { "id": "zone-interieur", "label": "Intérieur", "capacity": 30 },
+      { "id": "zone-terrasse", "label": "Terrasse", "capacity": 20 },
+      { "id": "zone-comptoir", "label": "Comptoir", "capacity": 8, "reservable": false }
+    ]
+  }
+}
