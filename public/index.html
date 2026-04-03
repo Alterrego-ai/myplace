@@ -1310,7 +1310,7 @@ max-height: 300px;
 }
 .sesame-draft .sesame-phone-row { background: var(--s-field-bg); border: 1.5px dashed var(--s-field-border); }
 .sesame-phone-input {
-  background: transparent; border: none; border-bottom: 1.5px dashed var(--s-field-border);
+  background: transparent; border: none;
   color: var(--s-text2); font-size: 14px;
   width: 60%; padding: 4px 0; font-family: inherit; outline: none;
   caret-color: var(--s-accent); text-align: center;
@@ -1336,6 +1336,9 @@ max-height: 300px;
   border-color: transparent !important;
   transition: background 0.4s ease, border-color 0.4s ease;
 }
+.sesame-validated .sesame-stepper { opacity: 0; pointer-events: none; transition: opacity 0.4s ease; }
+.sesame-validated .sesame-note-input,
+.sesame-validated #sesameNotePlaceholder { opacity: 0; transition: opacity 0.4s ease; }
 
 /* ── Révélation : draft → confirmé (fond premium) ── */
 @keyframes sesameReveal {
@@ -4699,6 +4702,7 @@ margin: 20px 20px 0;
         });
         setTimeout(function() {
           pass.classList.remove('sesame-laser-active');
+          pass.classList.add('sesame-validated');
           validated.forEach(function(el) {
             el.classList.remove(validatedClass);
             el.style.transition = '';
@@ -4749,6 +4753,7 @@ margin: 20px 20px 0;
     document.getElementById('resaDispoResult').style.display = 'none';
     resaShowOnlyBtn('resaCheckBtn');
     sesameUnlockFields();
+    document.getElementById('sesamePass').classList.remove('sesame-validated');
   }
 
   function submitReservation() {
