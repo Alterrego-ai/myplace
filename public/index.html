@@ -1199,6 +1199,24 @@ max-height: 300px;
 .sesame-detail:last-child .sesame-detail-value {
   font-size: 15px; font-weight: 600;
 }
+/* Validation progressive — champ verrouillé en vert */
+.sesame-field-validated {
+  background: rgba(5,150,105,0.08) !important;
+  border-color: rgba(5,150,105,0.35) !important;
+  border-style: solid !important;
+  transition: background 0.4s ease, border-color 0.4s ease;
+  position: relative;
+}
+.sesame-field-validated::after {
+  content: '✓';
+  position: absolute; top: 6px; right: 8px;
+  font-size: 13px; font-weight: 700; color: #059669;
+  opacity: 0; animation: sesameCheckIn 0.3s ease forwards;
+}
+@keyframes sesameCheckIn {
+  from { opacity: 0; transform: scale(0.5); }
+  to { opacity: 1; transform: scale(1); }
+}
 .sesame-stamp {
   position: absolute; top: 50%; right: -8px;
   transform: translateY(-50%) rotate(-20deg);
@@ -4573,14 +4591,44 @@ margin: 20px 20px 0;
     if (!date || !heure) { errEl.textContent = 'Date et heure requises'; errEl.style.display = ''; return; }
     errEl.style.display = 'none';
 
-    // Hide check button, show dotLottie player
+    // Hide check button
     document.getElementById('resaCheckBtn').style.display = 'none';
-    var lottieWrap = document.getElementById('resaLottieWrap');
-    lottieWrap.style.display = 'flex';
 
+    // Progressive field validation — lock fields one by one with green check
+    var validatedClass = 'sesame-field-validated';
+    var steps = [
+      { el: document.querySelector('.sesame-details .sesame-detail-row:first-child .sesame-detail:first-child'), label: 'Date' },
+      { el: document.querySelector('.sesame-details .sesame-detail-row:first-child .sesame-detail:last-child'), label: 'Heure' },
+      { el: document.querySelector('.sesame-details .sesame-detail-row:last-child .sesame-detail:first-child'), label: 'Convives' },
+      { el: document.getElementById('sesameGuestWrap'), label: 'Identité' },
+      { el: document.getElementById('sesamePhoneRow'), label: 'Téléphone' }
+    ];
+    var STEP_DELAY = 350;
+
+    function lockField(step) {
+      if (!step.el) return;
+      step.el.classList.add(validatedClass);
+      step.el.style.pointerEvents = 'none';
+    }
+
+    // Animate steps sequentially, then show Lottie, then fetch result
+    steps.forEach(function(step, i) {
+      setTimeout(function() { lockField(step); }, i * STEP_DELAY);
+    });
+
+    // After all fields locked, show Lottie overlay
+    var totalLockTime = steps.length * STEP_DELAY;
+    var lottieWrap = document.getElementById('resaLottieWrap');
+    setTimeout(function() {
+      lottieWrap.style.display = 'flex';
+    }, totalLockTime);
+
+    // Fire fetch immediately in parallel
     fetch('/disponibilites?date=' + date + '&heure=' + heure + '&couverts=' + _resaCouverts)
       .then(function(r) { return r.json(); })
       .then(function(data) {
+        // Wait at least totalLockTime + 1200ms for the animation to breathe
+        var minWait = totalLockTime + 1200;
         setTimeout(function() {
           lottieWrap.style.display = 'none';
           dispoEl.style.display = '';
@@ -4594,21 +4642,36 @@ margin: 20px 20px 0;
             dispoEl.style.color = '#ff3b30';
             dispoEl.innerHTML = '✗ ' + (data.message || 'Pas de disponibilité');
             document.getElementById('resaCheckBtn').style.display = '';
+            // Unlock fields on failure
+            sesameUnlockFields();
           }
-        }, 1500);
+        }, minWait);
       })
       .catch(function() {
-        lottieWrap.style.display = 'none';
-        document.getElementById('resaCheckBtn').style.display = '';
-        errEl.textContent = 'Erreur réseau, réessayez';
-        errEl.style.display = '';
+        var minWait = totalLockTime + 800;
+        setTimeout(function() {
+          lottieWrap.style.display = 'none';
+          document.getElementById('resaCheckBtn').style.display = '';
+          errEl.textContent = 'Erreur réseau, réessayez';
+          errEl.style.display = '';
+          sesameUnlockFields();
+        }, minWait);
       });
+  }
+
+  function sesameUnlockFields() {
+    var els = document.querySelectorAll('.sesame-field-validated');
+    els.forEach(function(el) {
+      el.classList.remove('sesame-field-validated');
+      el.style.pointerEvents = '';
+    });
   }
 
   function resaCancelDispo() {
     document.getElementById('resaDispoResult').style.display = 'none';
     document.getElementById('resaConfirmBtns').style.display = 'none';
     document.getElementById('resaCheckBtn').style.display = '';
+    sesameUnlockFields();
   }
 
   function submitReservation() {
