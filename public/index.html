@@ -3267,17 +3267,16 @@ margin: 20px 20px 0;
     <!-- Erreur -->
     <div id="resaError" style="display:none;color:#ff3b30;font-size:13px;font-weight:600;margin-bottom:10px;"></div>
 
-    <!-- Lottie loading -->
-    <div id="resaLottieWrap" style="display:none;text-align:center;padding:24px 0;">
-      <dotlottie-player id="resaLottiePlayer" src="/calendar-animation.lottie" autoplay loop speed="1" style="width:180px;height:180px;margin:0 auto;"></dotlottie-player>
-      <div style="font-size:14px;color:var(--text-secondary);margin-top:10px;font-weight:500;font-style:italic;">Nous consultons notre cahier de réservation…</div>
-    </div>
-
     <!-- Résultat dispo -->
     <div id="resaDispoResult" style="display:none;margin-bottom:10px;padding:10px 14px;border-radius:10px;font-size:14px;font-weight:600;"></div>
 
     <!-- Le Sésame interactif -->
     <div class="sesame-pass sesame-draft" id="sesamePass">
+      <!-- Lottie overlay -->
+      <div id="resaLottieWrap" style="display:none;position:absolute;inset:0;z-index:10;background:rgba(255,255,255,0.85);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);border-radius:16px;display:none;flex-direction:column;align-items:center;justify-content:center;">
+        <dotlottie-player id="resaLottiePlayer" src="/calendar-animation.lottie" autoplay loop speed="1" style="width:180px;height:180px;"></dotlottie-player>
+        <div style="font-size:14px;color:var(--s-text2);margin-top:10px;font-weight:500;font-style:italic;">Nous consultons notre cahier de réservation…</div>
+      </div>
       <!-- Header -->
       <div class="sesame-header">
         <img src="https://ciss-media-dev.s3.fr-par.scw.cloud/pointofsales/47408/15-vauban-brc-187.png" alt="Sauf Imprévu" class="sesame-logo">
@@ -4577,7 +4576,7 @@ margin: 20px 20px 0;
     // Hide check button, show dotLottie player
     document.getElementById('resaCheckBtn').style.display = 'none';
     var lottieWrap = document.getElementById('resaLottieWrap');
-    lottieWrap.style.display = '';
+    lottieWrap.style.display = 'flex';
 
     fetch('/disponibilites?date=' + date + '&heure=' + heure + '&couverts=' + _resaCouverts)
       .then(function(r) { return r.json(); })
