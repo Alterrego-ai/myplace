@@ -1225,12 +1225,21 @@ max-height: 300px;
   from { opacity: 0; }
   to { opacity: 1; }
 }
-.sesame-stamp {
-  position: absolute; top: 50%; right: -8px;
-  transform: translateY(-50%) rotate(-20deg);
-  font-size: 40px; font-weight: 900; letter-spacing: 4px;
-  color: var(--s-accent-soft);
-  pointer-events: none; z-index: 0; white-space: nowrap; opacity: 0.4;
+/* Laser border validation animation */
+@keyframes sesameLaserBorder {
+  0% { clip-path: inset(0 100% 100% 0); opacity: 1; }
+  25% { clip-path: inset(0 0 100% 0); }
+  50% { clip-path: inset(0 0 0 0); }
+  75% { clip-path: inset(0 0 0 0); }
+  100% { clip-path: inset(0 0 0 0); opacity: 0; }
+}
+.sesame-laser-active::before {
+  content: '';
+  position: absolute; inset: -2px; z-index: 5;
+  border-radius: 18px;
+  border: 2px solid #059669;
+  pointer-events: none;
+  animation: sesameLaserBorder 1s ease-out forwards;
 }
 .sesame-action {
   flex: 1; min-width: 0;
@@ -1349,7 +1358,6 @@ max-height: 300px;
 .sesame-revealed .sesame-guest-display::after { display: none; }
 .sesame-revealed .sesame-logo { border-color: rgba(212,175,55,0.4); }
 .sesame-revealed .sesame-divider-line { border-color: rgba(212,175,55,0.25); }
-.sesame-revealed .sesame-stamp { color: rgba(212,175,55,0.06); opacity: 1; }
 
 /* Flash doré */
 @keyframes sesameGoldFlash {
@@ -4652,9 +4660,13 @@ margin: 20px 20px 0;
         }, i * STEP_DELAY);
       });
 
-      // After all fields checked, fade out green then show result
+      // After all fields checked, laser border + fade out green then show result
       var totalTime = steps.length * STEP_DELAY + 400;
       setTimeout(function() {
+        // Trigger laser border on sésame
+        var pass = document.getElementById('sesamePass');
+        pass.classList.add('sesame-laser-active');
+
         // Fade out all validated highlights
         var validated = document.querySelectorAll('.' + validatedClass);
         validated.forEach(function(el) {
@@ -4662,8 +4674,9 @@ margin: 20px 20px 0;
           el.style.background = '';
           el.style.outlineColor = 'transparent';
         });
-        // Remove class after fade
+        // Remove class + laser after animation
         setTimeout(function() {
+          pass.classList.remove('sesame-laser-active');
           validated.forEach(function(el) {
             el.classList.remove(validatedClass);
             el.style.transition = '';
@@ -4678,7 +4691,7 @@ margin: 20px 20px 0;
             dispoEl.innerHTML = '✗ ' + (data.message || 'Pas de disponibilité');
             resaShowOnlyBtn('resaCheckBtn');
           }
-        }, 450);
+        }, 1000);
       }, totalTime);
     }
 
