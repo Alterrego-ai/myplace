@@ -1202,15 +1202,15 @@ max-height: 300px;
 /* Validation progressive — champ verrouillé en vert */
 .sesame-field-validated {
   background: rgba(5,150,105,0.08) !important;
-  border: 1.5px solid rgba(5,150,105,0.30) !important;
-  border-radius: 10px !important;
-  padding: 8px 12px !important;
-  transition: background 0.4s ease, border-color 0.4s ease;
+  outline: 1.5px solid rgba(5,150,105,0.30);
+  outline-offset: -1.5px;
+  border-radius: 10px;
+  transition: background 0.4s ease;
   position: relative;
 }
 .sesame-field-validated::after {
   content: '✓';
-  position: absolute; top: 8px; right: 10px;
+  position: absolute; top: 6px; right: 8px;
   font-size: 12px; font-weight: 700; color: #059669;
   opacity: 0; animation: sesameCheckIn 0.3s ease forwards;
 }
@@ -3369,18 +3369,18 @@ margin: 20px 20px 0;
   </div>
 
   <!-- Zone fixe : boutons empilés au même endroit, hauteur constante -->
-  <div style="flex-shrink:0;padding:14px 20px;position:relative;height:56px;">
+  <div style="flex-shrink:0;position:relative;height:76px;margin:0 20px;">
     <!-- Bouton principal -->
-    <button class="resa-submit" id="resaCheckBtn" onclick="checkResaDispo()" style="position:absolute;inset:14px 20px;width:calc(100% - 40px);">Vérifier la disponibilité</button>
+    <button class="resa-submit" id="resaCheckBtn" onclick="checkResaDispo()" style="position:absolute;top:12px;left:0;right:0;">Vérifier la disponibilité</button>
 
     <!-- Confirmer / Modifier -->
-    <div id="resaConfirmBtns" style="position:absolute;inset:14px 20px;width:calc(100% - 40px);display:flex;gap:10px;visibility:hidden;opacity:0;transition:opacity 0.3s ease;">
+    <div id="resaConfirmBtns" style="position:absolute;top:12px;left:0;right:0;display:flex;gap:10px;visibility:hidden;opacity:0;transition:opacity 0.3s ease;">
       <button onclick="resaCancelDispo()" style="flex:1;padding:14px;border:1.5px solid var(--border);border-radius:12px;background:transparent;color:var(--text-secondary);font-size:15px;font-weight:600;font-family:inherit;cursor:pointer;">Modifier</button>
       <button class="resa-submit" onclick="submitReservation()" id="resaSubmitBtn" style="flex:1;">Confirmer</button>
     </div>
 
     <!-- Actions post-confirmation -->
-    <div id="resaActions" style="position:absolute;inset:14px 20px;width:calc(100% - 40px);display:flex;gap:8px;visibility:hidden;opacity:0;transition:opacity 0.3s ease;">
+    <div id="resaActions" style="position:absolute;top:12px;left:0;right:0;display:flex;gap:8px;visibility:hidden;opacity:0;transition:opacity 0.3s ease;">
       <button onclick="resaShareInfo()" class="sesame-action"><span>↗</span> Partager</button>
       <button onclick="resaAddCalendar()" class="sesame-action"><span>📅</span> Calendrier</button>
       <button onclick="resaOpenItinerary()" class="sesame-action"><span>🗺</span> Itinéraire</button>
