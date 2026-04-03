@@ -1114,13 +1114,15 @@ max-height: 300px;
   --s-accent-soft: var(--primary-ultra-light);
   --s-border: var(--border);
   --s-divider: rgba(0,0,0,0.08);
+  --s-field-bg: rgba(61,107,140,0.06);
+  --s-field-border: rgba(61,107,140,0.18);
   position: relative;
   background: var(--s-bg);
   border-radius: 16px;
   padding: 24px 20px 18px;
   color: var(--s-text);
   overflow: hidden;
-  box-shadow: 0 4px 24px rgba(0,0,0,0.10);
+  box-shadow: 0 4px 24px rgba(0,0,0,0.12);
   border: 1.5px solid var(--s-border);
   margin-top: 4px;
   transition: all 0.6s cubic-bezier(0.23, 1, 0.32, 1);
@@ -1203,8 +1205,8 @@ max-height: 300px;
   transition: all 0.15s;
 }
 .sesame-draft .sesame-detail--tap {
-  border-color: var(--s-accent-soft);
-  background: rgba(61,107,140,0.04);
+  border-color: var(--s-field-border);
+  background: var(--s-field-bg);
 }
 .sesame-detail--tap:active { background: var(--s-accent-soft); }
 /* Petit crayon sur les champs éditables */
@@ -1216,12 +1218,12 @@ max-height: 300px;
 
 .sesame-guest-wrap { text-align: center; margin-bottom: 16px; position: relative; z-index: 1; }
 .sesame-guest-input {
-  background: transparent; border: none; border-bottom: 1.5px dashed var(--s-accent-soft);
+  background: transparent; border: none; border-bottom: 1.5px dashed var(--s-field-border);
   color: var(--s-text); font-size: 22px; font-weight: 300; text-align: center;
   letter-spacing: 1px; width: 85%; padding: 6px 0; font-family: inherit;
   outline: none; caret-color: var(--s-accent);
 }
-.sesame-guest-input::placeholder { color: var(--s-text3); opacity: 0.6; }
+.sesame-guest-input::placeholder { color: var(--s-text3); opacity: 0.7; }
 .sesame-guest-display {
   font-size: 22px; font-weight: 300; color: var(--s-text);
   letter-spacing: 1px; cursor: pointer;
@@ -1244,27 +1246,23 @@ max-height: 300px;
 }
 .sesame-stepper:active { background: var(--s-accent-soft); }
 .sesame-note-input {
-  background: transparent; border: none; border-bottom: 1.5px dashed var(--s-accent-soft);
+  background: transparent; border: none; border-bottom: 1.5px dashed var(--s-field-border);
   color: var(--s-text); font-size: 14px; font-style: italic;
   width: 100%; padding: 4px 0; font-family: inherit; outline: none;
   caret-color: var(--s-accent);
 }
 .sesame-phone-row {
-  margin-top: 14px; padding-top: 12px;
-  border-top: 1px solid var(--s-divider);
+  margin-top: 4px; margin-bottom: 14px;
   position: relative; z-index: 1;
-  display: flex; align-items: center; gap: 8px;
-}
-.sesame-phone-row::before {
-  content: '☎'; font-size: 14px; opacity: 0.4;
+  text-align: center;
 }
 .sesame-phone-input {
-  background: transparent; border: none; border-bottom: 1.5px dashed var(--s-accent-soft);
+  background: transparent; border: none; border-bottom: 1.5px dashed var(--s-field-border);
   color: var(--s-text2); font-size: 14px;
-  flex: 1; padding: 4px 0; font-family: inherit; outline: none;
-  caret-color: var(--s-accent);
+  width: 60%; padding: 4px 0; font-family: inherit; outline: none;
+  caret-color: var(--s-accent); text-align: center;
 }
-.sesame-phone-input::placeholder { color: var(--s-text3); opacity: 0.5; }
+.sesame-phone-input::placeholder { color: var(--s-text3); opacity: 0.6; }
 
 /* ── Révélation : draft → confirmé (fond premium) ── */
 @keyframes sesameReveal {
@@ -3250,8 +3248,8 @@ margin: 20px 20px 0;
 
     <!-- Lottie loading -->
     <div id="resaLottieWrap" style="display:none;text-align:center;padding:24px 0;">
-      <div id="resaLottieAnim" style="width:100px;height:100px;margin:0 auto;"></div>
-      <div style="font-size:13px;color:var(--text-secondary);margin-top:10px;font-weight:600;">Recherche en cours…</div>
+      <dotlottie-player id="resaLottiePlayer" src="/calendar-animation.lottie" autoplay loop speed="1" style="width:110px;height:110px;margin:0 auto;"></dotlottie-player>
+      <div style="font-size:13px;color:var(--text-secondary);margin-top:8px;font-weight:600;">Recherche en cours…</div>
     </div>
 
     <!-- Résultat dispo -->
@@ -3269,11 +3267,14 @@ margin: 20px 20px 0;
         <div id="resaServiceBadge" style="display:none;"></div>
       </div>
 
-      <!-- Nom invité — champ éditable -->
-      <div class="sesame-welcome">Bienvenue</div>
+      <!-- Identité du demandeur -->
+      <div class="sesame-welcome">Demande de réservation</div>
       <div class="sesame-guest-wrap" id="sesameGuestWrap">
-        <input type="text" id="resaNom" class="sesame-guest-input" placeholder="Votre nom" oninput="sesameUpdateGuest()">
+        <input type="text" id="resaNom" class="sesame-guest-input" placeholder="Nom et prénom" oninput="sesameUpdateGuest()">
         <div class="sesame-guest-display" id="sesameGuestName" onclick="sesameEditGuest()" style="display:none;"></div>
+      </div>
+      <div class="sesame-phone-row" id="sesamePhoneRow">
+        <input type="tel" id="resaTel" class="sesame-phone-input" placeholder="Téléphone">
       </div>
 
       <!-- Ligne de séparation -->
@@ -3298,25 +3299,20 @@ margin: 20px 20px 0;
           </div>
         </div>
         <div class="sesame-detail-row">
-          <div class="sesame-detail">
-            <div class="sesame-detail-label">Couverts</div>
+          <div class="sesame-detail" style="flex:1;">
+            <div class="sesame-detail-label">Convives</div>
             <div class="sesame-detail-value" style="display:flex;align-items:center;gap:10px;">
               <button class="sesame-stepper" onclick="resaStep(-1)">−</button>
               <span id="resaCouverts">2</span>
               <button class="sesame-stepper" onclick="resaStep(1)">+</button>
             </div>
           </div>
-          <div class="sesame-detail sesame-detail--tap" onclick="sesameToggleNotes()">
+          <div class="sesame-detail sesame-detail--tap" onclick="sesameToggleNotes()" style="flex:3;">
             <div class="sesame-detail-label">Note</div>
-            <div class="sesame-detail-value" id="sesameNotePlaceholder" style="opacity:0.5;font-style:italic;">Ajouter…</div>
+            <div class="sesame-detail-value" id="sesameNotePlaceholder" style="opacity:0.4;font-style:italic;">Allergies, terrasse…</div>
             <input type="text" id="resaNotes" class="sesame-note-input" placeholder="Allergies, terrasse…" oninput="sesameOnNoteInput()" style="display:none;">
           </div>
         </div>
-      </div>
-
-      <!-- Téléphone discret en bas -->
-      <div class="sesame-phone-row" id="sesamePhoneRow">
-        <input type="tel" id="resaTel" class="sesame-phone-input" placeholder="Téléphone (optionnel)">
       </div>
 
       <!-- Filigrane -->
@@ -3658,7 +3654,7 @@ margin: 20px 20px 0;
   </div><!-- /phone-frame -->
 </div><!-- /phone-shell -->
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.12.2/lottie.min.js"></script>
+<script src="https://unpkg.com/@dotlottie/player-component@2.7.12/dist/dotlottie-player.mjs" type="module"></script>
 <script src="/i18n.js"></script>
 <script>
   // Capacitor: status bar overlay (hero sous la barre de statut)
@@ -4452,6 +4448,7 @@ margin: 20px 20px 0;
     var pass = document.getElementById('sesamePass');
     pass.className = 'sesame-pass sesame-draft';
     document.getElementById('sesameStamp').textContent = 'SÉSAME';
+    document.querySelector('.sesame-welcome').textContent = 'Demande de réservation';
 
     // Populate sésame values
     var jourLong = ['Dimanche','Lundi','Mardi','Mercredi','Jeudi','Vendredi','Samedi'];
@@ -4545,8 +4542,6 @@ margin: 20px 20px 0;
 
   // resaToggleUserEdit removed — now handled inline in sésame
 
-  var _resaLottieInstance = null;
-
   function checkResaDispo() {
     var date = document.getElementById('resaDate').value;
     var heure = document.getElementById('resaHeure').value;
@@ -4558,58 +4553,32 @@ margin: 20px 20px 0;
     if (!date || !heure) { errEl.textContent = 'Date et heure requises'; errEl.style.display = ''; return; }
     errEl.style.display = 'none';
 
-    // Hide check button, show Lottie above sésame
+    // Hide check button, show dotLottie player
     document.getElementById('resaCheckBtn').style.display = 'none';
     var lottieWrap = document.getElementById('resaLottieWrap');
     lottieWrap.style.display = '';
 
-    // Start Lottie animation
-    var animContainer = document.getElementById('resaLottieAnim');
-    animContainer.innerHTML = '';
-    if (_resaLottieInstance) { _resaLottieInstance.destroy(); _resaLottieInstance = null; }
-    if (typeof lottie !== 'undefined') {
-      _resaLottieInstance = lottie.loadAnimation({
-        container: animContainer,
-        renderer: 'svg',
-        loop: true,
-        autoplay: true,
-        path: 'https://lottie.host/e4e96f56-252f-47ae-8838-2a01e68fc144/IbOmGKzbi5.json'
-      });
-      // Fallback si le Lottie ne charge pas
-      _resaLottieInstance.addEventListener('data_failed', function() {
-        animContainer.innerHTML = '<div style="width:80px;height:80px;margin:0 auto;border:3px solid var(--border);border-top-color:var(--primary);border-radius:50%;animation:spin 0.8s linear infinite;"></div>';
-      });
-    } else {
-      animContainer.innerHTML = '<div style="width:80px;height:80px;margin:0 auto;border:3px solid var(--border);border-top-color:var(--primary);border-radius:50%;animation:spin 0.8s linear infinite;"></div>';
-    }
-
     fetch('/disponibilites?date=' + date + '&heure=' + heure + '&couverts=' + _resaCouverts)
       .then(function(r) { return r.json(); })
       .then(function(data) {
-        // Min 1.5s d'animation pour le suspense
         setTimeout(function() {
           lottieWrap.style.display = 'none';
-          if (_resaLottieInstance) { _resaLottieInstance.destroy(); _resaLottieInstance = null; }
           dispoEl.style.display = '';
           if (data.disponible) {
             dispoEl.style.background = 'rgba(74,232,138,0.12)';
             dispoEl.style.color = '#059669';
-            dispoEl.innerHTML = '✓ Place disponible pour ' + _resaCouverts + ' personne(s)';
-            // Show Confirmer / Annuler
-            var confirmBtns = document.getElementById('resaConfirmBtns');
-            confirmBtns.style.display = 'flex';
+            dispoEl.innerHTML = '✓ Place disponible pour ' + _resaCouverts + ' convive(s)';
+            document.getElementById('resaConfirmBtns').style.display = 'flex';
           } else {
             dispoEl.style.background = 'rgba(255,59,48,0.1)';
             dispoEl.style.color = '#ff3b30';
             dispoEl.innerHTML = '✗ ' + (data.message || 'Pas de disponibilité');
-            // Show form again
             document.getElementById('resaCheckBtn').style.display = '';
           }
         }, 1500);
       })
       .catch(function() {
         lottieWrap.style.display = 'none';
-        if (_resaLottieInstance) { _resaLottieInstance.destroy(); _resaLottieInstance = null; }
         document.getElementById('resaCheckBtn').style.display = '';
         errEl.textContent = 'Erreur réseau, réessayez';
         errEl.style.display = '';
@@ -4664,6 +4633,7 @@ margin: 20px 20px 0;
         // ✨ Reveal the sésame — draft → confirmed
         document.getElementById('sesameGuestName').textContent = nom;
         document.getElementById('resaDispoResult').style.display = 'none';
+        document.querySelector('.sesame-welcome').textContent = 'Bienvenue';
         var pass = document.getElementById('sesamePass');
         pass.classList.remove('sesame-draft');
         pass.classList.add('sesame-revealed');
