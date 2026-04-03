@@ -1202,15 +1202,16 @@ max-height: 300px;
 /* Validation progressive — champ verrouillé en vert */
 .sesame-field-validated {
   background: rgba(5,150,105,0.08) !important;
-  border-color: rgba(5,150,105,0.35) !important;
-  border-style: solid !important;
+  border: 1.5px solid rgba(5,150,105,0.30) !important;
+  border-radius: 10px !important;
+  padding: 8px 12px !important;
   transition: background 0.4s ease, border-color 0.4s ease;
   position: relative;
 }
 .sesame-field-validated::after {
   content: '✓';
-  position: absolute; top: 6px; right: 8px;
-  font-size: 13px; font-weight: 700; color: #059669;
+  position: absolute; top: 8px; right: 10px;
+  font-size: 12px; font-weight: 700; color: #059669;
   opacity: 0; animation: sesameCheckIn 0.3s ease forwards;
 }
 @keyframes sesameCheckIn {
@@ -3298,7 +3299,7 @@ margin: 20px 20px 0;
     <!-- Le Sésame interactif -->
     <div class="sesame-pass sesame-draft" id="sesamePass">
       <!-- Lottie overlay -->
-      <div id="resaLottieWrap" style="display:none;position:absolute;inset:0;z-index:10;background:rgba(255,255,255,0.55);backdrop-filter:blur(2px);-webkit-backdrop-filter:blur(2px);border-radius:16px;flex-direction:column;align-items:center;justify-content:center;">
+      <div id="resaLottieWrap" style="display:none;position:absolute;inset:0;z-index:10;background:rgba(255,255,255,0.85);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);border-radius:16px;flex-direction:column;align-items:center;justify-content:center;">
         <dotlottie-player id="resaLottiePlayer" src="/calendar-animation.lottie" autoplay loop speed="1" style="width:140px;height:140px;"></dotlottie-player>
         <div style="font-size:13px;color:var(--text-secondary);margin-top:8px;font-weight:500;font-style:italic;">Nous consultons notre cahier de réservation…</div>
       </div>
@@ -4609,6 +4610,7 @@ margin: 20px 20px 0;
       { el: document.querySelector('.sesame-details .sesame-detail-row:first-child .sesame-detail:first-child') },
       { el: document.querySelector('.sesame-details .sesame-detail-row:first-child .sesame-detail:last-child') },
       { el: document.querySelector('.sesame-details .sesame-detail-row:last-child .sesame-detail:first-child') },
+      { el: document.querySelector('.sesame-details .sesame-detail-row:last-child .sesame-detail:last-child') },
       { el: document.getElementById('sesameGuestWrap') },
       { el: document.getElementById('sesamePhoneRow') }
     ];
@@ -4631,13 +4633,10 @@ margin: 20px 20px 0;
       // After all fields checked, show result
       var totalTime = steps.length * STEP_DELAY + 300;
       setTimeout(function() {
-        dispoEl.style.display = '';
         if (data.disponible) {
-          dispoEl.style.background = 'rgba(74,232,138,0.12)';
-          dispoEl.style.color = '#059669';
-          dispoEl.innerHTML = '✓ Place disponible pour ' + _resaCouverts + ' convive(s)';
           document.getElementById('resaConfirmBtns').style.display = 'flex';
         } else {
+          dispoEl.style.display = '';
           dispoEl.style.background = 'rgba(255,59,48,0.1)';
           dispoEl.style.color = '#ff3b30';
           dispoEl.innerHTML = '✗ ' + (data.message || 'Pas de disponibilité');
