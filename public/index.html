@@ -1320,6 +1320,26 @@ max-height: 300px;
 }
 .sesame-phone-input::placeholder { color: var(--s-text3); opacity: 0.6; }
 
+/* ── État validé : efface les fonds/bordures sans changer le layout ── */
+.sesame-validated .sesame-detail--tap,
+.sesame-validated .sesame-detail--static {
+  background: transparent !important;
+  border-color: transparent !important;
+  transition: background 0.4s ease, border-color 0.4s ease;
+}
+.sesame-validated .sesame-detail--tap::after { display: none; }
+.sesame-validated .sesame-guest-wrap {
+  background: transparent !important;
+  border-color: transparent !important;
+  transition: background 0.4s ease, border-color 0.4s ease;
+}
+.sesame-validated .sesame-guest-display::after { display: none; }
+.sesame-validated .sesame-phone-row {
+  background: transparent !important;
+  border-color: transparent !important;
+  transition: background 0.4s ease, border-color 0.4s ease;
+}
+
 /* ── Révélation : draft → confirmé (fond premium) ── */
 @keyframes sesameReveal {
   0% { transform: scale(0.97); }
@@ -4680,10 +4700,10 @@ margin: 20px 20px 0;
           el.style.background = '';
           el.style.outlineColor = 'transparent';
         });
-        // Remove class + laser after animation, retirer sesame-draft pour enlever les fonds de champs
+        // Remove laser, ajouter validated pour effacer les fonds en douceur
         setTimeout(function() {
           pass.classList.remove('sesame-laser-active');
-          pass.classList.remove('sesame-draft');
+          pass.classList.add('sesame-validated');
           validated.forEach(function(el) {
             el.classList.remove(validatedClass);
             el.style.transition = '';
@@ -4742,8 +4762,8 @@ margin: 20px 20px 0;
     document.getElementById('resaDispoResult').style.display = 'none';
     resaShowOnlyBtn('resaCheckBtn');
     sesameUnlockFields();
-    // Restaurer sesame-draft + éléments cachés après validation
-    document.getElementById('sesamePass').classList.add('sesame-draft');
+    // Restaurer état draft + éléments cachés après validation
+    document.getElementById('sesamePass').classList.remove('sesame-validated');
     document.getElementById('resaTel').style.borderBottom = '';
     document.querySelectorAll('.sesame-stepper').forEach(function(b) { b.style.display = ''; });
     document.getElementById('sesameNotePlaceholder').style.display = '';
@@ -4801,7 +4821,7 @@ margin: 20px 20px 0;
           if (noteCell) noteCell.style.display = 'none';
         }
         var pass = document.getElementById('sesamePass');
-        pass.classList.remove('sesame-draft');
+        pass.classList.remove('sesame-draft', 'sesame-validated');
         pass.classList.add('sesame-revealed');
 
         // Show actions
