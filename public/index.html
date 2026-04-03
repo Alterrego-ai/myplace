@@ -1245,13 +1245,15 @@ max-height: 300px;
 @keyframes spin { to { transform: rotate(360deg); } }
 
 /* ── Champs interactifs — affordance éditable ── */
-.sesame-detail--tap {
-  cursor: pointer; position: relative;
+.sesame-detail--tap, .sesame-detail--static {
+  position: relative;
   border-radius: 8px; padding: 8px 10px; margin: -8px -10px;
   border: 1.5px dashed transparent;
   transition: all 0.15s;
 }
-.sesame-draft .sesame-detail--tap {
+.sesame-detail--tap { cursor: pointer; }
+.sesame-draft .sesame-detail--tap,
+.sesame-draft .sesame-detail--static {
   border-color: var(--s-field-border);
   background: var(--s-field-bg);
 }
@@ -1263,9 +1265,10 @@ max-height: 300px;
   font-size: 10px; color: var(--s-accent); opacity: 0.5;
 }
 
-.sesame-guest-wrap { text-align: center; margin-bottom: 16px; position: relative; z-index: 1; }
+.sesame-guest-wrap { text-align: center; margin-bottom: 12px; padding: 8px 12px; position: relative; z-index: 1; border-radius: 10px; }
+.sesame-draft .sesame-guest-wrap { background: var(--s-field-bg); border: 1.5px dashed var(--s-field-border); }
 .sesame-guest-input {
-  background: transparent; border: none; border-bottom: 1.5px dashed var(--s-field-border);
+  background: transparent; border: none;
   color: var(--s-text); font-size: 22px; font-weight: 300; text-align: center;
   letter-spacing: 1px; width: 85%; padding: 6px 0; font-family: inherit;
   outline: none; caret-color: var(--s-accent);
@@ -1299,10 +1302,12 @@ max-height: 300px;
   caret-color: var(--s-accent);
 }
 .sesame-phone-row {
-  margin-top: 6px; margin-bottom: 18px;
+  margin-top: 0; margin-bottom: 14px;
+  padding: 8px 12px; border-radius: 10px;
   position: relative; z-index: 1;
   text-align: center;
 }
+.sesame-draft .sesame-phone-row { background: var(--s-field-bg); border: 1.5px dashed var(--s-field-border); }
 .sesame-phone-input {
   background: transparent; border: none; border-bottom: 1.5px dashed var(--s-field-border);
   color: var(--s-text2); font-size: 14px;
@@ -3344,7 +3349,7 @@ margin: 20px 20px 0;
           </div>
         </div>
         <div class="sesame-detail-row">
-          <div class="sesame-detail" style="flex:1;">
+          <div class="sesame-detail sesame-detail--static" style="flex:1;">
             <div class="sesame-detail-label">Convives</div>
             <div class="sesame-detail-value" style="display:flex;align-items:center;gap:10px;">
               <button class="sesame-stepper" onclick="resaStep(-1)">−</button>
