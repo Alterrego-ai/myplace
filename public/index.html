@@ -3115,17 +3115,14 @@ margin: 20px 20px 0;
   <div style="padding:16px 20px;overflow-y:auto;flex:1;-webkit-overflow-scrolling:touch;">
     <div style="font-size:18px;font-weight:800;color:var(--text);margin-bottom:16px;">Réserver</div>
 
-    <!-- Service badge -->
-    <div id="resaServiceBadge" style="display:inline-flex;align-items:center;gap:6px;padding:6px 12px;border-radius:8px;font-size:13px;font-weight:700;color:#fff;margin-bottom:14px;"></div>
-
-    <!-- Date + Heure -->
+    <!-- Date + Heure + Badge sur une ligne -->
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px;">
       <div>
         <label class="resa-label">Date</label>
         <input type="date" id="resaDate" class="resa-input" required onchange="resaResetDispo()">
       </div>
       <div>
-        <label class="resa-label">Heure</label>
+        <div id="resaServiceBadge" style="display:inline-flex;align-items:center;gap:6px;padding:3px 10px;border-radius:6px;font-size:11px;font-weight:700;color:#fff;margin-bottom:4px;"></div>
         <select id="resaHeure" class="resa-input" onchange="resaResetDispo()"></select>
       </div>
     </div>
