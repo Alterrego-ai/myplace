@@ -1024,6 +1024,13 @@ max-height: 300px;
 }
 .hrs-ag-slot-label { font-weight: 700; font-size: 12px; }
 .hrs-ag-slot-time { font-size: 10px; opacity: 0.8; margin-top: 1px; }
+.hrs-ag-reserve-btn {
+  background: rgba(255,255,255,0.25); color: #fff; border: 1px solid rgba(255,255,255,0.4);
+  border-radius: 6px; padding: 4px 10px; font-size: 11px; font-weight: 700;
+  font-family: inherit; cursor: pointer; white-space: nowrap;
+  transition: background 0.15s;
+}
+.hrs-ag-reserve-btn:active { background: rgba(255,255,255,0.45); }
 .hrs-ag-event {
   position: absolute; left: 48px; right: 8px;
   border-radius: 8px; padding: 6px 10px;
@@ -3791,13 +3798,16 @@ margin: 20px 20px 0;
 
     var d = HOURS_DATA.regular[idx];
     var isToday = (_hrsWeekOffset === 0 && idx === _hrsTodayIdx);
+    var todayStr = new Date().toISOString().slice(0,10);
+    var selStr = selDate.toISOString().slice(0,10);
+    var isPastDay = selStr < todayStr;
 
     if (!d.open) {
       container.innerHTML = '<div class="hrs-agenda--closed">Fermé · ' + d.day + '</div>';
       return;
     }
 
-    var slots = getSlotsForDay(idx);
+    var slots = isPastDay ? [] : getSlotsForDay(idx);
     var ROW_H = 44; // px per hour
 
     // Time range: round down open hour, round up close hour
@@ -3828,9 +3838,16 @@ margin: 20px 20px 0;
       var top = ((sMin - startH * 60) / (totalH * 60)) * (totalH * ROW_H);
       var height = ((eMin - sMin) / (totalH * 60)) * (totalH * ROW_H);
       var opacity = s.type === 'promo' ? '0.6' : '0.85';
+      var slotDateStr = selDate.getDate() + '/' + (selDate.getMonth()+1);
+      var resaMsg = 'Je souhaite réserver pour le ' + s.label + ' du ' + slotDateStr + ' (' + rec.start.replace(':','h') + '–' + rec.end.replace(':','h') + ')';
       h += '<div class="hrs-ag-slot" style="top:' + top + 'px;height:' + height + 'px;background:' + (s.color || '#3D6B8C') + ';opacity:' + opacity + ';">';
-      h += '  <div class="hrs-ag-slot-label">' + (s.icon ? s.icon + ' ' : '') + s.label + '</div>';
-      h += '  <div class="hrs-ag-slot-time">' + rec.start.replace(':','h') + ' – ' + rec.end.replace(':','h') + '</div>';
+      h += '  <div style="display:flex;justify-content:space-between;align-items:flex-start;">';
+      h += '    <div>';
+      h += '      <div class="hrs-ag-slot-label">' + (s.icon ? s.icon + ' ' : '') + s.label + '</div>';
+      h += '      <div class="hrs-ag-slot-time">' + rec.start.replace(':','h') + ' – ' + rec.end.replace(':','h') + '</div>';
+      h += '    </div>';
+      h += '    <button class="hrs-ag-reserve-btn" onclick="event.stopPropagation();closeAllSheets();setTimeout(function(){hrsOpenResaChat(\'' + resaMsg.replace(/'/g, "\\'") + '\')},350);">Réserver</button>';
+      h += '  </div>';
       h += '</div>';
     });
 
@@ -3935,8 +3952,31 @@ margin: 20px 20px 0;
     selectHrsDay(idx);
   }
 
+  function hrsOpenResaChat(msg) {
+    var chatInput = document.getElementById('chatInput');
+    if (!chatInput) return;
+    chatInput.value = msg;
+    var chatSheet = document.getElementById('chatSheet');
+    var overlay = document.getElementById('sheetOverlay');
+    if (chatSheet && overlay) {
+      lockBodyScroll();
+      overlay.classList.add('visible');
+      chatSheet.classList.add('visible');
+      setTimeout(function() { sendChatMessage(); }, 300);
+    }
+  }
+
   function hrsGoToDate(dateStr) {
-    if (!dateStr) return;
+    if (!dateStr) {
+      // Réinitialiser → retour à aujourd'hui
+      _hrsWeekOffset = 0;
+      hrsRenderWeekStrip();
+      setTimeout(function() {
+        var col = document.querySelector('.hrs-day-col--today');
+        if (col) hrsSelectDate(col);
+      }, 50);
+      return;
+    }
     var picked = new Date(dateStr + 'T12:00:00');
     var now = new Date();
     var todayJsDay = now.getDay();
