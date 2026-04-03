@@ -970,8 +970,8 @@ max-height: 300px;
   width: 80px; height: 80px; border-radius: 50%;
   background: rgba(255,255,255,0.08);
 }
-.hrs-today-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2px; }
-.hrs-datepicker-wrap { position: relative; }
+.hrs-today-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2px; min-height: 40px; }
+.hrs-datepicker-wrap { position: relative; display: flex; align-items: center; }
 .hrs-datepicker-btn {
   background: rgba(255,255,255,0.15); border: none; border-radius: 10px;
   padding: 8px 12px; cursor: pointer; display: flex; align-items: center; gap: 6px;
@@ -3791,7 +3791,7 @@ margin: 20px 20px 0;
     if (!container) return;
 
     var d = HOURS_DATA.regular[idx];
-    var isToday = idx === _hrsTodayIdx;
+    var isToday = (_hrsWeekOffset === 0 && idx === _hrsTodayIdx);
 
     if (!d.open) {
       container.innerHTML = '<div class="hrs-agenda--closed">Fermé · ' + d.day + '</div>';
@@ -3835,18 +3835,9 @@ margin: 20px 20px 0;
       h += '</div>';
     });
 
-    // Events for this day
+    // Events for this day (use selDate computed from week offset)
     if (AGENDA_DATA && AGENDA_DATA.events) {
-      var dayCodes = ['MO','TU','WE','TH','FR','SA','SU'];
-      var dc = dayCodes[idx];
-      // Get date for this weekday
-      var now = new Date();
-      var todayJsDay = now.getDay(); // 0=dim
-      var todayIdx = todayJsDay === 0 ? 6 : todayJsDay - 1;
-      var diff = idx - todayIdx;
-      var targetDate = new Date(now);
-      targetDate.setDate(targetDate.getDate() + diff);
-      var targetStr = targetDate.toISOString().slice(0,10);
+      var targetStr = selDate.toISOString().slice(0,10);
 
       AGENDA_DATA.events.forEach(function(ev) {
         if (ev.date !== targetStr) return;
@@ -3925,7 +3916,7 @@ margin: 20px 20px 0;
     if (container) {
       container.innerHTML = strip;
       // Update datepicker month label
-      var moisCourt = ['Janv.','Fév.','Mars','Avr.','Mai','Juin','Juil.','Août','Sept.','Oct.','Nov.','Déc.'];
+      var moisCourt = ['Janvier','Février','Mars','Avril','Mai','Juin','Juillet','Août','Septembre','Octobre','Novembre','Décembre'];
       var midWeek = new Date(monday);
       midWeek.setDate(midWeek.getDate() + 3);
       var monthLabel = document.getElementById('hrsMonthLabel');
@@ -4003,7 +3994,7 @@ margin: 20px 20px 0;
     hdr += '<div class="hrs-today-card">';
     hdr += '  <div class="hrs-today-top">';
     hdr += '    <div class="hrs-today-label">Aujourd\'hui · ' + status.todayLabel + '</div>';
-    var moisCourt = ['Janv.','Fév.','Mars','Avr.','Mai','Juin','Juil.','Août','Sept.','Oct.','Nov.','Déc.'];
+    var moisCourt = ['Janvier','Février','Mars','Avril','Mai','Juin','Juillet','Août','Septembre','Octobre','Novembre','Décembre'];
     var currentMonth = moisCourt[new Date().getMonth()];
     hdr += '    <div class="hrs-datepicker-wrap">';
     hdr += '      <button class="hrs-datepicker-btn" onclick="document.getElementById(\'hrsDateInput\').showPicker()"><span id="hrsMonthLabel">' + currentMonth + '</span> <span class="hrs-datepicker-chevron"></span></button>';
