@@ -1123,11 +1123,12 @@ max-height: 300px;
 .hrs-day-col:not(.hrs-day-col--past) .hrs-day-initial { color: var(--text-secondary); }
 .hrs-day-col:not(.hrs-day-col--past) .hrs-day-num { color: var(--text); font-weight: 800; }
 .hrs-day-col--today .hrs-day-num {
-  background: var(--primary); color: #fff; font-weight: 700;
+  background: transparent; color: var(--primary); font-weight: 800;
+  border: 2px solid var(--primary);
 }
 .hrs-day-col--past .hrs-day-initial,
 .hrs-day-col--past .hrs-day-num { color: var(--text-tertiary); opacity: 0.45; }
-.hrs-day-col--past.hrs-day-col--today .hrs-day-num { opacity: 1; }
+.hrs-day-col--past.hrs-day-col--today .hrs-day-num { opacity: 1; color: var(--primary); }
 .hrs-day-col--closed .hrs-day-initial,
 .hrs-day-col--closed .hrs-day-num { opacity: 0.4; }
 .hrs-day-col--closed.hrs-day-col--today .hrs-day-num { opacity: 1; }
