@@ -1119,7 +1119,7 @@ max-height: 300px;
   position: relative;
   background: var(--s-bg);
   border-radius: 16px;
-  padding: 24px 20px 18px;
+  padding: 28px 20px 28px;
   color: var(--s-text);
   overflow: hidden;
   box-shadow: 0 4px 24px rgba(0,0,0,0.12);
@@ -1154,7 +1154,7 @@ max-height: 300px;
 }
 .sesame-divider {
   display: flex; align-items: center; position: relative;
-  margin: 0 -20px 16px; z-index: 1;
+  margin: 0 -20px 20px; z-index: 1;
 }
 .sesame-notch { width: 14px; height: 28px; flex-shrink: 0; }
 .sesame-notch-left { background: var(--bg); border-radius: 0 14px 14px 0; }
@@ -1162,7 +1162,7 @@ max-height: 300px;
 .sesame-divider-line { flex: 1; border-top: 2px dashed var(--s-divider); }
 .sesame-details { position: relative; z-index: 1; }
 .sesame-detail-row {
-  display: flex; gap: 12px; margin-bottom: 14px;
+  display: flex; gap: 14px; margin-bottom: 20px;
 }
 .sesame-detail-row:last-child { margin-bottom: 0; }
 /* Asymétrie : gauche 60%, droite 40% */
@@ -1200,7 +1200,7 @@ max-height: 300px;
 /* ── Champs interactifs — affordance éditable ── */
 .sesame-detail--tap {
   cursor: pointer; position: relative;
-  border-radius: 8px; padding: 6px 8px; margin: -6px -8px;
+  border-radius: 8px; padding: 8px 10px; margin: -8px -10px;
   border: 1.5px dashed transparent;
   transition: all 0.15s;
 }
@@ -1252,7 +1252,7 @@ max-height: 300px;
   caret-color: var(--s-accent);
 }
 .sesame-phone-row {
-  margin-top: 4px; margin-bottom: 14px;
+  margin-top: 6px; margin-bottom: 18px;
   position: relative; z-index: 1;
   text-align: center;
 }
@@ -3248,7 +3248,7 @@ margin: 20px 20px 0;
 
     <!-- Lottie loading -->
     <div id="resaLottieWrap" style="display:none;text-align:center;padding:24px 0;">
-      <dotlottie-player id="resaLottiePlayer" src="/calendar-animation.lottie" autoplay loop speed="1" style="width:110px;height:110px;margin:0 auto;"></dotlottie-player>
+      <dotlottie-player id="resaLottiePlayer" src="/calendar-animation.lottie" autoplay loop speed="1" style="width:180px;height:180px;margin:0 auto;"></dotlottie-player>
       <div style="font-size:13px;color:var(--text-secondary);margin-top:8px;font-weight:600;">Recherche en cours…</div>
     </div>
 
@@ -3320,7 +3320,7 @@ margin: 20px 20px 0;
     </div>
 
     <!-- Bouton principal sous le sésame -->
-    <button class="resa-submit" id="resaCheckBtn" onclick="checkResaDispo()" style="margin-top:14px;">Vérifier la disponibilité</button>
+    <button class="resa-submit" id="resaCheckBtn" onclick="checkResaDispo()" style="margin-top:22px;">Vérifier la disponibilité</button>
 
     <!-- Confirmer / Annuler -->
     <div id="resaConfirmBtns" style="display:none;gap:10px;margin-top:14px;">
