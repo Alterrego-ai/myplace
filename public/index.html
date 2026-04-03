@@ -1218,6 +1218,7 @@ max-height: 300px;
   from { opacity: 0; transform: scale(0.5); }
   to { opacity: 1; transform: scale(1); }
 }
+#resaSheet { background: var(--bg); }
 #resaLottieWrap {
   animation: sesameFadeIn 0.5s ease forwards;
 }
@@ -3303,12 +3304,6 @@ margin: 20px 20px 0;
 <div class="bottom-sheet" id="resaSheet" style="max-height:92vh;display:flex;flex-direction:column;">
   <div class="sheet-handle"></div>
 
-  <!-- Lottie overlay (couvre tout le sheet) -->
-  <div id="resaLottieWrap" style="display:none;position:absolute;inset:0;z-index:10;background:rgba(255,255,255,0.85);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);border-radius:16px 16px 0 0;flex-direction:column;align-items:center;justify-content:center;">
-    <dotlottie-player id="resaLottiePlayer" src="/calendar-animation.lottie" autoplay loop speed="1" style="width:140px;height:140px;"></dotlottie-player>
-    <div style="font-size:13px;color:var(--text-secondary);margin-top:8px;font-weight:500;font-style:italic;">Nous consultons notre cahier de réservation…</div>
-  </div>
-
   <!-- Zone scrollable : sésame calé en bas avec marge pour l'ombre -->
   <div style="padding:16px 20px 24px;overflow-y:auto;flex:1;-webkit-overflow-scrolling:touch;display:flex;flex-direction:column;justify-content:flex-end;">
 
@@ -3317,6 +3312,11 @@ margin: 20px 20px 0;
 
     <!-- Le Sésame interactif -->
     <div class="sesame-pass sesame-draft" id="sesamePass">
+      <!-- Lottie overlay (sur le voucher) -->
+      <div id="resaLottieWrap" style="display:none;position:absolute;inset:0;z-index:10;background:rgba(255,255,255,0.85);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);border-radius:16px;flex-direction:column;align-items:center;justify-content:center;">
+        <dotlottie-player id="resaLottiePlayer" src="/calendar-animation.lottie" autoplay loop speed="1" style="width:140px;height:140px;"></dotlottie-player>
+        <div style="font-size:13px;color:var(--text-secondary);margin-top:8px;font-weight:500;font-style:italic;">Nous consultons notre cahier de réservation…</div>
+      </div>
       <!-- Header -->
       <div class="sesame-header">
         <img src="https://ciss-media-dev.s3.fr-par.scw.cloud/pointofsales/47408/15-vauban-brc-187.png" alt="Sauf Imprévu" class="sesame-logo">
@@ -4653,9 +4653,20 @@ margin: 20px 20px 0;
     }
 
     function animateFieldsThenResult(data) {
-      // Hide Lottie, then check fields one by one
+      // Hide Lottie
       lottieWrap.style.display = 'none';
 
+      // Si pas disponible : afficher directement le message, pas d'animation
+      if (!data.disponible) {
+        dispoEl.style.display = '';
+        dispoEl.style.background = 'rgba(255,59,48,0.1)';
+        dispoEl.style.color = '#ff3b30';
+        dispoEl.innerHTML = '✗ ' + (data.message || 'Pas de disponibilité');
+        resaShowOnlyBtn('resaCheckBtn');
+        return;
+      }
+
+      // Disponible : animation champs un par un
       steps.forEach(function(group, i) {
         setTimeout(function() {
           group.forEach(function(el) { lockField(el); });
@@ -4676,28 +4687,21 @@ margin: 20px 20px 0;
           el.style.background = '';
           el.style.outlineColor = 'transparent';
         });
-        // Remove class + laser after animation
+        // Remove class + laser after animation, retirer sesame-draft pour enlever les fonds de champs
         setTimeout(function() {
           pass.classList.remove('sesame-laser-active');
+          pass.classList.remove('sesame-draft');
           validated.forEach(function(el) {
             el.classList.remove(validatedClass);
             el.style.transition = '';
-            el.style.pointerEvents = data.disponible ? 'none' : '';
+            el.style.pointerEvents = 'none';
           });
-          if (data.disponible) {
-            // Nettoyer le sésame pour l'état "prêt à confirmer"
-            document.getElementById('resaTel').style.borderBottom = 'none';
-            document.querySelectorAll('.sesame-stepper').forEach(function(b) { b.style.display = 'none'; });
-            var noteVal = document.getElementById('resaNotes').value.trim();
-            if (!noteVal) document.getElementById('sesameNotePlaceholder').style.display = 'none';
-            resaShowOnlyBtn('resaConfirmBtns');
-          } else {
-            dispoEl.style.display = '';
-            dispoEl.style.background = 'rgba(255,59,48,0.1)';
-            dispoEl.style.color = '#ff3b30';
-            dispoEl.innerHTML = '✗ ' + (data.message || 'Pas de disponibilité');
-            resaShowOnlyBtn('resaCheckBtn');
-          }
+          // Nettoyer le sésame pour l'état "prêt à confirmer"
+          document.getElementById('resaTel').style.borderBottom = 'none';
+          document.querySelectorAll('.sesame-stepper').forEach(function(b) { b.style.display = 'none'; });
+          var noteVal = document.getElementById('resaNotes').value.trim();
+          if (!noteVal) document.getElementById('sesameNotePlaceholder').style.display = 'none';
+          resaShowOnlyBtn('resaConfirmBtns');
         }, 1000);
       }, totalTime);
     }
@@ -4736,7 +4740,8 @@ margin: 20px 20px 0;
     document.getElementById('resaDispoResult').style.display = 'none';
     resaShowOnlyBtn('resaCheckBtn');
     sesameUnlockFields();
-    // Restaurer les éléments cachés après validation
+    // Restaurer sesame-draft + éléments cachés après validation
+    document.getElementById('sesamePass').classList.add('sesame-draft');
     document.getElementById('resaTel').style.borderBottom = '';
     document.querySelectorAll('.sesame-stepper').forEach(function(b) { b.style.display = ''; });
     document.getElementById('sesameNotePlaceholder').style.display = '';
