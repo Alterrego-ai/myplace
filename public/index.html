@@ -4570,13 +4570,21 @@ margin: 20px 20px 0;
       guestName.style.display = 'none';
     }
 
-    // Open sheet — close others first, then open resa after transition
-    closeAllSheets();
+    // Open sheet — close other sheets but keep overlay, then show resa
+    var allSheets = document.querySelectorAll('.bottom-sheet');
+    allSheets.forEach(function(s) {
+      if (s.id !== 'resaSheet') {
+        s.classList.remove('visible');
+        s.style.transform = '';
+        s.style.transition = '';
+      }
+    });
+    lockBodyScroll();
+    document.getElementById('sheetOverlay').classList.add('visible');
+    // Small delay to let closing sheet animate out
     setTimeout(function() {
-      lockBodyScroll();
-      document.getElementById('sheetOverlay').classList.add('visible');
       document.getElementById('resaSheet').classList.add('visible');
-    }, 350);
+    }, 50);
   }
 
   // Sésame interactive callbacks
