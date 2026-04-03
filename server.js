@@ -625,6 +625,9 @@ function requireAdmin(req, res, next) {
 app.post('/reservations', requireAdmin, (req, res) => createReservation(req, res, 'backoffice'));
 app.post('/reservations/phone', requireAdmin, (req, res) => createReservation(req, res, 'phone'));
 
+// Public reservation API (from app agenda)
+app.post('/api/reservations', (req, res) => createReservation(req, res, 'app'));
+
 app.get('/reservations', requireAdmin, (req, res) => {
   const { date } = req.query;
   if (date) res.json(resaDb.prepare(`SELECT * FROM reservations WHERE date = ? ORDER BY heure`).all(date));

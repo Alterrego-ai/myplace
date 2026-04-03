@@ -135,6 +135,25 @@ function executeFunction(name, args, resaDb) {
  * Construit le system prompt avec le contexte du restaurant (carte, horaires, etc.)
  */
 function buildSystemPrompt(carteDb) {
+  // Charger les prompts de services depuis agenda.json
+  let servicePrompts = '';
+  try {
+    const fs = require('fs');
+    const path = require('path');
+    const agenda = JSON.parse(fs.readFileSync(path.join(__dirname, 'public', 'agenda.json'), 'utf8'));
+    const bookableSlots = (agenda.services || []).filter(s => s.booking && s.booking.prompt);
+    if (bookableSlots.length > 0) {
+      servicePrompts = bookableSlots.map(s => {
+        const booking = s.booking;
+        return `### ${s.label} (${s.recurrence.start}–${s.recurrence.end})
+${booking.prompt}
+${booking.enabled ? `Créneaux réservables : de ${booking.firstSlot || s.recurrence.start} à ${booking.lastSlot || s.recurrence.end}, toutes les ${booking.interval || 30} min. Max ${booking.maxCouverts || 'N/A'} couverts.` : 'Pas de réservation pour ce service.'}`;
+      }).join('\n\n');
+    }
+  } catch (e) {
+    console.warn('Chat: impossible de charger agenda.json pour les prompts services:', e.message);
+  }
+
   // Charger la carte depuis la DB
   let carteText = '';
   try {
@@ -213,12 +232,10 @@ Aujourd'hui c'est ${todayDay} ${today}.${(new Date().getDay() === 0 || new Date(
 - Note Google : 4.7/5 (284 avis)
 - Services : Cave à emporter, terrasse, CB acceptée, tickets restaurant
 
-## Règles de réservation
-- Réservations acceptées jusqu'à 1h avant le service uniquement
-- Passé ce délai : inviter à se présenter directement sur place
-- Groupes jusqu'à 10 personnes inclus : réservation standard
-- Au-delà de 10 personnes : privatisation uniquement, inviter à appeler pour en discuter
-- En dehors des services midi et soir : pas de réservation nécessaire
+## Services et règles de réservation
+${servicePrompts || '(Aucun service trouvé dans agenda.json)'}
+
+## Règles générales de réservation
 - Ne communique JAMAIS le nombre de places restantes au client. Dis simplement si c'est disponible ou non.
 - Ne propose JAMAIS un horaire toi-même. Demande toujours au client à quelle heure il souhaite venir. Si le client dit juste "mercredi soir", dis qu'il y a de la place et demande l'heure souhaitée.
 - OBLIGATOIRE : tu DOIS utiliser la fonction check_availability pour vérifier la disponibilité. Ne dis JAMAIS qu'une table est disponible sans avoir appelé cette fonction.

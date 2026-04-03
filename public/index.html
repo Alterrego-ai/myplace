@@ -1056,6 +1056,31 @@ max-height: 300px;
 }
 @keyframes hrs-pulse-green { 0%,100% { box-shadow: 0 0 0 0 rgba(74,232,138,0.4); } 50% { box-shadow: 0 0 0 5px rgba(74,232,138,0); } }
 
+/* Reservation form */
+.resa-label {
+  display: block; font-size: 11px; font-weight: 600; color: var(--text-secondary);
+  margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.03em;
+}
+.resa-input {
+  width: 100%; padding: 10px 12px; border: 1.5px solid var(--border); border-radius: 10px;
+  background: var(--bg-subtle); color: var(--text); font-size: 15px; font-weight: 600;
+  font-family: inherit; appearance: none; -webkit-appearance: none; box-sizing: border-box;
+}
+.resa-input:focus { border-color: var(--primary); outline: none; }
+.resa-stepper {
+  width: 40px; height: 40px; border-radius: 50%; border: 1.5px solid var(--border);
+  background: var(--bg-subtle); color: var(--text); font-size: 20px; font-weight: 700;
+  font-family: inherit; cursor: pointer; display: flex; align-items: center; justify-content: center;
+}
+.resa-stepper:active { background: var(--primary); color: #fff; border-color: var(--primary); }
+.resa-submit {
+  width: 100%; padding: 14px; border: none; border-radius: 12px;
+  background: var(--primary); color: #fff; font-size: 16px; font-weight: 700;
+  font-family: inherit; cursor: pointer; transition: opacity 0.15s;
+}
+.resa-submit:active { opacity: 0.8; }
+.resa-submit:disabled { opacity: 0.5; cursor: not-allowed; }
+
 /* Week strip – Apple Calendar style */
 .hrs-week-strip {
   overflow: hidden; margin-bottom: 0;
@@ -2971,6 +2996,71 @@ margin: 20px 20px 0;
   <button class="sheet-cancel" onclick="closeAllSheets()" style="flex-shrink:0;">Fermer</button>
 </div>
 
+<!-- BOTTOM SHEET RESERVATION -->
+<div class="bottom-sheet" id="resaSheet" style="max-height:85vh;display:flex;flex-direction:column;">
+  <div class="sheet-handle"></div>
+  <div style="padding:16px 20px;overflow-y:auto;flex:1;-webkit-overflow-scrolling:touch;">
+    <div style="font-size:18px;font-weight:800;color:var(--text);margin-bottom:16px;">Réserver</div>
+
+    <!-- Service badge -->
+    <div id="resaServiceBadge" style="display:inline-flex;align-items:center;gap:6px;padding:6px 12px;border-radius:8px;font-size:13px;font-weight:700;color:#fff;margin-bottom:14px;"></div>
+
+    <!-- Date + Heure -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px;">
+      <div>
+        <label class="resa-label">Date</label>
+        <input type="date" id="resaDate" class="resa-input" required>
+      </div>
+      <div>
+        <label class="resa-label">Heure</label>
+        <select id="resaHeure" class="resa-input"></select>
+      </div>
+    </div>
+
+    <!-- Couverts -->
+    <div style="margin-bottom:12px;">
+      <label class="resa-label">Nombre de personnes</label>
+      <div style="display:flex;align-items:center;gap:12px;">
+        <button class="resa-stepper" onclick="resaStep(-1)">−</button>
+        <span id="resaCouverts" style="font-size:20px;font-weight:800;color:var(--text);min-width:32px;text-align:center;">2</span>
+        <button class="resa-stepper" onclick="resaStep(1)">+</button>
+      </div>
+    </div>
+
+    <!-- Nom + Téléphone -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px;">
+      <div>
+        <label class="resa-label">Nom</label>
+        <input type="text" id="resaNom" class="resa-input" placeholder="Votre nom" required>
+      </div>
+      <div>
+        <label class="resa-label">Téléphone</label>
+        <input type="tel" id="resaTel" class="resa-input" placeholder="06 ...">
+      </div>
+    </div>
+
+    <!-- Notes -->
+    <div style="margin-bottom:16px;">
+      <label class="resa-label">Notes <span style="font-weight:400;color:var(--text-tertiary);">(optionnel)</span></label>
+      <input type="text" id="resaNotes" class="resa-input" placeholder="Allergies, terrasse...">
+    </div>
+
+    <!-- Message d'erreur -->
+    <div id="resaError" style="display:none;color:#ff3b30;font-size:13px;font-weight:600;margin-bottom:12px;"></div>
+
+    <!-- Bouton confirmer -->
+    <button class="resa-submit" id="resaSubmitBtn" onclick="submitReservation()">Confirmer la réservation</button>
+
+    <!-- Confirmation -->
+    <div id="resaSuccess" style="display:none;text-align:center;padding:24px 0;">
+      <div style="font-size:48px;margin-bottom:12px;">✅</div>
+      <div style="font-size:18px;font-weight:800;color:var(--text);margin-bottom:4px;">Réservation confirmée !</div>
+      <div id="resaSuccessMsg" style="font-size:13px;color:var(--text-secondary);"></div>
+    </div>
+  </div>
+  <button class="sheet-cancel" onclick="closeAllSheets()" style="flex-shrink:0;">Fermer</button>
+</div>
+
 <!-- BOTTOM SHEET PARTAGER (fullscreen) -->
 
 <div class="bottom-sheet bottom-sheet-full" id="shareSheet">
@@ -3838,15 +3928,17 @@ margin: 20px 20px 0;
       var top = ((sMin - startH * 60) / (totalH * 60)) * (totalH * ROW_H);
       var height = ((eMin - sMin) / (totalH * 60)) * (totalH * ROW_H);
       var opacity = s.type === 'promo' ? '0.6' : '0.85';
-      var slotDateStr = selDate.getDate() + '/' + (selDate.getMonth()+1);
-      var resaMsg = 'Je souhaite réserver pour le ' + s.label + ' du ' + slotDateStr + ' (' + rec.start.replace(':','h') + '–' + rec.end.replace(':','h') + ')';
+      var selDateISO = selDate.toISOString().slice(0,10);
+      var hasBooking = s.booking && s.booking.enabled;
       h += '<div class="hrs-ag-slot" style="top:' + top + 'px;height:' + height + 'px;background:' + (s.color || '#3D6B8C') + ';opacity:' + opacity + ';">';
       h += '  <div style="display:flex;justify-content:space-between;align-items:flex-start;">';
       h += '    <div>';
       h += '      <div class="hrs-ag-slot-label">' + (s.icon ? s.icon + ' ' : '') + s.label + '</div>';
       h += '      <div class="hrs-ag-slot-time">' + rec.start.replace(':','h') + ' – ' + rec.end.replace(':','h') + '</div>';
       h += '    </div>';
-      h += '    <button class="hrs-ag-reserve-btn" onclick="event.stopPropagation();closeAllSheets();setTimeout(function(){hrsOpenResaChat(\'' + resaMsg.replace(/'/g, "\\'") + '\')},350);">Réserver</button>';
+      if (hasBooking) {
+        h += '    <button class="hrs-ag-reserve-btn" onclick="event.stopPropagation();openResaForm(\'' + s.id + '\',\'' + selDateISO + '\')">Réserver</button>';
+      }
       h += '  </div>';
       h += '</div>';
     });
@@ -3950,6 +4042,125 @@ margin: 20px 20px 0;
     });
     el.classList.add('hrs-day-col--selected');
     selectHrsDay(idx);
+  }
+
+  // ── Reservation form ──
+  var _resaCouverts = 2;
+  var _resaSlotId = null;
+
+  function openResaForm(slotId, dateStr) {
+    // Find slot in AGENDA_DATA
+    var slot = null;
+    if (AGENDA_DATA && AGENDA_DATA.services) {
+      slot = AGENDA_DATA.services.find(function(s) { return s.id === slotId; });
+    }
+    if (!slot || !slot.booking || !slot.booking.enabled) return;
+
+    _resaSlotId = slotId;
+    _resaCouverts = 2;
+
+    // Badge
+    var badge = document.getElementById('resaServiceBadge');
+    badge.style.background = slot.color || '#3D6B8C';
+    badge.textContent = (slot.icon ? slot.icon + ' ' : '') + slot.label;
+
+    // Date
+    document.getElementById('resaDate').value = dateStr;
+
+    // Build time slots
+    var sel = document.getElementById('resaHeure');
+    sel.innerHTML = '';
+    var first = slot.booking.firstSlot || slot.recurrence.start;
+    var last = slot.booking.lastSlot || slot.recurrence.end;
+    var interval = slot.booking.interval || 30;
+    var startMin = parseTimeToMin(first);
+    var endMin = parseTimeToMin(last);
+    for (var m = startMin; m <= endMin; m += interval) {
+      var opt = document.createElement('option');
+      opt.value = minToHHMM(m);
+      opt.textContent = minToHStr(m);
+      sel.appendChild(opt);
+    }
+
+    // Reset
+    document.getElementById('resaCouverts').textContent = '2';
+    document.getElementById('resaNom').value = '';
+    document.getElementById('resaTel').value = '';
+    document.getElementById('resaNotes').value = '';
+    document.getElementById('resaError').style.display = 'none';
+    document.getElementById('resaSuccess').style.display = 'none';
+    document.getElementById('resaSubmitBtn').style.display = '';
+    document.getElementById('resaSubmitBtn').disabled = false;
+
+    // Open sheet
+    closeAllSheets();
+    setTimeout(function() {
+      lockBodyScroll();
+      document.getElementById('sheetOverlay').classList.add('visible');
+      document.getElementById('resaSheet').classList.add('visible');
+    }, 100);
+  }
+
+  function minToHHMM(m) {
+    var h = Math.floor(m / 60);
+    var mm = m % 60;
+    return (h < 10 ? '0' : '') + h + ':' + (mm < 10 ? '0' : '') + mm;
+  }
+
+  function resaStep(delta) {
+    _resaCouverts = Math.max(1, Math.min(12, _resaCouverts + delta));
+    document.getElementById('resaCouverts').textContent = _resaCouverts;
+  }
+
+  function submitReservation() {
+    var nom = document.getElementById('resaNom').value.trim();
+    var tel = document.getElementById('resaTel').value.trim();
+    var date = document.getElementById('resaDate').value;
+    var heure = document.getElementById('resaHeure').value;
+    var notes = document.getElementById('resaNotes').value.trim();
+    var errEl = document.getElementById('resaError');
+
+    if (!nom) { errEl.textContent = 'Veuillez indiquer votre nom'; errEl.style.display = ''; return; }
+    if (!date || !heure) { errEl.textContent = 'Date et heure requises'; errEl.style.display = ''; return; }
+
+    errEl.style.display = 'none';
+    var btn = document.getElementById('resaSubmitBtn');
+    btn.disabled = true;
+    btn.textContent = 'Réservation en cours...';
+
+    fetch('/api/reservations', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        nom: nom,
+        telephone: tel || null,
+        date: date,
+        heure: heure,
+        couverts: _resaCouverts,
+        notes: notes || null,
+        source: 'app'
+      })
+    })
+    .then(function(r) { return r.json().then(function(d) { return { ok: r.ok, data: d }; }); })
+    .then(function(res) {
+      if (res.ok) {
+        btn.style.display = 'none';
+        var successEl = document.getElementById('resaSuccess');
+        successEl.style.display = '';
+        document.getElementById('resaSuccessMsg').textContent = res.data.message;
+      } else {
+        errEl.textContent = res.data.erreur || 'Erreur lors de la réservation';
+        errEl.style.display = '';
+        btn.disabled = false;
+        btn.textContent = 'Confirmer la réservation';
+      }
+    })
+    .catch(function() {
+      errEl.textContent = 'Erreur réseau, réessayez';
+      errEl.style.display = '';
+      btn.disabled = false;
+      btn.textContent = 'Confirmer la réservation';
+    });
   }
 
   function hrsOpenResaChat(msg) {
