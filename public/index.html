@@ -3368,8 +3368,6 @@ margin: 20px 20px 0;
       <!-- Résultat non-dispo (inside sésame) -->
       <div id="resaDispoResult" style="display:none;margin-top:12px;padding:10px 14px;border-radius:10px;font-size:14px;font-weight:600;"></div>
 
-      <!-- Filigrane -->
-      <div class="sesame-stamp" id="sesameStamp">SÉSAME</div>
     </div>
   </div>
 
@@ -4501,7 +4499,7 @@ margin: 20px 20px 0;
     // Reset sésame to draft
     var pass = document.getElementById('sesamePass');
     pass.className = 'sesame-pass sesame-draft';
-    document.getElementById('sesameStamp').textContent = 'SÉSAME';
+
     document.querySelector('.sesame-welcome').textContent = 'Demande de réservation';
 
     // Populate sésame values
@@ -4733,7 +4731,6 @@ margin: 20px 20px 0;
     // Hide confirm buttons, show mini loading on sésame
     resaHideBtn('resaConfirmBtns');
     document.getElementById('resaDispoResult').style.display = 'none';
-    document.getElementById('sesameStamp').textContent = '…';
 
     fetch('/api/reservations', {
       method: 'POST',
@@ -4760,13 +4757,13 @@ margin: 20px 20px 0;
         _lastResa = { nom: nom, date: date, heure: heure, couverts: _resaCouverts, notes: notes, label: slot ? slot.label : '', jourLabel: dateJoli };
 
         // ✨ Reveal the sésame — draft → confirmed
+        sesameUnlockFields();
         document.getElementById('sesameGuestName').textContent = nom;
         document.getElementById('resaDispoResult').style.display = 'none';
         document.querySelector('.sesame-welcome').textContent = 'Bienvenue';
         var pass = document.getElementById('sesamePass');
         pass.classList.remove('sesame-draft');
         pass.classList.add('sesame-revealed');
-        document.getElementById('sesameStamp').textContent = 'CONFIRMÉ';
 
         // Show actions
         setTimeout(function() {
@@ -4777,14 +4774,14 @@ margin: 20px 20px 0;
         errEl.textContent = res.data.erreur || 'Erreur lors de la réservation';
         errEl.style.display = '';
         resaShowOnlyBtn('resaCheckBtn');
-        document.getElementById('sesameStamp').textContent = 'SÉSAME';
+    
       }
     })
     .catch(function() {
       errEl.textContent = 'Erreur réseau, réessayez';
       errEl.style.display = '';
       resaShowOnlyBtn('resaCheckBtn');
-      document.getElementById('sesameStamp').textContent = 'SÉSAME';
+  
     });
   }
 
