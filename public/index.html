@@ -4627,44 +4627,60 @@ margin: 20px 20px 0;
     lottieWrap.style.display = 'flex';
 
     // Field validation steps — will animate AFTER API returns
+    // Nom + Tel grouped together (same timing)
     var validatedClass = 'sesame-field-validated';
     var steps = [
-      { el: document.querySelector('.sesame-details .sesame-detail-row:first-child .sesame-detail:first-child') },
-      { el: document.querySelector('.sesame-details .sesame-detail-row:first-child .sesame-detail:last-child') },
-      { el: document.querySelector('.sesame-details .sesame-detail-row:last-child .sesame-detail:first-child') },
-      { el: document.querySelector('.sesame-details .sesame-detail-row:last-child .sesame-detail:last-child') },
-      { el: document.getElementById('sesameGuestWrap') },
-      { el: document.getElementById('sesamePhoneRow') }
+      [document.querySelector('.sesame-details .sesame-detail-row:first-child .sesame-detail:first-child')],
+      [document.querySelector('.sesame-details .sesame-detail-row:first-child .sesame-detail:last-child')],
+      [document.querySelector('.sesame-details .sesame-detail-row:last-child .sesame-detail:first-child'),
+       document.querySelector('.sesame-details .sesame-detail-row:last-child .sesame-detail:last-child')],
+      [document.getElementById('sesameGuestWrap'), document.getElementById('sesamePhoneRow')]
     ];
     var STEP_DELAY = 400;
 
-    function lockField(step) {
-      if (!step.el) return;
-      step.el.classList.add(validatedClass);
-      step.el.style.pointerEvents = 'none';
+    function lockField(el) {
+      if (!el) return;
+      el.classList.add(validatedClass);
+      el.style.pointerEvents = 'none';
     }
 
     function animateFieldsThenResult(data) {
       // Hide Lottie, then check fields one by one
       lottieWrap.style.display = 'none';
 
-      steps.forEach(function(step, i) {
-        setTimeout(function() { lockField(step); }, i * STEP_DELAY);
+      steps.forEach(function(group, i) {
+        setTimeout(function() {
+          group.forEach(function(el) { lockField(el); });
+        }, i * STEP_DELAY);
       });
 
-      // After all fields checked, show result
-      var totalTime = steps.length * STEP_DELAY + 300;
+      // After all fields checked, fade out green then show result
+      var totalTime = steps.length * STEP_DELAY + 400;
       setTimeout(function() {
-        if (data.disponible) {
-          resaShowOnlyBtn('resaConfirmBtns');
-        } else {
-          dispoEl.style.display = '';
-          dispoEl.style.background = 'rgba(255,59,48,0.1)';
-          dispoEl.style.color = '#ff3b30';
-          dispoEl.innerHTML = '✗ ' + (data.message || 'Pas de disponibilité');
-          resaShowOnlyBtn('resaCheckBtn');
-          sesameUnlockFields();
-        }
+        // Fade out all validated highlights
+        var validated = document.querySelectorAll('.' + validatedClass);
+        validated.forEach(function(el) {
+          el.style.transition = 'background 0.4s ease, outline-color 0.4s ease';
+          el.style.background = '';
+          el.style.outlineColor = 'transparent';
+        });
+        // Remove class after fade
+        setTimeout(function() {
+          validated.forEach(function(el) {
+            el.classList.remove(validatedClass);
+            el.style.transition = '';
+            el.style.pointerEvents = data.disponible ? 'none' : '';
+          });
+          if (data.disponible) {
+            resaShowOnlyBtn('resaConfirmBtns');
+          } else {
+            dispoEl.style.display = '';
+            dispoEl.style.background = 'rgba(255,59,48,0.1)';
+            dispoEl.style.color = '#ff3b30';
+            dispoEl.innerHTML = '✗ ' + (data.message || 'Pas de disponibilité');
+            resaShowOnlyBtn('resaCheckBtn');
+          }
+        }, 450);
       }, totalTime);
     }
 
