@@ -951,7 +951,7 @@ max-height: 300px;
 
 .hrs-today-card {
   background: linear-gradient(135deg, var(--primary), color-mix(in srgb, var(--primary) 70%, #000));
-  border-radius: 14px 14px 0 0; padding: 14px 16px 10px; color: #fff;
+  border-radius: 0; padding: 14px 16px 10px; color: #fff;
   position: relative; overflow: hidden;
 }
 .hrs-today-weather {
@@ -970,12 +970,12 @@ max-height: 300px;
 /* Agenda vertical timeline */
 .hrs-header-block { margin-bottom: 12px; }
 .hrs-agenda {
-  position: relative; background: var(--bg-subtle); border-radius: 0 0 14px 14px;
+  position: relative; background: var(--bg-card);
   padding: 0 0 8px; min-height: 200px;
 }
 .hrs-agenda--closed {
   display: flex; align-items: center; justify-content: center;
-  min-height: 80px; border-radius: 0 0 14px 14px; background: var(--bg-subtle);
+  min-height: 120px; background: var(--bg-card);
   color: var(--text-tertiary); font-size: 14px; font-weight: 600; font-style: italic;
 }
 .hrs-ag-row {
@@ -2890,9 +2890,10 @@ margin: 20px 20px 0;
 
 <!-- BOTTOM SHEET HORAIRES -->
 
-<div class="bottom-sheet" id="hoursSheet" style="max-height:85vh;display:flex;flex-direction:column;">
+<div class="bottom-sheet bottom-sheet-full" id="hoursSheet">
   <div class="sheet-handle"></div>
-  <div style="padding:0 20px;overflow-y:auto;flex:1;-webkit-overflow-scrolling:touch;padding-bottom:8px;" id="hoursSheetContent">
+  <div id="hoursSheetHeader" style="flex-shrink:0;"></div>
+  <div style="padding:0;overflow-y:auto;flex:1;-webkit-overflow-scrolling:touch;padding-bottom:8px;" id="hoursSheetContent">
     <!-- Rempli dynamiquement par buildHoursSheet() -->
   </div>
   <button class="sheet-cancel" onclick="closeAllSheets()" style="flex-shrink:0;">Fermer</button>
@@ -3804,26 +3805,22 @@ margin: 20px 20px 0;
   function buildHoursSheet() {
     var status = getHoursStatus();
     _hrsTodayIdx = status.dayIdx;
-    var html = '';
 
-    // ── Header block: Today card + Timeline fusionnés ──
-    html += '<div class="hrs-header-block">';
-    html += '<div class="hrs-today-card">';
-    html += '  <div class="hrs-today-top">';
-    html += '    <div class="hrs-today-label">Aujourd\'hui · ' + status.todayLabel + '</div>';
-    html += '    <div class="hrs-today-weather" id="hrsWeatherInline" style="display:none;">';
-    html += '      <span id="hrsWeatherInlineIcon"></span>';
-    html += '      <span id="hrsWeatherInlineTemp"></span>';
-    html += '    </div>';
-    html += '  </div>';
-    html += '  <div class="hrs-today-hours">' + status.todayHours + '</div>';
-    html += '</div>';
-    html += '<div id="hrsTimelineContainer"></div>';
-    html += '</div>';
+    // ── Sticky header: Today card + Week strip ──
+    var hdr = '';
+    hdr += '<div class="hrs-today-card">';
+    hdr += '  <div class="hrs-today-top">';
+    hdr += '    <div class="hrs-today-label">Aujourd\'hui · ' + status.todayLabel + '</div>';
+    hdr += '    <div class="hrs-today-weather" id="hrsWeatherInline" style="display:none;">';
+    hdr += '      <span id="hrsWeatherInlineIcon"></span>';
+    hdr += '      <span id="hrsWeatherInlineTemp"></span>';
+    hdr += '    </div>';
+    hdr += '  </div>';
+    hdr += '  <div class="hrs-today-hours">' + status.todayHours + '</div>';
+    hdr += '</div>';
 
-    // ── Week strip ──
     var dayInitials = ['L','M','M','J','V','S','D'];
-    html += '<div class="hrs-week-strip">';
+    hdr += '<div class="hrs-week-strip" style="padding:8px 16px 4px;">';
     for (var i = 0; i < HOURS_DATA.regular.length; i++) {
       var d = HOURS_DATA.regular[i];
       var isToday = i === status.dayIdx;
@@ -3831,11 +3828,16 @@ margin: 20px 20px 0;
       var cls = 'hrs-day-circle';
       if (isToday) cls += ' hrs-day-circle--today';
       if (isClosed) cls += ' hrs-day-circle--closed';
-      html += '<button class="' + cls + '" data-day-idx="' + i + '" onclick="selectHrsDay(' + i + ')">';
-      html += dayInitials[i];
-      html += '</button>';
+      hdr += '<button class="' + cls + '" data-day-idx="' + i + '" onclick="selectHrsDay(' + i + ')">';
+      hdr += dayInitials[i];
+      hdr += '</button>';
     }
-    html += '</div>';
+    hdr += '</div>';
+    document.getElementById('hoursSheetHeader').innerHTML = hdr;
+
+    // ── Scrollable content: agenda + specials ──
+    var html = '';
+    html += '<div id="hrsTimelineContainer" style="padding:0;"></div>';
 
     // ── Special days ──
     var upcoming = HOURS_DATA.special.filter(function(s) {
