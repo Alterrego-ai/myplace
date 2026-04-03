@@ -1201,13 +1201,51 @@ max-height: 300px;
 }
 .sesame-action:active { opacity: 0.7; transform: scale(0.97); }
 
-/* Entrée animée du sésame */
-@keyframes sesameReveal {
-  0% { opacity: 0; transform: scale(0.92) translateY(12px); }
-  100% { opacity: 1; transform: scale(1) translateY(0); }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* État draft N&B — le sésame en attente */
+.sesame-pass.sesame-draft {
+  background: linear-gradient(145deg, #2a2a2a 0%, #1f1f1f 40%, #2a2a2a 100%);
+  box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+  opacity: 0.55;
+  transition: all 0.8s cubic-bezier(0.23, 1, 0.32, 1);
 }
-.sesame-pass.sesame-animate {
-  animation: sesameReveal 0.5s cubic-bezier(0.23, 1, 0.32, 1) forwards;
+.sesame-draft .sesame-brand-sub,
+.sesame-draft .sesame-welcome,
+.sesame-draft .sesame-detail-label { color: rgba(180,180,180,0.5); }
+.sesame-draft .sesame-brand-name,
+.sesame-draft .sesame-guest,
+.sesame-draft .sesame-detail-value { color: rgba(200,200,200,0.6); }
+.sesame-draft .sesame-logo { filter: grayscale(1); border-color: rgba(150,150,150,0.3); }
+.sesame-draft .sesame-divider-line { border-color: rgba(150,150,150,0.15); }
+.sesame-draft .sesame-notch-left,
+.sesame-draft .sesame-notch-right { background: var(--bg); }
+.sesame-draft .sesame-stamp { color: rgba(150,150,150,0.06); }
+
+/* Révélation : draft → confirmé */
+@keyframes sesameReveal {
+  0% { opacity: 0.55; transform: scale(0.97); }
+  50% { opacity: 0.9; transform: scale(1.01); }
+  100% { opacity: 1; transform: scale(1); }
+}
+.sesame-pass.sesame-revealed {
+  animation: sesameReveal 0.8s cubic-bezier(0.23, 1, 0.32, 1) forwards;
+  background: linear-gradient(145deg, #1a1a2e 0%, #16213e 40%, #1a1a2e 100%);
+  box-shadow: 0 8px 32px rgba(0,0,0,0.25), inset 0 1px 0 rgba(212,175,55,0.15);
+  opacity: 1;
+}
+/* Flash doré sur révélation */
+@keyframes sesameGoldFlash {
+  0% { opacity: 0; }
+  30% { opacity: 1; }
+  100% { opacity: 0; }
+}
+.sesame-pass.sesame-revealed::after {
+  content: '';
+  position: absolute; top: 0; left: -100%; right: -100%; bottom: 0;
+  background: linear-gradient(105deg, transparent 40%, rgba(212,175,55,0.12) 50%, transparent 60%);
+  animation: sesameGoldFlash 1.2s ease-out 0.3s;
+  pointer-events: none;
 }
 
 /* Week strip – Apple Calendar style */
@@ -3136,6 +3174,7 @@ margin: 20px 20px 0;
 <div class="bottom-sheet" id="resaSheet" style="max-height:85vh;display:flex;flex-direction:column;">
   <div class="sheet-handle"></div>
   <div style="padding:16px 20px;overflow-y:auto;flex:1;-webkit-overflow-scrolling:touch;">
+    <div id="resaFormFields">
     <div style="font-size:18px;font-weight:800;color:var(--text);margin-bottom:16px;">Réserver</div>
 
     <!-- Date + Heure sur une ligne, badge service au-dessus de l'heure -->
@@ -3192,87 +3231,92 @@ margin: 20px 20px 0;
     <!-- Message d'erreur -->
     <div id="resaError" style="display:none;color:#ff3b30;font-size:13px;font-weight:600;margin-bottom:12px;"></div>
 
-    <!-- Résultat dispo -->
-    <div id="resaDispoResult" style="display:none;margin-bottom:12px;padding:12px 14px;border-radius:10px;font-size:14px;font-weight:600;"></div>
-
     <!-- Bouton vérifier dispo -->
     <button class="resa-submit" id="resaCheckBtn" onclick="checkResaDispo()">Vérifier la disponibilité</button>
+    </div><!-- /resaFormFields -->
 
-    <!-- Bouton confirmer (caché par défaut) -->
-    <button class="resa-submit" id="resaSubmitBtn" onclick="submitReservation()" style="display:none;margin-top:8px;">Confirmer la réservation</button>
+    <!-- Lottie loading overlay (dans le sésame) -->
+    <div id="resaLottieWrap" style="display:none;text-align:center;padding:32px 0;">
+      <div id="resaLottieAnim" style="width:120px;height:120px;margin:0 auto;"></div>
+      <div style="font-size:13px;color:var(--text-secondary);margin-top:12px;font-weight:600;">Recherche en cours…</div>
+    </div>
 
-    <!-- Sésame Premium -->
-    <div id="resaSuccess" style="display:none;padding:0;">
-      <div id="resaSuccessMsg" style="display:none;"></div>
+    <!-- Résultat dispo (affiché au-dessus du sésame draft) -->
+    <div id="resaDispoResult" style="display:none;margin-bottom:12px;padding:12px 14px;border-radius:10px;font-size:14px;font-weight:600;"></div>
 
-      <!-- Le Sésame -->
-      <div class="sesame-pass">
-        <!-- Header doré -->
-        <div class="sesame-header">
-          <img src="https://ciss-media-dev.s3.fr-par.scw.cloud/pointofsales/47408/15-vauban-brc-187.png" alt="Sauf Imprévu" class="sesame-logo">
-          <div class="sesame-brand">
-            <div class="sesame-brand-name">Sauf Imprévu</div>
-            <div class="sesame-brand-sub">Bar à vins · Lyon 6</div>
-          </div>
+    <!-- Boutons Confirmer / Annuler (après dispo OK) -->
+    <div id="resaConfirmBtns" style="display:none;gap:10px;margin-bottom:14px;">
+      <button class="resa-submit" onclick="submitReservation()" id="resaSubmitBtn" style="flex:1;">Confirmer</button>
+      <button onclick="resaCancelDispo()" style="flex:1;padding:14px;border:1.5px solid var(--border);border-radius:12px;background:var(--bg-card);color:var(--text-secondary);font-size:15px;font-weight:600;font-family:inherit;cursor:pointer;">Annuler</button>
+    </div>
+
+    <!-- Le Sésame (toujours visible, en draft N&B puis révélé) -->
+    <div class="sesame-pass sesame-draft" id="sesamePass">
+      <!-- Header -->
+      <div class="sesame-header">
+        <img src="https://ciss-media-dev.s3.fr-par.scw.cloud/pointofsales/47408/15-vauban-brc-187.png" alt="Sauf Imprévu" class="sesame-logo">
+        <div class="sesame-brand">
+          <div class="sesame-brand-name">Sauf Imprévu</div>
+          <div class="sesame-brand-sub">Bar à vins · Lyon 6</div>
         </div>
-
-        <!-- Message d'accueil -->
-        <div class="sesame-welcome">Bienvenue</div>
-        <div class="sesame-guest" id="sesameGuestName"></div>
-
-        <!-- Ligne de séparation élégante -->
-        <div class="sesame-divider">
-          <div class="sesame-notch sesame-notch-left"></div>
-          <div class="sesame-divider-line"></div>
-          <div class="sesame-notch sesame-notch-right"></div>
-        </div>
-
-        <!-- Détails -->
-        <div class="sesame-details">
-          <div class="sesame-detail-row">
-            <div class="sesame-detail">
-              <div class="sesame-detail-label">Date</div>
-              <div class="sesame-detail-value" id="sesameDate"></div>
-            </div>
-            <div class="sesame-detail">
-              <div class="sesame-detail-label">Heure</div>
-              <div class="sesame-detail-value" id="sesameHeure"></div>
-            </div>
-          </div>
-          <div class="sesame-detail-row">
-            <div class="sesame-detail">
-              <div class="sesame-detail-label">Couverts</div>
-              <div class="sesame-detail-value" id="sesameCouverts"></div>
-            </div>
-            <div class="sesame-detail">
-              <div class="sesame-detail-label">Service</div>
-              <div class="sesame-detail-value" id="sesameService"></div>
-            </div>
-          </div>
-          <div id="sesameNotesRow" class="sesame-detail-row" style="display:none;">
-            <div class="sesame-detail" style="flex:1;">
-              <div class="sesame-detail-label">Note</div>
-              <div class="sesame-detail-value" id="sesameNotes" style="font-style:italic;"></div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Filigrane confirmation -->
-        <div class="sesame-stamp">CONFIRMÉ</div>
       </div>
 
-      <!-- Actions sous le sésame -->
-      <div style="display:flex;gap:8px;margin-top:14px;">
-        <button onclick="resaShareInfo()" class="sesame-action">
-          <span>↗</span> Partager
-        </button>
-        <button onclick="resaAddCalendar()" class="sesame-action">
-          <span>📅</span> Calendrier
-        </button>
-        <button onclick="resaOpenItinerary()" class="sesame-action">
-          <span>🗺</span> Itinéraire
-        </button>
+      <!-- Message d'accueil -->
+      <div class="sesame-welcome">Bienvenue</div>
+      <div class="sesame-guest" id="sesameGuestName">—</div>
+
+      <!-- Ligne de séparation élégante -->
+      <div class="sesame-divider">
+        <div class="sesame-notch sesame-notch-left"></div>
+        <div class="sesame-divider-line"></div>
+        <div class="sesame-notch sesame-notch-right"></div>
       </div>
+
+      <!-- Détails -->
+      <div class="sesame-details">
+        <div class="sesame-detail-row">
+          <div class="sesame-detail">
+            <div class="sesame-detail-label">Date</div>
+            <div class="sesame-detail-value" id="sesameDate">—</div>
+          </div>
+          <div class="sesame-detail">
+            <div class="sesame-detail-label">Heure</div>
+            <div class="sesame-detail-value" id="sesameHeure">—</div>
+          </div>
+        </div>
+        <div class="sesame-detail-row">
+          <div class="sesame-detail">
+            <div class="sesame-detail-label">Couverts</div>
+            <div class="sesame-detail-value" id="sesameCouverts">—</div>
+          </div>
+          <div class="sesame-detail">
+            <div class="sesame-detail-label">Service</div>
+            <div class="sesame-detail-value" id="sesameService">—</div>
+          </div>
+        </div>
+        <div id="sesameNotesRow" class="sesame-detail-row" style="display:none;">
+          <div class="sesame-detail" style="flex:1;">
+            <div class="sesame-detail-label">Note</div>
+            <div class="sesame-detail-value" id="sesameNotes" style="font-style:italic;"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Filigrane -->
+      <div class="sesame-stamp" id="sesameStamp">SÉSAME</div>
+    </div>
+
+    <!-- Actions post-confirmation -->
+    <div id="resaActions" style="display:none;gap:8px;margin-top:14px;">
+      <button onclick="resaShareInfo()" class="sesame-action">
+        <span>↗</span> Partager
+      </button>
+      <button onclick="resaAddCalendar()" class="sesame-action">
+        <span>📅</span> Calendrier
+      </button>
+      <button onclick="resaOpenItinerary()" class="sesame-action">
+        <span>🗺</span> Itinéraire
+      </button>
     </div>
   </div>
   <button class="sheet-cancel" onclick="closeAllSheets()" style="flex-shrink:0;">Fermer</button>
@@ -3593,6 +3637,7 @@ margin: 20px 20px 0;
   </div><!-- /phone-frame -->
 </div><!-- /phone-shell -->
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.12.2/lottie.min.js"></script>
 <script src="/i18n.js"></script>
 <script>
   // Capacitor: status bar overlay (hero sous la barre de statut)
@@ -4372,17 +4417,30 @@ margin: 20px 20px 0;
     document.getElementById('resaNotes').value = '';
     document.getElementById('resaError').style.display = 'none';
     document.getElementById('resaDispoResult').style.display = 'none';
-    document.getElementById('resaSuccess').style.display = 'none';
-    // Restore all form elements that may have been hidden by sésame
-    var wrapper = document.getElementById('resaSuccess').parentElement;
-    wrapper.querySelectorAll(':scope > *').forEach(function(el) { el.style.display = ''; });
-    document.getElementById('resaSuccess').style.display = 'none';
+    document.getElementById('resaLottieWrap').style.display = 'none';
+    document.getElementById('resaConfirmBtns').style.display = 'none';
+    document.getElementById('resaActions').style.display = 'none';
     document.getElementById('resaCheckBtn').style.display = '';
     document.getElementById('resaCheckBtn').disabled = false;
     document.getElementById('resaCheckBtn').textContent = 'Vérifier la disponibilité';
-    document.getElementById('resaSubmitBtn').style.display = 'none';
-    document.getElementById('resaSubmitBtn').disabled = false;
-    document.getElementById('resaSubmitBtn').textContent = 'Confirmer la réservation';
+
+    // Restore form fields visibility
+    document.querySelectorAll('#resaFormFields > *').forEach(function(el) { el.style.display = ''; });
+
+    // Reset sésame to draft state
+    var pass = document.getElementById('sesamePass');
+    pass.className = 'sesame-pass sesame-draft';
+    document.getElementById('sesameStamp').textContent = 'SÉSAME';
+    document.getElementById('sesameNotesRow').style.display = 'none';
+
+    // Populate sésame draft with initial values
+    var jourLong = ['Dimanche','Lundi','Mardi','Mercredi','Jeudi','Vendredi','Samedi'];
+    var moisLong = ['janvier','février','mars','avril','mai','juin','juillet','août','septembre','octobre','novembre','décembre'];
+    var d = new Date(dateStr + 'T12:00:00');
+    document.getElementById('sesameDate').textContent = jourLong[d.getDay()] + ' ' + d.getDate() + ' ' + moisLong[d.getMonth()];
+    document.getElementById('sesameHeure').textContent = minToHStr(startMin);
+    document.getElementById('sesameCouverts').textContent = '2 personnes';
+    document.getElementById('sesameService').textContent = (slot.icon || '') + ' ' + slot.label;
 
     // Pre-fill user info if logged in
     var user = getStoredUser();
@@ -4393,11 +4451,13 @@ margin: 20px 20px 0;
       document.getElementById('resaUserPhone').textContent = user.phone || user.email || '';
       document.getElementById('resaUserInfo').style.display = '';
       document.getElementById('resaUserFields').style.display = 'none';
+      document.getElementById('sesameGuestName').textContent = user.name;
     } else {
       document.getElementById('resaNom').value = '';
       document.getElementById('resaTel').value = '';
       document.getElementById('resaUserInfo').style.display = 'none';
       document.getElementById('resaUserFields').style.display = '';
+      document.getElementById('sesameGuestName').textContent = '—';
     }
 
     // Open sheet
@@ -4423,10 +4483,27 @@ margin: 20px 20px 0;
 
   function resaResetDispo() {
     document.getElementById('resaDispoResult').style.display = 'none';
+    document.getElementById('resaConfirmBtns').style.display = 'none';
     document.getElementById('resaCheckBtn').style.display = '';
     document.getElementById('resaCheckBtn').disabled = false;
     document.getElementById('resaCheckBtn').textContent = 'Vérifier la disponibilité';
-    document.getElementById('resaSubmitBtn').style.display = 'none';
+    // Update sésame draft live
+    resaUpdateSesameDraft();
+  }
+
+  function resaUpdateSesameDraft() {
+    var date = document.getElementById('resaDate').value;
+    var heure = document.getElementById('resaHeure').value;
+    if (date) {
+      var jourLong = ['Dimanche','Lundi','Mardi','Mercredi','Jeudi','Vendredi','Samedi'];
+      var moisLong = ['janvier','février','mars','avril','mai','juin','juillet','août','septembre','octobre','novembre','décembre'];
+      var d = new Date(date + 'T12:00:00');
+      document.getElementById('sesameDate').textContent = jourLong[d.getDay()] + ' ' + d.getDate() + ' ' + moisLong[d.getMonth()];
+    }
+    if (heure) document.getElementById('sesameHeure').textContent = heure.replace(':','h');
+    document.getElementById('sesameCouverts').textContent = _resaCouverts + ' personne' + (_resaCouverts > 1 ? 's' : '');
+    var nom = document.getElementById('resaNom').value.trim() || document.getElementById('resaUserName').textContent.trim();
+    if (nom && nom !== '') document.getElementById('sesameGuestName').textContent = nom;
   }
 
   function resaToggleUserEdit() {
@@ -4448,6 +4525,8 @@ margin: 20px 20px 0;
     }
   }
 
+  var _resaLottieInstance = null;
+
   function checkResaDispo() {
     var date = document.getElementById('resaDate').value;
     var heure = document.getElementById('resaHeure').value;
@@ -4457,38 +4536,74 @@ margin: 20px 20px 0;
     if (!date || !heure) { errEl.textContent = 'Date et heure requises'; errEl.style.display = ''; return; }
     errEl.style.display = 'none';
 
-    var btn = document.getElementById('resaCheckBtn');
-    btn.disabled = true;
-    btn.textContent = 'Vérification...';
+    // Update sésame draft one last time
+    resaUpdateSesameDraft();
+
+    // Hide form, show Lottie
+    document.getElementById('resaFormFields').style.display = 'none';
+    var lottieWrap = document.getElementById('resaLottieWrap');
+    lottieWrap.style.display = '';
+
+    // Start Lottie animation
+    var animContainer = document.getElementById('resaLottieAnim');
+    animContainer.innerHTML = '';
+    if (_resaLottieInstance) { _resaLottieInstance.destroy(); _resaLottieInstance = null; }
+    if (typeof lottie !== 'undefined') {
+      _resaLottieInstance = lottie.loadAnimation({
+        container: animContainer,
+        renderer: 'svg',
+        loop: true,
+        autoplay: true,
+        path: 'https://lottie.host/e4e96f56-252f-47ae-8838-2a01e68fc144/IbOmGKzbi5.json'
+      });
+      // Fallback si le Lottie ne charge pas
+      _resaLottieInstance.addEventListener('data_failed', function() {
+        animContainer.innerHTML = '<div style="width:80px;height:80px;margin:0 auto;border:3px solid var(--border);border-top-color:var(--primary);border-radius:50%;animation:spin 0.8s linear infinite;"></div>';
+      });
+    } else {
+      animContainer.innerHTML = '<div style="width:80px;height:80px;margin:0 auto;border:3px solid var(--border);border-top-color:var(--primary);border-radius:50%;animation:spin 0.8s linear infinite;"></div>';
+    }
 
     fetch('/disponibilites?date=' + date + '&heure=' + heure + '&couverts=' + _resaCouverts)
       .then(function(r) { return r.json(); })
       .then(function(data) {
-        dispoEl.style.display = '';
-        if (data.disponible) {
-          dispoEl.style.background = 'rgba(74,232,138,0.12)';
-          dispoEl.style.color = '#059669';
-          dispoEl.innerHTML = '✓ Place disponible pour ' + _resaCouverts + ' personne(s)';
-          btn.style.display = 'none';
-          document.getElementById('resaSubmitBtn').style.display = '';
-        } else {
-          dispoEl.style.background = 'rgba(255,59,48,0.1)';
-          dispoEl.style.color = '#ff3b30';
-          dispoEl.innerHTML = '✗ ' + (data.message || 'Pas de disponibilité');
-          btn.disabled = false;
-          btn.textContent = 'Vérifier la disponibilité';
-        }
+        // Min 1.5s d'animation pour le suspense
+        setTimeout(function() {
+          lottieWrap.style.display = 'none';
+          if (_resaLottieInstance) { _resaLottieInstance.destroy(); _resaLottieInstance = null; }
+          dispoEl.style.display = '';
+          if (data.disponible) {
+            dispoEl.style.background = 'rgba(74,232,138,0.12)';
+            dispoEl.style.color = '#059669';
+            dispoEl.innerHTML = '✓ Place disponible pour ' + _resaCouverts + ' personne(s)';
+            // Show Confirmer / Annuler
+            var confirmBtns = document.getElementById('resaConfirmBtns');
+            confirmBtns.style.display = 'flex';
+          } else {
+            dispoEl.style.background = 'rgba(255,59,48,0.1)';
+            dispoEl.style.color = '#ff3b30';
+            dispoEl.innerHTML = '✗ ' + (data.message || 'Pas de disponibilité');
+            // Show form again
+            document.getElementById('resaFormFields').style.display = '';
+          }
+        }, 1500);
       })
       .catch(function() {
+        lottieWrap.style.display = 'none';
+        if (_resaLottieInstance) { _resaLottieInstance.destroy(); _resaLottieInstance = null; }
+        document.getElementById('resaFormFields').style.display = '';
         errEl.textContent = 'Erreur réseau, réessayez';
         errEl.style.display = '';
-        btn.disabled = false;
-        btn.textContent = 'Vérifier la disponibilité';
       });
   }
 
+  function resaCancelDispo() {
+    document.getElementById('resaDispoResult').style.display = 'none';
+    document.getElementById('resaConfirmBtns').style.display = 'none';
+    document.getElementById('resaFormFields').style.display = '';
+  }
+
   function submitReservation() {
-    // Read from fields or from user info display
     var nom = document.getElementById('resaNom').value.trim() || document.getElementById('resaUserName').textContent.trim();
     var tel = document.getElementById('resaTel').value.trim() || document.getElementById('resaUserPhone').textContent.trim();
     var date = document.getElementById('resaDate').value;
@@ -4496,13 +4611,12 @@ margin: 20px 20px 0;
     var notes = document.getElementById('resaNotes').value.trim();
     var errEl = document.getElementById('resaError');
 
-    if (!nom) { errEl.textContent = 'Veuillez indiquer votre nom'; errEl.style.display = ''; return; }
-    if (!date || !heure) { errEl.textContent = 'Date et heure requises'; errEl.style.display = ''; return; }
+    if (!nom || !date || !heure) return;
 
-    errEl.style.display = 'none';
-    var btn = document.getElementById('resaSubmitBtn');
-    btn.disabled = true;
-    btn.textContent = 'Réservation en cours...';
+    // Hide confirm buttons, show mini loading on sésame
+    document.getElementById('resaConfirmBtns').style.display = 'none';
+    document.getElementById('resaDispoResult').style.display = 'none';
+    document.getElementById('sesameStamp').textContent = '…';
 
     fetch('/api/reservations', {
       method: 'POST',
@@ -4520,13 +4634,7 @@ margin: 20px 20px 0;
     .then(function(r) { return r.json().then(function(d) { return { ok: r.ok, data: d }; }); })
     .then(function(res) {
       if (res.ok) {
-        btn.style.display = 'none';
-        document.getElementById('resaCheckBtn').style.display = 'none';
-        document.getElementById('resaDispoResult').style.display = 'none';
-        var successEl = document.getElementById('resaSuccess');
-        successEl.style.display = '';
-        document.getElementById('resaSuccessMsg').textContent = res.data.message;
-        // Store for actions + populate sésame
+        // Store for actions
         var slot = AGENDA_DATA.services.find(function(s) { return s.id === _resaSlotId; });
         var jourLong = ['Dimanche','Lundi','Mardi','Mercredi','Jeudi','Vendredi','Samedi'];
         var moisLong = ['janvier','février','mars','avril','mai','juin','juillet','août','septembre','octobre','novembre','décembre'];
@@ -4534,37 +4642,36 @@ margin: 20px 20px 0;
         var dateJoli = jourLong[d.getDay()] + ' ' + d.getDate() + ' ' + moisLong[d.getMonth()];
         _lastResa = { nom: nom, date: date, heure: heure, couverts: _resaCouverts, notes: notes, label: slot ? slot.label : '', jourLabel: dateJoli };
 
-        // Populate sésame fields
-        document.getElementById('sesameGuestName').textContent = nom;
-        document.getElementById('sesameDate').textContent = dateJoli;
-        document.getElementById('sesameHeure').textContent = heure;
-        document.getElementById('sesameCouverts').textContent = _resaCouverts + ' personne' + (_resaCouverts > 1 ? 's' : '');
-        document.getElementById('sesameService').textContent = slot ? (slot.icon || '') + ' ' + slot.label : '';
         if (notes) {
           document.getElementById('sesameNotes').textContent = notes;
           document.getElementById('sesameNotesRow').style.display = '';
         }
 
-        // Hide form fields, show sésame with animation
-        var wrapper = successEl.parentElement;
-        var kids = wrapper.children;
-        for (var i = 0; i < kids.length; i++) {
-          if (kids[i].id !== 'resaSuccess') kids[i].style.display = 'none';
-        }
-        var pass = successEl.querySelector('.sesame-pass');
-        pass.classList.add('sesame-animate');
+        // ✨ Reveal the sésame — draft → confirmed
+        var pass = document.getElementById('sesamePass');
+        pass.classList.remove('sesame-draft');
+        pass.classList.add('sesame-revealed');
+        document.getElementById('sesameStamp').textContent = 'CONFIRMÉ';
+
+        // Show actions
+        setTimeout(function() {
+          document.getElementById('resaActions').style.display = 'flex';
+        }, 600);
+
       } else {
         errEl.textContent = res.data.erreur || 'Erreur lors de la réservation';
         errEl.style.display = '';
-        btn.disabled = false;
-        btn.textContent = 'Confirmer la réservation';
+        document.getElementById('resaFormFields').style.display = '';
+        document.getElementById('resaConfirmBtns').style.display = 'none';
+        document.getElementById('sesameStamp').textContent = 'SÉSAME';
       }
     })
     .catch(function() {
       errEl.textContent = 'Erreur réseau, réessayez';
       errEl.style.display = '';
-      btn.disabled = false;
-      btn.textContent = 'Confirmer la réservation';
+      document.getElementById('resaFormFields').style.display = '';
+      document.getElementById('resaConfirmBtns').style.display = 'none';
+      document.getElementById('sesameStamp').textContent = 'SÉSAME';
     });
   }
 
