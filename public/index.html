@@ -4523,6 +4523,9 @@ margin: 20px 20px 0;
       el.style.background = '';
       el.style.outlineColor = '';
     });
+    document.getElementById('resaTel').style.borderBottom = '';
+    document.querySelectorAll('.sesame-stepper').forEach(function(b) { b.style.display = ''; });
+    document.getElementById('sesameNotePlaceholder').style.display = '';
 
     document.querySelector('.sesame-welcome').textContent = 'Demande de réservation';
 
@@ -4702,6 +4705,15 @@ margin: 20px 20px 0;
           // Remove dashed borders — fields are now locked
           if (data.disponible) {
             pass.classList.remove('sesame-draft');
+            // Hide phone border-bottom dashed
+            document.getElementById('resaTel').style.borderBottom = 'none';
+            // Hide stepper buttons, show just the number
+            document.querySelectorAll('.sesame-stepper').forEach(function(b) { b.style.display = 'none'; });
+            // Hide note placeholder if no note entered
+            var noteVal = document.getElementById('resaNotes').value.trim();
+            if (!noteVal) {
+              document.getElementById('sesameNotePlaceholder').style.display = 'none';
+            }
           }
           if (data.disponible) {
             resaShowOnlyBtn('resaConfirmBtns');
@@ -4752,6 +4764,10 @@ margin: 20px 20px 0;
     sesameUnlockFields();
     var pass = document.getElementById('sesamePass');
     if (!pass.classList.contains('sesame-draft')) pass.classList.add('sesame-draft');
+    // Restore hidden elements
+    document.getElementById('resaTel').style.borderBottom = '';
+    document.querySelectorAll('.sesame-stepper').forEach(function(b) { b.style.display = ''; });
+    document.getElementById('sesameNotePlaceholder').style.display = '';
   }
 
   function submitReservation() {
