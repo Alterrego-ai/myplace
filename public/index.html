@@ -4570,22 +4570,20 @@ margin: 20px 20px 0;
       guestName.style.display = 'none';
     }
 
-    // Open sheet — close other sheets but keep overlay, then show resa
-    window._sheetSwitching = true;
-    var allSheets = document.querySelectorAll('.bottom-sheet');
-    allSheets.forEach(function(s) {
-      if (s.id !== 'resaSheet') {
-        s.classList.remove('visible');
-        s.style.transform = '';
-        s.style.transition = '';
-      }
+    // Open sheet — fully close everything, wait for transitions, then open resa
+    // Force close (bypass _sheetSwitching guard)
+    unlockBodyScroll();
+    document.getElementById('sheetOverlay').classList.remove('visible');
+    document.querySelectorAll('.bottom-sheet').forEach(function(s) {
+      s.classList.remove('visible'); s.style.transform = ''; s.style.transition = '';
     });
-    lockBodyScroll();
-    document.getElementById('sheetOverlay').classList.add('visible');
+    window._sheetSwitching = true;
     setTimeout(function() {
+      lockBodyScroll();
+      document.getElementById('sheetOverlay').classList.add('visible');
       document.getElementById('resaSheet').classList.add('visible');
-      window._sheetSwitching = false;
-    }, 80);
+      setTimeout(function() { window._sheetSwitching = false; }, 400);
+    }, 400);
   }
 
   // Sésame interactive callbacks
@@ -5112,6 +5110,7 @@ margin: 20px 20px 0;
 
   // Close all sheets
   function closeAllSheets() {
+    if (window._sheetSwitching) return;
     unlockBodyScroll();
     document.getElementById('sheetOverlay').classList.remove('visible');
     // Reset tous les sheets : retirer .visible + nettoyer styles inline du swipe
