@@ -4507,6 +4507,15 @@ margin: 20px 20px 0;
     // Reset sésame to draft
     var pass = document.getElementById('sesamePass');
     pass.className = 'sesame-pass sesame-draft';
+    sesameUnlockFields();
+
+    // Reset inline styles left by validation animation
+    document.querySelectorAll('.sesame-detail, .sesame-detail-row, #sesameGuestWrap, #sesamePhoneRow').forEach(function(el) {
+      el.style.pointerEvents = '';
+      el.style.transition = '';
+      el.style.background = '';
+      el.style.outlineColor = '';
+    });
 
     document.querySelector('.sesame-welcome').textContent = 'Demande de réservation';
 
