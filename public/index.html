@@ -964,10 +964,7 @@ max-height: 300px;
   border-radius: 0; padding: 20px 16px 10px; color: #fff;
   position: relative; overflow: hidden;
 }
-.hrs-today-weather {
-  display: flex; align-items: center; gap: 4px;
-  font-size: 12px; font-weight: 600; opacity: 0.85;
-}
+/* (weather moved to date label row) */
 .hrs-today-card::before {
   content: ‘’; position: absolute; top: -30px; right: -30px;
   width: 80px; height: 80px; border-radius: 50%;
@@ -1059,6 +1056,9 @@ max-height: 300px;
 .hrs-day-col--today .hrs-day-num {
   background: var(--primary); color: #fff; font-weight: 700;
 }
+.hrs-day-col--past .hrs-day-initial,
+.hrs-day-col--past .hrs-day-num { color: var(--text-tertiary); opacity: 0.45; }
+.hrs-day-col--past.hrs-day-col--today .hrs-day-num { opacity: 1; }
 .hrs-day-col--closed .hrs-day-initial,
 .hrs-day-col--closed .hrs-day-num { opacity: 0.4; }
 .hrs-day-col--closed.hrs-day-col--today .hrs-day-num { opacity: 1; }
@@ -1073,6 +1073,11 @@ max-height: 300px;
   padding: 8px 16px 6px; font-size: 13px; font-weight: 700;
   color: var(--text); background: var(--bg-card);
   border-bottom: 1px solid var(--border);
+  display: flex; justify-content: space-between; align-items: center;
+}
+.hrs-date-weather {
+  display: flex; align-items: center; gap: 4px;
+  font-size: 12px; font-weight: 600; color: var(--text-secondary);
 }
 
 /* (legacy horizontal timeline removed — now using vertical agenda) */
@@ -3740,7 +3745,14 @@ margin: 20px 20px 0;
     var joursFr = ['Dimanche','Lundi','Mardi','Mercredi','Jeudi','Vendredi','Samedi'];
     var dateLabel = joursFr[selDate.getDay()] + ' ' + selDate.getDate() + ' ' + moisFr[selDate.getMonth()] + ' ' + selDate.getFullYear();
     var dateLabelEl = document.getElementById('hrsSelectedDateLabel');
-    if (dateLabelEl) dateLabelEl.textContent = dateLabel;
+    if (dateLabelEl) {
+      var weatherHtml = '';
+      if (_hrsWeekForecast && _hrsWeekForecast[idx]) {
+        var w = _hrsWeekForecast[idx];
+        weatherHtml = '<div class="hrs-date-weather"><span>' + w.icon + '</span><span>' + w.temp + '°</span></div>';
+      }
+      dateLabelEl.innerHTML = '<span>' + dateLabel + '</span>' + weatherHtml;
+    }
 
     var container = document.getElementById('hrsTimelineContainer');
     if (!container) return;
@@ -3849,10 +3861,6 @@ margin: 20px 20px 0;
     hdr += '<div class="hrs-today-card">';
     hdr += '  <div class="hrs-today-top">';
     hdr += '    <div class="hrs-today-label">Aujourd\'hui · ' + status.todayLabel + '</div>';
-    hdr += '    <div class="hrs-today-weather" id="hrsWeatherInline" style="display:none;">';
-    hdr += '      <span id="hrsWeatherInlineIcon"></span>';
-    hdr += '      <span id="hrsWeatherInlineTemp"></span>';
-    hdr += '    </div>';
     hdr += '  </div>';
     hdr += '  <div class="hrs-today-hours">' + status.todayHours + '</div>';
     hdr += '</div>';
@@ -3873,9 +3881,11 @@ margin: 20px 20px 0;
       var dayDate = new Date(mondayDate);
       dayDate.setDate(mondayDate.getDate() + i);
       var dayNum = dayDate.getDate();
+      var isPast = i < status.dayIdx;
       var cls = 'hrs-day-col';
       if (isToday) cls += ' hrs-day-col--today';
       if (isClosed) cls += ' hrs-day-col--closed';
+      if (isPast) cls += ' hrs-day-col--past';
       hdr += '<div class="' + cls + '" data-day-idx="' + i + '" onclick="selectHrsDay(' + i + ')">';
       hdr += '  <div class="hrs-day-initial">' + dayInitials[i] + '</div>';
       hdr += '  <div class="hrs-day-num">' + dayNum + '</div>';
@@ -3922,19 +3932,39 @@ margin: 20px 20px 0;
     fetchWeatherForHours();
   }
 
+  var _hrsWeekForecast = null;
+
   function fetchWeatherForHours() {
-    fetch('https://api.open-meteo.com/v1/forecast?latitude=45.7578&longitude=4.8320&current=temperature_2m,weather_code&timezone=Europe/Paris')
+    var icons = { 0:'☀️', 1:'🌤', 2:'⛅', 3:'☁️', 45:'🌫', 48:'🌫', 51:'🌦', 53:'🌧', 55:'🌧', 61:'🌧', 63:'🌧', 65:'🌧', 71:'🌨', 73:'🌨', 75:'❄️', 80:'🌦', 81:'🌧', 82:'⛈', 95:'⛈', 96:'⛈', 99:'⛈' };
+    fetch('https://api.open-meteo.com/v1/forecast?latitude=45.7578&longitude=4.8320&daily=temperature_2m_max,weather_code&timezone=Europe/Paris&forecast_days=7')
       .then(function(r) { return r.json(); })
       .then(function(data) {
-        if (!data.current) return;
-        var temp = Math.round(data.current.temperature_2m);
-        var code = data.current.weather_code;
-        var icons = { 0:'☀️', 1:'🌤', 2:'⛅', 3:'☁️', 45:'🌫', 48:'🌫', 51:'🌦', 53:'🌧', 55:'🌧', 61:'🌧', 63:'🌧', 65:'🌧', 71:'🌨', 73:'🌨', 75:'❄️', 80:'🌦', 81:'🌧', 82:'⛈', 95:'⛈', 96:'⛈', 99:'⛈' };
-        var el = document.getElementById('hrsWeatherInline');
-        if (el) {
-          el.style.display = '';
-          document.getElementById('hrsWeatherInlineIcon').textContent = icons[code] || '🌡';
-          document.getElementById('hrsWeatherInlineTemp').textContent = temp + '°';
+        if (!data.daily) return;
+        // Map forecast dates to week indices (Mon=0..Sun=6)
+        var now = new Date();
+        var todayJsDay = now.getDay();
+        var todayMapped = todayJsDay === 0 ? 6 : todayJsDay - 1;
+        var mondayDate = new Date(now);
+        mondayDate.setDate(mondayDate.getDate() - todayMapped);
+
+        _hrsWeekForecast = {};
+        for (var i = 0; i < data.daily.time.length; i++) {
+          var fDate = data.daily.time[i];
+          // Find which week index this date corresponds to
+          var fd = new Date(fDate + 'T12:00:00');
+          var diffDays = Math.round((fd - mondayDate) / 86400000);
+          if (diffDays >= 0 && diffDays < 7) {
+            _hrsWeekForecast[diffDays] = {
+              temp: Math.round(data.daily.temperature_2m_max[i]),
+              icon: icons[data.daily.weather_code[i]] || '🌡'
+            };
+          }
+        }
+        // Re-render current selection to show weather
+        var selected = document.querySelector('.hrs-day-col--selected');
+        if (selected) {
+          var idx = parseInt(selected.getAttribute('data-day-idx'));
+          selectHrsDay(idx);
         }
       })
       .catch(function() {});
