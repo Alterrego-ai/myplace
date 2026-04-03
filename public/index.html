@@ -4881,13 +4881,51 @@ margin: 20px 20px 0;
 
   function hrsGoToDate(dateStr) {
     if (!dateStr) {
-      // Réinitialiser → retour à aujourd'hui
-      _hrsWeekOffset = 0;
-      hrsRenderWeekStrip();
-      setTimeout(function() {
-        var col = document.querySelector('.hrs-day-col--today');
-        if (col) hrsSelectDate(col);
-      }, 50);
+      // Trouver le prochain jour avec un service à venir
+      var now = new Date();
+      var nowMin = now.getHours() * 60 + now.getMinutes();
+      var jsDay = now.getDay();
+      var mappedToday = jsDay === 0 ? 6 : jsDay - 1; // 0=lun
+      var found = false;
+      for (var look = 0; look < 14; look++) {
+        var mi = (mappedToday + look) % 7;
+        var rd = HOURS_DATA.regular[mi];
+        if (rd && rd.open) {
+          if (look === 0) {
+            // Aujourd'hui : vérifier qu'il reste un service
+            var closeParts = rd.close.split(':');
+            var closeM = parseInt(closeParts[0]) * 60 + parseInt(closeParts[1]);
+            if (closeM <= parseInt(rd.open.split(':')[0]) * 60) closeM += 1440;
+            if (nowMin < closeM) { found = true; break; }
+          } else {
+            found = true; break;
+          }
+        }
+      }
+      if (found && look > 0) {
+        var target = new Date(now);
+        target.setDate(target.getDate() + look);
+        var tStr = target.toISOString().slice(0,10);
+        // Calculer le bon offset de semaine
+        var tJsDay = target.getDay();
+        var tMapped = tJsDay === 0 ? 6 : tJsDay - 1;
+        var tMonday = new Date(target);
+        tMonday.setDate(tMonday.getDate() - tMapped);
+        var curMonday = _hrsGetMonday(0);
+        _hrsWeekOffset = Math.round((tMonday - curMonday) / 604800000);
+        hrsRenderWeekStrip();
+        setTimeout(function() {
+          var col = document.querySelector('.hrs-day-col[data-day-idx="' + tMapped + '"]');
+          if (col) hrsSelectDate(col);
+        }, 50);
+      } else {
+        _hrsWeekOffset = 0;
+        hrsRenderWeekStrip();
+        setTimeout(function() {
+          var col = document.querySelector('.hrs-day-col--today');
+          if (col) hrsSelectDate(col);
+        }, 50);
+      }
       return;
     }
     var picked = new Date(dateStr + 'T12:00:00');
