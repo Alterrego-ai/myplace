@@ -1104,92 +1104,84 @@ max-height: 300px;
 .resa-submit:active { opacity: 0.8; }
 .resa-submit:disabled { opacity: 0.5; cursor: not-allowed; }
 
-/* ── Sésame Premium Pass ── */
+/* ── Sésame Premium Pass — theme-aware ── */
 .sesame-pass {
+  --s-bg: var(--bg-card);
+  --s-text: var(--text);
+  --s-text2: var(--text-secondary);
+  --s-text3: var(--text-tertiary);
+  --s-accent: var(--primary);
+  --s-accent-soft: var(--primary-ultra-light);
+  --s-border: var(--border);
+  --s-divider: rgba(0,0,0,0.08);
   position: relative;
-  background: linear-gradient(145deg, #1a1a2e 0%, #16213e 40%, #1a1a2e 100%);
+  background: var(--s-bg);
   border-radius: 16px;
-  padding: 24px 20px 20px;
-  color: #f0e6d3;
+  padding: 24px 20px 18px;
+  color: var(--s-text);
   overflow: hidden;
-  box-shadow: 0 8px 32px rgba(0,0,0,0.25), inset 0 1px 0 rgba(212,175,55,0.15);
+  box-shadow: 0 4px 24px rgba(0,0,0,0.10);
+  border: 1.5px solid var(--s-border);
   margin-top: 4px;
+  transition: all 0.6s cubic-bezier(0.23, 1, 0.32, 1);
 }
-.sesame-pass::before {
-  content: '';
-  position: absolute; top: 0; left: 0; right: 0; bottom: 0;
-  background: radial-gradient(ellipse at 30% 20%, rgba(212,175,55,0.06) 0%, transparent 60%),
-              radial-gradient(ellipse at 80% 80%, rgba(212,175,55,0.04) 0%, transparent 50%);
-  pointer-events: none;
+@media (prefers-color-scheme: dark) {
+  .sesame-pass { --s-divider: rgba(255,255,255,0.08); }
 }
 .sesame-header {
-  display: flex; align-items: center; gap: 12px; margin-bottom: 20px;
+  display: flex; align-items: center; gap: 12px; margin-bottom: 18px;
   position: relative; z-index: 1;
 }
 .sesame-logo {
-  width: 44px; height: 44px; border-radius: 50%; object-fit: cover;
-  border: 2px solid rgba(212,175,55,0.4);
-  box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+  width: 40px; height: 40px; border-radius: 50%; object-fit: cover;
+  border: 2px solid var(--s-accent-soft);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
 }
 .sesame-brand-name {
-  font-size: 16px; font-weight: 700; color: #f0e6d3;
-  letter-spacing: 0.5px;
+  font-size: 15px; font-weight: 700; color: var(--s-text);
+  letter-spacing: 0.3px;
 }
 .sesame-brand-sub {
-  font-size: 11px; color: rgba(212,175,55,0.7);
+  font-size: 10px; color: var(--s-text3);
   letter-spacing: 1px; text-transform: uppercase; margin-top: 1px;
 }
 .sesame-welcome {
-  font-size: 11px; text-transform: uppercase; letter-spacing: 3px;
-  color: rgba(212,175,55,0.6); text-align: center; margin-bottom: 2px;
-  position: relative; z-index: 1;
-}
-.sesame-guest {
-  font-size: 22px; font-weight: 300; text-align: center;
-  color: #fff; letter-spacing: 1px; margin-bottom: 16px;
-  position: relative; z-index: 1;
+  font-size: 10px; text-transform: uppercase; letter-spacing: 3px;
+  color: var(--s-accent); text-align: center; margin-bottom: 2px;
+  position: relative; z-index: 1; opacity: 0.7;
 }
 .sesame-divider {
   display: flex; align-items: center; position: relative;
   margin: 0 -20px 16px; z-index: 1;
 }
-.sesame-notch {
-  width: 14px; height: 28px; flex-shrink: 0;
-}
-.sesame-notch-left {
-  background: var(--bg);
-  border-radius: 0 14px 14px 0;
-}
-.sesame-notch-right {
-  background: var(--bg);
-  border-radius: 14px 0 0 14px;
-}
-.sesame-divider-line {
-  flex: 1;
-  border-top: 2px dashed rgba(212,175,55,0.25);
-}
-.sesame-details {
-  position: relative; z-index: 1;
-}
+.sesame-notch { width: 14px; height: 28px; flex-shrink: 0; }
+.sesame-notch-left { background: var(--bg); border-radius: 0 14px 14px 0; }
+.sesame-notch-right { background: var(--bg); border-radius: 14px 0 0 14px; }
+.sesame-divider-line { flex: 1; border-top: 2px dashed var(--s-divider); }
+.sesame-details { position: relative; z-index: 1; }
 .sesame-detail-row {
-  display: flex; gap: 16px; margin-bottom: 12px;
+  display: flex; gap: 12px; margin-bottom: 14px;
 }
 .sesame-detail-row:last-child { margin-bottom: 0; }
-.sesame-detail { flex: 1; }
+/* Asymétrie : gauche 60%, droite 40% */
+.sesame-detail:first-child { flex: 3; }
+.sesame-detail:last-child { flex: 2; }
 .sesame-detail-label {
   font-size: 9px; text-transform: uppercase; letter-spacing: 1.5px;
-  color: rgba(212,175,55,0.6); margin-bottom: 3px;
+  color: var(--s-text3); margin-bottom: 4px;
 }
 .sesame-detail-value {
-  font-size: 15px; font-weight: 600; color: #f0e6d3;
+  font-size: 17px; font-weight: 700; color: var(--s-text);
+}
+.sesame-detail:last-child .sesame-detail-value {
+  font-size: 15px; font-weight: 600;
 }
 .sesame-stamp {
   position: absolute; top: 50%; right: -8px;
   transform: translateY(-50%) rotate(-20deg);
   font-size: 40px; font-weight: 900; letter-spacing: 4px;
-  color: rgba(212,175,55,0.06);
-  pointer-events: none; z-index: 0;
-  white-space: nowrap;
+  color: var(--s-accent-soft);
+  pointer-events: none; z-index: 0; white-space: nowrap; opacity: 0.4;
 }
 .sesame-action {
   flex: 1; min-width: 0;
@@ -1203,92 +1195,111 @@ max-height: 300px;
 
 @keyframes spin { to { transform: rotate(360deg); } }
 
-/* ── Sésame draft — interactif, visible ── */
-.sesame-pass.sesame-draft {
-  background: linear-gradient(145deg, #2c2c3a 0%, #222230 40%, #2c2c3a 100%);
-  box-shadow: 0 4px 20px rgba(0,0,0,0.2);
-  opacity: 1;
-  transition: all 0.8s cubic-bezier(0.23, 1, 0.32, 1);
-}
-.sesame-draft .sesame-brand-sub,
-.sesame-draft .sesame-welcome,
-.sesame-draft .sesame-detail-label { color: rgba(180,180,180,0.6); }
-.sesame-draft .sesame-brand-name { color: rgba(220,220,220,0.8); }
-.sesame-draft .sesame-detail-value { color: rgba(220,220,220,0.85); }
-.sesame-draft .sesame-logo { filter: grayscale(0.6) brightness(0.9); border-color: rgba(180,180,180,0.3); }
-.sesame-draft .sesame-divider-line { border-color: rgba(180,180,180,0.2); }
-.sesame-draft .sesame-stamp { color: rgba(180,180,180,0.06); }
-
-/* Champs interactifs sur le sésame */
+/* ── Champs interactifs — affordance éditable ── */
 .sesame-detail--tap {
   cursor: pointer; position: relative;
-  border-radius: 6px; padding: 4px 6px; margin: -4px -6px;
-  transition: background 0.15s;
+  border-radius: 8px; padding: 6px 8px; margin: -6px -8px;
+  border: 1.5px dashed transparent;
+  transition: all 0.15s;
 }
-.sesame-detail--tap:active { background: rgba(255,255,255,0.06); }
+.sesame-draft .sesame-detail--tap {
+  border-color: var(--s-accent-soft);
+  background: rgba(61,107,140,0.04);
+}
+.sesame-detail--tap:active { background: var(--s-accent-soft); }
+/* Petit crayon sur les champs éditables */
+.sesame-draft .sesame-detail--tap::after {
+  content: '✎';
+  position: absolute; top: 4px; right: 4px;
+  font-size: 10px; color: var(--s-accent); opacity: 0.5;
+}
 
 .sesame-guest-wrap { text-align: center; margin-bottom: 16px; position: relative; z-index: 1; }
 .sesame-guest-input {
-  background: transparent; border: none; border-bottom: 1px dashed rgba(212,175,55,0.3);
-  color: #fff; font-size: 22px; font-weight: 300; text-align: center;
-  letter-spacing: 1px; width: 80%; padding: 4px 0; font-family: inherit;
-  outline: none; caret-color: rgba(212,175,55,0.6);
+  background: transparent; border: none; border-bottom: 1.5px dashed var(--s-accent-soft);
+  color: var(--s-text); font-size: 22px; font-weight: 300; text-align: center;
+  letter-spacing: 1px; width: 85%; padding: 6px 0; font-family: inherit;
+  outline: none; caret-color: var(--s-accent);
 }
-.sesame-guest-input::placeholder { color: rgba(180,180,180,0.4); }
+.sesame-guest-input::placeholder { color: var(--s-text3); opacity: 0.6; }
 .sesame-guest-display {
-  font-size: 22px; font-weight: 300; color: #fff;
+  font-size: 22px; font-weight: 300; color: var(--s-text);
   letter-spacing: 1px; cursor: pointer;
+}
+/* Affordance "tap to edit" sur le nom */
+.sesame-draft .sesame-guest-display::after {
+  content: ' ✎'; font-size: 14px; color: var(--s-accent); opacity: 0.5;
 }
 .sesame-hidden-input {
   position: absolute; top: 0; left: 0; width: 100%; height: 100%;
   opacity: 0; cursor: pointer; z-index: 2;
 }
 .sesame-stepper {
-  width: 26px; height: 26px; border-radius: 50%;
-  border: 1px solid rgba(212,175,55,0.3); background: transparent;
-  color: rgba(212,175,55,0.8); font-size: 16px; font-weight: 600;
+  width: 28px; height: 28px; border-radius: 50%;
+  border: 1.5px solid var(--s-accent-soft); background: transparent;
+  color: var(--s-accent); font-size: 16px; font-weight: 700;
   font-family: inherit; cursor: pointer; display: flex;
   align-items: center; justify-content: center;
   transition: all 0.15s; line-height: 1;
 }
-.sesame-stepper:active { background: rgba(212,175,55,0.15); }
+.sesame-stepper:active { background: var(--s-accent-soft); }
 .sesame-note-input {
-  background: transparent; border: none; border-bottom: 1px dashed rgba(212,175,55,0.2);
-  color: rgba(220,220,220,0.85); font-size: 13px; font-style: italic;
-  width: 100%; padding: 2px 0; font-family: inherit; outline: none;
-  caret-color: rgba(212,175,55,0.5);
+  background: transparent; border: none; border-bottom: 1.5px dashed var(--s-accent-soft);
+  color: var(--s-text); font-size: 14px; font-style: italic;
+  width: 100%; padding: 4px 0; font-family: inherit; outline: none;
+  caret-color: var(--s-accent);
 }
 .sesame-phone-row {
-  margin-top: 12px; padding-top: 10px;
-  border-top: 1px solid rgba(180,180,180,0.08);
+  margin-top: 14px; padding-top: 12px;
+  border-top: 1px solid var(--s-divider);
   position: relative; z-index: 1;
+  display: flex; align-items: center; gap: 8px;
+}
+.sesame-phone-row::before {
+  content: '☎'; font-size: 14px; opacity: 0.4;
 }
 .sesame-phone-input {
-  background: transparent; border: none;
-  color: rgba(200,200,200,0.7); font-size: 13px;
-  width: 100%; padding: 0; font-family: inherit; outline: none;
-  caret-color: rgba(212,175,55,0.4);
+  background: transparent; border: none; border-bottom: 1.5px dashed var(--s-accent-soft);
+  color: var(--s-text2); font-size: 14px;
+  flex: 1; padding: 4px 0; font-family: inherit; outline: none;
+  caret-color: var(--s-accent);
 }
-.sesame-phone-input::placeholder { color: rgba(150,150,150,0.4); }
+.sesame-phone-input::placeholder { color: var(--s-text3); opacity: 0.5; }
 
-/* ── Révélation : draft → confirmé ── */
+/* ── Révélation : draft → confirmé (fond premium) ── */
 @keyframes sesameReveal {
   0% { transform: scale(0.97); }
   50% { transform: scale(1.01); }
   100% { transform: scale(1); }
 }
 .sesame-pass.sesame-revealed {
-  animation: sesameReveal 0.8s cubic-bezier(0.23, 1, 0.32, 1) forwards;
+  --s-bg: linear-gradient(145deg, #1a1a2e 0%, #16213e 40%, #1a1a2e 100%);
+  --s-text: #f0e6d3;
+  --s-text2: rgba(212,175,55,0.7);
+  --s-text3: rgba(212,175,55,0.5);
+  --s-accent: #d4af37;
+  --s-accent-soft: rgba(212,175,55,0.15);
+  --s-border: rgba(212,175,55,0.2);
+  --s-divider: rgba(212,175,55,0.15);
   background: linear-gradient(145deg, #1a1a2e 0%, #16213e 40%, #1a1a2e 100%) !important;
+  border-color: rgba(212,175,55,0.2) !important;
   box-shadow: 0 8px 32px rgba(0,0,0,0.25), inset 0 1px 0 rgba(212,175,55,0.15) !important;
+  animation: sesameReveal 0.8s cubic-bezier(0.23, 1, 0.32, 1) forwards;
 }
-.sesame-revealed .sesame-detail--tap { cursor: default; }
+.sesame-revealed .sesame-detail--tap {
+  cursor: default; border-color: transparent; background: transparent;
+}
+.sesame-revealed .sesame-detail--tap::after { display: none; }
 .sesame-revealed .sesame-detail--tap:active { background: transparent; }
 .sesame-revealed .sesame-hidden-input { display: none; }
 .sesame-revealed .sesame-stepper { display: none; }
 .sesame-revealed .sesame-phone-row { display: none; }
 .sesame-revealed .sesame-guest-input { display: none; }
 .sesame-revealed .sesame-guest-display { display: block !important; }
+.sesame-revealed .sesame-guest-display::after { display: none; }
+.sesame-revealed .sesame-logo { border-color: rgba(212,175,55,0.4); }
+.sesame-revealed .sesame-divider-line { border-color: rgba(212,175,55,0.25); }
+.sesame-revealed .sesame-stamp { color: rgba(212,175,55,0.06); opacity: 1; }
 
 /* Flash doré */
 @keyframes sesameGoldFlash {
@@ -1361,11 +1372,14 @@ max-height: 300px;
 .hrs-day-col--closed .hrs-day-initial,
 .hrs-day-col--closed .hrs-day-num { opacity: 0.4; }
 .hrs-day-col--closed.hrs-day-col--today .hrs-day-num { opacity: 1; }
-.hrs-day-col--selected .hrs-day-num {
-  background: var(--primary); color: #fff; font-weight: 700; opacity: 1;
+.hrs-day-col--selected .hrs-day-num,
+.hrs-day-col--closed.hrs-day-col--selected .hrs-day-num,
+.hrs-day-col--past.hrs-day-col--selected .hrs-day-num {
+  background: var(--primary); color: #fff !important; font-weight: 700; opacity: 1 !important;
+  border: none;
 }
 .hrs-day-col--today.hrs-day-col--selected .hrs-day-num {
-  background: var(--primary); color: #fff;
+  background: var(--primary); color: #fff !important;
 }
 .hrs-selected-date {
   padding: 8px 16px 6px; font-size: 13px; font-weight: 700;
@@ -3252,7 +3266,7 @@ margin: 20px 20px 0;
           <div class="sesame-brand-name">Sauf Imprévu</div>
           <div class="sesame-brand-sub">Bar à vins · Lyon 6</div>
         </div>
-        <div id="resaServiceBadge" style="margin-left:auto;padding:3px 10px;border-radius:6px;font-size:10px;font-weight:700;color:#fff;white-space:nowrap;"></div>
+        <div id="resaServiceBadge" style="display:none;"></div>
       </div>
 
       <!-- Nom invité — champ éditable -->
