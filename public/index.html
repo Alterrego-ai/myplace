@@ -3997,6 +3997,40 @@ margin: 20px 20px 0;
 
     h += '</div>';
     container.innerHTML = h;
+
+    // Swipe left/right on agenda to change day
+    _hrsInitAgendaSwipe(container);
+  }
+
+  var _hrsAgSwipeStartX = 0;
+  function _hrsInitAgendaSwipe(container) {
+    var agenda = container.querySelector('.hrs-agenda, .hrs-agenda--closed');
+    if (!agenda) agenda = container;
+    agenda.addEventListener('touchstart', function(e) {
+      _hrsAgSwipeStartX = e.touches[0].clientX;
+    }, { passive: true });
+    agenda.addEventListener('touchend', function(e) {
+      var dx = e.changedTouches[0].clientX - _hrsAgSwipeStartX;
+      if (Math.abs(dx) < 50) return;
+      // Find current selected day index
+      var sel = document.querySelector('.hrs-day-col--selected');
+      if (!sel) return;
+      var curIdx = parseInt(sel.getAttribute('data-day-idx'));
+      var newIdx;
+      if (dx < 0) {
+        // Swipe left → next day
+        newIdx = curIdx + 1;
+        if (newIdx > 6) { _hrsWeekOffset++; newIdx = 0; hrsRenderWeekStrip('left'); }
+      } else {
+        // Swipe right → previous day
+        newIdx = curIdx - 1;
+        if (newIdx < 0) { _hrsWeekOffset--; newIdx = 6; hrsRenderWeekStrip('right'); }
+      }
+      setTimeout(function() {
+        var col = document.querySelector('.hrs-day-col[data-day-idx="' + newIdx + '"]');
+        if (col) hrsSelectDate(col);
+      }, 60);
+    }, { passive: true });
   }
 
   var _hrsTodayIdx = 0; // track which day is "today"
