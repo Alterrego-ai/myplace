@@ -1086,7 +1086,8 @@ max-height: 300px;
 .resa-input {
   width: 100%; padding: 10px 12px; border: 1.5px solid var(--border); border-radius: 10px;
   background: var(--bg-subtle); color: var(--text); font-size: 15px; font-weight: 600;
-  font-family: inherit; appearance: none; -webkit-appearance: none; box-sizing: border-box;
+  font-family: inherit; appearance: none; -webkit-appearance: none;
+  box-sizing: border-box; min-width: 0; max-width: 100%;
 }
 .resa-input:focus { border-color: var(--primary); outline: none; }
 .resa-stepper {
@@ -3137,13 +3138,13 @@ margin: 20px 20px 0;
   <div style="padding:16px 20px;overflow-y:auto;flex:1;-webkit-overflow-scrolling:touch;">
     <div style="font-size:18px;font-weight:800;color:var(--text);margin-bottom:16px;">Réserver</div>
 
-    <!-- Date + Heure + Badge sur une ligne -->
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px;">
-      <div>
+    <!-- Date + Heure sur une ligne, badge service au-dessus de l'heure -->
+    <div style="display:flex;gap:10px;margin-bottom:12px;">
+      <div style="flex:1;min-width:0;">
         <label class="resa-label">Date</label>
         <input type="date" id="resaDate" class="resa-input" required onchange="resaResetDispo()">
       </div>
-      <div>
+      <div style="flex:1;min-width:0;">
         <div id="resaServiceBadge" style="display:inline-flex;align-items:center;gap:6px;padding:3px 10px;border-radius:6px;font-size:11px;font-weight:700;color:#fff;margin-bottom:4px;"></div>
         <select id="resaHeure" class="resa-input" onchange="resaResetDispo()"></select>
       </div>
