@@ -1051,8 +1051,26 @@ max-height: 300px;
 
 /* Week strip – Apple Calendar style */
 .hrs-week-strip {
-  display: flex; justify-content: space-between; gap: 0; margin-bottom: 0;
+  overflow: hidden; margin-bottom: 0;
   border-bottom: 1px solid var(--border); background: var(--bg-card);
+}
+.hrs-week-strip-inner {
+  display: flex; justify-content: space-between; gap: 0;
+  transition: transform 0.25s ease, opacity 0.25s ease;
+}
+.hrs-week-slide-left {
+  animation: hrsSlideLeft 0.25s ease;
+}
+.hrs-week-slide-right {
+  animation: hrsSlideRight 0.25s ease;
+}
+@keyframes hrsSlideLeft {
+  0% { transform: translateX(100%); opacity: 0; }
+  100% { transform: translateX(0); opacity: 1; }
+}
+@keyframes hrsSlideRight {
+  0% { transform: translateX(-100%); opacity: 0; }
+  100% { transform: translateX(0); opacity: 1; }
 }
 .hrs-day-col {
   flex: 1; display: flex; flex-direction: column; align-items: center;
@@ -3753,11 +3771,7 @@ margin: 20px 20px 0;
     if (col) col.classList.add('hrs-day-col--selected');
 
     // Update date label (ex: "Vendredi 3 avril 2026")
-    var now = new Date();
-    var todayJsDay = now.getDay();
-    var todayMapped = todayJsDay === 0 ? 6 : todayJsDay - 1;
-    var mondayDate = new Date(now);
-    mondayDate.setDate(mondayDate.getDate() - todayMapped);
+    var mondayDate = _hrsGetMonday(_hrsWeekOffset);
     var selDate = new Date(mondayDate);
     selDate.setDate(mondayDate.getDate() + idx);
     var moisFr = ['janvier','février','mars','avril','mai','juin','juillet','août','septembre','octobre','novembre','décembre'];
@@ -3870,13 +3884,114 @@ margin: 20px 20px 0;
   }
 
   var _hrsTodayIdx = 0; // track which day is "today"
+  var _hrsWeekOffset = 0; // 0 = current week, +1 = next, -1 = previous
+
+  function _hrsGetMonday(offset) {
+    var now = new Date();
+    var todayJsDay = now.getDay();
+    var todayMapped = todayJsDay === 0 ? 6 : todayJsDay - 1;
+    var monday = new Date(now);
+    monday.setDate(monday.getDate() - todayMapped + (offset * 7));
+    return monday;
+  }
+
+  function hrsRenderWeekStrip(direction) {
+    var dayInitials = ['L','M','M','J','V','S','D'];
+    var monday = _hrsGetMonday(_hrsWeekOffset);
+    var now = new Date();
+    var todayStr = now.toISOString().slice(0,10);
+
+    var strip = '<div class="hrs-week-strip-inner' + (direction ? ' hrs-week-slide-' + direction : '') + '">';
+    for (var i = 0; i < 7; i++) {
+      var d = HOURS_DATA.regular[i];
+      var dayDate = new Date(monday);
+      dayDate.setDate(monday.getDate() + i);
+      var dayStr = dayDate.toISOString().slice(0,10);
+      var isToday = dayStr === todayStr;
+      var isClosed = !d.open;
+      var isPast = dayDate < new Date(todayStr);
+      var cls = 'hrs-day-col';
+      if (isToday) cls += ' hrs-day-col--today';
+      if (isClosed) cls += ' hrs-day-col--closed';
+      if (isPast) cls += ' hrs-day-col--past';
+      strip += '<div class="' + cls + '" data-day-idx="' + i + '" data-date="' + dayStr + '" onclick="hrsSelectDate(this)">';
+      strip += '  <div class="hrs-day-initial">' + dayInitials[i] + '</div>';
+      strip += '  <div class="hrs-day-num">' + dayDate.getDate() + '</div>';
+      strip += '</div>';
+    }
+    strip += '</div>';
+
+    var container = document.getElementById('hrsWeekStripWrap');
+    if (container) {
+      container.innerHTML = strip;
+      // Update datepicker month label
+      var moisCourt = ['Janv.','Fév.','Mars','Avr.','Mai','Juin','Juil.','Août','Sept.','Oct.','Nov.','Déc.'];
+      var midWeek = new Date(monday);
+      midWeek.setDate(midWeek.getDate() + 3);
+      var monthLabel = document.getElementById('hrsMonthLabel');
+      if (monthLabel) monthLabel.textContent = moisCourt[midWeek.getMonth()];
+    }
+    // Init swipe on new strip
+    _hrsInitSwipe();
+  }
+
+  function hrsSelectDate(el) {
+    var idx = parseInt(el.getAttribute('data-day-idx'));
+    // Remove previous selection
+    document.querySelectorAll('.hrs-day-col').forEach(function(c) {
+      c.classList.remove('hrs-day-col--selected');
+    });
+    el.classList.add('hrs-day-col--selected');
+    selectHrsDay(idx);
+  }
 
   function hrsGoToDate(dateStr) {
     if (!dateStr) return;
     var picked = new Date(dateStr + 'T12:00:00');
-    var jsDay = picked.getDay();
-    var dayIdx = jsDay === 0 ? 6 : jsDay - 1; // 0=lun
-    selectHrsDay(dayIdx);
+    var now = new Date();
+    var todayJsDay = now.getDay();
+    var todayMapped = todayJsDay === 0 ? 6 : todayJsDay - 1;
+    var thisMonday = new Date(now);
+    thisMonday.setDate(thisMonday.getDate() - todayMapped);
+    var diffDays = Math.round((picked - thisMonday) / 86400000);
+    _hrsWeekOffset = Math.floor(diffDays / 7);
+    var dayIdx = ((picked.getDay() || 7) - 1); // 0=lun
+    hrsRenderWeekStrip();
+    // Select the picked day
+    setTimeout(function() {
+      var col = document.querySelector('.hrs-day-col[data-day-idx="' + dayIdx + '"]');
+      if (col) hrsSelectDate(col);
+    }, 50);
+  }
+
+  // Swipe gesture on week strip
+  var _hrsSwipeStartX = 0;
+  var _hrsSwipeThreshold = 50;
+
+  function _hrsInitSwipe() {
+    var strip = document.querySelector('.hrs-week-strip-inner');
+    if (!strip) return;
+    strip.addEventListener('touchstart', function(e) {
+      _hrsSwipeStartX = e.touches[0].clientX;
+    }, { passive: true });
+    strip.addEventListener('touchend', function(e) {
+      var dx = e.changedTouches[0].clientX - _hrsSwipeStartX;
+      if (Math.abs(dx) < _hrsSwipeThreshold) return;
+      if (dx < 0) {
+        // Swipe left → next week
+        _hrsWeekOffset++;
+        hrsRenderWeekStrip('left');
+      } else {
+        // Swipe right → previous week
+        _hrsWeekOffset--;
+        hrsRenderWeekStrip('right');
+      }
+      // Auto-select same day index or first day
+      setTimeout(function() {
+        var cols = document.querySelectorAll('.hrs-day-col');
+        if (cols.length > 0) hrsSelectDate(cols[0]);
+      }, 50);
+    }, { passive: true });
   }
 
   function buildHoursSheet() {
@@ -3891,42 +4006,19 @@ margin: 20px 20px 0;
     var moisCourt = ['Janv.','Fév.','Mars','Avr.','Mai','Juin','Juil.','Août','Sept.','Oct.','Nov.','Déc.'];
     var currentMonth = moisCourt[new Date().getMonth()];
     hdr += '    <div class="hrs-datepicker-wrap">';
-    hdr += '      <button class="hrs-datepicker-btn" onclick="document.getElementById(\'hrsDateInput\').showPicker()">' + currentMonth + ' <span class="hrs-datepicker-chevron"></span></button>';
+    hdr += '      <button class="hrs-datepicker-btn" onclick="document.getElementById(\'hrsDateInput\').showPicker()"><span id="hrsMonthLabel">' + currentMonth + '</span> <span class="hrs-datepicker-chevron"></span></button>';
     hdr += '      <input type="date" id="hrsDateInput" class="hrs-datepicker-input" onchange="hrsGoToDate(this.value)">';
     hdr += '    </div>';
     hdr += '  </div>';
     hdr += '  <div class="hrs-today-hours">' + status.todayHours + '</div>';
     hdr += '</div>';
 
-    var dayInitials = ['L','M','M','J','V','S','D'];
-    // Compute dates for this week (Mon-Sun)
-    var now = new Date();
-    var todayJsDay = now.getDay(); // 0=dim
-    var todayMapped = todayJsDay === 0 ? 6 : todayJsDay - 1; // 0=lun
-    var mondayDate = new Date(now);
-    mondayDate.setDate(mondayDate.getDate() - todayMapped);
-
-    hdr += '<div class="hrs-week-strip">';
-    for (var i = 0; i < HOURS_DATA.regular.length; i++) {
-      var d = HOURS_DATA.regular[i];
-      var isToday = i === status.dayIdx;
-      var isClosed = !d.open;
-      var dayDate = new Date(mondayDate);
-      dayDate.setDate(mondayDate.getDate() + i);
-      var dayNum = dayDate.getDate();
-      var isPast = i < status.dayIdx;
-      var cls = 'hrs-day-col';
-      if (isToday) cls += ' hrs-day-col--today';
-      if (isClosed) cls += ' hrs-day-col--closed';
-      if (isPast) cls += ' hrs-day-col--past';
-      hdr += '<div class="' + cls + '" data-day-idx="' + i + '" onclick="selectHrsDay(' + i + ')">';
-      hdr += '  <div class="hrs-day-initial">' + dayInitials[i] + '</div>';
-      hdr += '  <div class="hrs-day-num">' + dayNum + '</div>';
-      hdr += '</div>';
-    }
-    hdr += '</div>';
+    hdr += '<div class="hrs-week-strip" id="hrsWeekStripWrap"></div>';
     hdr += '<div class="hrs-selected-date" id="hrsSelectedDateLabel"></div>';
     document.getElementById('hoursSheetHeader').innerHTML = hdr;
+
+    _hrsWeekOffset = 0;
+    hrsRenderWeekStrip();
 
     // ── Scrollable content: agenda + specials ──
     var html = '';
