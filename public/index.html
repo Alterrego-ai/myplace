@@ -2154,6 +2154,142 @@ height: 1px;
 background: var(--border);
 margin: 20px 20px 0;
 }
+
+/* ── FEATURED EVENT CARD ── */
+.evt-section { padding: 16px 20px 0; }
+.evt-section-title {
+  font-size: 14px; font-weight: 700; color: var(--text);
+  margin-bottom: 12px; display: flex; align-items: center; gap: 8px;
+}
+.evt-card {
+  position: relative; border-radius: var(--radius); overflow: hidden;
+  background: var(--bg-card); box-shadow: var(--shadow-md);
+  cursor: pointer; transition: transform 0.15s;
+}
+.evt-card:active { transform: scale(0.98); }
+.evt-card-cover {
+  position: relative; width: 100%; height: 180px; overflow: hidden;
+}
+.evt-card-cover img {
+  width: 100%; height: 100%; object-fit: cover;
+}
+.evt-card-cover::after {
+  content: ''; position: absolute; inset: 0;
+  background: linear-gradient(0deg, rgba(0,0,0,0.55) 0%, transparent 60%);
+}
+.evt-card-date-badge {
+  position: absolute; top: 12px; left: 12px; z-index: 2;
+  background: rgba(255,255,255,0.95); backdrop-filter: blur(8px);
+  border-radius: 10px; padding: 6px 10px; text-align: center;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+}
+.evt-card-date-badge .day { font-size: 20px; font-weight: 800; color: var(--primary); line-height: 1; }
+.evt-card-date-badge .month { font-size: 10px; font-weight: 600; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.5px; }
+.evt-card-category {
+  position: absolute; top: 12px; right: 12px; z-index: 2;
+  background: rgba(200,169,110,0.9); backdrop-filter: blur(8px);
+  color: #fff; font-size: 10px; font-weight: 700; text-transform: uppercase;
+  letter-spacing: 0.8px; padding: 4px 10px; border-radius: 20px;
+}
+.evt-card-cover-title {
+  position: absolute; bottom: 12px; left: 14px; right: 14px; z-index: 2;
+  color: #fff;
+}
+.evt-card-cover-title h3 { font-size: 17px; font-weight: 700; line-height: 1.2; margin: 0; text-shadow: 0 1px 4px rgba(0,0,0,0.4); }
+.evt-card-cover-title .subtitle { font-size: 12px; opacity: 0.9; margin-top: 2px; text-shadow: 0 1px 3px rgba(0,0,0,0.4); }
+
+.evt-card-body { padding: 14px 16px; }
+.evt-card-slots {
+  display: flex; gap: 8px; margin-bottom: 12px;
+}
+.evt-card-slot {
+  flex: 1; display: flex; align-items: center; gap: 6px;
+  padding: 8px 10px; background: var(--bg-subtle);
+  border-radius: 8px; font-size: 12px; color: var(--text-secondary);
+}
+.evt-card-slot .slot-icon { font-size: 16px; }
+.evt-card-slot .slot-label { font-weight: 600; color: var(--text); font-size: 11px; }
+.evt-card-slot .slot-time { font-size: 11px; }
+
+.evt-card-footer {
+  display: flex; align-items: center; justify-content: space-between;
+  padding-top: 10px; border-top: 1px solid var(--border);
+}
+.evt-card-partner {
+  display: flex; align-items: center; gap: 8px;
+}
+.evt-card-partner img { height: 22px; width: auto; }
+.evt-card-partner span { font-size: 11px; color: var(--text-tertiary); }
+.evt-card-cta {
+  display: flex; align-items: center; gap: 4px;
+  background: var(--primary); color: #fff;
+  border: none; border-radius: 20px; padding: 7px 14px;
+  font-size: 12px; font-weight: 600; cursor: pointer;
+  font-family: inherit;
+}
+.evt-card-tags {
+  display: flex; flex-wrap: wrap; gap: 4px; margin-bottom: 10px;
+}
+.evt-card-tag {
+  font-size: 10px; padding: 3px 8px; border-radius: 12px;
+  background: var(--primary-ultra-light); color: var(--primary);
+  font-weight: 500;
+}
+
+/* ── EVENT DETAIL BOTTOM SHEET ── */
+.evt-detail-cover {
+  position: relative; width: 100%; height: 220px; margin: -20px -20px 0;
+  width: calc(100% + 40px); overflow: hidden;
+}
+.evt-detail-cover img { width: 100%; height: 100%; object-fit: cover; }
+.evt-detail-cover::after {
+  content: ''; position: absolute; inset: 0;
+  background: linear-gradient(0deg, var(--bg-card) 0%, transparent 50%);
+}
+.evt-detail-header { padding: 16px 0 0; }
+.evt-detail-header h2 { font-size: 20px; font-weight: 800; color: var(--text); margin: 0; line-height: 1.2; }
+.evt-detail-header .subtitle { font-size: 14px; color: var(--text-secondary); margin-top: 4px; }
+.evt-detail-meta {
+  display: flex; flex-wrap: wrap; gap: 12px; margin: 14px 0;
+}
+.evt-detail-meta-item {
+  display: flex; align-items: center; gap: 6px;
+  font-size: 13px; color: var(--text-secondary);
+}
+.evt-detail-meta-item svg { width: 16px; height: 16px; color: var(--primary); }
+.evt-detail-desc {
+  font-size: 14px; line-height: 1.6; color: var(--text-secondary);
+  margin: 12px 0; padding: 14px; background: var(--bg-subtle);
+  border-radius: var(--radius-sm);
+}
+.evt-detail-slots-title {
+  font-size: 13px; font-weight: 700; color: var(--text);
+  margin: 16px 0 8px; display: flex; align-items: center; gap: 6px;
+}
+.evt-detail-slot-row {
+  display: flex; align-items: center; gap: 12px;
+  padding: 12px 14px; background: var(--bg-subtle);
+  border-radius: var(--radius-sm); margin-bottom: 6px;
+}
+.evt-detail-slot-icon { font-size: 24px; }
+.evt-detail-slot-info { flex: 1; }
+.evt-detail-slot-label { font-size: 14px; font-weight: 600; color: var(--text); }
+.evt-detail-slot-time { font-size: 12px; color: var(--text-secondary); }
+.evt-detail-partner {
+  display: flex; align-items: center; gap: 12px;
+  padding: 14px; margin: 16px 0;
+  background: var(--bg-subtle); border-radius: var(--radius-sm);
+}
+.evt-detail-partner img { height: 32px; width: auto; }
+.evt-detail-partner span { font-size: 13px; font-weight: 600; color: var(--text); }
+.evt-detail-reserve-btn {
+  display: block; width: 100%; padding: 16px;
+  background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+  color: #fff; border: none; border-radius: var(--radius-sm);
+  font-size: 16px; font-weight: 700; cursor: pointer;
+  font-family: inherit; text-align: center;
+  margin-top: 12px; margin-bottom: 8px;
+}
 </style>
 
 <!-- Splash screen styles (inline pour affichage immédiat) -->
@@ -2420,6 +2556,9 @@ margin: 20px 20px 0;
   </div>
 
   <div class="divider"></div>
+
+  <!-- ÉVÉNEMENTS À LA UNE -->
+  <div class="evt-section fade-up" id="evtSection" style="display:none;"></div>
 
   <!-- ACTUALITÉS -->
   <div class="actu-feed" id="actuSection">
@@ -2741,6 +2880,14 @@ margin: 20px 20px 0;
     </button>
 
   </div>
+</div>
+
+<!-- BOTTOM SHEET EVENT DETAIL -->
+<div class="bottom-sheet bottom-sheet-full" id="eventDetailSheet" style="max-height:92vh;display:flex;flex-direction:column;">
+  <div class="sheet-handle"></div>
+  <div style="padding:0 20px 20px;overflow-y:auto;flex:1;-webkit-overflow-scrolling:touch;" id="eventDetailContent">
+  </div>
+  <button class="sheet-cancel" onclick="closeAllSheets()" style="flex-shrink:0;">Fermer</button>
 </div>
 
 <!-- BOTTOM SHEET HORAIRES -->
@@ -3284,9 +3431,185 @@ margin: 20px 20px 0;
     }
   }
 
+  // ── Render featured events on homepage ──
+  var MONTHS_FR_SHORT = ['jan','fév','mar','avr','mai','jun','jul','aoû','sep','oct','nov','déc'];
+  var MONTHS_FR = ['janvier','février','mars','avril','mai','juin','juillet','août','septembre','octobre','novembre','décembre'];
+  var WEEKDAYS_FR = ['dimanche','lundi','mardi','mercredi','jeudi','vendredi','samedi'];
+
+  function renderFeaturedEvents() {
+    if (!AGENDA_DATA || !AGENDA_DATA.events) return;
+    var todayStr = new Date().toISOString().slice(0,10);
+    var upcoming = AGENDA_DATA.events.filter(function(e) { return e.date >= todayStr; });
+    if (upcoming.length === 0) return;
+
+    var section = document.getElementById('evtSection');
+    if (!section) return;
+    section.style.display = '';
+
+    var html = '<div class="evt-section-title"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg> À venir</div>';
+
+    upcoming.forEach(function(ev, idx) {
+      var d = new Date(ev.date);
+      var dayNum = d.getDate();
+      var monthShort = MONTHS_FR_SHORT[d.getMonth()];
+      var hasImage = ev.image;
+      var hasSlots = ev.slots && ev.slots.length > 0;
+      var startTime = hasSlots ? ev.slots[0].start : ev.start;
+      var endTime = hasSlots ? ev.slots[ev.slots.length - 1].end : ev.end;
+
+      html += '<div class="evt-card" onclick="openEventDetail(\'' + ev.id + '\')" style="' + (idx > 0 ? 'margin-top:14px;' : '') + '">';
+
+      // Cover image
+      if (hasImage) {
+        html += '<div class="evt-card-cover">';
+        html += '  <img src="' + ev.image + '" alt="' + ev.title + '">';
+        html += '  <div class="evt-card-date-badge"><div class="day">' + dayNum + '</div><div class="month">' + monthShort + '</div></div>';
+        if (ev.category) html += '  <div class="evt-card-category">' + ev.category + '</div>';
+        html += '  <div class="evt-card-cover-title"><h3>' + ev.title + '</h3>';
+        if (ev.subtitle) html += '<div class="subtitle">' + ev.subtitle + '</div>';
+        html += '  </div>';
+        html += '</div>';
+      } else {
+        // No-image compact card
+        html += '<div style="padding:16px 16px 0;display:flex;gap:12px;align-items:flex-start;">';
+        html += '  <div class="evt-card-date-badge" style="position:static;"><div class="day">' + dayNum + '</div><div class="month">' + monthShort + '</div></div>';
+        html += '  <div style="flex:1;">';
+        if (ev.category) html += '<div class="evt-card-category" style="position:static;display:inline-block;margin-bottom:6px;">' + ev.category + '</div>';
+        html += '    <h3 style="font-size:15px;font-weight:700;color:var(--text);margin:0;line-height:1.3;">' + ev.title + '</h3>';
+        if (ev.subtitle) html += '<div style="font-size:12px;color:var(--text-secondary);margin-top:2px;">' + ev.subtitle + '</div>';
+        html += '  </div>';
+        html += '</div>';
+      }
+
+      html += '<div class="evt-card-body">';
+
+      // Slots timeline
+      if (hasSlots) {
+        html += '<div class="evt-card-slots">';
+        ev.slots.forEach(function(slot) {
+          html += '<div class="evt-card-slot">';
+          html += '  <span class="slot-icon">' + (slot.icon || '📌') + '</span>';
+          html += '  <div><div class="slot-label">' + slot.label + '</div>';
+          html += '  <div class="slot-time">' + slot.start.replace(':','h') + ' – ' + slot.end.replace(':','h') + '</div></div>';
+          html += '</div>';
+        });
+        html += '</div>';
+      } else if (startTime) {
+        html += '<div style="font-size:12px;color:var(--text-secondary);margin-bottom:8px;">🕐 ' + startTime.replace(':','h') + ' – ' + endTime.replace(':','h');
+        if (ev.price) html += ' · ' + ev.price + '€';
+        html += '</div>';
+      }
+
+      // Tags
+      if (ev.tags && ev.tags.length) {
+        html += '<div class="evt-card-tags">';
+        ev.tags.forEach(function(t) { html += '<span class="evt-card-tag">' + t + '</span>'; });
+        html += '</div>';
+      }
+
+      // Footer: partner + CTA
+      html += '<div class="evt-card-footer">';
+      if (ev.partner) {
+        html += '<div class="evt-card-partner">';
+        if (ev.partner.logo) html += '<img src="' + ev.partner.logo + '" alt="' + ev.partner.name + '">';
+        html += '<span>En partenariat</span>';
+        html += '</div>';
+      } else {
+        html += '<div></div>';
+      }
+      if (ev.reservable) {
+        html += '<div class="evt-card-cta">Réserver <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg></div>';
+      } else {
+        html += '<div class="evt-card-cta" style="background:var(--bg-subtle);color:var(--primary);">Détails <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg></div>';
+      }
+      html += '</div>'; // footer
+      html += '</div>'; // body
+      html += '</div>'; // card
+    });
+
+    section.innerHTML = html;
+  }
+
+  // ── Event detail bottom sheet ──
+  function openEventDetail(eventId) {
+    if (!AGENDA_DATA || !AGENDA_DATA.events) return;
+    var ev = AGENDA_DATA.events.find(function(e) { return e.id === eventId; });
+    if (!ev) return;
+
+    var d = new Date(ev.date);
+    var dayName = WEEKDAYS_FR[d.getDay()];
+    var dayNum = d.getDate();
+    var monthName = MONTHS_FR[d.getMonth()];
+    var hasSlots = ev.slots && ev.slots.length > 0;
+
+    var html = '';
+
+    // Cover
+    if (ev.image) {
+      html += '<div class="evt-detail-cover">';
+      html += '  <img src="' + ev.image + '" alt="' + ev.title + '">';
+      html += '</div>';
+    }
+
+    // Header
+    html += '<div class="evt-detail-header">';
+    html += '  <h2>' + ev.title + '</h2>';
+    if (ev.subtitle) html += '<div class="subtitle">' + ev.subtitle + '</div>';
+    html += '</div>';
+
+    // Meta
+    html += '<div class="evt-detail-meta">';
+    html += '  <div class="evt-detail-meta-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg> ' + dayName.charAt(0).toUpperCase() + dayName.slice(1) + ' ' + dayNum + ' ' + monthName + '</div>';
+    if (ev.capacity) {
+      html += '<div class="evt-detail-meta-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg> ' + ev.capacity + ' places</div>';
+    }
+    if (ev.price) {
+      html += '<div class="evt-detail-meta-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg> ' + ev.price + '€</div>';
+    }
+    html += '</div>';
+
+    // Description
+    if (ev.description) {
+      html += '<div class="evt-detail-desc">' + ev.description + '</div>';
+    }
+
+    // Slots
+    if (hasSlots) {
+      html += '<div class="evt-detail-slots-title"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg> Programme</div>';
+      ev.slots.forEach(function(slot) {
+        html += '<div class="evt-detail-slot-row">';
+        html += '  <div class="evt-detail-slot-icon">' + (slot.icon || '📌') + '</div>';
+        html += '  <div class="evt-detail-slot-info">';
+        html += '    <div class="evt-detail-slot-label">' + slot.label + '</div>';
+        html += '    <div class="evt-detail-slot-time">' + slot.start.replace(':','h') + ' – ' + slot.end.replace(':','h') + '</div>';
+        html += '  </div>';
+        html += '</div>';
+      });
+    }
+
+    // Partner
+    if (ev.partner) {
+      html += '<div class="evt-detail-partner">';
+      if (ev.partner.logo) html += '<img src="' + ev.partner.logo + '" alt="' + ev.partner.name + '">';
+      html += '<span>En partenariat avec ' + ev.partner.name + '</span>';
+      html += '</div>';
+    }
+
+    // Reserve CTA
+    if (ev.reservable) {
+      html += '<button class="evt-detail-reserve-btn" onclick="alert(\'Réservation bientôt disponible !\')">🍷 Réserver ma place</button>';
+    }
+
+    document.getElementById('eventDetailContent').innerHTML = html;
+    lockBodyScroll();
+    document.getElementById('sheetOverlay').classList.add('visible');
+    document.getElementById('eventDetailSheet').classList.add('visible');
+  }
+
   fetch('/agenda.json').then(function(r) { return r.json(); }).then(function(data) {
     parseAgenda(data);
     updateHeroBadge();
+    renderFeaturedEvents();
     // Refresh toutes les minutes
     setInterval(updateHeroBadge, 60000);
   }).catch(function() {
@@ -3550,8 +3873,10 @@ margin: 20px 20px 0;
           html += '<div class="hrs-special-item">';
           html += '  <div class="hrs-special-icon">' + (catIcons[ev.category] || '📅') + '</div>';
           html += '  <div class="hrs-special-info">';
-          html += '    <div class="hrs-special-date">' + evDay + ' · ' + ev.title + '</div>';
-          html += '    <div class="hrs-special-label">' + ev.start.replace(':','h') + ' – ' + ev.end.replace(':','h');
+          html += '    <div class="hrs-special-date" style="cursor:pointer;" onclick="openEventDetail(\'' + ev.id + '\')">' + evDay + ' · ' + ev.title + '</div>';
+          var evStart = ev.slots ? ev.slots[0].start : ev.start;
+          var evEnd = ev.slots ? ev.slots[ev.slots.length-1].end : ev.end;
+          html += '    <div class="hrs-special-label">' + (evStart||'').replace(':','h') + ' – ' + (evEnd||'').replace(':','h');
           if (ev.price) html += ' · ' + ev.price + '€';
           if (ev.reservable) html += ' · <span style="color:var(--primary);">Réservable</span>';
           html += '</div>';

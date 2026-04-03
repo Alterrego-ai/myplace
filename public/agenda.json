@@ -103,17 +103,26 @@
 
   "events": [
     {
-      "id": "ev-jazz-01",
-      "title": "Soirée Jazz Manouche",
-      "date": "2026-04-10",
-      "start": "20:00",
-      "end": "23:00",
+      "id": "ev-chapoutier-2026",
+      "title": "Sélections Parcellaires & Vieux Millésimes",
+      "subtitle": "En présence de la Cave M. Chapoutier",
+      "date": "2026-04-16",
       "type": "event",
-      "category": "musique",
-      "image": null,
-      "description": "Trio jazz avec Django Revival",
+      "category": "dégustation",
+      "image": "/events/chapoutier-2026.jpg",
+      "description": "Masterclass exceptionnelle autour des Sélections Parcellaires et Vieux Millésimes de la Maison M. Chapoutier. Découvrez l'Ermitage De l'Orée et d'autres cuvées d'exception en présence de la cave.",
       "reservable": true,
-      "capacity": 45
+      "capacity": 30,
+      "slots": [
+        { "label": "Masterclass", "start": "19:00", "end": "20:30", "icon": "🍷" },
+        { "label": "Apéro & Dîner", "start": "20:30", "end": "23:00", "icon": "🍽" }
+      ],
+      "partner": {
+        "name": "M. Chapoutier",
+        "logo": "/events/chapoutier-banner.png"
+      },
+      "tags": ["Ermitage", "Sélections Parcellaires", "Vieux Millésimes", "Masterclass"],
+      "highlight": true
     },
     {
       "id": "ev-degustation-01",
