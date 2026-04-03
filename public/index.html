@@ -1100,8 +1100,7 @@ max-height: 300px;
 .hrs-day-col--closed .hrs-day-num { opacity: 0.4; }
 .hrs-day-col--closed.hrs-day-col--today .hrs-day-num { opacity: 1; }
 .hrs-day-col--selected .hrs-day-num {
-  background: color-mix(in srgb, var(--primary) 15%, transparent);
-  color: var(--primary); font-weight: 700;
+  background: var(--primary); color: #fff; font-weight: 700; opacity: 1;
 }
 .hrs-day-col--today.hrs-day-col--selected .hrs-day-num {
   background: var(--primary); color: #fff;
@@ -3991,17 +3990,17 @@ margin: 20px 20px 0;
 
     // ── Sticky header: Today card + Week strip ──
     var hdr = '';
-    hdr += '<div class="hrs-today-card">';
-    hdr += '  <div class="hrs-today-top">';
-    hdr += '    <div class="hrs-today-label">Aujourd\'hui · ' + status.todayLabel + '</div>';
     var moisCourt = ['Janvier','Février','Mars','Avril','Mai','Juin','Juillet','Août','Septembre','Octobre','Novembre','Décembre'];
     var currentMonth = moisCourt[new Date().getMonth()];
-    hdr += '    <div class="hrs-datepicker-wrap">';
-    hdr += '      <button class="hrs-datepicker-btn" onclick="document.getElementById(\'hrsDateInput\').showPicker()"><span id="hrsMonthLabel">' + currentMonth + '</span> <span class="hrs-datepicker-chevron"></span></button>';
-    hdr += '      <input type="date" id="hrsDateInput" class="hrs-datepicker-input" onchange="hrsGoToDate(this.value)">';
-    hdr += '    </div>';
+    hdr += '<div class="hrs-today-card" style="display:flex;align-items:center;justify-content:space-between;">';
+    hdr += '  <div>';
+    hdr += '    <div class="hrs-today-label">Aujourd\'hui · ' + status.todayLabel + '</div>';
+    hdr += '    <div class="hrs-today-hours">' + status.todayHours + '</div>';
     hdr += '  </div>';
-    hdr += '  <div class="hrs-today-hours">' + status.todayHours + '</div>';
+    hdr += '  <div class="hrs-datepicker-wrap">';
+    hdr += '    <button class="hrs-datepicker-btn" onclick="document.getElementById(\'hrsDateInput\').showPicker()"><span id="hrsMonthLabel">' + currentMonth + '</span> <span class="hrs-datepicker-chevron"></span></button>';
+    hdr += '    <input type="date" id="hrsDateInput" class="hrs-datepicker-input" onchange="hrsGoToDate(this.value)">';
+    hdr += '  </div>';
     hdr += '</div>';
 
     hdr += '<div class="hrs-week-strip" id="hrsWeekStripWrap"></div>';
