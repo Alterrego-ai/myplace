@@ -951,7 +951,7 @@ max-height: 300px;
 
 .hrs-today-card {
   background: linear-gradient(135deg, var(--primary), color-mix(in srgb, var(--primary) 70%, #000));
-  border-radius: 14px; padding: 14px 16px; color: #fff; margin-bottom: 12px;
+  border-radius: 14px 14px 0 0; padding: 14px 16px 10px; color: #fff;
   position: relative; overflow: hidden;
 }
 .hrs-today-weather {
@@ -969,7 +969,10 @@ max-height: 300px;
 
 /* Timeline */
 .hrs-timeline {
-  background: var(--bg-subtle); border-radius: 14px; padding: 14px 16px; margin-bottom: 12px;
+  background: var(--bg-subtle); border-radius: 0 0 14px 14px; padding: 12px 16px 14px; margin-bottom: 12px;
+}
+.hrs-header-block {
+  margin-bottom: 12px;
 }
 .hrs-tl-header {
   display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;
@@ -3805,7 +3808,8 @@ margin: 20px 20px 0;
     _hrsTodayIdx = status.dayIdx;
     var html = '';
 
-    // ── Today card (météo intégrée à droite) ──
+    // ── Header block: Today card + Timeline fusionnés ──
+    html += '<div class="hrs-header-block">';
     html += '<div class="hrs-today-card">';
     html += '  <div class="hrs-today-top">';
     html += '    <div class="hrs-today-label">Aujourd\'hui · ' + status.todayLabel + '</div>';
@@ -3815,6 +3819,8 @@ margin: 20px 20px 0;
     html += '    </div>';
     html += '  </div>';
     html += '  <div class="hrs-today-hours">' + status.todayHours + '</div>';
+    html += '</div>';
+    html += '<div id="hrsTimelineContainer"></div>';
     html += '</div>';
 
     // ── Week strip ──
@@ -3832,9 +3838,6 @@ margin: 20px 20px 0;
       html += '</button>';
     }
     html += '</div>';
-
-    // ── Timeline container (filled by selectHrsDay) ──
-    html += '<div id="hrsTimelineContainer"></div>';
 
     // ── Special days ──
     var upcoming = HOURS_DATA.special.filter(function(s) {
