@@ -3263,17 +3263,36 @@ margin: 20px 20px 0;
   }
 
   // Load agenda.json
-  fetch('/agenda.json').then(function(r) { return r.json(); }).then(parseAgenda).catch(function() {
+  // Met à jour la pastille Ouvert/Fermé sur le hero
+  function updateHeroBadge() {
+    var btn = document.querySelector('.hero-status');
+    if (!btn) return;
+    var status = getHoursStatus();
+    btn.className = 'hero-status ' + (status.isOpen ? 'open' : 'closed');
+    var label = btn.querySelector('[data-i18n="status_open"]');
+    if (label) {
+      label.textContent = status.isOpen ? 'Ouvert' : 'Fermé';
+      label.setAttribute('data-i18n', status.isOpen ? 'status_open' : 'status_closed');
+    }
+  }
+
+  fetch('/agenda.json').then(function(r) { return r.json(); }).then(function(data) {
+    parseAgenda(data);
+    updateHeroBadge();
+    // Refresh toutes les minutes
+    setInterval(updateHeroBadge, 60000);
+  }).catch(function() {
     console.warn('agenda.json not loaded, using defaults');
     HOURS_DATA.regular = [
-      { day:'Lundi', open:'16:30', close:'00:00' },
-      { day:'Mardi', open:'16:30', close:'00:00' },
-      { day:'Mercredi', open:'16:30', close:'01:00' },
-      { day:'Jeudi', open:'16:30', close:'01:00' },
-      { day:'Vendredi', open:'16:30', close:'01:00' },
+      { day:'Lundi', open:'10:00', close:'00:00' },
+      { day:'Mardi', open:'10:00', close:'00:00' },
+      { day:'Mercredi', open:'10:00', close:'00:00' },
+      { day:'Jeudi', open:'10:00', close:'01:00' },
+      { day:'Vendredi', open:'10:00', close:'01:00' },
       { day:'Samedi', open:null, close:null },
       { day:'Dimanche', open:null, close:null }
     ];
+    updateHeroBadge();
   });
 
   function parseTimeToMin(t) {
