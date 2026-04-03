@@ -13,8 +13,8 @@
       "type": "service",
       "color": "#3D6B8C",
       "recurrence": {
-        "rrule": "FREQ=WEEKLY;BYDAY=MO,TU",
-        "start": "16:30",
+        "rrule": "FREQ=WEEKLY;BYDAY=MO,TU,WE",
+        "start": "10:00",
         "end": "00:00"
       }
     },
@@ -24,8 +24,8 @@
       "type": "service",
       "color": "#3D6B8C",
       "recurrence": {
-        "rrule": "FREQ=WEEKLY;BYDAY=WE,TH,FR",
-        "start": "16:30",
+        "rrule": "FREQ=WEEKLY;BYDAY=TH,FR",
+        "start": "10:00",
         "end": "01:00"
       }
     },
