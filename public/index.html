@@ -3288,13 +3288,12 @@ margin: 20px 20px 0;
 <!-- BOTTOM SHEET RESERVATION — le sésame EST le formulaire -->
 <div class="bottom-sheet" id="resaSheet" style="max-height:92vh;display:flex;flex-direction:column;">
   <div class="sheet-handle"></div>
-  <div style="padding:16px 20px;overflow-y:auto;flex:1;-webkit-overflow-scrolling:touch;">
 
-    <!-- Erreur -->
-    <div id="resaError" style="display:none;color:#ff3b30;font-size:13px;font-weight:600;margin-bottom:10px;"></div>
+  <!-- Zone scrollable : sésame uniquement -->
+  <div style="padding:16px 20px 0;overflow-y:auto;flex:1;-webkit-overflow-scrolling:touch;display:flex;flex-direction:column;justify-content:center;">
 
-    <!-- Résultat dispo -->
-    <div id="resaDispoResult" style="display:none;margin-bottom:10px;padding:10px 14px;border-radius:10px;font-size:14px;font-weight:600;"></div>
+    <!-- Erreur (inside sésame zone) -->
+    <div id="resaError" style="display:none;color:#ff3b30;font-size:13px;font-weight:600;margin-bottom:10px;text-align:center;"></div>
 
     <!-- Le Sésame interactif -->
     <div class="sesame-pass sesame-draft" id="sesamePass">
@@ -3361,27 +3360,33 @@ margin: 20px 20px 0;
         </div>
       </div>
 
+      <!-- Résultat non-dispo (inside sésame) -->
+      <div id="resaDispoResult" style="display:none;margin-top:12px;padding:10px 14px;border-radius:10px;font-size:14px;font-weight:600;"></div>
+
       <!-- Filigrane -->
       <div class="sesame-stamp" id="sesameStamp">SÉSAME</div>
     </div>
+  </div>
 
-    <!-- Bouton principal sous le sésame -->
-    <button class="resa-submit" id="resaCheckBtn" onclick="checkResaDispo()" style="margin-top:36px;">Vérifier la disponibilité</button>
+  <!-- Zone fixe : boutons toujours à la même hauteur -->
+  <div style="flex-shrink:0;padding:14px 20px;">
+    <!-- Bouton principal -->
+    <button class="resa-submit" id="resaCheckBtn" onclick="checkResaDispo()" style="width:100%;">Vérifier la disponibilité</button>
 
-    <!-- Confirmer / Annuler -->
-    <div id="resaConfirmBtns" style="display:none;gap:10px;margin-top:14px;">
+    <!-- Confirmer / Modifier -->
+    <div id="resaConfirmBtns" style="display:none;gap:10px;">
       <button onclick="resaCancelDispo()" style="flex:1;padding:14px;border:1.5px solid var(--border);border-radius:12px;background:transparent;color:var(--text-secondary);font-size:15px;font-weight:600;font-family:inherit;cursor:pointer;">Modifier</button>
       <button class="resa-submit" onclick="submitReservation()" id="resaSubmitBtn" style="flex:1;">Confirmer</button>
     </div>
 
     <!-- Actions post-confirmation -->
-    <div id="resaActions" style="display:none;gap:8px;margin-top:14px;">
+    <div id="resaActions" style="display:none;gap:8px;">
       <button onclick="resaShareInfo()" class="sesame-action"><span>↗</span> Partager</button>
       <button onclick="resaAddCalendar()" class="sesame-action"><span>📅</span> Calendrier</button>
       <button onclick="resaOpenItinerary()" class="sesame-action"><span>🗺</span> Itinéraire</button>
     </div>
-
   </div>
+
   <button class="sheet-cancel" onclick="closeAllSheets()" style="flex-shrink:0;">Fermer</button>
 </div>
 
