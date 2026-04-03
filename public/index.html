@@ -1228,22 +1228,13 @@ max-height: 300px;
   from { opacity: 0; }
   to { opacity: 1; }
 }
-/* Laser border validation animation */
-@keyframes sesameLaserBorder {
-  0% { clip-path: inset(0 100% 100% 0); opacity: 1; }
-  25% { clip-path: inset(0 0 100% 0); }
-  50% { clip-path: inset(0 0 0 0); }
-  75% { clip-path: inset(0 0 0 0); }
-  100% { clip-path: inset(0 0 0 0); opacity: 0; }
+.sesame-laser-active {
+  animation: sesameLaserGlow 1s ease-out forwards;
 }
-.sesame-laser-active { overflow: visible; }
-.sesame-laser-active::before {
-  content: '';
-  position: absolute; inset: -2px; z-index: 5;
-  border-radius: 18px;
-  border: 2px solid #059669;
-  pointer-events: none;
-  animation: sesameLaserBorder 1s ease-out forwards;
+@keyframes sesameLaserGlow {
+  0% { box-shadow: 0 12px 48px rgba(0,0,0,0.22), 0 4px 16px rgba(0,0,0,0.14), inset 0 0 0 2px #059669; }
+  50% { box-shadow: 0 12px 48px rgba(0,0,0,0.22), 0 4px 16px rgba(0,0,0,0.14), inset 0 0 0 2px #059669, 0 0 20px rgba(5,150,105,0.3); }
+  100% { box-shadow: 0 12px 48px rgba(0,0,0,0.22), 0 4px 16px rgba(0,0,0,0.14); }
 }
 .sesame-action {
   flex: 1; min-width: 0;
@@ -3390,7 +3381,7 @@ margin: 20px 20px 0;
 
     <!-- Confirmer / Modifier -->
     <div id="resaConfirmBtns" style="position:absolute;top:12px;left:0;right:0;display:flex;gap:10px;visibility:hidden;opacity:0;transition:opacity 0.3s ease;">
-      <button onclick="resaCancelDispo()" style="flex:1;padding:14px;border:1.5px solid var(--border);border-radius:12px;background:transparent;color:var(--text-secondary);font-size:15px;font-weight:600;font-family:inherit;cursor:pointer;">Modifier</button>
+      <button onclick="resaCancelDispo()" style="flex:1;padding:14px;border:1.5px solid var(--border);border-radius:12px;background:var(--bg-card);color:var(--text-secondary);font-size:15px;font-weight:600;font-family:inherit;cursor:pointer;">Modifier</button>
       <button class="resa-submit" onclick="submitReservation()" id="resaSubmitBtn" style="flex:1;">Confirmer</button>
     </div>
 
@@ -4702,7 +4693,10 @@ margin: 20px 20px 0;
           document.getElementById('resaTel').style.borderBottom = 'none';
           document.querySelectorAll('.sesame-stepper').forEach(function(b) { b.style.display = 'none'; });
           var noteVal = document.getElementById('resaNotes').value.trim();
-          if (!noteVal) document.getElementById('sesameNotePlaceholder').style.display = 'none';
+          if (!noteVal) {
+            var noteCell = document.getElementById('resaNotes').closest('.sesame-detail');
+            if (noteCell) noteCell.style.display = 'none';
+          }
           resaShowOnlyBtn('resaConfirmBtns');
         }, 1000);
       }, totalTime);
