@@ -954,8 +954,10 @@ max-height: 300px;
   border-radius: 14px; padding: 14px 16px; color: #fff; margin-bottom: 12px;
   position: relative; overflow: hidden;
 }
-.hrs-today--open { background: linear-gradient(135deg, #0d6e4e, #059669); }
-.hrs-today--closed { background: linear-gradient(135deg, #7f1d1d, #b91c1c); }
+.hrs-today-badge--open { background: rgba(74,232,138,0.25); color: #4AE88A; }
+.hrs-today-badge--open .hrs-today-dot { background: #4AE88A; }
+.hrs-today-badge--closed { background: rgba(255,100,100,0.25); color: #ff6b6b; }
+.hrs-today-badge--closed .hrs-today-dot { background: #ff6b6b; animation: none; }
 .hrs-today-card::before {
   content: ‘’; position: absolute; top: -30px; right: -30px;
   width: 80px; height: 80px; border-radius: 50%;
@@ -974,8 +976,11 @@ max-height: 300px;
 .hrs-today--open .hrs-today-dot { animation: hrs-pulse 2s ease-in-out infinite; }
 .hrs-today-hours { font-size: 22px; font-weight: 800; letter-spacing: -0.02em; }
 .hrs-today-countdown { font-size: 11px; opacity: 0.65; margin-top: 2px; }
-.hrs-today-meta { display: flex; gap: 10px; margin-top: 6px; font-size: 11px; opacity: 0.7; }
-.hrs-today-meta span { display: flex; align-items: center; gap: 4px; }
+.hrs-today-slots { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+.hrs-slot-pill {
+  font-size: 11px; font-weight: 600; padding: 3px 10px; border-radius: 20px;
+  background: rgba(255,255,255,0.1); border: 1px solid; white-space: nowrap;
+}
 
 .hrs-week-title { font-size: 10px; font-weight: 600; color: var(--text-tertiary); margin-bottom: 6px; letter-spacing: 0.04em; text-transform: uppercase; }
 
@@ -3292,30 +3297,39 @@ margin: 20px 20px 0;
     html += '</div>';
 
     // ── Today card (avec statut live intégré) ──
-    html += '<div class="hrs-today-card hrs-today--' + (status.isOpen ? 'open' : 'closed') + '">';
+    html += '<div class="hrs-today-card">';
     html += '  <div class="hrs-today-top">';
     html += '    <div class="hrs-today-label">Aujourd\'hui · ' + status.todayLabel + '</div>';
-    html += '    <div class="hrs-today-badge"><span class="hrs-today-dot"></span>' + (status.isOpen ? 'Ouvert' : 'Fermé') + '</div>';
+    html += '    <div class="hrs-today-badge hrs-today-badge--' + (status.isOpen ? 'open' : 'closed') + '"><span class="hrs-today-dot"></span>' + (status.isOpen ? 'Ouvert' : 'Fermé') + '</div>';
     html += '  </div>';
     html += '  <div class="hrs-today-hours">' + status.todayHours + '</div>';
     if (status.countdown) html += '  <div class="hrs-today-countdown">' + status.countdown + '</div>';
-    // Build meta tags from agenda promos
-    var metaTags = '<span><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg> Service continu</span>';
+    // Build today's slots & promos from agenda
+    var todaySlots = [];
     if (AGENDA_DATA && AGENDA_DATA.services) {
+      var now = new Date();
+      var dayCode = ['SU','MO','TU','WE','TH','FR','SA'][now.getDay()];
       AGENDA_DATA.services.forEach(function(s) {
-        if (s.type !== 'promo') return;
+        if (s.type !== 'slot' && s.type !== 'promo') return;
         var rec = s.recurrence;
         if (!rec || !rec.rrule) return;
         var match = rec.rrule.match(/BYDAY=([A-Z,]+)/);
         if (!match) return;
-        var now = new Date();
-        var dayCode = ['SU','MO','TU','WE','TH','FR','SA'][now.getDay()];
         if (match[1].split(',').indexOf(dayCode) >= 0) {
-          metaTags += '<span><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/></svg> ' + s.label + ' ' + rec.start.replace(':','h') + '–' + rec.end.replace(':','h') + '</span>';
+          todaySlots.push(s);
         }
       });
     }
-    html += '  <div class="hrs-today-meta">' + metaTags + '</div>';
+    if (todaySlots.length > 0) {
+      html += '<div class="hrs-today-slots">';
+      todaySlots.forEach(function(s) {
+        var rec = s.recurrence;
+        html += '<span class="hrs-slot-pill" style="border-color:' + (s.color || 'var(--border)') + ';color:' + (s.color || 'var(--text)') + ';">';
+        html += (s.icon ? s.icon + ' ' : '') + s.label + ' ' + rec.start.replace(':','h') + '–' + rec.end.replace(':','h');
+        html += '</span>';
+      });
+      html += '</div>';
+    }
     html += '</div>';
 
     // ── Week grid ──

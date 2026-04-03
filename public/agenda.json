@@ -30,14 +30,39 @@
       }
     },
     {
+      "id": "service-dejeuner",
+      "label": "Déjeuner",
+      "type": "slot",
+      "color": "#f97316",
+      "icon": "🍽",
+      "recurrence": {
+        "rrule": "FREQ=WEEKLY;BYDAY=MO,TU,WE,TH,FR",
+        "start": "12:00",
+        "end": "14:00"
+      }
+    },
+    {
+      "id": "service-diner",
+      "label": "Dîner",
+      "type": "slot",
+      "color": "#8b5cf6",
+      "icon": "🍷",
+      "recurrence": {
+        "rrule": "FREQ=WEEKLY;BYDAY=MO,TU,WE,TH,FR",
+        "start": "19:00",
+        "end": "22:00"
+      }
+    },
+    {
       "id": "happy-hour",
       "label": "Happy Hour",
       "type": "promo",
       "color": "#f59e0b",
+      "icon": "🥂",
       "recurrence": {
         "rrule": "FREQ=WEEKLY;BYDAY=MO,TU,WE,TH,FR",
-        "start": "16:30",
-        "end": "18:00"
+        "start": "18:00",
+        "end": "19:30"
       }
     }
   ],
@@ -112,7 +137,7 @@
     "max_party_size": 12,
     "min_advance_hours": 2,
     "max_advance_days": 30,
-    "services": ["service-bar", "service-bar-extended"],
+    "services": ["service-dejeuner", "service-diner"],
     "zones": [
       { "id": "zone-interieur", "label": "Intérieur", "capacity": 30 },
       { "id": "zone-terrasse", "label": "Terrasse", "capacity": 20 },
