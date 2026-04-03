@@ -1215,9 +1215,9 @@ max-height: 300px;
   from { opacity: 0; transform: scale(0.5); }
   to { opacity: 1; transform: scale(1); }
 }
-#resaSheet { background: #eef1f5; }
-@media (prefers-color-scheme: dark) { #resaSheet { background: #0d151f; } }
-[data-theme="dark"] #resaSheet { background: #0d151f; }
+#resaSheet { background: linear-gradient(to bottom, #eef1f5 60%, var(--bg-card) 60%); }
+@media (prefers-color-scheme: dark) { #resaSheet { background: linear-gradient(to bottom, #0d151f 60%, var(--bg-card) 60%); } }
+[data-theme="dark"] #resaSheet { background: linear-gradient(to bottom, #0d151f 60%, var(--bg-card) 60%); }
 #resaLottieWrap {
   animation: sesameFadeIn 0.5s ease forwards;
 }
@@ -3396,7 +3396,7 @@ margin: 20px 20px 0;
   </div>
 
   <!-- Zone fixe : boutons empilés au même endroit, hauteur constante -->
-  <div style="flex-shrink:0;position:relative;height:76px;margin:0;padding:0 20px;background:var(--bg-card);">
+  <div style="flex-shrink:0;position:relative;height:76px;margin:0 20px;background:var(--bg-card);">
     <!-- Bouton principal -->
     <button class="resa-submit" id="resaCheckBtn" onclick="checkResaDispo()" style="position:absolute;top:12px;left:0;right:0;">Vérifier la disponibilité</button>
 
@@ -3414,9 +3414,7 @@ margin: 20px 20px 0;
     </div>
   </div>
 
-  <div style="background:var(--bg-card);padding:0 0 4px;">
-    <button class="sheet-cancel" onclick="closeAllSheets()" style="flex-shrink:0;">Fermer</button>
-  </div>
+  <button class="sheet-cancel" onclick="closeAllSheets()" style="flex-shrink:0;">Fermer</button>
 </div>
 
 <!-- BOTTOM SHEET PARTAGER (fullscreen) -->
