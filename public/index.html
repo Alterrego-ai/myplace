@@ -4482,11 +4482,13 @@ margin: 20px 20px 0;
   var _resaSlotId = null;
 
   function openResaForm(slotId, dateStr) {
+    console.log('[RESA] openResaForm called:', slotId, dateStr);
     var slot = null;
     if (AGENDA_DATA && AGENDA_DATA.services) {
       slot = AGENDA_DATA.services.find(function(s) { return s.id === slotId; });
     }
-    if (!slot || !slot.booking || !slot.booking.enabled) return;
+    console.log('[RESA] slot found:', !!slot, slot ? slot.booking : 'no slot');
+    if (!slot || !slot.booking || !slot.booking.enabled) { console.log('[RESA] ABORTED - no slot or booking disabled'); return; }
 
     _resaSlotId = slotId;
     _resaCouverts = 2;
@@ -4582,8 +4584,12 @@ margin: 20px 20px 0;
     lockBodyScroll();
     document.getElementById('sheetOverlay').classList.add('visible');
     // Small delay to let closing sheet animate out
+    console.log('[RESA] about to show resaSheet in 50ms');
     setTimeout(function() {
-      document.getElementById('resaSheet').classList.add('visible');
+      var rs = document.getElementById('resaSheet');
+      console.log('[RESA] resaSheet found:', !!rs, rs ? rs.className : 'null');
+      rs.classList.add('visible');
+      console.log('[RESA] resaSheet class after:', rs.className);
     }, 50);
   }
 
