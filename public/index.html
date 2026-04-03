@@ -4493,8 +4493,11 @@ margin: 20px 20px 0;
         }
 
         // Hide form fields, show sésame with animation
-        var formFields = successEl.closest('div[style]').querySelectorAll(':scope > *:not(#resaSuccess)');
-        formFields.forEach(function(el) { el.style.display = 'none'; });
+        var wrapper = successEl.parentElement;
+        var kids = wrapper.children;
+        for (var i = 0; i < kids.length; i++) {
+          if (kids[i].id !== 'resaSuccess') kids[i].style.display = 'none';
+        }
         var pass = successEl.querySelector('.sesame-pass');
         pass.classList.add('sesame-animate');
       } else {
