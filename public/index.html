@@ -3009,11 +3009,11 @@ margin: 20px 20px 0;
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px;">
       <div>
         <label class="resa-label">Date</label>
-        <input type="date" id="resaDate" class="resa-input" required>
+        <input type="date" id="resaDate" class="resa-input" required onchange="resaResetDispo()">
       </div>
       <div>
         <label class="resa-label">Heure</label>
-        <select id="resaHeure" class="resa-input"></select>
+        <select id="resaHeure" class="resa-input" onchange="resaResetDispo()"></select>
       </div>
     </div>
 
@@ -3027,8 +3027,19 @@ margin: 20px 20px 0;
       </div>
     </div>
 
-    <!-- Nom + Téléphone -->
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px;">
+    <!-- User info (pré-rempli si loggué) -->
+    <div id="resaUserInfo" style="display:none;margin-bottom:12px;padding:12px 14px;background:var(--bg-subtle);border-radius:10px;">
+      <div style="display:flex;justify-content:space-between;align-items:center;">
+        <div>
+          <div id="resaUserName" style="font-size:15px;font-weight:700;color:var(--text);"></div>
+          <div id="resaUserPhone" style="font-size:13px;color:var(--text-secondary);margin-top:2px;"></div>
+        </div>
+        <button id="resaEditUserBtn" onclick="resaToggleUserEdit()" style="font-size:12px;font-weight:600;color:var(--primary);background:none;border:none;cursor:pointer;">Modifier</button>
+      </div>
+    </div>
+
+    <!-- Nom + Téléphone (éditable) -->
+    <div id="resaUserFields" style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px;">
       <div>
         <label class="resa-label">Nom</label>
         <input type="text" id="resaNom" class="resa-input" placeholder="Votre nom" required>
@@ -3048,8 +3059,14 @@ margin: 20px 20px 0;
     <!-- Message d'erreur -->
     <div id="resaError" style="display:none;color:#ff3b30;font-size:13px;font-weight:600;margin-bottom:12px;"></div>
 
-    <!-- Bouton confirmer -->
-    <button class="resa-submit" id="resaSubmitBtn" onclick="submitReservation()">Confirmer la réservation</button>
+    <!-- Résultat dispo -->
+    <div id="resaDispoResult" style="display:none;margin-bottom:12px;padding:12px 14px;border-radius:10px;font-size:14px;font-weight:600;"></div>
+
+    <!-- Bouton vérifier dispo -->
+    <button class="resa-submit" id="resaCheckBtn" onclick="checkResaDispo()">Vérifier la disponibilité</button>
+
+    <!-- Bouton confirmer (caché par défaut) -->
+    <button class="resa-submit" id="resaSubmitBtn" onclick="submitReservation()" style="display:none;margin-top:8px;">Confirmer la réservation</button>
 
     <!-- Confirmation -->
     <div id="resaSuccess" style="display:none;text-align:center;padding:24px 0;">
@@ -4083,14 +4100,34 @@ margin: 20px 20px 0;
     }
 
     // Reset
+    _resaCouverts = 2;
     document.getElementById('resaCouverts').textContent = '2';
-    document.getElementById('resaNom').value = '';
-    document.getElementById('resaTel').value = '';
     document.getElementById('resaNotes').value = '';
     document.getElementById('resaError').style.display = 'none';
+    document.getElementById('resaDispoResult').style.display = 'none';
     document.getElementById('resaSuccess').style.display = 'none';
-    document.getElementById('resaSubmitBtn').style.display = '';
+    document.getElementById('resaCheckBtn').style.display = '';
+    document.getElementById('resaCheckBtn').disabled = false;
+    document.getElementById('resaCheckBtn').textContent = 'Vérifier la disponibilité';
+    document.getElementById('resaSubmitBtn').style.display = 'none';
     document.getElementById('resaSubmitBtn').disabled = false;
+    document.getElementById('resaSubmitBtn').textContent = 'Confirmer la réservation';
+
+    // Pre-fill user info if logged in
+    var user = getStoredUser();
+    if (user && user.name) {
+      document.getElementById('resaNom').value = user.name;
+      document.getElementById('resaTel').value = user.phone || '';
+      document.getElementById('resaUserName').textContent = user.name;
+      document.getElementById('resaUserPhone').textContent = user.phone || user.email || '';
+      document.getElementById('resaUserInfo').style.display = '';
+      document.getElementById('resaUserFields').style.display = 'none';
+    } else {
+      document.getElementById('resaNom').value = '';
+      document.getElementById('resaTel').value = '';
+      document.getElementById('resaUserInfo').style.display = 'none';
+      document.getElementById('resaUserFields').style.display = '';
+    }
 
     // Open sheet
     closeAllSheets();
@@ -4110,11 +4147,79 @@ margin: 20px 20px 0;
   function resaStep(delta) {
     _resaCouverts = Math.max(1, Math.min(12, _resaCouverts + delta));
     document.getElementById('resaCouverts').textContent = _resaCouverts;
+    resaResetDispo();
+  }
+
+  function resaResetDispo() {
+    document.getElementById('resaDispoResult').style.display = 'none';
+    document.getElementById('resaCheckBtn').style.display = '';
+    document.getElementById('resaCheckBtn').disabled = false;
+    document.getElementById('resaCheckBtn').textContent = 'Vérifier la disponibilité';
+    document.getElementById('resaSubmitBtn').style.display = 'none';
+  }
+
+  function resaToggleUserEdit() {
+    var fields = document.getElementById('resaUserFields');
+    var info = document.getElementById('resaUserInfo');
+    if (fields.style.display === 'none') {
+      fields.style.display = '';
+      info.style.display = 'none';
+    } else {
+      // Save back
+      var nom = document.getElementById('resaNom').value.trim();
+      var tel = document.getElementById('resaTel').value.trim();
+      if (nom) {
+        document.getElementById('resaUserName').textContent = nom;
+        document.getElementById('resaUserPhone').textContent = tel || '';
+        fields.style.display = 'none';
+        info.style.display = '';
+      }
+    }
+  }
+
+  function checkResaDispo() {
+    var date = document.getElementById('resaDate').value;
+    var heure = document.getElementById('resaHeure').value;
+    var errEl = document.getElementById('resaError');
+    var dispoEl = document.getElementById('resaDispoResult');
+
+    if (!date || !heure) { errEl.textContent = 'Date et heure requises'; errEl.style.display = ''; return; }
+    errEl.style.display = 'none';
+
+    var btn = document.getElementById('resaCheckBtn');
+    btn.disabled = true;
+    btn.textContent = 'Vérification...';
+
+    fetch('/disponibilites?date=' + date + '&heure=' + heure + '&couverts=' + _resaCouverts)
+      .then(function(r) { return r.json(); })
+      .then(function(data) {
+        dispoEl.style.display = '';
+        if (data.disponible) {
+          dispoEl.style.background = 'rgba(74,232,138,0.12)';
+          dispoEl.style.color = '#059669';
+          dispoEl.innerHTML = '✓ Place disponible pour ' + _resaCouverts + ' personne(s)';
+          btn.style.display = 'none';
+          document.getElementById('resaSubmitBtn').style.display = '';
+        } else {
+          dispoEl.style.background = 'rgba(255,59,48,0.1)';
+          dispoEl.style.color = '#ff3b30';
+          dispoEl.innerHTML = '✗ ' + (data.message || 'Pas de disponibilité');
+          btn.disabled = false;
+          btn.textContent = 'Vérifier la disponibilité';
+        }
+      })
+      .catch(function() {
+        errEl.textContent = 'Erreur réseau, réessayez';
+        errEl.style.display = '';
+        btn.disabled = false;
+        btn.textContent = 'Vérifier la disponibilité';
+      });
   }
 
   function submitReservation() {
-    var nom = document.getElementById('resaNom').value.trim();
-    var tel = document.getElementById('resaTel').value.trim();
+    // Read from fields or from user info display
+    var nom = document.getElementById('resaNom').value.trim() || document.getElementById('resaUserName').textContent.trim();
+    var tel = document.getElementById('resaTel').value.trim() || document.getElementById('resaUserPhone').textContent.trim();
     var date = document.getElementById('resaDate').value;
     var heure = document.getElementById('resaHeure').value;
     var notes = document.getElementById('resaNotes').value.trim();
