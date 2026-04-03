@@ -3303,8 +3303,14 @@ margin: 20px 20px 0;
 </div>
 
 <!-- BOTTOM SHEET RESERVATION — le sésame EST le formulaire -->
-<div class="bottom-sheet" id="resaSheet" style="max-height:92vh;display:flex;flex-direction:column;">
+<div class="bottom-sheet" id="resaSheet" style="max-height:92vh;display:flex;flex-direction:column;position:relative;">
   <div class="sheet-handle"></div>
+
+  <!-- Lottie overlay (couvre toute la popup) -->
+  <div id="resaLottieWrap" style="display:none;position:absolute;inset:0;z-index:20;background:var(--bg-subtle);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);border-radius:16px;flex-direction:column;align-items:center;justify-content:center;">
+    <dotlottie-player id="resaLottiePlayer" src="/calendar-animation.lottie" autoplay loop speed="1" style="width:200px;height:200px;"></dotlottie-player>
+    <div style="font-size:14px;color:var(--text-secondary);margin-top:4px;font-weight:500;font-style:italic;">Nous consultons notre cahier de réservation…</div>
+  </div>
 
   <!-- Zone scrollable : sésame calé en bas avec marge pour l'ombre -->
   <div style="padding:16px 20px 24px;overflow-y:auto;flex:1;-webkit-overflow-scrolling:touch;display:flex;flex-direction:column;justify-content:flex-end;">
@@ -3315,10 +3321,7 @@ margin: 20px 20px 0;
     <!-- Le Sésame interactif -->
     <div class="sesame-pass sesame-draft" id="sesamePass">
       <!-- Lottie overlay -->
-      <div id="resaLottieWrap" style="display:none;position:absolute;inset:0;z-index:10;background:rgba(255,255,255,0.85);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);border-radius:16px;flex-direction:column;align-items:center;justify-content:center;">
-        <dotlottie-player id="resaLottiePlayer" src="/calendar-animation.lottie" autoplay loop speed="1" style="width:140px;height:140px;"></dotlottie-player>
-        <div style="font-size:13px;color:var(--text-secondary);margin-top:8px;font-weight:500;font-style:italic;">Nous consultons notre cahier de réservation…</div>
-      </div>
+      <!-- Lottie overlay moved to sheet level -->
       <!-- Header -->
       <div class="sesame-header">
         <img src="https://ciss-media-dev.s3.fr-par.scw.cloud/pointofsales/47408/15-vauban-brc-187.png" alt="Sauf Imprévu" class="sesame-logo">
