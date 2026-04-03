@@ -1083,11 +1083,17 @@ max-height: 300px;
 
 /* Week strip – Apple Calendar style */
 .hrs-week-strip {
-  overflow: hidden; margin-bottom: 0;
+  overflow-x: auto; overflow-y: hidden; margin-bottom: 0;
   border-bottom: 1px solid var(--border); background: var(--bg-card);
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
 }
+.hrs-week-strip::-webkit-scrollbar { display: none; }
 .hrs-week-strip-inner {
   display: flex; justify-content: space-between; gap: 0;
+  min-width: 100%; width: 100%;
+  scroll-snap-align: center;
   transition: transform 0.25s ease, opacity 0.25s ease;
 }
 .hrs-week-slide-left {
@@ -3070,10 +3076,26 @@ margin: 20px 20px 0;
     <button class="resa-submit" id="resaSubmitBtn" onclick="submitReservation()" style="display:none;margin-top:8px;">Confirmer la réservation</button>
 
     <!-- Confirmation -->
-    <div id="resaSuccess" style="display:none;text-align:center;padding:24px 0;">
-      <div style="font-size:48px;margin-bottom:12px;">✅</div>
-      <div style="font-size:18px;font-weight:800;color:var(--text);margin-bottom:4px;">Réservation confirmée !</div>
-      <div id="resaSuccessMsg" style="font-size:13px;color:var(--text-secondary);"></div>
+    <div id="resaSuccess" style="display:none;padding:16px 0 0;">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;">
+        <div style="font-size:28px;">✅</div>
+        <div>
+          <div style="font-size:16px;font-weight:700;color:var(--text);">Réservation confirmée</div>
+          <div id="resaSuccessMsg" style="font-size:12px;color:var(--text-secondary);margin-top:2px;"></div>
+        </div>
+      </div>
+      <div id="resaSuccessRecap" style="background:var(--bg-card);border-radius:10px;padding:10px 12px;font-size:13px;color:var(--text);margin-bottom:14px;border:1px solid var(--border);"></div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;">
+        <button onclick="resaShareInfo()" style="flex:1;min-width:0;display:flex;align-items:center;justify-content:center;gap:6px;padding:10px 0;border-radius:10px;border:1px solid var(--border);background:var(--bg-card);font-size:13px;font-weight:600;color:var(--text);cursor:pointer;">
+          <span style="font-size:16px;">↗</span> Partager
+        </button>
+        <button onclick="resaAddCalendar()" style="flex:1;min-width:0;display:flex;align-items:center;justify-content:center;gap:6px;padding:10px 0;border-radius:10px;border:1px solid var(--border);background:var(--bg-card);font-size:13px;font-weight:600;color:var(--text);cursor:pointer;">
+          <span style="font-size:16px;">📅</span> Calendrier
+        </button>
+        <button onclick="resaOpenItinerary()" style="flex:1;min-width:0;display:flex;align-items:center;justify-content:center;gap:6px;padding:10px 0;border-radius:10px;border:1px solid var(--border);background:var(--bg-card);font-size:13px;font-weight:600;color:var(--text);cursor:pointer;">
+          <span style="font-size:16px;">🗺</span> Itinéraire
+        </button>
+      </div>
     </div>
   </div>
   <button class="sheet-cancel" onclick="closeAllSheets()" style="flex-shrink:0;">Fermer</button>
@@ -4285,9 +4307,21 @@ margin: 20px 20px 0;
     .then(function(res) {
       if (res.ok) {
         btn.style.display = 'none';
+        document.getElementById('resaCheckBtn').style.display = 'none';
+        document.getElementById('resaDispoResult').style.display = 'none';
         var successEl = document.getElementById('resaSuccess');
         successEl.style.display = '';
         document.getElementById('resaSuccessMsg').textContent = res.data.message;
+        // Store for actions
+        var slot = AGENDA_DATA.services.find(function(s) { return s.id === _resaSlotId; });
+        var jourLong = ['Dimanche','Lundi','Mardi','Mercredi','Jeudi','Vendredi','Samedi'];
+        var d = new Date(date + 'T12:00:00');
+        _lastResa = { nom: nom, date: date, heure: heure, couverts: _resaCouverts, notes: notes, label: slot ? slot.label : '', jourLabel: jourLong[d.getDay()] + ' ' + d.getDate() + '/' + (d.getMonth()+1) };
+        document.getElementById('resaSuccessRecap').innerHTML =
+          '<div style="display:flex;justify-content:space-between;align-items:center;">' +
+          '<span>' + (slot ? (slot.icon||'') + ' ' + slot.label : '') + ' · ' + _lastResa.jourLabel + '</span>' +
+          '<span style="font-weight:700;">' + heure + ' · ' + _resaCouverts + ' pers.</span>' +
+          '</div>';
       } else {
         errEl.textContent = res.data.erreur || 'Erreur lors de la réservation';
         errEl.style.display = '';
@@ -4301,6 +4335,42 @@ margin: 20px 20px 0;
       btn.disabled = false;
       btn.textContent = 'Confirmer la réservation';
     });
+  }
+
+  var _lastResa = null;
+
+  function resaShareInfo() {
+    if (!_lastResa) return;
+    var text = _lastResa.label + ' chez Sauf Imprévu\n' + _lastResa.jourLabel + ' à ' + _lastResa.heure + ' · ' + _lastResa.couverts + ' personne(s)\n15 Rue Vauban, 69006 Lyon';
+    if (navigator.share) {
+      navigator.share({ title: 'Réservation Sauf Imprévu', text: text }).catch(function(){});
+    } else {
+      navigator.clipboard.writeText(text).then(function() { alert('Copié dans le presse-papier !'); });
+    }
+  }
+
+  function resaAddCalendar() {
+    if (!_lastResa) return;
+    var dtStart = _lastResa.date.replace(/-/g,'') + 'T' + _lastResa.heure.replace(':','') + '00';
+    var endH = parseInt(_lastResa.heure.split(':')[0]) + 2;
+    var dtEnd = _lastResa.date.replace(/-/g,'') + 'T' + (endH < 10 ? '0' : '') + endH + _lastResa.heure.split(':')[1] + '00';
+    var ics = 'BEGIN:VCALENDAR\nVERSION:2.0\nBEGIN:VEVENT\n' +
+      'DTSTART;TZID=Europe/Paris:' + dtStart + '\n' +
+      'DTEND;TZID=Europe/Paris:' + dtEnd + '\n' +
+      'SUMMARY:' + _lastResa.label + ' - Sauf Imprévu\n' +
+      'LOCATION:15 Rue Vauban\\, 69006 Lyon\n' +
+      'DESCRIPTION:' + _lastResa.couverts + ' personne(s)' + (_lastResa.notes ? ' - ' + _lastResa.notes : '') + '\n' +
+      'END:VEVENT\nEND:VCALENDAR';
+    var blob = new Blob([ics], { type: 'text/calendar' });
+    var a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'reservation-sauf-imprevu.ics';
+    a.click();
+    URL.revokeObjectURL(a.href);
+  }
+
+  function resaOpenItinerary() {
+    window.open('https://maps.apple.com/?daddr=15+Rue+Vauban,+69006+Lyon&dirflg=w', '_blank');
   }
 
   function hrsOpenResaChat(msg) {
@@ -4345,29 +4415,39 @@ margin: 20px 20px 0;
     }, 50);
   }
 
-  // Swipe gesture on week strip
+  // Swipe gesture on week strip — smooth drag-follow effect
   var _hrsSwipeStartX = 0;
-  var _hrsSwipeThreshold = 50;
+  var _hrsSwipeThreshold = 40;
+  var _hrsSwipeDragging = false;
 
   function _hrsInitSwipe() {
     var strip = document.querySelector('.hrs-week-strip-inner');
     if (!strip) return;
     strip.addEventListener('touchstart', function(e) {
       _hrsSwipeStartX = e.touches[0].clientX;
+      _hrsSwipeDragging = true;
+      strip.style.transition = 'none';
+    }, { passive: true });
+    strip.addEventListener('touchmove', function(e) {
+      if (!_hrsSwipeDragging) return;
+      var dx = e.touches[0].clientX - _hrsSwipeStartX;
+      // Dampened follow (30% of finger movement)
+      strip.style.transform = 'translateX(' + (dx * 0.3) + 'px)';
     }, { passive: true });
     strip.addEventListener('touchend', function(e) {
+      if (!_hrsSwipeDragging) return;
+      _hrsSwipeDragging = false;
       var dx = e.changedTouches[0].clientX - _hrsSwipeStartX;
+      strip.style.transition = 'transform 0.2s ease';
+      strip.style.transform = '';
       if (Math.abs(dx) < _hrsSwipeThreshold) return;
       if (dx < 0) {
-        // Swipe left → next week
         _hrsWeekOffset++;
         hrsRenderWeekStrip('left');
       } else {
-        // Swipe right → previous week
         _hrsWeekOffset--;
         hrsRenderWeekStrip('right');
       }
-      // Auto-select same day index or first day
       setTimeout(function() {
         var cols = document.querySelectorAll('.hrs-day-col');
         if (cols.length > 0) hrsSelectDate(cols[0]);
