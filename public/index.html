@@ -967,65 +967,63 @@ max-height: 300px;
 .hrs-today-label { font-size: 10px; font-weight: 600; opacity: 0.7; letter-spacing: 0.05em; text-transform: uppercase; }
 .hrs-today-hours { font-size: 22px; font-weight: 800; letter-spacing: -0.02em; }
 
-/* Timeline */
-.hrs-timeline {
-  background: var(--bg-subtle); border-radius: 0 0 14px 14px; padding: 12px 16px 14px; margin-bottom: 12px;
+/* Agenda vertical timeline */
+.hrs-header-block { margin-bottom: 12px; }
+.hrs-agenda {
+  position: relative; background: var(--bg-subtle); border-radius: 0 0 14px 14px;
+  padding: 0 0 8px; min-height: 200px;
 }
-.hrs-header-block {
-  margin-bottom: 12px;
+.hrs-agenda--closed {
+  display: flex; align-items: center; justify-content: center;
+  min-height: 80px; border-radius: 0 0 14px 14px; background: var(--bg-subtle);
+  color: var(--text-tertiary); font-size: 14px; font-weight: 600; font-style: italic;
 }
-.hrs-tl-header {
-  display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;
+.hrs-ag-row {
+  display: flex; align-items: flex-start; position: relative;
+  min-height: 44px;
 }
-.hrs-tl-status {
-  display: flex; align-items: center; gap: 6px;
-  font-size: 13px; font-weight: 700;
+.hrs-ag-hour {
+  width: 44px; flex-shrink: 0; text-align: right; padding: 0 8px 0 0;
+  font-size: 10px; font-weight: 600; color: var(--text-tertiary);
+  font-variant-numeric: tabular-nums; line-height: 1; padding-top: 2px;
 }
-.hrs-tl-status-dot {
-  width: 8px; height: 8px; border-radius: 50%;
+.hrs-ag-line {
+  flex: 1; border-top: 1px solid var(--border); min-height: 44px;
+  position: relative;
 }
-.hrs-tl-status--open { color: #4AE88A; }
-.hrs-tl-status--open .hrs-tl-status-dot {
-  background: #4AE88A;
-  animation: hrs-pulse-green 2s ease-in-out infinite;
+.hrs-ag-slot {
+  position: absolute; left: 4px; right: 4px;
+  border-radius: 8px; padding: 6px 10px;
+  font-size: 12px; font-weight: 600; color: #fff;
+  overflow: hidden; z-index: 1;
+  display: flex; flex-direction: column; justify-content: center;
 }
-.hrs-tl-status--closed { color: #ff6b6b; }
-.hrs-tl-status--closed .hrs-tl-status-dot { background: #ff6b6b; }
+.hrs-ag-slot-label { font-weight: 700; font-size: 12px; }
+.hrs-ag-slot-time { font-size: 10px; opacity: 0.8; margin-top: 1px; }
+.hrs-ag-event {
+  position: absolute; left: 4px; right: 4px;
+  border-radius: 8px; padding: 6px 10px;
+  background: var(--bg-card); border: 1.5px solid var(--primary);
+  font-size: 12px; z-index: 2; cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  transition: transform 0.15s;
+}
+.hrs-ag-event:active { transform: scale(0.97); }
+.hrs-ag-event-title { font-weight: 700; color: var(--text); }
+.hrs-ag-event-time { font-size: 10px; color: var(--text-secondary); margin-top: 1px; }
+.hrs-ag-event-cta {
+  display: inline-block; margin-top: 4px; font-size: 10px; font-weight: 700;
+  color: var(--primary); letter-spacing: 0.02em;
+}
+.hrs-ag-now {
+  position: absolute; left: 44px; right: 0; height: 2px;
+  background: #ff3b30; z-index: 3;
+}
+.hrs-ag-now::before {
+  content: ''; position: absolute; left: -4px; top: -3px;
+  width: 8px; height: 8px; border-radius: 50%; background: #ff3b30;
+}
 @keyframes hrs-pulse-green { 0%,100% { box-shadow: 0 0 0 0 rgba(74,232,138,0.4); } 50% { box-shadow: 0 0 0 5px rgba(74,232,138,0); } }
-.hrs-tl-countdown { font-size: 11px; color: var(--text-tertiary); }
-.hrs-tl-track {
-  position: relative; height: 20px; background: var(--border);
-  border-radius: 10px; overflow: visible;
-}
-.hrs-tl-block {
-  position: absolute; top: 0; height: 100%;
-  border-radius: 10px;
-  transition: opacity 0.2s;
-}
-.hrs-tl-block:first-child { border-radius: 10px 4px 4px 10px; }
-.hrs-tl-block:last-of-type { border-radius: 4px 10px 10px 4px; }
-.hrs-tl-now {
-  position: absolute; top: -4px; width: 3px; height: 28px;
-  background: #fff; border-radius: 2px;
-  box-shadow: 0 0 6px rgba(255,255,255,0.6);
-  transform: translateX(-1px);
-  z-index: 2;
-}
-.hrs-tl-now::after {
-  content: ''; position: absolute; bottom: -3px; left: -2px;
-  width: 7px; height: 7px; border-radius: 50%;
-  background: #fff; box-shadow: 0 0 4px rgba(255,255,255,0.6);
-}
-.hrs-tl-labels {
-  display: flex; justify-content: space-between;
-  font-size: 9px; color: var(--text-tertiary); margin-top: 4px;
-  font-variant-numeric: tabular-nums;
-}
-.hrs-tl-legend { display: flex; flex-wrap: wrap; gap: 4px 12px; margin-top: 10px; }
-.hrs-tl-legend-item { display: flex; align-items: center; gap: 5px; font-size: 11px; }
-.hrs-tl-legend-dot { width: 8px; height: 8px; border-radius: 3px; flex-shrink: 0; }
-.hrs-tl-legend-label { font-weight: 600; color: var(--text); }
-.hrs-tl-legend-time { color: var(--text-tertiary); font-variant-numeric: tabular-nums; }
 
 /* Week strip */
 .hrs-week-strip {
@@ -1053,10 +1051,7 @@ max-height: 300px;
   background: var(--primary); color: #fff;
 }
 
-/* Timeline day label (non-today) */
-.hrs-tl-day-label { font-size: 13px; font-weight: 700; color: var(--text); }
-.hrs-tl-day-hours { font-size: 12px; color: var(--text-tertiary); font-variant-numeric: tabular-nums; }
-.hrs-timeline--closed { opacity: 0.6; }
+/* (legacy horizontal timeline removed — now using vertical agenda) */
 
 .hrs-special { margin-top: 12px; }
 .hrs-special-title { font-size: 10px; font-weight: 600; color: var(--text-tertiary); margin-bottom: 6px; letter-spacing: 0.04em; text-transform: uppercase; display: flex; align-items: center; gap: 6px; }
@@ -3713,88 +3708,91 @@ margin: 20px 20px 0;
 
     var d = HOURS_DATA.regular[idx];
     var isToday = idx === _hrsTodayIdx;
-    var h = '';
 
     if (!d.open) {
-      // Closed day
-      h += '<div class="hrs-timeline hrs-timeline--closed">';
-      h += '  <div class="hrs-tl-header">';
-      h += '    <div class="hrs-tl-status hrs-tl-status--closed"><span class="hrs-tl-status-dot"></span><span>Fermé</span></div>';
-      h += '    <div class="hrs-tl-countdown">' + d.day + '</div>';
-      h += '  </div>';
-      h += '</div>';
-      container.innerHTML = h;
+      container.innerHTML = '<div class="hrs-agenda--closed">Fermé · ' + d.day + '</div>';
       return;
     }
 
     var slots = getSlotsForDay(idx);
+    var ROW_H = 44; // px per hour
 
-    // Timeline range
-    var tlStart = parseTimeToMin(d.open);
-    var tlEnd = parseTimeToMin(d.close);
-    if (tlEnd <= tlStart) tlEnd += 1440;
-    var tlRange = tlEnd - tlStart;
+    // Time range: round down open hour, round up close hour
+    var tlStartMin = parseTimeToMin(d.open);
+    var tlEndMin = parseTimeToMin(d.close);
+    if (tlEndMin <= tlStartMin) tlEndMin += 1440;
+    var startH = Math.floor(tlStartMin / 60);
+    var endH = Math.ceil(tlEndMin / 60);
+    var totalH = endH - startH;
 
-    // Status header
-    var status = getHoursStatus();
-    h += '<div class="hrs-timeline">';
-    h += '  <div class="hrs-tl-header">';
-    if (isToday) {
-      h += '    <div class="hrs-tl-status hrs-tl-status--' + (status.isOpen ? 'open' : 'closed') + '">';
-      h += '      <span class="hrs-tl-status-dot"></span>';
-      h += '      <span>' + (status.isOpen ? 'Ouvert' : 'Fermé') + '</span>';
-      h += '    </div>';
-      if (status.countdown) h += '    <div class="hrs-tl-countdown">' + status.countdown + '</div>';
-    } else {
-      h += '    <div class="hrs-tl-day-label">' + d.day + '</div>';
-      h += '    <div class="hrs-tl-day-hours">' + d.open.replace(':','h') + ' – ' + d.close.replace(':','h') + '</div>';
+    var h = '<div class="hrs-agenda" style="position:relative;">';
+
+    // Hour rows
+    for (var hr = startH; hr < endH; hr++) {
+      var dispH = hr >= 24 ? hr - 24 : hr;
+      h += '<div class="hrs-ag-row">';
+      h += '  <div class="hrs-ag-hour">' + dispH + 'h</div>';
+      h += '  <div class="hrs-ag-line"></div>';
+      h += '</div>';
     }
-    h += '  </div>';
 
-    // Track bar
-    h += '  <div class="hrs-tl-track">';
+    // Slots (déjeuner, happy hour, dîner) as colored blocks
     slots.forEach(function(s) {
       var rec = s.recurrence;
       var sMin = parseTimeToMin(rec.start);
       var eMin = parseTimeToMin(rec.end);
       if (eMin <= sMin) eMin += 1440;
-      var left = ((sMin - tlStart) / tlRange) * 100;
-      var width = ((eMin - sMin) / tlRange) * 100;
-      left = Math.max(0, Math.min(100, left));
-      width = Math.min(width, 100 - left);
-      var opacity = s.type === 'promo' ? '0.5' : '0.85';
-      h += '<div class="hrs-tl-block" style="left:' + left + '%;width:' + width + '%;background:' + (s.color || '#3D6B8C') + ';opacity:' + opacity + ';"></div>';
+      var top = ((sMin - startH * 60) / (totalH * 60)) * (totalH * ROW_H);
+      var height = ((eMin - sMin) / (totalH * 60)) * (totalH * ROW_H);
+      var opacity = s.type === 'promo' ? '0.6' : '0.85';
+      h += '<div class="hrs-ag-slot" style="top:' + top + 'px;height:' + height + 'px;background:' + (s.color || '#3D6B8C') + ';opacity:' + opacity + ';">';
+      h += '  <div class="hrs-ag-slot-label">' + (s.icon ? s.icon + ' ' : '') + s.label + '</div>';
+      h += '  <div class="hrs-ag-slot-time">' + rec.start.replace(':','h') + ' – ' + rec.end.replace(':','h') + '</div>';
+      h += '</div>';
     });
 
-    // Now marker (only for today)
-    if (isToday && status.isOpen) {
+    // Events for this day
+    if (AGENDA_DATA && AGENDA_DATA.events) {
+      var dayCodes = ['MO','TU','WE','TH','FR','SA','SU'];
+      var dc = dayCodes[idx];
+      // Get date for this weekday
+      var now = new Date();
+      var todayJsDay = now.getDay(); // 0=dim
+      var todayIdx = todayJsDay === 0 ? 6 : todayJsDay - 1;
+      var diff = idx - todayIdx;
+      var targetDate = new Date(now);
+      targetDate.setDate(targetDate.getDate() + diff);
+      var targetStr = targetDate.toISOString().slice(0,10);
+
+      AGENDA_DATA.events.forEach(function(ev) {
+        if (ev.date !== targetStr) return;
+        var evStart = ev.slots ? ev.slots[0].start : ev.start;
+        var evEnd = ev.slots ? ev.slots[ev.slots.length-1].end : ev.end;
+        if (!evStart || !evEnd) return;
+        var esMin = parseTimeToMin(evStart);
+        var eeMin = parseTimeToMin(evEnd);
+        if (eeMin <= esMin) eeMin += 1440;
+        var top = ((esMin - startH * 60) / (totalH * 60)) * (totalH * ROW_H);
+        var height = Math.max(36, ((eeMin - esMin) / (totalH * 60)) * (totalH * ROW_H));
+        h += '<div class="hrs-ag-event" style="top:' + top + 'px;height:' + height + 'px;" onclick="openEventDetail(\'' + ev.id + '\')">';
+        h += '  <div class="hrs-ag-event-title">' + ev.title + '</div>';
+        h += '  <div class="hrs-ag-event-time">' + evStart.replace(':','h') + ' – ' + evEnd.replace(':','h');
+        if (ev.price) h += ' · ' + ev.price + '€';
+        h += '</div>';
+        if (ev.reservable) h += '<div class="hrs-ag-event-cta">Réserver →</div>';
+        h += '</div>';
+      });
+    }
+
+    // Now marker (red line like Apple Calendar)
+    if (isToday) {
       var nowDate = new Date();
       var nowMin = nowDate.getHours() * 60 + nowDate.getMinutes();
       if (nowMin < 6 * 60) nowMin += 1440;
-      var nowPct = Math.max(0, Math.min(100, ((nowMin - tlStart) / tlRange) * 100));
-      h += '<div class="hrs-tl-now" style="left:' + nowPct + '%;"></div>';
-    }
-    h += '  </div>';
-
-    // Time labels
-    h += '  <div class="hrs-tl-labels">';
-    h += '    <span>' + minToHStr(tlStart) + '</span>';
-    h += '    <span>' + minToHStr(tlStart + Math.round(tlRange/2)) + '</span>';
-    h += '    <span>' + minToHStr(tlEnd) + '</span>';
-    h += '  </div>';
-
-    // Legend
-    if (slots.length > 0) {
-      h += '  <div class="hrs-tl-legend">';
-      slots.forEach(function(s) {
-        var rec = s.recurrence;
-        h += '<div class="hrs-tl-legend-item">';
-        h += '  <span class="hrs-tl-legend-dot" style="background:' + (s.color || '#3D6B8C') + ';' + (s.type === 'promo' ? 'opacity:0.5;' : '') + '"></span>';
-        h += '  <span class="hrs-tl-legend-label">' + (s.icon ? s.icon + ' ' : '') + s.label + '</span>';
-        h += '  <span class="hrs-tl-legend-time">' + rec.start.replace(':','h') + '–' + rec.end.replace(':','h') + '</span>';
-        h += '</div>';
-      });
-      h += '  </div>';
+      if (nowMin >= startH * 60 && nowMin <= endH * 60) {
+        var nowTop = ((nowMin - startH * 60) / (totalH * 60)) * (totalH * ROW_H);
+        h += '<div class="hrs-ag-now" style="top:' + nowTop + 'px;"></div>';
+      }
     }
 
     h += '</div>';
@@ -3861,34 +3859,7 @@ margin: 20px 20px 0;
       html += '</div>';
     }
 
-    // ── Upcoming events from agenda ──
-    if (AGENDA_DATA && AGENDA_DATA.events) {
-      var todayStr = new Date().toISOString().slice(0,10);
-      var upcomingEv = AGENDA_DATA.events.filter(function(e) { return e.date >= todayStr; }).slice(0, 3);
-      if (upcomingEv.length > 0) {
-        html += '<div class="hrs-special" style="margin-top:12px;">';
-        html += '  <div class="hrs-special-title"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 8v4l3 3"/><circle cx="12" cy="12" r="10"/></svg> Prochains événements</div>';
-        for (var k = 0; k < upcomingEv.length; k++) {
-          var ev = upcomingEv[k];
-          var evDate = new Date(ev.date);
-          var evDay = evDate.getDate() + ' ' + ['jan','fév','mar','avr','mai','jun','jul','aoû','sep','oct','nov','déc'][evDate.getMonth()];
-          var catIcons = { musique:'🎵', 'dégustation':'🍷', soirée:'🎉' };
-          html += '<div class="hrs-special-item">';
-          html += '  <div class="hrs-special-icon">' + (catIcons[ev.category] || '📅') + '</div>';
-          html += '  <div class="hrs-special-info">';
-          html += '    <div class="hrs-special-date" style="cursor:pointer;" onclick="openEventDetail(\'' + ev.id + '\')">' + evDay + ' · ' + ev.title + '</div>';
-          var evStart = ev.slots ? ev.slots[0].start : ev.start;
-          var evEnd = ev.slots ? ev.slots[ev.slots.length-1].end : ev.end;
-          html += '    <div class="hrs-special-label">' + (evStart||'').replace(':','h') + ' – ' + (evEnd||'').replace(':','h');
-          if (ev.price) html += ' · ' + ev.price + '€';
-          if (ev.reservable) html += ' · <span style="color:var(--primary);">Réservable</span>';
-          html += '</div>';
-          html += '  </div>';
-          html += '</div>';
-        }
-        html += '</div>';
-      }
-    }
+    // Events are now shown directly in the vertical agenda timeline
 
     document.getElementById('hoursSheetContent').innerHTML = html;
 
