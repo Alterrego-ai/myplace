@@ -3396,7 +3396,7 @@ margin: 20px 20px 0;
   </div>
 
   <!-- Zone fixe : boutons empilés au même endroit, hauteur constante -->
-  <div style="flex-shrink:0;position:relative;height:76px;margin:0 20px;">
+  <div style="flex-shrink:0;position:relative;height:76px;margin:0;padding:0 20px;background:var(--bg-card);">
     <!-- Bouton principal -->
     <button class="resa-submit" id="resaCheckBtn" onclick="checkResaDispo()" style="position:absolute;top:12px;left:0;right:0;">Vérifier la disponibilité</button>
 
@@ -3414,7 +3414,9 @@ margin: 20px 20px 0;
     </div>
   </div>
 
-  <button class="sheet-cancel" onclick="closeAllSheets()" style="flex-shrink:0;">Fermer</button>
+  <div style="background:var(--bg-card);padding:0 0 4px;">
+    <button class="sheet-cancel" onclick="closeAllSheets()" style="flex-shrink:0;">Fermer</button>
+  </div>
 </div>
 
 <!-- BOTTOM SHEET PARTAGER (fullscreen) -->
