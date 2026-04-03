@@ -114,6 +114,7 @@ var I18N = (function() {
     staff_cadeaux:      { fr:'Cadeaux', en:'Gift cards', es:'Regalos', it:'Regali', de:'Geschenke', pt:'Presentes' },
     staff_fidelite:     { fr:'Fidélité', en:'Loyalty', es:'Fidelidad', it:'Fedeltà', de:'Treue', pt:'Fidelidade' },
     staff_pourboires:   { fr:'Pourboires', en:'Tips', es:'Propinas', it:'Mance', de:'Trinkgeld', pt:'Gorjetas' },
+    staff_scan_barcode: { fr:'Code-barres', en:'Barcode', es:'Código', it:'Codice', de:'Barcode', pt:'Código' },
 
     // ── Profil sheet ──
     profil_email:       { fr:'Email', en:'Email', es:'Email', it:'Email', de:'E-Mail', pt:'Email' },
