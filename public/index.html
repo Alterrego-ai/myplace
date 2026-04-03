@@ -3368,19 +3368,19 @@ margin: 20px 20px 0;
     </div>
   </div>
 
-  <!-- Zone fixe : boutons toujours à la même hauteur -->
-  <div style="flex-shrink:0;padding:14px 20px;">
+  <!-- Zone fixe : boutons empilés au même endroit, hauteur constante -->
+  <div style="flex-shrink:0;padding:14px 20px;position:relative;height:56px;">
     <!-- Bouton principal -->
-    <button class="resa-submit" id="resaCheckBtn" onclick="checkResaDispo()" style="width:100%;">Vérifier la disponibilité</button>
+    <button class="resa-submit" id="resaCheckBtn" onclick="checkResaDispo()" style="position:absolute;inset:14px 20px;width:calc(100% - 40px);">Vérifier la disponibilité</button>
 
     <!-- Confirmer / Modifier -->
-    <div id="resaConfirmBtns" style="display:none;gap:10px;">
+    <div id="resaConfirmBtns" style="position:absolute;inset:14px 20px;width:calc(100% - 40px);display:flex;gap:10px;visibility:hidden;opacity:0;transition:opacity 0.3s ease;">
       <button onclick="resaCancelDispo()" style="flex:1;padding:14px;border:1.5px solid var(--border);border-radius:12px;background:transparent;color:var(--text-secondary);font-size:15px;font-weight:600;font-family:inherit;cursor:pointer;">Modifier</button>
       <button class="resa-submit" onclick="submitReservation()" id="resaSubmitBtn" style="flex:1;">Confirmer</button>
     </div>
 
     <!-- Actions post-confirmation -->
-    <div id="resaActions" style="display:none;gap:8px;">
+    <div id="resaActions" style="position:absolute;inset:14px 20px;width:calc(100% - 40px);display:flex;gap:8px;visibility:hidden;opacity:0;transition:opacity 0.3s ease;">
       <button onclick="resaShareInfo()" class="sesame-action"><span>↗</span> Partager</button>
       <button onclick="resaAddCalendar()" class="sesame-action"><span>📅</span> Calendrier</button>
       <button onclick="resaOpenItinerary()" class="sesame-action"><span>🗺</span> Itinéraire</button>
@@ -4486,9 +4486,7 @@ margin: 20px 20px 0;
     document.getElementById('resaError').style.display = 'none';
     document.getElementById('resaDispoResult').style.display = 'none';
     document.getElementById('resaLottieWrap').style.display = 'none';
-    document.getElementById('resaConfirmBtns').style.display = 'none';
-    document.getElementById('resaActions').style.display = 'none';
-    document.getElementById('resaCheckBtn').style.display = '';
+    resaShowOnlyBtn('resaCheckBtn');
     document.getElementById('resaCheckBtn').disabled = false;
     document.getElementById('resaCheckBtn').textContent = 'Vérifier la disponibilité';
     document.getElementById('sesameNotePlaceholder').style.display = '';
@@ -4585,13 +4583,27 @@ margin: 20px 20px 0;
 
   function resaResetDispo() {
     document.getElementById('resaDispoResult').style.display = 'none';
-    document.getElementById('resaConfirmBtns').style.display = 'none';
-    document.getElementById('resaCheckBtn').style.display = '';
+    resaShowOnlyBtn('resaCheckBtn');
     document.getElementById('resaCheckBtn').disabled = false;
     document.getElementById('resaCheckBtn').textContent = 'Vérifier la disponibilité';
   }
 
   // resaToggleUserEdit removed — now handled inline in sésame
+
+  // — Utilitaires boutons : visibilité sans changer la hauteur —
+  function resaShowBtn(id) {
+    var el = document.getElementById(id);
+    el.style.visibility = 'visible'; el.style.opacity = '1'; el.style.pointerEvents = '';
+  }
+  function resaHideBtn(id) {
+    var el = document.getElementById(id);
+    el.style.visibility = 'hidden'; el.style.opacity = '0'; el.style.pointerEvents = 'none';
+  }
+  function resaShowOnlyBtn(id) {
+    ['resaCheckBtn','resaConfirmBtns','resaActions'].forEach(function(b) {
+      if (b === id) resaShowBtn(b); else resaHideBtn(b);
+    });
+  }
 
   function checkResaDispo() {
     var date = document.getElementById('resaDate').value;
@@ -4604,8 +4616,8 @@ margin: 20px 20px 0;
     if (!date || !heure) { errEl.textContent = 'Date et heure requises'; errEl.style.display = ''; return; }
     errEl.style.display = 'none';
 
-    // Hide check button, show Lottie overlay immediately
-    document.getElementById('resaCheckBtn').style.display = 'none';
+    // Hide all buttons during loading, show Lottie overlay
+    resaHideBtn('resaCheckBtn');
     var lottieWrap = document.getElementById('resaLottieWrap');
     lottieWrap.style.display = 'flex';
 
@@ -4639,13 +4651,13 @@ margin: 20px 20px 0;
       var totalTime = steps.length * STEP_DELAY + 300;
       setTimeout(function() {
         if (data.disponible) {
-          document.getElementById('resaConfirmBtns').style.display = 'flex';
+          resaShowOnlyBtn('resaConfirmBtns');
         } else {
           dispoEl.style.display = '';
           dispoEl.style.background = 'rgba(255,59,48,0.1)';
           dispoEl.style.color = '#ff3b30';
           dispoEl.innerHTML = '✗ ' + (data.message || 'Pas de disponibilité');
-          document.getElementById('resaCheckBtn').style.display = '';
+          resaShowOnlyBtn('resaCheckBtn');
           sesameUnlockFields();
         }
       }, totalTime);
@@ -4666,7 +4678,7 @@ margin: 20px 20px 0;
         var remaining = Math.max(0, 1000 - elapsed);
         setTimeout(function() {
           lottieWrap.style.display = 'none';
-          document.getElementById('resaCheckBtn').style.display = '';
+          resaShowOnlyBtn('resaCheckBtn');
           errEl.textContent = 'Erreur réseau, réessayez';
           errEl.style.display = '';
         }, remaining);
@@ -4683,8 +4695,7 @@ margin: 20px 20px 0;
 
   function resaCancelDispo() {
     document.getElementById('resaDispoResult').style.display = 'none';
-    document.getElementById('resaConfirmBtns').style.display = 'none';
-    document.getElementById('resaCheckBtn').style.display = '';
+    resaShowOnlyBtn('resaCheckBtn');
     sesameUnlockFields();
   }
 
@@ -4699,7 +4710,7 @@ margin: 20px 20px 0;
     if (!nom || !date || !heure) return;
 
     // Hide confirm buttons, show mini loading on sésame
-    document.getElementById('resaConfirmBtns').style.display = 'none';
+    resaHideBtn('resaConfirmBtns');
     document.getElementById('resaDispoResult').style.display = 'none';
     document.getElementById('sesameStamp').textContent = '…';
 
@@ -4738,22 +4749,20 @@ margin: 20px 20px 0;
 
         // Show actions
         setTimeout(function() {
-          document.getElementById('resaActions').style.display = 'flex';
+          resaShowOnlyBtn('resaActions');
         }, 600);
 
       } else {
         errEl.textContent = res.data.erreur || 'Erreur lors de la réservation';
         errEl.style.display = '';
-        document.getElementById('resaCheckBtn').style.display = '';
-        document.getElementById('resaConfirmBtns').style.display = 'none';
+        resaShowOnlyBtn('resaCheckBtn');
         document.getElementById('sesameStamp').textContent = 'SÉSAME';
       }
     })
     .catch(function() {
       errEl.textContent = 'Erreur réseau, réessayez';
       errEl.style.display = '';
-      document.getElementById('resaCheckBtn').style.display = '';
-      document.getElementById('resaConfirmBtns').style.display = 'none';
+      resaShowOnlyBtn('resaCheckBtn');
       document.getElementById('sesameStamp').textContent = 'SÉSAME';
     });
   }
