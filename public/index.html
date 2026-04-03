@@ -4683,6 +4683,11 @@ margin: 20px 20px 0;
             el.style.pointerEvents = data.disponible ? 'none' : '';
           });
           if (data.disponible) {
+            // Nettoyer le sésame pour l'état "prêt à confirmer"
+            document.getElementById('resaTel').style.borderBottom = 'none';
+            document.querySelectorAll('.sesame-stepper').forEach(function(b) { b.style.display = 'none'; });
+            var noteVal = document.getElementById('resaNotes').value.trim();
+            if (!noteVal) document.getElementById('sesameNotePlaceholder').style.display = 'none';
             resaShowOnlyBtn('resaConfirmBtns');
           } else {
             dispoEl.style.display = '';
@@ -4729,6 +4734,10 @@ margin: 20px 20px 0;
     document.getElementById('resaDispoResult').style.display = 'none';
     resaShowOnlyBtn('resaCheckBtn');
     sesameUnlockFields();
+    // Restaurer les éléments cachés après validation
+    document.getElementById('resaTel').style.borderBottom = '';
+    document.querySelectorAll('.sesame-stepper').forEach(function(b) { b.style.display = ''; });
+    document.getElementById('sesameNotePlaceholder').style.display = '';
   }
 
   function submitReservation() {
