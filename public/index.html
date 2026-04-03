@@ -1217,6 +1217,13 @@ max-height: 300px;
   from { opacity: 0; transform: scale(0.5); }
   to { opacity: 1; transform: scale(1); }
 }
+#resaLottieWrap {
+  animation: sesameFadeIn 0.5s ease forwards;
+}
+@keyframes sesameFadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
 .sesame-stamp {
   position: absolute; top: 50%; right: -8px;
   transform: translateY(-50%) rotate(-20deg);
@@ -3291,9 +3298,9 @@ margin: 20px 20px 0;
     <!-- Le Sésame interactif -->
     <div class="sesame-pass sesame-draft" id="sesamePass">
       <!-- Lottie overlay -->
-      <div id="resaLottieWrap" style="display:none;position:absolute;inset:0;z-index:10;background:rgba(255,255,255,0.85);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);border-radius:16px;display:none;flex-direction:column;align-items:center;justify-content:center;">
-        <dotlottie-player id="resaLottiePlayer" src="/calendar-animation.lottie" autoplay loop speed="1" style="width:180px;height:180px;"></dotlottie-player>
-        <div style="font-size:14px;color:var(--s-text2);margin-top:10px;font-weight:500;font-style:italic;">Nous consultons notre cahier de réservation…</div>
+      <div id="resaLottieWrap" style="display:none;position:absolute;inset:0;z-index:10;background:rgba(255,255,255,0.55);backdrop-filter:blur(2px);-webkit-backdrop-filter:blur(2px);border-radius:16px;flex-direction:column;align-items:center;justify-content:center;">
+        <dotlottie-player id="resaLottiePlayer" src="/calendar-animation.lottie" autoplay loop speed="1" style="width:140px;height:140px;"></dotlottie-player>
+        <div style="font-size:13px;color:var(--text-secondary);margin-top:8px;font-weight:500;font-style:italic;">Nous consultons notre cahier de réservation…</div>
       </div>
       <!-- Header -->
       <div class="sesame-header">
@@ -4591,19 +4598,21 @@ margin: 20px 20px 0;
     if (!date || !heure) { errEl.textContent = 'Date et heure requises'; errEl.style.display = ''; return; }
     errEl.style.display = 'none';
 
-    // Hide check button
+    // Hide check button, show Lottie overlay immediately
     document.getElementById('resaCheckBtn').style.display = 'none';
+    var lottieWrap = document.getElementById('resaLottieWrap');
+    lottieWrap.style.display = 'flex';
 
-    // Progressive field validation — lock fields one by one with green check
+    // Field validation steps — will animate AFTER API returns
     var validatedClass = 'sesame-field-validated';
     var steps = [
-      { el: document.querySelector('.sesame-details .sesame-detail-row:first-child .sesame-detail:first-child'), label: 'Date' },
-      { el: document.querySelector('.sesame-details .sesame-detail-row:first-child .sesame-detail:last-child'), label: 'Heure' },
-      { el: document.querySelector('.sesame-details .sesame-detail-row:last-child .sesame-detail:first-child'), label: 'Convives' },
-      { el: document.getElementById('sesameGuestWrap'), label: 'Identité' },
-      { el: document.getElementById('sesamePhoneRow'), label: 'Téléphone' }
+      { el: document.querySelector('.sesame-details .sesame-detail-row:first-child .sesame-detail:first-child') },
+      { el: document.querySelector('.sesame-details .sesame-detail-row:first-child .sesame-detail:last-child') },
+      { el: document.querySelector('.sesame-details .sesame-detail-row:last-child .sesame-detail:first-child') },
+      { el: document.getElementById('sesameGuestWrap') },
+      { el: document.getElementById('sesamePhoneRow') }
     ];
-    var STEP_DELAY = 350;
+    var STEP_DELAY = 400;
 
     function lockField(step) {
       if (!step.el) return;
@@ -4611,51 +4620,52 @@ margin: 20px 20px 0;
       step.el.style.pointerEvents = 'none';
     }
 
-    // Animate steps sequentially, then show Lottie, then fetch result
-    steps.forEach(function(step, i) {
-      setTimeout(function() { lockField(step); }, i * STEP_DELAY);
-    });
+    function animateFieldsThenResult(data) {
+      // Hide Lottie, then check fields one by one
+      lottieWrap.style.display = 'none';
 
-    // After all fields locked, show Lottie overlay
-    var totalLockTime = steps.length * STEP_DELAY;
-    var lottieWrap = document.getElementById('resaLottieWrap');
-    setTimeout(function() {
-      lottieWrap.style.display = 'flex';
-    }, totalLockTime);
+      steps.forEach(function(step, i) {
+        setTimeout(function() { lockField(step); }, i * STEP_DELAY);
+      });
 
-    // Fire fetch immediately in parallel
+      // After all fields checked, show result
+      var totalTime = steps.length * STEP_DELAY + 300;
+      setTimeout(function() {
+        dispoEl.style.display = '';
+        if (data.disponible) {
+          dispoEl.style.background = 'rgba(74,232,138,0.12)';
+          dispoEl.style.color = '#059669';
+          dispoEl.innerHTML = '✓ Place disponible pour ' + _resaCouverts + ' convive(s)';
+          document.getElementById('resaConfirmBtns').style.display = 'flex';
+        } else {
+          dispoEl.style.background = 'rgba(255,59,48,0.1)';
+          dispoEl.style.color = '#ff3b30';
+          dispoEl.innerHTML = '✗ ' + (data.message || 'Pas de disponibilité');
+          document.getElementById('resaCheckBtn').style.display = '';
+          sesameUnlockFields();
+        }
+      }, totalTime);
+    }
+
+    // Fetch — ensure at least 1.5s of Lottie display
+    var fetchStart = Date.now();
     fetch('/disponibilites?date=' + date + '&heure=' + heure + '&couverts=' + _resaCouverts)
       .then(function(r) { return r.json(); })
       .then(function(data) {
-        // Wait at least totalLockTime + 1200ms for the animation to breathe
-        var minWait = totalLockTime + 1200;
-        setTimeout(function() {
-          lottieWrap.style.display = 'none';
-          dispoEl.style.display = '';
-          if (data.disponible) {
-            dispoEl.style.background = 'rgba(74,232,138,0.12)';
-            dispoEl.style.color = '#059669';
-            dispoEl.innerHTML = '✓ Place disponible pour ' + _resaCouverts + ' convive(s)';
-            document.getElementById('resaConfirmBtns').style.display = 'flex';
-          } else {
-            dispoEl.style.background = 'rgba(255,59,48,0.1)';
-            dispoEl.style.color = '#ff3b30';
-            dispoEl.innerHTML = '✗ ' + (data.message || 'Pas de disponibilité');
-            document.getElementById('resaCheckBtn').style.display = '';
-            // Unlock fields on failure
-            sesameUnlockFields();
-          }
-        }, minWait);
+        var elapsed = Date.now() - fetchStart;
+        var minLottie = 1500;
+        var remaining = Math.max(0, minLottie - elapsed);
+        setTimeout(function() { animateFieldsThenResult(data); }, remaining);
       })
       .catch(function() {
-        var minWait = totalLockTime + 800;
+        var elapsed = Date.now() - fetchStart;
+        var remaining = Math.max(0, 1000 - elapsed);
         setTimeout(function() {
           lottieWrap.style.display = 'none';
           document.getElementById('resaCheckBtn').style.display = '';
           errEl.textContent = 'Erreur réseau, réessayez';
           errEl.style.display = '';
-          sesameUnlockFields();
-        }, minWait);
+        }, remaining);
       });
   }
 
