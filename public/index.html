@@ -1050,19 +1050,10 @@ max-height: 300px;
   background: var(--primary); color: #fff;
 }
 
-/* Day detail card */
-.hrs-day-detail {
-  background: var(--bg-subtle); border-radius: 12px; padding: 12px 14px;
-  min-height: 44px; transition: all 0.2s;
-}
-.hrs-day-detail-name { font-size: 13px; font-weight: 700; color: var(--text); margin-bottom: 2px; }
-.hrs-day-detail-hours { font-size: 18px; font-weight: 800; color: var(--text); letter-spacing: -0.02em; }
-.hrs-day-detail-hours--closed { color: var(--text-tertiary); font-style: italic; font-weight: 500; font-size: 14px; }
-.hrs-day-detail-slots { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px; }
-.hrs-day-detail-slot {
-  font-size: 11px; font-weight: 500; padding: 2px 8px; border-radius: 6px;
-  background: var(--bg-card); border: 1px solid var(--border); color: var(--text-secondary);
-}
+/* Timeline day label (non-today) */
+.hrs-tl-day-label { font-size: 13px; font-weight: 700; color: var(--text); }
+.hrs-tl-day-hours { font-size: 12px; color: var(--text-tertiary); font-variant-numeric: tabular-nums; }
+.hrs-timeline--closed { opacity: 0.6; }
 
 .hrs-special { margin-top: 12px; }
 .hrs-special-title { font-size: 10px; font-weight: 600; color: var(--text-tertiary); margin-bottom: 6px; letter-spacing: 0.04em; text-transform: uppercase; display: flex; align-items: center; gap: 6px; }
@@ -3366,6 +3357,23 @@ margin: 20px 20px 0;
     return { isOpen: isOpen, todayLabel: DAY_NAMES_FR[dayIdx], todayHours: fmtOpen + ' – ' + fmtClose, countdown: countdown, dayIdx: mappedIdx, special: special };
   }
 
+  function getSlotsForDay(idx) {
+    var slots = [];
+    if (!AGENDA_DATA || !AGENDA_DATA.services) return slots;
+    var dayCodes = ['MO','TU','WE','TH','FR','SA','SU'];
+    var dc = dayCodes[idx];
+    AGENDA_DATA.services.forEach(function(s) {
+      if (s.type !== 'slot' && s.type !== 'promo') return;
+      var rec = s.recurrence;
+      if (!rec || !rec.rrule) return;
+      var match = rec.rrule.match(/BYDAY=([A-Z,]+)/);
+      if (!match) return;
+      if (match[1].split(',').indexOf(dc) >= 0) slots.push(s);
+    });
+    slots.sort(function(a,b) { return a.recurrence.start.localeCompare(b.recurrence.start); });
+    return slots;
+  }
+
   function selectHrsDay(idx) {
     // Update circle selection
     document.querySelectorAll('.hrs-day-circle').forEach(function(el) {
@@ -3374,47 +3382,104 @@ margin: 20px 20px 0;
     var btn = document.querySelector('.hrs-day-circle[data-day-idx="' + idx + '"]');
     if (btn) btn.classList.add('hrs-day-circle--selected');
 
-    // Build detail
-    var d = HOURS_DATA.regular[idx];
-    var detail = document.getElementById('hrsDayDetail');
-    if (!detail) return;
+    var container = document.getElementById('hrsTimelineContainer');
+    if (!container) return;
 
-    var h = '<div class="hrs-day-detail-name">' + d.day + '</div>';
-    if (d.open) {
-      h += '<div class="hrs-day-detail-hours">' + d.open.replace(':','h') + ' – ' + d.close.replace(':','h') + '</div>';
-      // Show slots for this day
-      if (AGENDA_DATA && AGENDA_DATA.services) {
-        var dayCodes = ['MO','TU','WE','TH','FR','SA','SU'];
-        var dc = dayCodes[idx];
-        var slots = [];
-        AGENDA_DATA.services.forEach(function(s) {
-          if (s.type !== 'slot' && s.type !== 'promo') return;
-          var rec = s.recurrence;
-          if (!rec || !rec.rrule) return;
-          var match = rec.rrule.match(/BYDAY=([A-Z,]+)/);
-          if (!match) return;
-          if (match[1].split(',').indexOf(dc) >= 0) slots.push(s);
-        });
-        if (slots.length > 0) {
-          h += '<div class="hrs-day-detail-slots">';
-          slots.sort(function(a,b) { return a.recurrence.start.localeCompare(b.recurrence.start); });
-          slots.forEach(function(s) {
-            var rec = s.recurrence;
-            h += '<span class="hrs-day-detail-slot" style="border-color:' + (s.color || 'var(--border)') + ';">';
-            h += (s.icon ? s.icon + ' ' : '') + s.label + ' ' + rec.start.replace(':','h') + '–' + rec.end.replace(':','h');
-            h += '</span>';
-          });
-          h += '</div>';
-        }
-      }
-    } else {
-      h += '<div class="hrs-day-detail-hours hrs-day-detail-hours--closed">Fermé</div>';
+    var d = HOURS_DATA.regular[idx];
+    var isToday = idx === _hrsTodayIdx;
+    var h = '';
+
+    if (!d.open) {
+      // Closed day
+      h += '<div class="hrs-timeline hrs-timeline--closed">';
+      h += '  <div class="hrs-tl-header">';
+      h += '    <div class="hrs-tl-status hrs-tl-status--closed"><span class="hrs-tl-status-dot"></span><span>Fermé</span></div>';
+      h += '    <div class="hrs-tl-countdown">' + d.day + '</div>';
+      h += '  </div>';
+      h += '</div>';
+      container.innerHTML = h;
+      return;
     }
-    detail.innerHTML = h;
+
+    var slots = getSlotsForDay(idx);
+
+    // Timeline range
+    var tlStart = parseTimeToMin(d.open);
+    var tlEnd = parseTimeToMin(d.close);
+    if (tlEnd <= tlStart) tlEnd += 1440;
+    var tlRange = tlEnd - tlStart;
+
+    // Status header
+    var status = getHoursStatus();
+    h += '<div class="hrs-timeline">';
+    h += '  <div class="hrs-tl-header">';
+    if (isToday) {
+      h += '    <div class="hrs-tl-status hrs-tl-status--' + (status.isOpen ? 'open' : 'closed') + '">';
+      h += '      <span class="hrs-tl-status-dot"></span>';
+      h += '      <span>' + (status.isOpen ? 'Ouvert' : 'Fermé') + '</span>';
+      h += '    </div>';
+      if (status.countdown) h += '    <div class="hrs-tl-countdown">' + status.countdown + '</div>';
+    } else {
+      h += '    <div class="hrs-tl-day-label">' + d.day + '</div>';
+      h += '    <div class="hrs-tl-day-hours">' + d.open.replace(':','h') + ' – ' + d.close.replace(':','h') + '</div>';
+    }
+    h += '  </div>';
+
+    // Track bar
+    h += '  <div class="hrs-tl-track">';
+    slots.forEach(function(s) {
+      var rec = s.recurrence;
+      var sMin = parseTimeToMin(rec.start);
+      var eMin = parseTimeToMin(rec.end);
+      if (eMin <= sMin) eMin += 1440;
+      var left = ((sMin - tlStart) / tlRange) * 100;
+      var width = ((eMin - sMin) / tlRange) * 100;
+      left = Math.max(0, Math.min(100, left));
+      width = Math.min(width, 100 - left);
+      var opacity = s.type === 'promo' ? '0.5' : '0.85';
+      h += '<div class="hrs-tl-block" style="left:' + left + '%;width:' + width + '%;background:' + (s.color || '#3D6B8C') + ';opacity:' + opacity + ';"></div>';
+    });
+
+    // Now marker (only for today)
+    if (isToday && status.isOpen) {
+      var nowDate = new Date();
+      var nowMin = nowDate.getHours() * 60 + nowDate.getMinutes();
+      if (nowMin < 6 * 60) nowMin += 1440;
+      var nowPct = Math.max(0, Math.min(100, ((nowMin - tlStart) / tlRange) * 100));
+      h += '<div class="hrs-tl-now" style="left:' + nowPct + '%;"></div>';
+    }
+    h += '  </div>';
+
+    // Time labels
+    h += '  <div class="hrs-tl-labels">';
+    h += '    <span>' + minToHStr(tlStart) + '</span>';
+    h += '    <span>' + minToHStr(tlStart + Math.round(tlRange/2)) + '</span>';
+    h += '    <span>' + minToHStr(tlEnd) + '</span>';
+    h += '  </div>';
+
+    // Legend
+    if (slots.length > 0) {
+      h += '  <div class="hrs-tl-legend">';
+      slots.forEach(function(s) {
+        var rec = s.recurrence;
+        h += '<div class="hrs-tl-legend-item">';
+        h += '  <span class="hrs-tl-legend-dot" style="background:' + (s.color || '#3D6B8C') + ';' + (s.type === 'promo' ? 'opacity:0.5;' : '') + '"></span>';
+        h += '  <span class="hrs-tl-legend-label">' + (s.icon ? s.icon + ' ' : '') + s.label + '</span>';
+        h += '  <span class="hrs-tl-legend-time">' + rec.start.replace(':','h') + '–' + rec.end.replace(':','h') + '</span>';
+        h += '</div>';
+      });
+      h += '  </div>';
+    }
+
+    h += '</div>';
+    container.innerHTML = h;
   }
+
+  var _hrsTodayIdx = 0; // track which day is "today"
 
   function buildHoursSheet() {
     var status = getHoursStatus();
+    _hrsTodayIdx = status.dayIdx;
     var html = '';
 
     // ── Today card (météo intégrée à droite) ──
@@ -3429,96 +3494,7 @@ margin: 20px 20px 0;
     html += '  <div class="hrs-today-hours">' + status.todayHours + '</div>';
     html += '</div>';
 
-    // ── Timeline visuelle du jour ──
-    var todaySlots = [];
-    if (AGENDA_DATA && AGENDA_DATA.services) {
-      var now = new Date();
-      var dayCode = ['SU','MO','TU','WE','TH','FR','SA'][now.getDay()];
-      AGENDA_DATA.services.forEach(function(s) {
-        if (s.type !== 'slot' && s.type !== 'promo') return;
-        var rec = s.recurrence;
-        if (!rec || !rec.rrule) return;
-        var match = rec.rrule.match(/BYDAY=([A-Z,]+)/);
-        if (!match) return;
-        if (match[1].split(',').indexOf(dayCode) >= 0) {
-          todaySlots.push(s);
-        }
-      });
-    }
-    if (todaySlots.length > 0) {
-      // Sort by start time
-      todaySlots.sort(function(a,b) { return a.recurrence.start.localeCompare(b.recurrence.start); });
-
-      // Timeline range: venue open → close
-      var today = HOURS_DATA.regular[status.dayIdx];
-      var tlStart = today.open ? parseTimeToMin(today.open) : 600; // 10h fallback
-      var tlEnd = today.close ? parseTimeToMin(today.close) : 1440;
-      if (tlEnd <= tlStart) tlEnd += 1440;
-      var tlRange = tlEnd - tlStart;
-
-      // Current time marker
-      var nowDate = new Date();
-      var nowMin = nowDate.getHours() * 60 + nowDate.getMinutes();
-      if (nowMin < 6 * 60) nowMin += 1440;
-      var nowPct = Math.max(0, Math.min(100, ((nowMin - tlStart) / tlRange) * 100));
-
-      html += '<div class="hrs-timeline">';
-      html += '  <div class="hrs-tl-header">';
-      html += '    <div class="hrs-tl-status hrs-tl-status--' + (status.isOpen ? 'open' : 'closed') + '">';
-      html += '      <span class="hrs-tl-status-dot"></span>';
-      html += '      <span>' + (status.isOpen ? 'Ouvert' : 'Fermé') + '</span>';
-      html += '    </div>';
-      if (status.countdown) html += '    <div class="hrs-tl-countdown">' + status.countdown + '</div>';
-      html += '  </div>';
-
-      // Track bar
-      html += '  <div class="hrs-tl-track">';
-
-      // Slot blocks
-      todaySlots.forEach(function(s) {
-        var rec = s.recurrence;
-        var sMin = parseTimeToMin(rec.start);
-        var eMin = parseTimeToMin(rec.end);
-        if (eMin <= sMin) eMin += 1440;
-        var left = ((sMin - tlStart) / tlRange) * 100;
-        var width = ((eMin - sMin) / tlRange) * 100;
-        left = Math.max(0, Math.min(100, left));
-        width = Math.min(width, 100 - left);
-        var opacity = s.type === 'promo' ? '0.5' : '0.85';
-        html += '<div class="hrs-tl-block" style="left:' + left + '%;width:' + width + '%;background:' + (s.color || '#3D6B8C') + ';opacity:' + opacity + ';" title="' + s.label + '">';
-        html += '</div>';
-      });
-
-      // Now marker
-      if (status.isOpen) {
-        html += '<div class="hrs-tl-now" style="left:' + nowPct + '%;"></div>';
-      }
-
-      html += '  </div>'; // end track
-
-      // Time labels under track
-      html += '  <div class="hrs-tl-labels">';
-      html += '    <span>' + minToHStr(tlStart) + '</span>';
-      html += '    <span>' + minToHStr(tlStart + Math.round(tlRange/2)) + '</span>';
-      html += '    <span>' + minToHStr(tlEnd) + '</span>';
-      html += '  </div>';
-
-      // Legend
-      html += '  <div class="hrs-tl-legend">';
-      todaySlots.forEach(function(s) {
-        var rec = s.recurrence;
-        html += '<div class="hrs-tl-legend-item">';
-        html += '  <span class="hrs-tl-legend-dot" style="background:' + (s.color || '#3D6B8C') + ';' + (s.type === 'promo' ? 'opacity:0.5;' : '') + '"></span>';
-        html += '  <span class="hrs-tl-legend-label">' + (s.icon ? s.icon + ' ' : '') + s.label + '</span>';
-        html += '  <span class="hrs-tl-legend-time">' + rec.start.replace(':','h') + '–' + rec.end.replace(':','h') + '</span>';
-        html += '</div>';
-      });
-      html += '  </div>';
-
-      html += '</div>'; // end timeline
-    }
-
-    // ── Week strip interactive ──
+    // ── Week strip ──
     var dayInitials = ['L','M','M','J','V','S','D'];
     html += '<div class="hrs-week-strip">';
     for (var i = 0; i < HOURS_DATA.regular.length; i++) {
@@ -3533,8 +3509,9 @@ margin: 20px 20px 0;
       html += '</button>';
     }
     html += '</div>';
-    // Detail for selected day (defaults to today)
-    html += '<div class="hrs-day-detail" id="hrsDayDetail"></div>';
+
+    // ── Timeline container (filled by selectHrsDay) ──
+    html += '<div id="hrsTimelineContainer"></div>';
 
     // ── Special days ──
     var upcoming = HOURS_DATA.special.filter(function(s) {
