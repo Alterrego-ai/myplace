@@ -375,17 +375,41 @@ input,textarea,button{font-family:inherit;outline:none}
 .gc-btn-row .gc-btn-primary{flex:1}
 .gc-btn-row .gc-btn-secondary{flex:0 0 auto;width:auto;margin-top:0;padding:14px 18px;order:-1}
 
-/* ── Stripe Payment Element ── */
-.gc-payment-wrap{
-  margin:16px 0;padding:20px;background:var(--bg-card);border-radius:var(--radius);
-  border:1px solid var(--border);box-shadow:0 2px 12px rgba(0,0,0,0.04);
+/* ── Stripe Payment Modal (bottom-sheet) ── */
+.gc-payment-overlay{
+  display:none;position:fixed;inset:0;z-index:1000;
+  background:rgba(0,0,0,0.5);backdrop-filter:blur(6px);
+  align-items:flex-end;justify-content:center;padding:0;
+  animation:fadeUp 0.3s ease both;
 }
-.gc-payment-wrap label{font-size:13px;font-weight:600;color:var(--text-secondary);margin-bottom:10px;display:block}
-#payment-element{min-height:80px}
+.gc-payment-overlay.visible{display:flex}
+.gc-payment-modal{
+  background:var(--bg-card);border-radius:var(--radius) var(--radius) 0 0;
+  padding:28px 20px calc(var(--safe-bottom) + 20px);
+  width:100%;max-width:480px;position:relative;
+  box-shadow:0 -10px 40px rgba(0,0,0,0.2);
+  max-height:85vh;overflow-y:auto;
+}
+.gc-payment-close{
+  position:absolute;top:16px;right:16px;background:none;border:none;
+  font-size:22px;color:var(--text-muted);cursor:pointer;padding:4px;
+}
+.gc-payment-header{text-align:center;margin-bottom:20px}
+.gc-payment-icon{font-size:32px;margin-bottom:6px}
+.gc-payment-title{font-size:20px;font-weight:700;color:var(--text)}
+.gc-payment-amount{font-size:14px;color:var(--accent);font-weight:600;margin-top:4px}
+#payment-element{min-height:80px;margin-bottom:16px}
 #payment-message{display:none;font-size:13px;color:#d32f2f;text-align:center;margin-top:10px;line-height:1.4}
 #payment-message.visible{display:block}
 .gc-secure-badge{display:flex;align-items:center;justify-content:center;gap:6px;margin-top:12px;font-size:11px;color:var(--text-muted)}
 .gc-secure-badge svg{width:14px;height:14px;fill:currentColor}
+.gc-payment-confirm{
+  width:100%;padding:16px;background:var(--primary-gradient);color:#fff;font-size:16px;
+  font-weight:700;border:none;border-radius:var(--radius-sm);cursor:pointer;
+  transition:all 0.2s;margin-top:16px;
+}
+.gc-payment-confirm:active{transform:scale(0.97)}
+.gc-payment-confirm.loading{opacity:0.7;pointer-events:none}
 .gc-btn-primary.loading{opacity:0.7;pointer-events:none}
 
 /* ── Success screen ── */
@@ -625,18 +649,8 @@ input,textarea,button{font-family:inherit;outline:none}
 
     <div class="gc-summary" id="gcSummary"></div>
 
-    <div class="gc-payment-wrap" id="paymentWrap" style="display:none">
-      <label>Paiement sécurisé</label>
-      <div id="payment-element"></div>
-      <div id="payment-message"></div>
-      <div class="gc-secure-badge">
-        <svg viewBox="0 0 24 24"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1s3.1 1.39 3.1 3.1v2z"/></svg>
-        Paiement chiffré — Stripe
-      </div>
-    </div>
-
     <div class="gc-btn-row">
-      <button class="gc-btn-primary" id="payBtn" onclick="handlePayment()">
+      <button class="gc-btn-primary" id="payBtn" onclick="openPaymentModal()">
         Offrir pour <span id="payAmount">100 €</span>
       </button>
       <button class="gc-btn-secondary" onclick="prevStep()">← Ajuster un détail</button>
@@ -656,6 +670,27 @@ input,textarea,button{font-family:inherit;outline:none}
 </div>
 
 <!-- Occasion picker modal -->
+<!-- Payment modal (bottom-sheet) -->
+<div class="gc-payment-overlay" id="paymentOverlay" onclick="closePaymentIf(event)">
+  <div class="gc-payment-modal">
+    <button class="gc-payment-close" onclick="closePayment()">&times;</button>
+    <div class="gc-payment-header">
+      <div class="gc-payment-icon">💳</div>
+      <div class="gc-payment-title">Paiement sécurisé</div>
+      <div class="gc-payment-amount" id="paymentModalAmount">100 €</div>
+    </div>
+    <div id="payment-element"></div>
+    <div id="payment-message"></div>
+    <button class="gc-payment-confirm" id="confirmPayBtn" onclick="handlePayment()">
+      Confirmer le paiement
+    </button>
+    <div class="gc-secure-badge">
+      <svg viewBox="0 0 24 24"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1s3.1 1.39 3.1 3.1v2z"/></svg>
+      Paiement chiffré — Stripe
+    </div>
+  </div>
+</div>
+
 <div class="gc-occasion-overlay" id="occasionOverlay" onclick="closeOccasionIf(event)">
   <div class="gc-occasion-modal">
     <div class="gc-occasion-modal-title">Pour quelle occasion&nbsp;?</div>
@@ -1043,9 +1078,6 @@ function nextStep() {
 
   state.step++;
   showStep();
-
-  // Mount Stripe Payment Element on step 4
-  if (state.step === 4) mountPaymentElement();
 }
 
 function prevStep() {
@@ -1196,8 +1228,21 @@ async function mountPaymentElement() {
   });
   document.getElementById('payment-element').innerHTML = '';
   paymentElement.mount('#payment-element');
-  document.getElementById('paymentWrap').style.display = '';
   paymentElementMounted = true;
+}
+
+function openPaymentModal() {
+  document.getElementById('paymentModalAmount').textContent = state.amount + ' €';
+  document.getElementById('paymentOverlay').classList.add('visible');
+  if (!paymentElementMounted) mountPaymentElement();
+}
+
+function closePayment() {
+  document.getElementById('paymentOverlay').classList.remove('visible');
+}
+
+function closePaymentIf(e) {
+  if (e.target === document.getElementById('paymentOverlay')) closePayment();
 }
 
 function showPaymentError(msg) {
@@ -1211,7 +1256,7 @@ async function handlePayment() {
     showPaymentError('Le formulaire de paiement n\'est pas prêt. Patientez...');
     return;
   }
-  var btn = document.getElementById('payBtn');
+  var btn = document.getElementById('confirmPayBtn');
   btn.classList.add('loading');
   btn.textContent = 'Traitement en cours…';
   document.getElementById('payment-message').classList.remove('visible');
@@ -1226,10 +1271,11 @@ async function handlePayment() {
 
   if (result.error) {
     btn.classList.remove('loading');
-    btn.innerHTML = 'Offrir pour <span id="payAmount">' + state.amount + ' €</span>';
+    btn.textContent = 'Confirmer le paiement';
     showPaymentError(result.error.message);
   } else if (result.paymentIntent && result.paymentIntent.status === 'succeeded') {
     btn.classList.remove('loading');
+    closePayment();
     showSuccess();
   } else {
     // Payment might need redirect (3D Secure etc.) — handled by return_url
