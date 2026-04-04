@@ -2700,41 +2700,8 @@ margin: 20px 20px 0;
   </button>
 </div>
 
-<!-- CARTE CADEAU -->
-<a href="carte-cadeau.html" class="gc-home-btn fade-up" id="gcHomeBtn">
-  <span class="gc-home-emoji">🎁</span>
-  <div class="gc-home-text">
-    <span class="gc-home-title">Offrir une Carte Cadeau</span>
-    <span class="gc-home-sub">Faites plaisir à ceux que vous aimez...</span>
-  </div>
-  <span class="gc-home-arrow">→</span>
-</a>
-
-<!-- NOUS SUIVRE (compte + avis + réseaux) -->
-
-<div class="socials fade-up">
-  <div style="height:1px;background:var(--border);margin:0 0 8px;"></div>
-
-
-  <div id="compteBlock" style="margin-bottom:12px;">
-    <div style="font-size:14px;font-weight:700;color:var(--text);margin-bottom:4px;">Nous rejoindre</div>
-    <div style="font-size:12px;color:var(--text-tertiary);margin-bottom:10px;" data-i18n="avis_offres">Profitez de nos offres et avantages exclusifs</div>
-    <div style="display:flex;gap:10px;">
-      <a href="#" onclick="startSSOLogin();return false;" style="flex:1;text-decoration:none;display:flex;align-items:center;gap:10px;padding:12px 14px;background:var(--bg-card);border-radius:var(--radius-sm);border:1px solid var(--border);">
-        <svg width="24" height="24" viewBox="0 0 640 640" fill="var(--primary)" style="flex-shrink:0;">
-          <path d="M476.1 480.6C462.1 425.1 411.9 384 352 384L288 384C228.1 384 177.9 425.1 163.9 480.6C122 439.9 96 383 96 320C96 196.3 196.3 96 320 96C443.7 96 544 196.3 544 320C544 383 518 439.9 476.1 480.6zM447.6 504C411.5 529.2 367.4 544 320 544C272.6 544 228.5 529.2 192.3 504.1C196.3 454.8 237.6 416 288 416L352 416C402.4 416 443.6 454.8 447.7 504.1zM320 576C461.4 576 576 461.4 576 320C576 178.6 461.4 64 320 64C178.6 64 64 178.6 64 320C64 461.4 178.6 576 320 576zM320 304C293.5 304 272 282.5 272 256C272 229.5 293.5 208 320 208C346.5 208 368 229.5 368 256C368 282.5 346.5 304 320 304zM240 256C240 300.2 275.8 336 320 336C364.2 336 400 300.2 400 256C400 211.8 364.2 176 320 176C275.8 176 240 211.8 240 256z"/>
-        </svg>
-        <span style="font-size:13px;font-weight:600;color:var(--text);">Mon compte</span>
-      </a>
-      <a href="#" onclick="startSSOLogin();return false;" style="flex:1;text-decoration:none;display:flex;align-items:center;gap:10px;padding:12px 14px;background:var(--bg-card);border-radius:var(--radius-sm);border:1px solid var(--border);">
-        <svg width="24" height="24" viewBox="0 0 640 640" fill="var(--primary)" style="flex-shrink:0;">
-          <path d="M272 32L368 32C385.7 32 400 46.3 400 64L400 144L240 144L240 64C240 46.3 254.3 32 272 32zM96 96L192 96L192 144L96 144C87.2 144 80 151.2 80 160L80 480C80 488.8 87.2 496 96 496L544 496C552.8 496 560 488.8 560 480L560 160C560 151.2 552.8 144 544 144L448 144L448 96L544 96C579.3 96 608 124.7 608 160L608 480C608 515.3 579.3 544 544 544L96 544C60.7 544 32 515.3 32 480L32 160C32 124.7 60.7 96 96 96zM288 352L352 352C396.2 352 432 387.8 432 432C432 440.8 424.8 448 416 448L224 448C215.2 448 208 440.8 208 432C208 387.8 243.8 352 288 352zM264 256C264 225.1 289.1 200 320 200C350.9 200 376 225.1 376 256C376 286.9 350.9 312 320 312C289.1 312 264 286.9 264 256z"/>
-        </svg>
-        <span style="font-size:13px;font-weight:600;color:var(--text);">Carte de membre</span>
-      </a>
-    </div>
-  </div>
-
+<!-- AVIS GOOGLE -->
+<div class="socials fade-up" style="padding-top:4px;">
   <a class="avis-band" href="https://g.page/r/CfohiS_RTMdDEB0/review" target="_blank" aria-label="Laisser un avis Google">
     <svg viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg" style="width:30px;height:30px;flex-shrink:0;">
       <rect width="48" height="48" rx="8" fill="#fff"/>
@@ -2770,8 +2737,6 @@ margin: 20px 20px 0;
   </button>
 
   <div class="divider"></div>
-
-  <!-- ÉVÉNEMENTS (déplacé en bas de page) -->
 
   <!-- ACTUALITÉS -->
   <div class="actu-feed" id="actuSection">
@@ -2852,6 +2817,9 @@ margin: 20px 20px 0;
     <div style="height:20px;"></div>
   </div>
 
+<!-- NOS PROCHAINS ÉVÉNEMENTS -->
+<div class="evt-section fade-up" id="evtSection" style="display:none;"></div>
+
   <!-- PRÉSENTATION -->
   <div class="section fade-up" style="padding:20px;">
     <h2 style="font-size:16px;font-weight:700;color:var(--text);margin:0 0 12px;" data-i18n="section_presentation">Présentation</h2>
@@ -2868,9 +2836,6 @@ margin: 20px 20px 0;
       Un lieu à consommer sans modération !
     </p>
   </div>
-
-<!-- NOS PROCHAINS ÉVÉNEMENTS -->
-<div class="evt-section fade-up" id="evtSection" style="display:none;"></div>
 
 <!-- CLUB SAUF IMPRÉVU -->
 <div id="walletSection" class="fade-up" style="display:none;padding:12px 20px 0;">
@@ -2935,6 +2900,39 @@ margin: 20px 20px 0;
     </a>
   </div>
 </div>
+
+<!-- NOUS REJOINDRE -->
+<div class="socials fade-up" style="padding:0 20px 12px;">
+  <div style="height:1px;background:var(--border);margin:0 0 12px;"></div>
+  <div id="compteBlock" style="margin-bottom:12px;">
+    <div style="font-size:14px;font-weight:700;color:var(--text);margin-bottom:4px;">Nous rejoindre</div>
+    <div style="font-size:12px;color:var(--text-tertiary);margin-bottom:10px;" data-i18n="avis_offres">Profitez de nos offres et avantages exclusifs</div>
+    <div style="display:flex;gap:10px;">
+      <a href="#" onclick="startSSOLogin();return false;" style="flex:1;text-decoration:none;display:flex;align-items:center;gap:10px;padding:12px 14px;background:var(--bg-card);border-radius:var(--radius-sm);border:1px solid var(--border);">
+        <svg width="24" height="24" viewBox="0 0 640 640" fill="var(--primary)" style="flex-shrink:0;">
+          <path d="M476.1 480.6C462.1 425.1 411.9 384 352 384L288 384C228.1 384 177.9 425.1 163.9 480.6C122 439.9 96 383 96 320C96 196.3 196.3 96 320 96C443.7 96 544 196.3 544 320C544 383 518 439.9 476.1 480.6zM447.6 504C411.5 529.2 367.4 544 320 544C272.6 544 228.5 529.2 192.3 504.1C196.3 454.8 237.6 416 288 416L352 416C402.4 416 443.6 454.8 447.7 504.1zM320 576C461.4 576 576 461.4 576 320C576 178.6 461.4 64 320 64C178.6 64 64 178.6 64 320C64 461.4 178.6 576 320 576zM320 304C293.5 304 272 282.5 272 256C272 229.5 293.5 208 320 208C346.5 208 368 229.5 368 256C368 282.5 346.5 304 320 304zM240 256C240 300.2 275.8 336 320 336C364.2 336 400 300.2 400 256C400 211.8 364.2 176 320 176C275.8 176 240 211.8 240 256z"/>
+        </svg>
+        <span style="font-size:13px;font-weight:600;color:var(--text);">Mon compte</span>
+      </a>
+      <a href="#" onclick="startSSOLogin();return false;" style="flex:1;text-decoration:none;display:flex;align-items:center;gap:10px;padding:12px 14px;background:var(--bg-card);border-radius:var(--radius-sm);border:1px solid var(--border);">
+        <svg width="24" height="24" viewBox="0 0 640 640" fill="var(--primary)" style="flex-shrink:0;">
+          <path d="M272 32L368 32C385.7 32 400 46.3 400 64L400 144L240 144L240 64C240 46.3 254.3 32 272 32zM96 96L192 96L192 144L96 144C87.2 144 80 151.2 80 160L80 480C80 488.8 87.2 496 96 496L544 496C552.8 496 560 488.8 560 480L560 160C560 151.2 552.8 144 544 144L448 144L448 96L544 96C579.3 96 608 124.7 608 160L608 480C608 515.3 579.3 544 544 544L96 544C60.7 544 32 515.3 32 480L32 160C32 124.7 60.7 96 96 96zM288 352L352 352C396.2 352 432 387.8 432 432C432 440.8 424.8 448 416 448L224 448C215.2 448 208 440.8 208 432C208 387.8 243.8 352 288 352zM264 256C264 225.1 289.1 200 320 200C350.9 200 376 225.1 376 256C376 286.9 350.9 312 320 312C289.1 312 264 286.9 264 256z"/>
+        </svg>
+        <span style="font-size:13px;font-weight:600;color:var(--text);">Carte de membre</span>
+      </a>
+    </div>
+  </div>
+</div>
+
+<!-- CARTE CADEAU -->
+<a href="carte-cadeau.html" class="gc-home-btn fade-up" id="gcHomeBtn">
+  <span class="gc-home-emoji">🎁</span>
+  <div class="gc-home-text">
+    <span class="gc-home-title">Offrir une Carte Cadeau</span>
+    <span class="gc-home-sub">Faites plaisir à ceux que vous aimez...</span>
+  </div>
+  <span class="gc-home-arrow">→</span>
+</a>
 
 <div class="spacer"></div>
 
