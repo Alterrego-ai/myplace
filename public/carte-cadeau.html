@@ -53,8 +53,16 @@ input,textarea,button{font-family:inherit;outline:none}
 .gc-header{
   padding:28px 20px 16px;padding-top:calc(var(--safe-top) + 28px);text-align:center;
   background:linear-gradient(180deg,rgba(200,169,110,0.08) 0%,transparent 100%);
-  border-radius:0 0 24px 24px;margin:0 -16px 4px;
+  border-radius:0 0 24px 24px;margin:0 -16px 4px;position:relative;
 }
+.gc-back-btn{
+  position:absolute;top:calc(var(--safe-top) + 16px);left:16px;
+  font-size:22px;color:var(--text);text-decoration:none;
+  width:40px;height:40px;display:flex;align-items:center;justify-content:center;
+  background:var(--bg-card);border-radius:50%;border:1px solid var(--border);
+  transition:all 0.2s;
+}
+.gc-back-btn:active{transform:scale(0.92);}
 .gc-header-emoji{font-size:40px;margin-bottom:6px;animation:wiggle 2s ease-in-out infinite}
 .gc-header-logo{width:36px;height:36px;border-radius:8px;object-fit:cover;border:1.5px solid var(--border);display:none}
 .gc-header-title{font-size:14px;font-weight:700;color:var(--accent);margin-top:4px;letter-spacing:0.06em;text-transform:uppercase}
@@ -442,6 +450,7 @@ input,textarea,button{font-family:inherit;outline:none}
 <div class="gc-page" id="gcPage">
   <!-- Header -->
   <div class="gc-header fade-up">
+    <a href="index.html" class="gc-back-btn" aria-label="Retour">←</a>
     <div class="gc-header-emoji">🎁</div>
     <div class="gc-header-title">Carte Cadeau — Sauf Imprévu</div>
   </div>
