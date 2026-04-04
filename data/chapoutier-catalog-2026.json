@@ -1,0 +1,7177 @@
+{
+  "source": "M. CHAPOUTIER - TARIFS PROFESSIONNELS HT 2026",
+  "date": "2026-01-29",
+  "valid_until": "2026-12-31",
+  "supplier": {
+    "name": "M. Chapoutier S.A.",
+    "address": "18 Avenue Docteur Paul Durand, 26600 Tain l'Hermitage",
+    "phone": "04.75.08.28.65",
+    "capital": "5.498.500 €",
+    "rcs": "435 580 477 - RCS Romans",
+    "ordering_conditions": {
+      "franco_min_bottles_75cl": 36,
+      "franco_min_magnums": 18,
+      "franco_min_amount_ht": 500,
+      "corsica_supplement_per_col": 0.39,
+      "corsica_min_cols": 36,
+      "flat_rate_delivery": 30,
+      "notes": "Forfait de 30€ HT appliqué en France Métropolitaine"
+    }
+  },
+  "producers": [
+    {
+      "id": "prod_chapoutier",
+      "name": "M. Chapoutier",
+      "country": "France",
+      "region": "Vallée du Rhône",
+      "philosophy": "biodynamie, demeter"
+    },
+    {
+      "id": "prod_mathilde_chapoutier",
+      "name": "Mathilde Chapoutier",
+      "country": "France",
+      "region": "Vallée du Rhône"
+    },
+    {
+      "id": "prod_marius_chapoutier",
+      "name": "Michel Chapoutier - Marius",
+      "country": "France"
+    },
+    {
+      "id": "prod_bila_haut",
+      "name": "Domaine de Bila-Haut",
+      "country": "France",
+      "region": "Roussillon"
+    },
+    {
+      "id": "prod_schieferkopf",
+      "name": "Schieferkopf",
+      "country": "France",
+      "region": "Alsace"
+    },
+    {
+      "id": "prod_ferrages",
+      "name": "Château des Ferrages",
+      "country": "France",
+      "region": "Provence"
+    },
+    {
+      "id": "prod_saint_etienne",
+      "name": "Saint-Étienne",
+      "country": "France",
+      "region": "Vallée du Rhône"
+    },
+    {
+      "id": "prod_tournon",
+      "name": "Domaine Tournon",
+      "country": "Australia",
+      "region": "Victoria"
+    },
+    {
+      "id": "prod_dos_lusiad",
+      "name": "Dos Lusíadas",
+      "country": "Portugal",
+      "region": "Vallée du Douro"
+    },
+    {
+      "id": "prod_dominio_soto",
+      "name": "Dominio del Soto",
+      "country": "Spain",
+      "region": "Ribera del Duero"
+    },
+    {
+      "id": "prod_trenel",
+      "name": "Maison Trénel",
+      "country": "France",
+      "region": "Beaujolais"
+    }
+  ],
+  "brands": [
+    {
+      "id": "brand_fac_spera",
+      "name": "Fac & Spera",
+      "producer_id": "prod_chapoutier"
+    },
+    {
+      "id": "brand_excellence",
+      "name": "Excellence",
+      "producer_id": "prod_chapoutier"
+    },
+    {
+      "id": "brand_prestige",
+      "name": "Prestige",
+      "producer_id": "prod_chapoutier"
+    },
+    {
+      "id": "brand_tradition",
+      "name": "Tradition",
+      "producer_id": "prod_chapoutier"
+    },
+    {
+      "id": "brand_alchimie",
+      "name": "Alchimie",
+      "producer_id": "prod_chapoutier"
+    },
+    {
+      "id": "brand_specialites",
+      "name": "Spécialités",
+      "producer_id": "prod_chapoutier"
+    },
+    {
+      "id": "brand_mathilde_chapoutier",
+      "name": "Mathilde Chapoutier Sélection",
+      "producer_id": "prod_mathilde_chapoutier"
+    },
+    {
+      "id": "brand_marius",
+      "name": "Marius",
+      "producer_id": "prod_marius_chapoutier"
+    },
+    {
+      "id": "brand_trenel",
+      "name": "Maison Trénel",
+      "producer_id": "prod_trenel"
+    },
+    {
+      "id": "brand_pic_rencontres",
+      "name": "Rencontres - Anne-Sophie Pic",
+      "producer_id": "prod_chapoutier"
+    },
+    {
+      "id": "brand_alleno_rencontres",
+      "name": "Rencontres - Yannick Alléno",
+      "producer_id": "prod_chapoutier"
+    },
+    {
+      "id": "brand_viola_rencontres",
+      "name": "Rencontres - Joseph Viola",
+      "producer_id": "prod_chapoutier"
+    }
+  ],
+  "products": [
+    {
+      "id": "prod_ermitage_pavillon",
+      "name": "Ermitage Le Pavillon",
+      "type": "wine",
+      "brand_id": "brand_fac_spera",
+      "supplier_id": "sup_chapoutier",
+      "producer_id": "prod_chapoutier",
+      "description": "Sélection Parcellaire - Vallée du Rhône",
+      "active": true,
+      "wine_attributes": {
+        "appellation": "Ermitage",
+        "cuvee": "Le Pavillon",
+        "color": "rouge",
+        "grapes": [
+          "Syrah"
+        ],
+        "region": "Vallée du Rhône",
+        "gamme": "selection_parcellaire",
+        "certifications": [
+          "demeter",
+          "bio"
+        ],
+        "is_selection_parcellaire": true
+      },
+      "variants": [
+        {
+          "id": "var_pavillon_2009_75",
+          "vintage": 2009,
+          "format_cl": 75,
+          "availability": "sold_out",
+          "price_ht_36": 268,
+          "price_ht_78": 539,
+          "price_ht_156": null
+        },
+        {
+          "id": "var_pavillon_2009_150",
+          "vintage": 2009,
+          "format_cl": 150,
+          "availability": "sold_out",
+          "price_ht_36": null,
+          "price_ht_78": null,
+          "price_ht_156": null
+        },
+        {
+          "id": "var_pavillon_2014_75",
+          "vintage": 2014,
+          "format_cl": 75,
+          "availability": "in_stock",
+          "price_ht_36": 256,
+          "price_ht_78": 515,
+          "price_ht_156": 1054
+        },
+        {
+          "id": "var_pavillon_2014_150",
+          "vintage": 2014,
+          "format_cl": 150,
+          "availability": "in_stock",
+          "price_ht_36": null,
+          "price_ht_78": null,
+          "price_ht_156": 2113
+        },
+        {
+          "id": "var_pavillon_2015_75",
+          "vintage": 2015,
+          "format_cl": 75,
+          "availability": "in_stock",
+          "price_ht_36": 259,
+          "price_ht_78": 521,
+          "price_ht_156": 1066
+        },
+        {
+          "id": "var_pavillon_2015_150",
+          "vintage": 2015,
+          "format_cl": 150,
+          "availability": "in_stock",
+          "price_ht_36": null,
+          "price_ht_78": null,
+          "price_ht_156": 2137
+        }
+      ]
+    },
+    {
+      "id": "prod_ermitage_ermite_rouge",
+      "name": "Ermitage L'Ermite",
+      "type": "wine",
+      "brand_id": "brand_fac_spera",
+      "supplier_id": "sup_chapoutier",
+      "producer_id": "prod_chapoutier",
+      "active": true,
+      "wine_attributes": {
+        "appellation": "Ermitage",
+        "cuvee": "L'Ermite",
+        "color": "rouge",
+        "grapes": [
+          "Syrah"
+        ],
+        "region": "Vallée du Rhône",
+        "gamme": "selection_parcellaire",
+        "certifications": [
+          "demeter",
+          "bio"
+        ],
+        "is_selection_parcellaire": true
+      },
+      "variants": [
+        {
+          "id": "var_ermite_rouge_2006_75",
+          "vintage": 2006,
+          "format_cl": 75,
+          "availability": "in_stock",
+          "price_ht_36": 201,
+          "price_ht_78": 405,
+          "price_ht_156": 834
+        },
+        {
+          "id": "var_ermite_rouge_2006_150",
+          "vintage": 2006,
+          "format_cl": 150,
+          "availability": "in_stock",
+          "price_ht_36": null,
+          "price_ht_78": null,
+          "price_ht_156": 1673
+        },
+        {
+          "id": "var_ermite_rouge_2008_75",
+          "vintage": 2008,
+          "format_cl": 75,
+          "availability": "in_stock",
+          "price_ht_36": 152,
+          "price_ht_78": 307,
+          "price_ht_156": 638
+        },
+        {
+          "id": "var_ermite_rouge_2008_150",
+          "vintage": 2008,
+          "format_cl": 150,
+          "availability": "in_stock",
+          "price_ht_36": null,
+          "price_ht_78": null,
+          "price_ht_156": 1281
+        },
+        {
+          "id": "var_ermite_rouge_2014_75",
+          "vintage": 2014,
+          "format_cl": 75,
+          "availability": "in_stock",
+          "price_ht_36": 268,
+          "price_ht_78": 539,
+          "price_ht_156": 1102
+        },
+        {
+          "id": "var_ermite_rouge_2014_150",
+          "vintage": 2014,
+          "format_cl": 150,
+          "availability": "in_stock",
+          "price_ht_36": null,
+          "price_ht_78": null,
+          "price_ht_156": 2209
+        }
+      ]
+    },
+    {
+      "id": "prod_ermitage_greffieux",
+      "name": "Ermitage Les Greffieux",
+      "type": "wine",
+      "brand_id": "brand_fac_spera",
+      "supplier_id": "sup_chapoutier",
+      "producer_id": "prod_chapoutier",
+      "active": true,
+      "wine_attributes": {
+        "appellation": "Ermitage",
+        "cuvee": "Les Greffieux",
+        "color": "rouge",
+        "grapes": [
+          "Syrah"
+        ],
+        "region": "Vallée du Rhône",
+        "gamme": "selection_parcellaire",
+        "certifications": [
+          "demeter"
+        ],
+        "is_selection_parcellaire": true
+      },
+      "variants": [
+        {
+          "id": "var_greffieux_2007_75",
+          "vintage": 2007,
+          "format_cl": 75,
+          "availability": "in_stock",
+          "price_ht_36": 102,
+          "price_ht_78": null,
+          "price_ht_156": 438
+        },
+        {
+          "id": "var_greffieux_2007_150",
+          "vintage": 2007,
+          "format_cl": 150,
+          "availability": "sold_out",
+          "price_ht_36": null,
+          "price_ht_78": null,
+          "price_ht_156": 881
+        },
+        {
+          "id": "var_greffieux_2015_75",
+          "vintage": 2015,
+          "format_cl": 75,
+          "availability": "in_stock",
+          "price_ht_36": 102,
+          "price_ht_78": 207,
+          "price_ht_156": 438
+        },
+        {
+          "id": "var_greffieux_2015_150",
+          "vintage": 2015,
+          "format_cl": 150,
+          "availability": "in_stock",
+          "price_ht_36": null,
+          "price_ht_78": null,
+          "price_ht_156": 881
+        }
+      ]
+    },
+    {
+      "id": "prod_ermitage_meal_rouge",
+      "name": "Ermitage Le Méal",
+      "type": "wine",
+      "brand_id": "brand_fac_spera",
+      "supplier_id": "sup_chapoutier",
+      "producer_id": "prod_chapoutier",
+      "active": true,
+      "wine_attributes": {
+        "appellation": "Ermitage",
+        "cuvee": "Le Méal",
+        "color": "rouge",
+        "grapes": [
+          "Syrah"
+        ],
+        "region": "Vallée du Rhône",
+        "gamme": "selection_parcellaire",
+        "certifications": [
+          "demeter",
+          "bio"
+        ],
+        "is_selection_parcellaire": true
+      },
+      "variants": [
+        {
+          "id": "var_meal_rouge_2008_75",
+          "vintage": 2008,
+          "format_cl": 75,
+          "availability": "in_stock",
+          "price_ht_36": 96,
+          "price_ht_78": 195,
+          "price_ht_156": 414
+        },
+        {
+          "id": "var_meal_rouge_2008_150",
+          "vintage": 2008,
+          "format_cl": 150,
+          "availability": "in_stock",
+          "price_ht_36": null,
+          "price_ht_78": null,
+          "price_ht_156": 833
+        },
+        {
+          "id": "var_meal_rouge_2011_75",
+          "vintage": 2011,
+          "format_cl": 75,
+          "availability": "in_stock",
+          "price_ht_36": 145,
+          "price_ht_78": 371,
+          "price_ht_156": 766
+        },
+        {
+          "id": "var_meal_rouge_2011_150",
+          "vintage": 2011,
+          "format_cl": 150,
+          "availability": "in_stock",
+          "price_ht_36": null,
+          "price_ht_78": null,
+          "price_ht_156": 1537
+        }
+      ]
+    },
+    {
+      "id": "prod_cote_rotie_mordoree",
+      "name": "Côte-Rôtie La Mordorée",
+      "type": "wine",
+      "brand_id": "brand_fac_spera",
+      "supplier_id": "sup_chapoutier",
+      "producer_id": "prod_chapoutier",
+      "active": true,
+      "wine_attributes": {
+        "appellation": "Côte-Rôtie",
+        "cuvee": "La Mordorée",
+        "color": "rouge",
+        "grapes": [
+          "Syrah"
+        ],
+        "region": "Vallée du Rhône",
+        "gamme": "selection_parcellaire",
+        "certifications": [
+          "demeter",
+          "bio"
+        ],
+        "is_selection_parcellaire": true
+      },
+      "variants": [
+        {
+          "id": "var_mordoree_2001_75",
+          "vintage": 2001,
+          "format_cl": 75,
+          "availability": "in_stock",
+          "price_ht_36": 114,
+          "price_ht_78": 231,
+          "price_ht_156": 486
+        },
+        {
+          "id": "var_mordoree_2001_150",
+          "vintage": 2001,
+          "format_cl": 150,
+          "availability": "in_stock",
+          "price_ht_36": null,
+          "price_ht_78": null,
+          "price_ht_156": 977
+        },
+        {
+          "id": "var_mordoree_2022_75",
+          "vintage": 2022,
+          "format_cl": 75,
+          "availability": "in_stock",
+          "price_ht_36": 111,
+          "price_ht_78": 225,
+          "price_ht_156": 474
+        },
+        {
+          "id": "var_mordoree_2022_150",
+          "vintage": 2022,
+          "format_cl": 150,
+          "availability": "in_stock",
+          "price_ht_36": null,
+          "price_ht_78": null,
+          "price_ht_156": 953
+        }
+      ]
+    },
+    {
+      "id": "prod_cote_rotie_neve",
+      "name": "Côte-Rôtie Neve",
+      "type": "wine",
+      "brand_id": "brand_fac_spera",
+      "supplier_id": "sup_chapoutier",
+      "producer_id": "prod_chapoutier",
+      "active": true,
+      "wine_attributes": {
+        "appellation": "Côte-Rôtie",
+        "cuvee": "Neve",
+        "color": "rouge",
+        "grapes": [
+          "Syrah"
+        ],
+        "region": "Vallée du Rhône",
+        "gamme": "selection_parcellaire",
+        "certifications": [
+          "demeter",
+          "bio"
+        ],
+        "is_selection_parcellaire": true
+      },
+      "variants": [
+        {
+          "id": "var_neve_2021_75",
+          "vintage": 2021,
+          "format_cl": 75,
+          "availability": "in_stock",
+          "price_ht_36": 91,
+          "price_ht_78": 185,
+          "price_ht_156": 394
+        },
+        {
+          "id": "var_neve_2021_150",
+          "vintage": 2021,
+          "format_cl": 150,
+          "availability": "in_stock",
+          "price_ht_36": null,
+          "price_ht_78": null,
+          "price_ht_156": 793
+        },
+        {
+          "id": "var_neve_2022_75",
+          "vintage": 2022,
+          "format_cl": 75,
+          "availability": "in_stock",
+          "price_ht_36": 90,
+          "price_ht_78": 183,
+          "price_ht_156": 390
+        },
+        {
+          "id": "var_neve_2022_150",
+          "vintage": 2022,
+          "format_cl": 150,
+          "availability": "in_stock",
+          "price_ht_36": null,
+          "price_ht_78": null,
+          "price_ht_156": 785
+        }
+      ]
+    },
+    {
+      "id": "prod_sj_granits_rouge",
+      "name": "Saint-Joseph Les Granits",
+      "type": "wine",
+      "brand_id": "brand_fac_spera",
+      "supplier_id": "sup_chapoutier",
+      "producer_id": "prod_chapoutier",
+      "active": true,
+      "wine_attributes": {
+        "appellation": "Saint-Joseph",
+        "cuvee": "Les Granits",
+        "color": "rouge",
+        "grapes": [
+          "Syrah"
+        ],
+        "region": "Vallée du Rhône",
+        "gamme": "selection_parcellaire",
+        "certifications": [
+          "demeter",
+          "bio"
+        ],
+        "is_selection_parcellaire": true
+      },
+      "variants": [
+        {
+          "id": "var_sj_granits_2021_75",
+          "vintage": 2021,
+          "format_cl": 75,
+          "availability": "in_stock",
+          "price_ht_36": 44,
+          "price_ht_78": 91,
+          "price_ht_156": 206
+        },
+        {
+          "id": "var_sj_granits_2021_150",
+          "vintage": 2021,
+          "format_cl": 150,
+          "availability": "in_stock",
+          "price_ht_36": null,
+          "price_ht_78": null,
+          "price_ht_156": 417
+        },
+        {
+          "id": "var_sj_granits_2022_75",
+          "vintage": 2022,
+          "format_cl": 75,
+          "availability": "in_stock",
+          "price_ht_36": 44,
+          "price_ht_78": 91,
+          "price_ht_156": 206
+        },
+        {
+          "id": "var_sj_granits_2022_150",
+          "vintage": 2022,
+          "format_cl": 150,
+          "availability": "sold_out",
+          "price_ht_36": null,
+          "price_ht_78": null,
+          "price_ht_156": null
+        }
+      ]
+    },
+    {
+      "id": "prod_sj_clos",
+      "name": "Saint-Joseph Le Clos",
+      "type": "wine",
+      "brand_id": "brand_fac_spera",
+      "supplier_id": "sup_chapoutier",
+      "producer_id": "prod_chapoutier",
+      "active": true,
+      "wine_attributes": {
+        "appellation": "Saint-Joseph",
+        "cuvee": "Le Clos",
+        "color": "rouge",
+        "grapes": [
+          "Syrah"
+        ],
+        "region": "Vallée du Rhône",
+        "gamme": "selection_parcellaire",
+        "certifications": [
+          "demeter"
+        ],
+        "is_selection_parcellaire": true
+      },
+      "variants": [
+        {
+          "id": "var_sj_clos_2019_75",
+          "vintage": 2019,
+          "format_cl": 75,
+          "availability": "in_stock",
+          "price_ht_36": 84,
+          "price_ht_78": 171,
+          "price_ht_156": 366
+        },
+        {
+          "id": "var_sj_clos_2019_150",
+          "vintage": 2019,
+          "format_cl": 150,
+          "availability": "in_stock",
+          "price_ht_36": null,
+          "price_ht_78": null,
+          "price_ht_156": 737
+        },
+        {
+          "id": "var_sj_clos_2021_75",
+          "vintage": 2021,
+          "format_cl": 75,
+          "availability": "in_stock",
+          "price_ht_36": 84,
+          "price_ht_78": 171,
+          "price_ht_156": 366
+        },
+        {
+          "id": "var_sj_clos_2021_150",
+          "vintage": 2021,
+          "format_cl": 150,
+          "availability": "in_stock",
+          "price_ht_36": null,
+          "price_ht_78": null,
+          "price_ht_156": 737
+        }
+      ]
+    },
+    {
+      "id": "prod_crozes_varonniers",
+      "name": "Crozes-Ermitage Les Varonniers",
+      "type": "wine",
+      "brand_id": "brand_fac_spera",
+      "supplier_id": "sup_chapoutier",
+      "producer_id": "prod_chapoutier",
+      "active": true,
+      "wine_attributes": {
+        "appellation": "Crozes-Ermitage",
+        "cuvee": "Les Varonniers",
+        "color": "rouge",
+        "grapes": [
+          "Syrah"
+        ],
+        "region": "Vallée du Rhône",
+        "gamme": "selection_parcellaire",
+        "certifications": [
+          "demeter",
+          "bio"
+        ],
+        "is_selection_parcellaire": true
+      },
+      "variants": [
+        {
+          "id": "var_varonniers_2022_75",
+          "vintage": 2022,
+          "format_cl": 75,
+          "availability": "in_stock",
+          "price_ht_36": 42,
+          "price_ht_78": 87,
+          "price_ht_156": 198
+        },
+        {
+          "id": "var_varonniers_2022_150",
+          "vintage": 2022,
+          "format_cl": 150,
+          "availability": "in_stock",
+          "price_ht_36": null,
+          "price_ht_78": null,
+          "price_ht_156": 401
+        }
+      ]
+    },
+    {
+      "id": "prod_cornas_lieu_dit",
+      "name": "Cornas Lieu-dit Saint-Pierre",
+      "type": "wine",
+      "brand_id": "brand_fac_spera",
+      "supplier_id": "sup_chapoutier",
+      "producer_id": "prod_chapoutier",
+      "active": true,
+      "wine_attributes": {
+        "appellation": "Cornas",
+        "cuvee": "Lieu-dit Saint-Pierre",
+        "color": "rouge",
+        "grapes": [
+          "Syrah"
+        ],
+        "region": "Vallée du Rhône",
+        "gamme": "selection_parcellaire",
+        "certifications": [
+          "demeter"
+        ],
+        "is_selection_parcellaire": true
+      },
+      "variants": [
+        {
+          "id": "var_cornas_lieu_2021_75",
+          "vintage": 2021,
+          "format_cl": 75,
+          "availability": "in_stock",
+          "price_ht_36": 56,
+          "price_ht_78": 115,
+          "price_ht_156": 254
+        },
+        {
+          "id": "var_cornas_lieu_2021_150",
+          "vintage": 2021,
+          "format_cl": 150,
+          "availability": "in_stock",
+          "price_ht_36": null,
+          "price_ht_78": null,
+          "price_ht_156": 513
+        },
+        {
+          "id": "var_cornas_lieu_2022_75",
+          "vintage": 2022,
+          "format_cl": 75,
+          "availability": "in_stock",
+          "price_ht_36": 51,
+          "price_ht_78": 105,
+          "price_ht_156": 234
+        },
+        {
+          "id": "var_cornas_lieu_2022_150",
+          "vintage": 2022,
+          "format_cl": 150,
+          "availability": "in_stock",
+          "price_ht_36": null,
+          "price_ht_78": null,
+          "price_ht_156": 473
+        }
+      ]
+    },
+    {
+      "id": "prod_cdp_barbe_rac",
+      "name": "Châteauneuf-du-Pape Barbe Rac",
+      "type": "wine",
+      "brand_id": "brand_fac_spera",
+      "supplier_id": "sup_chapoutier",
+      "producer_id": "prod_chapoutier",
+      "active": true,
+      "wine_attributes": {
+        "appellation": "Châteauneuf-du-Pape",
+        "cuvee": "Barbe Rac",
+        "color": "rouge",
+        "grapes": [
+          "Grenache",
+          "Syrah"
+        ],
+        "region": "Vallée du Rhône",
+        "gamme": "selection_parcellaire",
+        "certifications": [
+          "demeter",
+          "bio"
+        ],
+        "is_selection_parcellaire": true
+      },
+      "variants": [
+        {
+          "id": "var_barbe_rac_2008_75",
+          "vintage": 2008,
+          "format_cl": 75,
+          "availability": "in_stock",
+          "price_ht_36": 44,
+          "price_ht_78": 91,
+          "price_ht_156": 206
+        },
+        {
+          "id": "var_barbe_rac_2008_150",
+          "vintage": 2008,
+          "format_cl": 150,
+          "availability": "in_stock",
+          "price_ht_36": null,
+          "price_ht_78": null,
+          "price_ht_156": 417
+        },
+        {
+          "id": "var_barbe_rac_2019_75",
+          "vintage": 2019,
+          "format_cl": 75,
+          "availability": "in_stock",
+          "price_ht_36": 67,
+          "price_ht_78": 137,
+          "price_ht_156": 298
+        },
+        {
+          "id": "var_barbe_rac_2019_150",
+          "vintage": 2019,
+          "format_cl": 150,
+          "availability": "in_stock",
+          "price_ht_36": null,
+          "price_ht_78": null,
+          "price_ht_156": 601
+        },
+        {
+          "id": "var_barbe_rac_2022_75",
+          "vintage": 2022,
+          "format_cl": 75,
+          "availability": "in_stock",
+          "price_ht_36": 68,
+          "price_ht_78": 139,
+          "price_ht_156": 302
+        },
+        {
+          "id": "var_barbe_rac_2022_150",
+          "vintage": 2022,
+          "format_cl": 150,
+          "availability": "in_stock",
+          "price_ht_36": null,
+          "price_ht_78": null,
+          "price_ht_156": 609
+        }
+      ]
+    },
+    {
+      "id": "prod_cdp_croix_bois",
+      "name": "Châteauneuf-du-Pape Croix de Bois",
+      "type": "wine",
+      "brand_id": "brand_fac_spera",
+      "supplier_id": "sup_chapoutier",
+      "producer_id": "prod_chapoutier",
+      "active": true,
+      "wine_attributes": {
+        "appellation": "Châteauneuf-du-Pape",
+        "cuvee": "Croix de Bois",
+        "color": "rouge",
+        "grapes": [
+          "Grenache",
+          "Syrah"
+        ],
+        "region": "Vallée du Rhône",
+        "gamme": "selection_parcellaire",
+        "certifications": [
+          "demeter"
+        ],
+        "is_selection_parcellaire": true
+      },
+      "variants": [
+        {
+          "id": "var_croix_bois_2006_75",
+          "vintage": 2006,
+          "format_cl": 75,
+          "availability": "in_stock",
+          "price_ht_36": 41,
+          "price_ht_78": 85,
+          "price_ht_156": 194
+        },
+        {
+          "id": "var_croix_bois_2006_150",
+          "vintage": 2006,
+          "format_cl": 150,
+          "availability": "in_stock",
+          "price_ht_36": null,
+          "price_ht_78": null,
+          "price_ht_156": 393
+        },
+        {
+          "id": "var_croix_bois_2019_75",
+          "vintage": 2019,
+          "format_cl": 75,
+          "availability": "in_stock",
+          "price_ht_36": 45,
+          "price_ht_78": 93,
+          "price_ht_156": 210
+        },
+        {
+          "id": "var_croix_bois_2019_150",
+          "vintage": 2019,
+          "format_cl": 150,
+          "availability": "in_stock",
+          "price_ht_36": null,
+          "price_ht_78": null,
+          "price_ht_156": 425
+        },
+        {
+          "id": "var_croix_bois_2020_75",
+          "vintage": 2020,
+          "format_cl": 75,
+          "availability": "in_stock",
+          "price_ht_36": 49,
+          "price_ht_78": 101,
+          "price_ht_156": 226
+        },
+        {
+          "id": "var_croix_bois_2020_150",
+          "vintage": 2020,
+          "format_cl": 150,
+          "availability": "in_stock",
+          "price_ht_36": null,
+          "price_ht_78": null,
+          "price_ht_156": 457
+        }
+      ]
+    },
+    {
+      "id": "prod_ermitage_oree_blanc",
+      "name": "Ermitage De l'Orée",
+      "type": "wine",
+      "brand_id": "brand_fac_spera",
+      "supplier_id": "sup_chapoutier",
+      "producer_id": "prod_chapoutier",
+      "active": true,
+      "wine_attributes": {
+        "appellation": "Ermitage",
+        "cuvee": "De l'Orée",
+        "color": "blanc",
+        "grapes": [
+          "Marsanne"
+        ],
+        "region": "Vallée du Rhône",
+        "gamme": "selection_parcellaire",
+        "certifications": [
+          "demeter",
+          "bio"
+        ],
+        "is_selection_parcellaire": true
+      },
+      "variants": [
+        {
+          "id": "var_oree_2011_75",
+          "vintage": 2011,
+          "format_cl": 75,
+          "availability": "in_stock",
+          "price_ht_36": 132,
+          "price_ht_78": 267,
+          "price_ht_156": 558
+        },
+        {
+          "id": "var_oree_2011_150",
+          "vintage": 2011,
+          "format_cl": 150,
+          "availability": "in_stock",
+          "price_ht_36": null,
+          "price_ht_78": null,
+          "price_ht_156": 1121
+        },
+        {
+          "id": "var_oree_2015_75",
+          "vintage": 2015,
+          "format_cl": 75,
+          "availability": "in_stock",
+          "price_ht_36": 143,
+          "price_ht_78": 289,
+          "price_ht_156": 602
+        },
+        {
+          "id": "var_oree_2015_150",
+          "vintage": 2015,
+          "format_cl": 150,
+          "availability": "in_stock",
+          "price_ht_36": null,
+          "price_ht_78": null,
+          "price_ht_156": 1209
+        },
+        {
+          "id": "var_oree_2017_75",
+          "vintage": 2017,
+          "format_cl": 75,
+          "availability": "in_stock",
+          "price_ht_36": 132,
+          "price_ht_78": 267,
+          "price_ht_156": 558
+        },
+        {
+          "id": "var_oree_2017_150",
+          "vintage": 2017,
+          "format_cl": 150,
+          "availability": "in_stock",
+          "price_ht_36": null,
+          "price_ht_78": null,
+          "price_ht_156": 1121
+        }
+      ]
+    },
+    {
+      "id": "prod_ermitage_ermite_blanc",
+      "name": "Ermitage L'Ermite",
+      "type": "wine",
+      "brand_id": "brand_fac_spera",
+      "supplier_id": "sup_chapoutier",
+      "producer_id": "prod_chapoutier",
+      "active": true,
+      "wine_attributes": {
+        "appellation": "Ermitage",
+        "cuvee": "L'Ermite",
+        "color": "blanc",
+        "grapes": [
+          "Marsanne"
+        ],
+        "region": "Vallée du Rhône",
+        "gamme": "selection_parcellaire",
+        "certifications": [
+          "demeter",
+          "bio"
+        ],
+        "is_selection_parcellaire": true
+      },
+      "variants": [
+        {
+          "id": "var_ermite_blanc_2017_75",
+          "vintage": 2017,
+          "format_cl": 75,
+          "availability": "in_stock",
+          "price_ht_36": 443,
+          "price_ht_78": 889,
+          "price_ht_156": 1802
+        },
+        {
+          "id": "var_ermite_blanc_2017_150",
+          "vintage": 2017,
+          "format_cl": 150,
+          "availability": "in_stock",
+          "price_ht_36": null,
+          "price_ht_78": null,
+          "price_ht_156": 3609
+        },
+        {
+          "id": "var_ermite_blanc_2018_75",
+          "vintage": 2018,
+          "format_cl": 75,
+          "availability": "in_stock",
+          "price_ht_36": 448,
+          "price_ht_78": 899,
+          "price_ht_156": 1822
+        },
+        {
+          "id": "var_ermite_blanc_2018_150",
+          "vintage": 2018,
+          "format_cl": 150,
+          "availability": "in_stock",
+          "price_ht_36": null,
+          "price_ht_78": null,
+          "price_ht_156": 3649
+        }
+      ]
+    },
+    {
+      "id": "prod_ermitage_meal_blanc",
+      "name": "Ermitage Le Méal",
+      "type": "wine",
+      "brand_id": "brand_fac_spera",
+      "supplier_id": "sup_chapoutier",
+      "producer_id": "prod_chapoutier",
+      "active": true,
+      "wine_attributes": {
+        "appellation": "Ermitage",
+        "cuvee": "Le Méal",
+        "color": "blanc",
+        "grapes": [
+          "Marsanne"
+        ],
+        "region": "Vallée du Rhône",
+        "gamme": "selection_parcellaire",
+        "certifications": [
+          "demeter",
+          "raisins_bio"
+        ],
+        "is_selection_parcellaire": true
+      },
+      "variants": [
+        {
+          "id": "var_meal_blanc_2001_75",
+          "vintage": 2001,
+          "format_cl": 75,
+          "availability": "in_stock",
+          "price_ht_36": 121,
+          "price_ht_78": 245,
+          "price_ht_156": 514
+        },
+        {
+          "id": "var_meal_blanc_2001_150",
+          "vintage": 2001,
+          "format_cl": 150,
+          "availability": "in_stock",
+          "price_ht_36": null,
+          "price_ht_78": null,
+          "price_ht_156": 1033
+        },
+        {
+          "id": "var_meal_blanc_2012_75",
+          "vintage": 2012,
+          "format_cl": 75,
+          "availability": "in_stock",
+          "price_ht_36": 120,
+          "price_ht_78": 243,
+          "price_ht_156": 510
+        },
+        {
+          "id": "var_meal_blanc_2012_150",
+          "vintage": 2012,
+          "format_cl": 150,
+          "availability": "in_stock",
+          "price_ht_36": null,
+          "price_ht_78": null,
+          "price_ht_156": 1025
+        },
+        {
+          "id": "var_meal_blanc_2018_75",
+          "vintage": 2018,
+          "format_cl": 75,
+          "availability": "in_stock",
+          "price_ht_36": 131,
+          "price_ht_78": 265,
+          "price_ht_156": 554
+        },
+        {
+          "id": "var_meal_blanc_2018_150",
+          "vintage": 2018,
+          "format_cl": 150,
+          "availability": "in_stock",
+          "price_ht_36": null,
+          "price_ht_78": null,
+          "price_ht_156": 1113
+        }
+      ]
+    },
+    {
+      "id": "prod_sj_granits_blanc",
+      "name": "Saint-Joseph Les Granits",
+      "type": "wine",
+      "brand_id": "brand_fac_spera",
+      "supplier_id": "sup_chapoutier",
+      "producer_id": "prod_chapoutier",
+      "active": true,
+      "wine_attributes": {
+        "appellation": "Saint-Joseph",
+        "cuvee": "Les Granits",
+        "color": "blanc",
+        "grapes": [
+          "Marsanne"
+        ],
+        "region": "Vallée du Rhône",
+        "gamme": "selection_parcellaire",
+        "certifications": [
+          "demeter",
+          "bio"
+        ],
+        "is_selection_parcellaire": true
+      },
+      "variants": [
+        {
+          "id": "var_sj_granits_blanc_2021_75",
+          "vintage": 2021,
+          "format_cl": 75,
+          "availability": "in_stock",
+          "price_ht_36": 42,
+          "price_ht_78": 87,
+          "price_ht_156": 198
+        },
+        {
+          "id": "var_sj_granits_blanc_2021_150",
+          "vintage": 2021,
+          "format_cl": 150,
+          "availability": "in_stock",
+          "price_ht_36": null,
+          "price_ht_78": null,
+          "price_ht_156": 401
+        },
+        {
+          "id": "var_sj_granits_blanc_2022_75",
+          "vintage": 2022,
+          "format_cl": 75,
+          "availability": "in_stock",
+          "price_ht_36": 42,
+          "price_ht_78": 87,
+          "price_ht_156": 198
+        },
+        {
+          "id": "var_sj_granits_blanc_2022_150",
+          "vintage": 2022,
+          "format_cl": 150,
+          "availability": "in_stock",
+          "price_ht_36": null,
+          "price_ht_78": null,
+          "price_ht_156": 401
+        }
+      ]
+    },
+    {
+      "id": "prod_condrieu_chery",
+      "name": "Condrieu Coteau de Chery",
+      "type": "wine",
+      "brand_id": "brand_fac_spera",
+      "supplier_id": "sup_chapoutier",
+      "producer_id": "prod_chapoutier",
+      "active": true,
+      "wine_attributes": {
+        "appellation": "Condrieu",
+        "cuvee": "Coteau de Chery",
+        "color": "blanc",
+        "grapes": [
+          "Viognier"
+        ],
+        "region": "Vallée du Rhône",
+        "gamme": "selection_parcellaire",
+        "certifications": [
+          "demeter",
+          "bio"
+        ],
+        "is_selection_parcellaire": true
+      },
+      "variants": [
+        {
+          "id": "var_chery_2020_75",
+          "vintage": 2020,
+          "format_cl": 75,
+          "availability": "in_stock",
+          "price_ht_36": 109,
+          "price_ht_78": 221,
+          "price_ht_156": null
+        },
+        {
+          "id": "var_chery_2020_150",
+          "vintage": 2020,
+          "format_cl": 150,
+          "availability": "in_stock",
+          "price_ht_36": null,
+          "price_ht_78": null,
+          "price_ht_156": null
+        },
+        {
+          "id": "var_chery_2022_75",
+          "vintage": 2022,
+          "format_cl": 75,
+          "availability": "in_stock",
+          "price_ht_36": 108,
+          "price_ht_78": 219,
+          "price_ht_156": null
+        },
+        {
+          "id": "var_chery_2022_150",
+          "vintage": 2022,
+          "format_cl": 150,
+          "availability": "in_stock",
+          "price_ht_36": null,
+          "price_ht_78": null,
+          "price_ht_156": null
+        }
+      ]
+    },
+    {
+      "id": "prod_ermitage_vin_paille",
+      "name": "Ermitage Vin de Paille",
+      "type": "wine",
+      "brand_id": "brand_fac_spera",
+      "supplier_id": "sup_chapoutier",
+      "producer_id": "prod_chapoutier",
+      "active": true,
+      "wine_attributes": {
+        "appellation": "Ermitage",
+        "cuvee": "Vin de Paille",
+        "color": "vin_doux",
+        "grapes": [
+          "Marsanne"
+        ],
+        "region": "Vallée du Rhône",
+        "gamme": "selection_parcellaire",
+        "certifications": [
+          "demeter",
+          "bio"
+        ],
+        "is_selection_parcellaire": true
+      },
+      "variants": [
+        {
+          "id": "var_vin_paille_1999_37",
+          "vintage": 1999,
+          "format_cl": 37.5,
+          "availability": "in_stock",
+          "price_ht_36": 55,
+          "price_ht_78": 221,
+          "price_ht_156": 466
+        },
+        {
+          "id": "var_vin_paille_1999_600",
+          "vintage": 1999,
+          "format_cl": 600,
+          "availability": "in_stock",
+          "price_ht_36": null,
+          "price_ht_78": null,
+          "price_ht_156": 937
+        },
+        {
+          "id": "var_vin_paille_2001_37",
+          "vintage": 2001,
+          "format_cl": 37.5,
+          "availability": "in_stock",
+          "price_ht_36": 55,
+          "price_ht_78": 219,
+          "price_ht_156": null
+        },
+        {
+          "id": "var_vin_paille_2001_600",
+          "vintage": 2001,
+          "format_cl": 600,
+          "availability": "sold_out",
+          "price_ht_36": null,
+          "price_ht_78": null,
+          "price_ht_156": null
+        },
+        {
+          "id": "var_vin_paille_2007_37",
+          "vintage": 2007,
+          "format_cl": 37.5,
+          "availability": "in_stock",
+          "price_ht_36": 58,
+          "price_ht_78": 233,
+          "price_ht_156": 490
+        },
+        {
+          "id": "var_vin_paille_2007_600",
+          "vintage": 2007,
+          "format_cl": 600,
+          "availability": "in_stock",
+          "price_ht_36": null,
+          "price_ht_78": null,
+          "price_ht_156": 985
+        }
+      ]
+    },
+    {
+      "id": "prod_cote_rotie_quatuor",
+      "name": "Côte-Rôtie Quatuor",
+      "type": "wine",
+      "brand_id": "brand_excellence",
+      "supplier_id": "sup_chapoutier",
+      "producer_id": "prod_chapoutier",
+      "active": true,
+      "wine_attributes": {
+        "appellation": "Côte-Rôtie",
+        "cuvee": "Quatuor",
+        "color": "rouge",
+        "grapes": [
+          "Syrah"
+        ],
+        "region": "Vallée du Rhône",
+        "gamme": "excellence",
+        "certifications": [
+          "demeter",
+          "bio"
+        ]
+      },
+      "variants": [
+        {
+          "id": "var_quatuor_2022_75",
+          "vintage": 2022,
+          "format_cl": 75,
+          "availability": "in_stock",
+          "price_ht_36": 47.5,
+          "price_ht_78": 45.85,
+          "price_ht_156": 44.7
+        },
+        {
+          "id": "var_quatuor_2022_150",
+          "vintage": 2022,
+          "format_cl": 150,
+          "availability": "in_stock",
+          "price_ht_36": 96.5,
+          "price_ht_78": 93.15,
+          "price_ht_156": 90.9
+        },
+        {
+          "id": "var_quatuor_2023_75",
+          "vintage": 2023,
+          "format_cl": 75,
+          "availability": "in_stock",
+          "price_ht_36": 47.5,
+          "price_ht_78": 45.85,
+          "price_ht_156": 44.7,
+          "millesime_a_venir": true
+        },
+        {
+          "id": "var_quatuor_2023_150",
+          "vintage": 2023,
+          "format_cl": 150,
+          "availability": "in_stock",
+          "price_ht_36": 96.5,
+          "price_ht_78": 93.15,
+          "price_ht_156": 90.9,
+          "millesime_a_venir": true
+        }
+      ]
+    },
+    {
+      "id": "prod_ermitage_monier_carton",
+      "name": "Ermitage Monier de la Sizeranne",
+      "type": "wine",
+      "brand_id": "brand_excellence",
+      "supplier_id": "sup_chapoutier",
+      "producer_id": "prod_chapoutier",
+      "active": true,
+      "wine_attributes": {
+        "appellation": "Ermitage",
+        "cuvee": "Monier de la Sizeranne",
+        "color": "rouge",
+        "grapes": [
+          "Syrah"
+        ],
+        "region": "Vallée du Rhône",
+        "gamme": "excellence",
+        "certifications": [
+          "demeter",
+          "bio"
+        ],
+        "notes": "En carton"
+      },
+      "variants": [
+        {
+          "id": "var_monier_carton_2014_75",
+          "vintage": 2014,
+          "format_cl": 75,
+          "availability": "sold_out",
+          "price_ht_36": null,
+          "price_ht_78": null,
+          "price_ht_156": null,
+          "notes": "En carton"
+        },
+        {
+          "id": "var_monier_carton_2014_150",
+          "vintage": 2014,
+          "format_cl": 150,
+          "availability": "sold_out",
+          "price_ht_36": 81.3,
+          "price_ht_78": 78.5,
+          "price_ht_156": 76.6,
+          "notes": "En carton"
+        },
+        {
+          "id": "var_monier_carton_2021_75",
+          "vintage": 2021,
+          "format_cl": 75,
+          "availability": "in_stock",
+          "price_ht_36": 39.9,
+          "price_ht_78": 38.5,
+          "price_ht_156": 37.55,
+          "notes": "En carton"
+        },
+        {
+          "id": "var_monier_carton_2021_150",
+          "vintage": 2021,
+          "format_cl": 150,
+          "availability": "in_stock",
+          "price_ht_36": 81.3,
+          "price_ht_78": 78.5,
+          "price_ht_156": 76.6,
+          "notes": "En carton"
+        },
+        {
+          "id": "var_monier_carton_2022_75",
+          "vintage": 2022,
+          "format_cl": 75,
+          "availability": "in_stock",
+          "price_ht_36": 39.9,
+          "price_ht_78": 38.5,
+          "price_ht_156": 37.55,
+          "notes": "En carton",
+          "millesime_a_venir": true
+        },
+        {
+          "id": "var_monier_carton_2022_150",
+          "vintage": 2022,
+          "format_cl": 150,
+          "availability": "in_stock",
+          "price_ht_36": 81.3,
+          "price_ht_78": 78.5,
+          "price_ht_156": 76.6,
+          "notes": "En carton",
+          "millesime_a_venir": true
+        }
+      ]
+    },
+    {
+      "id": "prod_ermitage_monier_bois",
+      "name": "Ermitage Monier de la Sizeranne",
+      "type": "wine",
+      "brand_id": "brand_excellence",
+      "supplier_id": "sup_chapoutier",
+      "producer_id": "prod_chapoutier",
+      "active": true,
+      "wine_attributes": {
+        "appellation": "Ermitage",
+        "cuvee": "Monier de la Sizeranne",
+        "color": "rouge",
+        "grapes": [
+          "Syrah"
+        ],
+        "region": "Vallée du Rhône",
+        "gamme": "excellence",
+        "certifications": [
+          "demeter",
+          "bio"
+        ],
+        "notes": "En caisse bois"
+      },
+      "variants": [
+        {
+          "id": "var_monier_bois_2021_75",
+          "vintage": 2021,
+          "format_cl": 75,
+          "availability": "in_stock",
+          "price_ht_36": 41.3,
+          "price_ht_78": 39.9,
+          "price_ht_156": 38.95,
+          "notes": "En caisse bois"
+        },
+        {
+          "id": "var_monier_bois_2021_150",
+          "vintage": 2021,
+          "format_cl": 150,
+          "availability": "in_stock",
+          "price_ht_36": null,
+          "price_ht_78": null,
+          "price_ht_156": null,
+          "notes": "En caisse bois"
+        },
+        {
+          "id": "var_monier_bois_2022_75",
+          "vintage": 2022,
+          "format_cl": 75,
+          "availability": "in_stock",
+          "price_ht_36": 41.3,
+          "price_ht_78": 39.9,
+          "price_ht_156": 38.95,
+          "notes": "En caisse bois",
+          "millesime_a_venir": true
+        },
+        {
+          "id": "var_monier_bois_2022_150",
+          "vintage": 2022,
+          "format_cl": 150,
+          "availability": "in_stock",
+          "price_ht_36": null,
+          "price_ht_78": null,
+          "price_ht_156": null,
+          "notes": "En caisse bois",
+          "millesime_a_venir": true
+        }
+      ]
+    },
+    {
+      "id": "prod_cornas_temenos",
+      "name": "Cornas Temenos",
+      "type": "wine",
+      "brand_id": "brand_excellence",
+      "supplier_id": "sup_chapoutier",
+      "producer_id": "prod_chapoutier",
+      "active": true,
+      "wine_attributes": {
+        "appellation": "Cornas",
+        "cuvee": "Temenos",
+        "color": "rouge",
+        "grapes": [
+          "Syrah"
+        ],
+        "region": "Vallée du Rhône",
+        "gamme": "excellence"
+      },
+      "variants": [
+        {
+          "id": "var_temenos_2021_75",
+          "vintage": 2021,
+          "format_cl": 75,
+          "availability": "sold_out",
+          "price_ht_36": null,
+          "price_ht_78": null,
+          "price_ht_156": null
+        },
+        {
+          "id": "var_temenos_2021_150",
+          "vintage": 2021,
+          "format_cl": 150,
+          "availability": "sold_out",
+          "price_ht_36": 55.15,
+          "price_ht_78": 53.25,
+          "price_ht_156": 52
+        },
+        {
+          "id": "var_temenos_2022_75",
+          "vintage": 2022,
+          "format_cl": 75,
+          "availability": "in_stock",
+          "price_ht_36": 26.85,
+          "price_ht_78": 25.9,
+          "price_ht_156": 25.25
+        },
+        {
+          "id": "var_temenos_2022_150",
+          "vintage": 2022,
+          "format_cl": 150,
+          "availability": "in_stock",
+          "price_ht_36": 55.15,
+          "price_ht_78": 53.25,
+          "price_ht_156": 52
+        },
+        {
+          "id": "var_temenos_2023_75",
+          "vintage": 2023,
+          "format_cl": 75,
+          "availability": "in_stock",
+          "price_ht_36": 26.85,
+          "price_ht_78": 25.9,
+          "price_ht_156": 25.25,
+          "millesime_a_venir": true
+        },
+        {
+          "id": "var_temenos_2023_150",
+          "vintage": 2023,
+          "format_cl": 150,
+          "availability": "in_stock",
+          "price_ht_36": 55.15,
+          "price_ht_78": 53.25,
+          "price_ht_156": 52,
+          "millesime_a_venir": true
+        }
+      ]
+    },
+    {
+      "id": "prod_cdp_pie_vi",
+      "name": "Châteauneuf-du-Pape Pie VI",
+      "type": "wine",
+      "brand_id": "brand_excellence",
+      "supplier_id": "sup_chapoutier",
+      "producer_id": "prod_chapoutier",
+      "active": true,
+      "wine_attributes": {
+        "appellation": "Châteauneuf-du-Pape",
+        "cuvee": "Pie VI",
+        "color": "rouge",
+        "grapes": [
+          "Grenache",
+          "Syrah"
+        ],
+        "region": "Vallée du Rhône",
+        "gamme": "excellence",
+        "certifications": [
+          "demeter",
+          "bio"
+        ]
+      },
+      "variants": [
+        {
+          "id": "var_pie_vi_2021_75",
+          "vintage": 2021,
+          "format_cl": 75,
+          "availability": "sold_out",
+          "price_ht_36": null,
+          "price_ht_78": null,
+          "price_ht_156": null
+        },
+        {
+          "id": "var_pie_vi_2021_150",
+          "vintage": 2021,
+          "format_cl": 150,
+          "availability": "sold_out",
+          "price_ht_36": 52.5,
+          "price_ht_78": 50.7,
+          "price_ht_156": 49.55
+        },
+        {
+          "id": "var_pie_vi_2022_75",
+          "vintage": 2022,
+          "format_cl": 75,
+          "availability": "sold_out",
+          "price_ht_36": null,
+          "price_ht_78": null,
+          "price_ht_156": null
+        },
+        {
+          "id": "var_pie_vi_2022_150",
+          "vintage": 2022,
+          "format_cl": 150,
+          "availability": "sold_out",
+          "price_ht_36": 52.5,
+          "price_ht_78": 50.7,
+          "price_ht_156": 49.55
+        },
+        {
+          "id": "var_pie_vi_2023_75",
+          "vintage": 2023,
+          "format_cl": 75,
+          "availability": "in_stock",
+          "price_ht_36": 25.55,
+          "price_ht_78": 24.6,
+          "price_ht_156": 24.05
+        },
+        {
+          "id": "var_pie_vi_2023_150",
+          "vintage": 2023,
+          "format_cl": 150,
+          "availability": "in_stock",
+          "price_ht_36": 52.5,
+          "price_ht_78": 50.7,
+          "price_ht_156": 49.55
+        },
+        {
+          "id": "var_pie_vi_2024_75",
+          "vintage": 2024,
+          "format_cl": 75,
+          "availability": "in_stock",
+          "price_ht_36": 25.55,
+          "price_ht_78": 24.6,
+          "price_ht_156": 24.05,
+          "millesime_a_venir": true
+        },
+        {
+          "id": "var_pie_vi_2024_150",
+          "vintage": 2024,
+          "format_cl": 150,
+          "availability": "in_stock",
+          "price_ht_36": 52.5,
+          "price_ht_78": 50.7,
+          "price_ht_156": 49.55,
+          "millesime_a_venir": true
+        }
+      ]
+    },
+    {
+      "id": "prod_cdp_serus_syrah",
+      "name": "Châteauneuf-du-Pape Serus Syrah",
+      "type": "wine",
+      "brand_id": "brand_excellence",
+      "supplier_id": "sup_chapoutier",
+      "producer_id": "prod_chapoutier",
+      "active": true,
+      "wine_attributes": {
+        "appellation": "Châteauneuf-du-Pape",
+        "cuvee": "Serus Syrah",
+        "color": "rouge",
+        "grapes": [
+          "Syrah"
+        ],
+        "region": "Vallée du Rhône",
+        "gamme": "excellence",
+        "certifications": [
+          "demeter",
+          "bio"
+        ]
+      },
+      "variants": [
+        {
+          "id": "var_serus_2022_75",
+          "vintage": 2022,
+          "format_cl": 75,
+          "availability": "in_stock",
+          "price_ht_36": 25.55,
+          "price_ht_78": 24.6,
+          "price_ht_156": 24.05
+        },
+        {
+          "id": "var_serus_2022_150",
+          "vintage": 2022,
+          "format_cl": 150,
+          "availability": "in_stock",
+          "price_ht_36": null,
+          "price_ht_78": null,
+          "price_ht_156": null
+        },
+        {
+          "id": "var_serus_2023_75",
+          "vintage": 2023,
+          "format_cl": 75,
+          "availability": "in_stock",
+          "price_ht_36": 25.55,
+          "price_ht_78": 24.6,
+          "price_ht_156": 24.05
+        },
+        {
+          "id": "var_serus_2023_150",
+          "vintage": 2023,
+          "format_cl": 150,
+          "availability": "in_stock",
+          "price_ht_36": null,
+          "price_ht_78": null,
+          "price_ht_156": null
+        },
+        {
+          "id": "var_serus_2024_75",
+          "vintage": 2024,
+          "format_cl": 75,
+          "availability": "in_stock",
+          "price_ht_36": 25.55,
+          "price_ht_78": 24.6,
+          "price_ht_156": 24.05,
+          "millesime_a_venir": true
+        },
+        {
+          "id": "var_serus_2024_150",
+          "vintage": 2024,
+          "format_cl": 150,
+          "availability": "in_stock",
+          "price_ht_36": null,
+          "price_ht_78": null,
+          "price_ht_156": null,
+          "millesime_a_venir": true
+        }
+      ]
+    },
+    {
+      "id": "prod_crozes_sicamor_rouge",
+      "name": "Crozes-Ermitage Sicamor",
+      "type": "wine",
+      "brand_id": "brand_excellence",
+      "supplier_id": "sup_chapoutier",
+      "producer_id": "prod_chapoutier",
+      "active": true,
+      "wine_attributes": {
+        "appellation": "Crozes-Ermitage",
+        "cuvee": "Sicamor",
+        "color": "rouge",
+        "grapes": [
+          "Syrah"
+        ],
+        "region": "Vallée du Rhône",
+        "gamme": "excellence",
+        "certifications": [
+          "demeter",
+          "bio"
+        ]
+      },
+      "variants": [
+        {
+          "id": "var_sicamor_rouge_2021_75",
+          "vintage": 2021,
+          "format_cl": 75,
+          "availability": "in_stock",
+          "price_ht_36": 17.1,
+          "price_ht_78": 16.5,
+          "price_ht_156": 16.1
+        },
+        {
+          "id": "var_sicamor_rouge_2021_150",
+          "vintage": 2021,
+          "format_cl": 150,
+          "availability": "in_stock",
+          "price_ht_36": null,
+          "price_ht_78": null,
+          "price_ht_156": null
+        },
+        {
+          "id": "var_sicamor_rouge_2024_75",
+          "vintage": 2024,
+          "format_cl": 75,
+          "availability": "in_stock",
+          "price_ht_36": 17.1,
+          "price_ht_78": 16.5,
+          "price_ht_156": 16.1,
+          "millesime_a_venir": true
+        },
+        {
+          "id": "var_sicamor_rouge_2024_150",
+          "vintage": 2024,
+          "format_cl": 150,
+          "availability": "in_stock",
+          "price_ht_36": null,
+          "price_ht_78": null,
+          "price_ht_156": null,
+          "millesime_a_venir": true
+        }
+      ]
+    },
+    {
+      "id": "prod_ermitage_chante_carton",
+      "name": "Ermitage Chante-Alouette",
+      "type": "wine",
+      "brand_id": "brand_excellence",
+      "supplier_id": "sup_chapoutier",
+      "producer_id": "prod_chapoutier",
+      "active": true,
+      "wine_attributes": {
+        "appellation": "Ermitage",
+        "cuvee": "Chante-Alouette",
+        "color": "blanc",
+        "grapes": [
+          "Marsanne"
+        ],
+        "region": "Vallée du Rhône",
+        "gamme": "excellence",
+        "certifications": [
+          "demeter",
+          "bio"
+        ],
+        "notes": "En carton"
+      },
+      "variants": [
+        {
+          "id": "var_chante_carton_2019_75",
+          "vintage": 2019,
+          "format_cl": 75,
+          "availability": "sold_out",
+          "price_ht_36": null,
+          "price_ht_78": null,
+          "price_ht_156": null,
+          "notes": "En carton"
+        },
+        {
+          "id": "var_chante_carton_2019_150",
+          "vintage": 2019,
+          "format_cl": 150,
+          "availability": "sold_out",
+          "price_ht_36": 72.6,
+          "price_ht_78": 70.1,
+          "price_ht_156": 68.4,
+          "notes": "En carton"
+        },
+        {
+          "id": "var_chante_carton_2021_75",
+          "vintage": 2021,
+          "format_cl": 75,
+          "availability": "in_stock",
+          "price_ht_36": 35.55,
+          "price_ht_78": 34.3,
+          "price_ht_156": 33.45,
+          "notes": "En carton"
+        },
+        {
+          "id": "var_chante_carton_2021_150",
+          "vintage": 2021,
+          "format_cl": 150,
+          "availability": "in_stock",
+          "price_ht_36": 72.6,
+          "price_ht_78": 70.1,
+          "price_ht_156": 68.4,
+          "notes": "En carton"
+        },
+        {
+          "id": "var_chante_carton_2022_75",
+          "vintage": 2022,
+          "format_cl": 75,
+          "availability": "in_stock",
+          "price_ht_36": 35.55,
+          "price_ht_78": 34.3,
+          "price_ht_156": 33.45,
+          "notes": "En carton",
+          "millesime_a_venir": true
+        },
+        {
+          "id": "var_chante_carton_2022_150",
+          "vintage": 2022,
+          "format_cl": 150,
+          "availability": "in_stock",
+          "price_ht_36": 72.6,
+          "price_ht_78": 70.1,
+          "price_ht_156": 68.4,
+          "notes": "En carton",
+          "millesime_a_venir": true
+        }
+      ]
+    },
+    {
+      "id": "prod_ermitage_chante_bois",
+      "name": "Ermitage Chante-Alouette",
+      "type": "wine",
+      "brand_id": "brand_excellence",
+      "supplier_id": "sup_chapoutier",
+      "producer_id": "prod_chapoutier",
+      "active": true,
+      "wine_attributes": {
+        "appellation": "Ermitage",
+        "cuvee": "Chante-Alouette",
+        "color": "blanc",
+        "grapes": [
+          "Marsanne"
+        ],
+        "region": "Vallée du Rhône",
+        "gamme": "excellence",
+        "certifications": [
+          "demeter",
+          "bio"
+        ],
+        "notes": "En caisse bois"
+      },
+      "variants": [
+        {
+          "id": "var_chante_bois_2021_75",
+          "vintage": 2021,
+          "format_cl": 75,
+          "availability": "in_stock",
+          "price_ht_36": 36.95,
+          "price_ht_78": 35.7,
+          "price_ht_156": 34.85,
+          "notes": "En caisse bois"
+        },
+        {
+          "id": "var_chante_bois_2021_150",
+          "vintage": 2021,
+          "format_cl": 150,
+          "availability": "in_stock",
+          "price_ht_36": null,
+          "price_ht_78": null,
+          "price_ht_156": null,
+          "notes": "En caisse bois"
+        },
+        {
+          "id": "var_chante_bois_2022_75",
+          "vintage": 2022,
+          "format_cl": 75,
+          "availability": "in_stock",
+          "price_ht_36": 36.95,
+          "price_ht_78": 35.7,
+          "price_ht_156": 34.85,
+          "notes": "En caisse bois",
+          "millesime_a_venir": true
+        },
+        {
+          "id": "var_chante_bois_2022_150",
+          "vintage": 2022,
+          "format_cl": 150,
+          "availability": "in_stock",
+          "price_ht_36": null,
+          "price_ht_78": null,
+          "price_ht_156": null,
+          "notes": "En caisse bois",
+          "millesime_a_venir": true
+        }
+      ]
+    },
+    {
+      "id": "prod_sp_hongrie",
+      "name": "Saint-Péray Lieu Dit Hongrie",
+      "type": "wine",
+      "brand_id": "brand_excellence",
+      "supplier_id": "sup_chapoutier",
+      "producer_id": "prod_chapoutier",
+      "active": true,
+      "wine_attributes": {
+        "appellation": "Saint-Péray",
+        "cuvee": "Lieu Dit Hongrie",
+        "color": "blanc",
+        "grapes": [
+          "Marsanne"
+        ],
+        "region": "Vallée du Rhône",
+        "gamme": "excellence"
+      },
+      "variants": [
+        {
+          "id": "var_hongrie_2020_75",
+          "vintage": 2020,
+          "format_cl": 75,
+          "availability": "in_stock",
+          "price_ht_36": 24.75,
+          "price_ht_78": 23.85,
+          "price_ht_156": 23.3
+        },
+        {
+          "id": "var_hongrie_2020_150",
+          "vintage": 2020,
+          "format_cl": 150,
+          "availability": "in_stock",
+          "price_ht_36": null,
+          "price_ht_78": null,
+          "price_ht_156": null
+        },
+        {
+          "id": "var_hongrie_2021_75",
+          "vintage": 2021,
+          "format_cl": 75,
+          "availability": "in_stock",
+          "price_ht_36": 24.75,
+          "price_ht_78": 23.85,
+          "price_ht_156": 23.3,
+          "millesime_a_venir": true
+        },
+        {
+          "id": "var_hongrie_2021_150",
+          "vintage": 2021,
+          "format_cl": 150,
+          "availability": "in_stock",
+          "price_ht_36": null,
+          "price_ht_78": null,
+          "price_ht_156": null,
+          "millesime_a_venir": true
+        }
+      ]
+    },
+    {
+      "id": "prod_crozes_sicamor_blanc",
+      "name": "Crozes-Ermitage Sicamor",
+      "type": "wine",
+      "brand_id": "brand_excellence",
+      "supplier_id": "sup_chapoutier",
+      "producer_id": "prod_chapoutier",
+      "active": true,
+      "wine_attributes": {
+        "appellation": "Crozes-Ermitage",
+        "cuvee": "Sicamor",
+        "color": "blanc",
+        "grapes": [
+          "Marsanne"
+        ],
+        "region": "Vallée du Rhône",
+        "gamme": "excellence"
+      },
+      "variants": [
+        {
+          "id": "var_sicamor_blanc_2024_75",
+          "vintage": 2024,
+          "format_cl": 75,
+          "availability": "in_stock",
+          "price_ht_36": 17.1,
+          "price_ht_78": 16.5,
+          "price_ht_156": 16.1,
+          "millesime_a_venir": true
+        },
+        {
+          "id": "var_sicamor_blanc_2024_150",
+          "vintage": 2024,
+          "format_cl": 150,
+          "availability": "in_stock",
+          "price_ht_36": null,
+          "price_ht_78": null,
+          "price_ht_156": null,
+          "millesime_a_venir": true
+        },
+        {
+          "id": "var_sicamor_blanc_2025_75",
+          "vintage": 2025,
+          "format_cl": 75,
+          "availability": "in_stock",
+          "price_ht_36": 17.1,
+          "price_ht_78": 16.5,
+          "price_ht_156": 16.1,
+          "millesime_a_venir": true
+        },
+        {
+          "id": "var_sicamor_blanc_2025_150",
+          "vintage": 2025,
+          "format_cl": 150,
+          "availability": "in_stock",
+          "price_ht_36": null,
+          "price_ht_78": null,
+          "price_ht_156": null,
+          "millesime_a_venir": true
+        }
+      ]
+    },
+    {
+      "id": "prod_prestige_30",
+      "name": "Côte-Rôtie Les Bécasses",
+      "type": "wine",
+      "brand_id": "brand_prestige",
+      "supplier_id": "sup_chapoutier",
+      "producer_id": "prod_chapoutier",
+      "active": true,
+      "wine_attributes": {
+        "appellation": "Côte-Rôtie",
+        "cuvee": "Les Bécasses",
+        "color": "rouge",
+        "region": "Vallée du Rhône",
+        "gamme": "prestige",
+        "grapes": [
+          "Syrah"
+        ],
+        "certifications": [
+          "demeter",
+          "bio"
+        ]
+      },
+      "variants": [
+        {
+          "id": "var_prestige_30_2022_75",
+          "vintage": 2022,
+          "format_cl": 75,
+          "availability": "in_stock",
+          "price_ht_36": 4020,
+          "price_ht_78": 3879,
+          "price_ht_156": 3785
+        },
+        {
+          "id": "var_prestige_30_2022_150",
+          "vintage": 2022,
+          "format_cl": 150,
+          "availability": "in_stock",
+          "price_ht_36": null,
+          "price_ht_78": null,
+          "price_ht_156": 7715
+        },
+        {
+          "id": "var_prestige_30_2023_75",
+          "vintage": 2023,
+          "format_cl": 75,
+          "availability": "in_stock",
+          "price_ht_36": 4020,
+          "price_ht_78": 3879,
+          "price_ht_156": 3785,
+          "millesime_a_venir": true
+        },
+        {
+          "id": "var_prestige_30_2023_150",
+          "vintage": 2023,
+          "format_cl": 150,
+          "availability": "in_stock",
+          "price_ht_36": null,
+          "price_ht_78": null,
+          "price_ht_156": 7715,
+          "millesime_a_venir": true
+        }
+      ]
+    },
+    {
+      "id": "prod_prestige_31",
+      "name": "Cornas Les Arènes",
+      "type": "wine",
+      "brand_id": "brand_prestige",
+      "supplier_id": "sup_chapoutier",
+      "producer_id": "prod_chapoutier",
+      "active": true,
+      "wine_attributes": {
+        "appellation": "Cornas",
+        "cuvee": "Les Arènes",
+        "color": "rouge",
+        "region": "Vallée du Rhône",
+        "gamme": "prestige",
+        "grapes": [
+          "Syrah"
+        ],
+        "certifications": [
+          "demeter",
+          "bio"
+        ]
+      },
+      "variants": [
+        {
+          "id": "var_prestige_31_2022_75",
+          "vintage": 2022,
+          "format_cl": 75,
+          "availability": "in_stock",
+          "price_ht_36": 2460,
+          "price_ht_78": 2375,
+          "price_ht_156": 2315
+        },
+        {
+          "id": "var_prestige_31_2022_150",
+          "vintage": 2022,
+          "format_cl": 150,
+          "availability": "in_stock",
+          "price_ht_36": null,
+          "price_ht_78": null,
+          "price_ht_156": 4780
+        },
+        {
+          "id": "var_prestige_31_2023_75",
+          "vintage": 2023,
+          "format_cl": 75,
+          "availability": "in_stock",
+          "price_ht_36": 2460,
+          "price_ht_78": 2375,
+          "price_ht_156": 2315,
+          "millesime_a_venir": true
+        },
+        {
+          "id": "var_prestige_31_2023_150",
+          "vintage": 2023,
+          "format_cl": 150,
+          "availability": "in_stock",
+          "price_ht_36": null,
+          "price_ht_78": null,
+          "price_ht_156": 4780,
+          "millesime_a_venir": true
+        }
+      ]
+    },
+    {
+      "id": "prod_prestige_32",
+      "name": "Châteauneuf-du-Pape La Bernardine",
+      "type": "wine",
+      "brand_id": "brand_prestige",
+      "supplier_id": "sup_chapoutier",
+      "producer_id": "prod_chapoutier",
+      "active": true,
+      "wine_attributes": {
+        "appellation": "Châteauneuf-du-Pape",
+        "cuvee": "La Bernardine",
+        "color": "rouge",
+        "region": "Vallée du Rhône",
+        "gamme": "prestige",
+        "grapes": [
+          "Grenache"
+        ],
+        "certifications": [
+          "demeter",
+          "bio"
+        ]
+      },
+      "variants": [
+        {
+          "id": "var_prestige_32_2022_75",
+          "vintage": 2022,
+          "format_cl": 75,
+          "availability": "sold_out",
+          "price_ht_36": null,
+          "price_ht_78": null,
+          "price_ht_156": null
+        },
+        {
+          "id": "var_prestige_32_2022_150",
+          "vintage": 2022,
+          "format_cl": 150,
+          "availability": "in_stock",
+          "price_ht_36": null,
+          "price_ht_78": null,
+          "price_ht_156": 4130
+        },
+        {
+          "id": "var_prestige_32_2023_75",
+          "vintage": 2023,
+          "format_cl": 75,
+          "availability": "in_stock",
+          "price_ht_36": 2115,
+          "price_ht_78": 2039,
+          "price_ht_156": 1989
+        },
+        {
+          "id": "var_prestige_32_2023_150",
+          "vintage": 2023,
+          "format_cl": 150,
+          "availability": "in_stock",
+          "price_ht_36": null,
+          "price_ht_78": null,
+          "price_ht_156": 4130
+        },
+        {
+          "id": "var_prestige_32_2024_75",
+          "vintage": 2024,
+          "format_cl": 75,
+          "availability": "in_stock",
+          "price_ht_36": 2115,
+          "price_ht_78": 2039,
+          "price_ht_156": 1989,
+          "millesime_a_venir": true
+        },
+        {
+          "id": "var_prestige_32_2024_150",
+          "vintage": 2024,
+          "format_cl": 150,
+          "availability": "in_stock",
+          "price_ht_36": null,
+          "price_ht_78": null,
+          "price_ht_156": 4130,
+          "millesime_a_venir": true
+        }
+      ]
+    },
+    {
+      "id": "prod_prestige_33",
+      "name": "Saint-Joseph Les Granilites",
+      "type": "wine",
+      "brand_id": "brand_prestige",
+      "supplier_id": "sup_chapoutier",
+      "producer_id": "prod_chapoutier",
+      "active": true,
+      "wine_attributes": {
+        "appellation": "Saint-Joseph",
+        "cuvee": "Les Granilites",
+        "color": "rouge",
+        "region": "Vallée du Rhône",
+        "gamme": "prestige",
+        "grapes": [
+          "Syrah"
+        ],
+        "certifications": [
+          "demeter",
+          "bio"
+        ]
+      },
+      "variants": [
+        {
+          "id": "var_prestige_33_2022_75",
+          "vintage": 2022,
+          "format_cl": 75,
+          "availability": "sold_out",
+          "price_ht_36": null,
+          "price_ht_78": null,
+          "price_ht_156": null
+        },
+        {
+          "id": "var_prestige_33_2022_150",
+          "vintage": 2022,
+          "format_cl": 150,
+          "availability": "in_stock",
+          "price_ht_36": null,
+          "price_ht_78": null,
+          "price_ht_156": 3545
+        },
+        {
+          "id": "var_prestige_33_2023_75",
+          "vintage": 2023,
+          "format_cl": 75,
+          "availability": "in_stock",
+          "price_ht_36": 1805,
+          "price_ht_78": 1739,
+          "price_ht_156": 1700
+        },
+        {
+          "id": "var_prestige_33_2023_150",
+          "vintage": 2023,
+          "format_cl": 150,
+          "availability": "in_stock",
+          "price_ht_36": null,
+          "price_ht_78": null,
+          "price_ht_156": 3545
+        },
+        {
+          "id": "var_prestige_33_2024_75",
+          "vintage": 2024,
+          "format_cl": 75,
+          "availability": "in_stock",
+          "price_ht_36": 1805,
+          "price_ht_78": 1739,
+          "price_ht_156": 1700,
+          "millesime_a_venir": true
+        },
+        {
+          "id": "var_prestige_33_2024_150",
+          "vintage": 2024,
+          "format_cl": 150,
+          "availability": "in_stock",
+          "price_ht_36": null,
+          "price_ht_78": null,
+          "price_ht_156": 3545,
+          "millesime_a_venir": true
+        }
+      ]
+    },
+    {
+      "id": "prod_prestige_34",
+      "name": "Crozes-Ermitage Les Meysonniers",
+      "type": "wine",
+      "brand_id": "brand_prestige",
+      "supplier_id": "sup_chapoutier",
+      "producer_id": "prod_chapoutier",
+      "active": true,
+      "wine_attributes": {
+        "appellation": "Crozes-Ermitage",
+        "cuvee": "Les Meysonniers",
+        "color": "rouge",
+        "region": "Vallée du Rhône",
+        "gamme": "prestige",
+        "grapes": [
+          "Syrah"
+        ],
+        "certifications": [
+          "demeter",
+          "bio"
+        ]
+      },
+      "variants": [
+        {
+          "id": "var_prestige_34_2023_375",
+          "vintage": 2023,
+          "format_cl": 37.5,
+          "availability": "in_stock",
+          "price_ht_36": 610,
+          "price_ht_78": 590,
+          "price_ht_156": 580
+        },
+        {
+          "id": "var_prestige_34_2023_75",
+          "vintage": 2023,
+          "format_cl": 75,
+          "availability": "in_stock",
+          "price_ht_36": 1120,
+          "price_ht_78": 1080,
+          "price_ht_156": 1055
+        },
+        {
+          "id": "var_prestige_34_2023_150",
+          "vintage": 2023,
+          "format_cl": 150,
+          "availability": "in_stock",
+          "price_ht_36": null,
+          "price_ht_78": null,
+          "price_ht_156": 2255
+        },
+        {
+          "id": "var_prestige_34_2024_375",
+          "vintage": 2024,
+          "format_cl": 37.5,
+          "availability": "in_stock",
+          "price_ht_36": 610,
+          "price_ht_78": 590,
+          "price_ht_156": 580,
+          "millesime_a_venir": true
+        },
+        {
+          "id": "var_prestige_34_2024_75",
+          "vintage": 2024,
+          "format_cl": 75,
+          "availability": "in_stock",
+          "price_ht_36": 1120,
+          "price_ht_78": 1080,
+          "price_ht_156": 1055,
+          "millesime_a_venir": true
+        },
+        {
+          "id": "var_prestige_34_2024_150",
+          "vintage": 2024,
+          "format_cl": 150,
+          "availability": "in_stock",
+          "price_ht_36": null,
+          "price_ht_78": null,
+          "price_ht_156": 2255,
+          "millesime_a_venir": true
+        }
+      ]
+    },
+    {
+      "id": "prod_prestige_35",
+      "name": "Châteauneuf-du-Pape La Bernardine",
+      "type": "wine",
+      "brand_id": "brand_prestige",
+      "supplier_id": "sup_chapoutier",
+      "producer_id": "prod_chapoutier",
+      "active": true,
+      "wine_attributes": {
+        "appellation": "Châteauneuf-du-Pape",
+        "cuvee": "La Bernardine",
+        "color": "blanc",
+        "region": "Vallée du Rhône",
+        "gamme": "prestige",
+        "grapes": [
+          "Grenache Blanc"
+        ],
+        "certifications": [
+          "demeter",
+          "bio"
+        ]
+      },
+      "variants": [
+        {
+          "id": "var_prestige_35_2024_75",
+          "vintage": 2024,
+          "format_cl": 75,
+          "availability": "in_stock",
+          "price_ht_36": 2525,
+          "price_ht_78": 2435,
+          "price_ht_156": 2375
+        },
+        {
+          "id": "var_prestige_35_2025_75",
+          "vintage": 2025,
+          "format_cl": 75,
+          "availability": "in_stock",
+          "price_ht_36": 2525,
+          "price_ht_78": 2435,
+          "price_ht_156": 2375,
+          "millesime_a_venir": true
+        }
+      ]
+    },
+    {
+      "id": "prod_prestige_36",
+      "name": "Condrieu Invitare",
+      "type": "wine",
+      "brand_id": "brand_prestige",
+      "supplier_id": "sup_chapoutier",
+      "producer_id": "prod_chapoutier",
+      "active": true,
+      "wine_attributes": {
+        "appellation": "Condrieu",
+        "cuvee": "Invitare",
+        "color": "blanc",
+        "region": "Vallée du Rhône",
+        "gamme": "prestige",
+        "grapes": [
+          "Viognier"
+        ],
+        "certifications": [
+          "demeter",
+          "bio"
+        ]
+      },
+      "variants": [
+        {
+          "id": "var_prestige_36_2023_75",
+          "vintage": 2023,
+          "format_cl": 75,
+          "availability": "in_stock",
+          "price_ht_36": 2515,
+          "price_ht_78": 2425,
+          "price_ht_156": 2365
+        },
+        {
+          "id": "var_prestige_36_2023_150",
+          "vintage": 2023,
+          "format_cl": 150,
+          "availability": "sold_out",
+          "price_ht_36": null,
+          "price_ht_78": null,
+          "price_ht_156": null
+        },
+        {
+          "id": "var_prestige_36_2024_75",
+          "vintage": 2024,
+          "format_cl": 75,
+          "availability": "in_stock",
+          "price_ht_36": 2515,
+          "price_ht_78": 2425,
+          "price_ht_156": 2365,
+          "millesime_a_venir": true
+        },
+        {
+          "id": "var_prestige_36_2024_150",
+          "vintage": 2024,
+          "format_cl": 150,
+          "availability": "in_stock",
+          "price_ht_36": null,
+          "price_ht_78": null,
+          "price_ht_156": 4880,
+          "millesime_a_venir": true
+        }
+      ]
+    },
+    {
+      "id": "prod_prestige_37",
+      "name": "Saint-Joseph Les Granilites",
+      "type": "wine",
+      "brand_id": "brand_prestige",
+      "supplier_id": "sup_chapoutier",
+      "producer_id": "prod_chapoutier",
+      "active": true,
+      "wine_attributes": {
+        "appellation": "Saint-Joseph",
+        "cuvee": "Les Granilites",
+        "color": "blanc",
+        "region": "Vallée du Rhône",
+        "gamme": "prestige",
+        "grapes": [
+          "Marsanne"
+        ],
+        "certifications": [
+          "demeter",
+          "bio"
+        ]
+      },
+      "variants": [
+        {
+          "id": "var_prestige_37_2022_75",
+          "vintage": 2022,
+          "format_cl": 75,
+          "availability": "in_stock",
+          "price_ht_36": 2065,
+          "price_ht_78": 1989,
+          "price_ht_156": 1945
+        },
+        {
+          "id": "var_prestige_37_2023_75",
+          "vintage": 2023,
+          "format_cl": 75,
+          "availability": "in_stock",
+          "price_ht_36": 2065,
+          "price_ht_78": 1989,
+          "price_ht_156": 1945,
+          "millesime_a_venir": true
+        },
+        {
+          "id": "var_prestige_37_2024_75",
+          "vintage": 2024,
+          "format_cl": 75,
+          "availability": "in_stock",
+          "price_ht_36": 2065,
+          "price_ht_78": 1989,
+          "price_ht_156": 1945,
+          "millesime_a_venir": true
+        },
+        {
+          "id": "var_prestige_37_2024_150",
+          "vintage": 2024,
+          "format_cl": 150,
+          "availability": "in_stock",
+          "price_ht_36": null,
+          "price_ht_78": null,
+          "price_ht_156": 4035,
+          "millesime_a_venir": true
+        }
+      ]
+    },
+    {
+      "id": "prod_prestige_38",
+      "name": "Saint-Péray Haut-Chamblard",
+      "type": "wine",
+      "brand_id": "brand_prestige",
+      "supplier_id": "sup_chapoutier",
+      "producer_id": "prod_chapoutier",
+      "active": true,
+      "wine_attributes": {
+        "appellation": "Saint-Péray",
+        "cuvee": "Haut-Chamblard",
+        "color": "blanc",
+        "region": "Vallée du Rhône",
+        "gamme": "prestige",
+        "grapes": [
+          "Marsanne"
+        ],
+        "certifications": [
+          "demeter",
+          "bio"
+        ]
+      },
+      "variants": [
+        {
+          "id": "var_prestige_38_2023_75",
+          "vintage": 2023,
+          "format_cl": 75,
+          "availability": "in_stock",
+          "price_ht_36": 2030,
+          "price_ht_78": 1960,
+          "price_ht_156": 1910
+        },
+        {
+          "id": "var_prestige_38_2024_75",
+          "vintage": 2024,
+          "format_cl": 75,
+          "availability": "in_stock",
+          "price_ht_36": 2030,
+          "price_ht_78": 1960,
+          "price_ht_156": 1910,
+          "millesime_a_venir": true
+        }
+      ]
+    },
+    {
+      "id": "prod_prestige_39",
+      "name": "Crozes-Ermitage Les Meysonniers",
+      "type": "wine",
+      "brand_id": "brand_prestige",
+      "supplier_id": "sup_chapoutier",
+      "producer_id": "prod_chapoutier",
+      "active": true,
+      "wine_attributes": {
+        "appellation": "Crozes-Ermitage",
+        "cuvee": "Les Meysonniers",
+        "color": "blanc",
+        "region": "Vallée du Rhône",
+        "gamme": "prestige",
+        "grapes": [
+          "Marsanne"
+        ],
+        "certifications": [
+          "demeter",
+          "bio"
+        ]
+      },
+      "variants": [
+        {
+          "id": "var_prestige_39_2023_75",
+          "vintage": 2023,
+          "format_cl": 75,
+          "availability": "sold_out",
+          "price_ht_36": null,
+          "price_ht_78": null,
+          "price_ht_156": null
+        },
+        {
+          "id": "var_prestige_39_2023_150",
+          "vintage": 2023,
+          "format_cl": 150,
+          "availability": "in_stock",
+          "price_ht_36": null,
+          "price_ht_78": null,
+          "price_ht_156": 2565
+        },
+        {
+          "id": "var_prestige_39_2024_75",
+          "vintage": 2024,
+          "format_cl": 75,
+          "availability": "in_stock",
+          "price_ht_36": 1285,
+          "price_ht_78": 1240,
+          "price_ht_156": 1210
+        },
+        {
+          "id": "var_prestige_39_2024_150",
+          "vintage": 2024,
+          "format_cl": 150,
+          "availability": "in_stock",
+          "price_ht_36": null,
+          "price_ht_78": null,
+          "price_ht_156": 2565
+        },
+        {
+          "id": "var_prestige_39_2025_75",
+          "vintage": 2025,
+          "format_cl": 75,
+          "availability": "in_stock",
+          "price_ht_36": 1285,
+          "price_ht_78": 1240,
+          "price_ht_156": 1210,
+          "millesime_a_venir": true
+        },
+        {
+          "id": "var_prestige_39_2025_150",
+          "vintage": 2025,
+          "format_cl": 150,
+          "availability": "in_stock",
+          "price_ht_36": null,
+          "price_ht_78": null,
+          "price_ht_156": 2565,
+          "millesime_a_venir": true
+        }
+      ]
+    },
+    {
+      "id": "prod_tradition_40",
+      "name": "Gigondas Les Jocasses",
+      "type": "wine",
+      "brand_id": "brand_tradition",
+      "supplier_id": "sup_chapoutier",
+      "producer_id": "prod_chapoutier",
+      "active": true,
+      "wine_attributes": {
+        "appellation": "Gigondas",
+        "cuvee": "Les Jocasses",
+        "color": "rouge",
+        "region": "Vallée du Rhône",
+        "gamme": "tradition",
+        "grapes": [
+          "Grenache"
+        ]
+      },
+      "variants": [
+        {
+          "id": "var_tradition_40_2024_75",
+          "vintage": 2024,
+          "format_cl": 75,
+          "availability": "in_stock",
+          "price_ht_36": 1425,
+          "price_ht_78": 1375,
+          "price_ht_156": 1340
+        },
+        {
+          "id": "var_tradition_40_2025_75",
+          "vintage": 2025,
+          "format_cl": 75,
+          "availability": "in_stock",
+          "price_ht_36": 1425,
+          "price_ht_78": 1375,
+          "price_ht_156": 1340,
+          "millesime_a_venir": true
+        }
+      ]
+    },
+    {
+      "id": "prod_tradition_41",
+      "name": "Saint-Joseph Deschants",
+      "type": "wine",
+      "brand_id": "brand_tradition",
+      "supplier_id": "sup_chapoutier",
+      "producer_id": "prod_chapoutier",
+      "active": true,
+      "wine_attributes": {
+        "appellation": "Saint-Joseph",
+        "cuvee": "Deschants",
+        "color": "rouge",
+        "region": "Vallée du Rhône",
+        "gamme": "tradition",
+        "grapes": [
+          "Syrah"
+        ]
+      },
+      "variants": [
+        {
+          "id": "var_tradition_41_2023_375",
+          "vintage": 2023,
+          "format_cl": 37.5,
+          "availability": "in_stock",
+          "price_ht_36": 740,
+          "price_ht_78": 715,
+          "price_ht_156": 700
+        },
+        {
+          "id": "var_tradition_41_2023_75",
+          "vintage": 2023,
+          "format_cl": 75,
+          "availability": "in_stock",
+          "price_ht_36": 1375,
+          "price_ht_78": 1325,
+          "price_ht_156": 1295
+        },
+        {
+          "id": "var_tradition_41_2023_150",
+          "vintage": 2023,
+          "format_cl": 150,
+          "availability": "in_stock",
+          "price_ht_36": null,
+          "price_ht_78": null,
+          "price_ht_156": 2735
+        },
+        {
+          "id": "var_tradition_41_2024_375",
+          "vintage": 2024,
+          "format_cl": 37.5,
+          "availability": "in_stock",
+          "price_ht_36": 740,
+          "price_ht_78": 715,
+          "price_ht_156": 700,
+          "millesime_a_venir": true
+        },
+        {
+          "id": "var_tradition_41_2024_75",
+          "vintage": 2024,
+          "format_cl": 75,
+          "availability": "in_stock",
+          "price_ht_36": 1375,
+          "price_ht_78": 1325,
+          "price_ht_156": 1295,
+          "millesime_a_venir": true
+        },
+        {
+          "id": "var_tradition_41_2024_150",
+          "vintage": 2024,
+          "format_cl": 150,
+          "availability": "in_stock",
+          "price_ht_36": null,
+          "price_ht_78": null,
+          "price_ht_156": 2735,
+          "millesime_a_venir": true
+        }
+      ]
+    },
+    {
+      "id": "prod_tradition_42",
+      "name": "Vacqueyras Avarum",
+      "type": "wine",
+      "brand_id": "brand_tradition",
+      "supplier_id": "sup_chapoutier",
+      "producer_id": "prod_chapoutier",
+      "active": true,
+      "wine_attributes": {
+        "appellation": "Vacqueyras",
+        "cuvee": "Avarum",
+        "color": "rouge",
+        "region": "Vallée du Rhône",
+        "gamme": "tradition",
+        "grapes": [
+          "Grenache"
+        ]
+      },
+      "variants": [
+        {
+          "id": "var_tradition_42_2024_75",
+          "vintage": 2024,
+          "format_cl": 75,
+          "availability": "in_stock",
+          "price_ht_36": 1060,
+          "price_ht_78": 1025,
+          "price_ht_156": 1000
+        },
+        {
+          "id": "var_tradition_42_2025_75",
+          "vintage": 2025,
+          "format_cl": 75,
+          "availability": "in_stock",
+          "price_ht_36": 1060,
+          "price_ht_78": 1025,
+          "price_ht_156": 1000,
+          "millesime_a_venir": true
+        }
+      ]
+    },
+    {
+      "id": "prod_tradition_43",
+      "name": "Crozes-Ermitage Petite Ruche",
+      "type": "wine",
+      "brand_id": "brand_tradition",
+      "supplier_id": "sup_chapoutier",
+      "producer_id": "prod_chapoutier",
+      "active": true,
+      "wine_attributes": {
+        "appellation": "Crozes-Ermitage",
+        "cuvee": "Petite Ruche",
+        "color": "rouge",
+        "region": "Vallée du Rhône",
+        "gamme": "tradition",
+        "grapes": [
+          "Syrah"
+        ]
+      },
+      "variants": [
+        {
+          "id": "var_tradition_43_2023_375",
+          "vintage": 2023,
+          "format_cl": 37.5,
+          "availability": "in_stock",
+          "price_ht_36": 555,
+          "price_ht_78": 540,
+          "price_ht_156": 525
+        },
+        {
+          "id": "var_tradition_43_2023_75",
+          "vintage": 2023,
+          "format_cl": 75,
+          "availability": "in_stock",
+          "price_ht_36": 1010,
+          "price_ht_78": 975,
+          "price_ht_156": 950
+        },
+        {
+          "id": "var_tradition_43_2023_150",
+          "vintage": 2023,
+          "format_cl": 150,
+          "availability": "in_stock",
+          "price_ht_36": null,
+          "price_ht_78": null,
+          "price_ht_156": 2050
+        },
+        {
+          "id": "var_tradition_43_2024_375",
+          "vintage": 2024,
+          "format_cl": 37.5,
+          "availability": "in_stock",
+          "price_ht_36": 555,
+          "price_ht_78": 540,
+          "price_ht_156": 525,
+          "millesime_a_venir": true
+        },
+        {
+          "id": "var_tradition_43_2024_75",
+          "vintage": 2024,
+          "format_cl": 75,
+          "availability": "in_stock",
+          "price_ht_36": 1010,
+          "price_ht_78": 975,
+          "price_ht_156": 950,
+          "millesime_a_venir": true
+        },
+        {
+          "id": "var_tradition_43_2024_150",
+          "vintage": 2024,
+          "format_cl": 150,
+          "availability": "in_stock",
+          "price_ht_36": null,
+          "price_ht_78": null,
+          "price_ht_156": 2050,
+          "millesime_a_venir": true
+        }
+      ]
+    },
+    {
+      "id": "prod_tradition_44",
+      "name": "Rasteau Les Gadilles",
+      "type": "wine",
+      "brand_id": "brand_tradition",
+      "supplier_id": "sup_chapoutier",
+      "producer_id": "prod_chapoutier",
+      "active": true,
+      "wine_attributes": {
+        "appellation": "Rasteau",
+        "cuvee": "Les Gadilles",
+        "color": "rouge",
+        "region": "Vallée du Rhône",
+        "gamme": "tradition",
+        "grapes": [
+          "Grenache"
+        ]
+      },
+      "variants": [
+        {
+          "id": "var_tradition_44_2024_75",
+          "vintage": 2024,
+          "format_cl": 75,
+          "availability": "in_stock",
+          "price_ht_36": 770,
+          "price_ht_78": 740,
+          "price_ht_156": 725
+        },
+        {
+          "id": "var_tradition_44_2025_75",
+          "vintage": 2025,
+          "format_cl": 75,
+          "availability": "in_stock",
+          "price_ht_36": 770,
+          "price_ht_78": 740,
+          "price_ht_156": 725,
+          "millesime_a_venir": true
+        }
+      ]
+    },
+    {
+      "id": "prod_tradition_45",
+      "name": "Côtes-du-Rhône Villages Signargues Agrioto",
+      "type": "wine",
+      "brand_id": "brand_tradition",
+      "supplier_id": "sup_chapoutier",
+      "producer_id": "prod_chapoutier",
+      "active": true,
+      "wine_attributes": {
+        "appellation": "Côtes-du-Rhône Villages Signargues",
+        "cuvee": "Agrioto",
+        "color": "rouge",
+        "region": "Vallée du Rhône",
+        "gamme": "tradition",
+        "grapes": [
+          "Grenache"
+        ]
+      },
+      "variants": [
+        {
+          "id": "var_tradition_45_2023_75",
+          "vintage": 2023,
+          "format_cl": 75,
+          "availability": "in_stock",
+          "price_ht_36": 620,
+          "price_ht_78": 600,
+          "price_ht_156": 585
+        },
+        {
+          "id": "var_tradition_45_2024_75",
+          "vintage": 2024,
+          "format_cl": 75,
+          "availability": "in_stock",
+          "price_ht_36": 620,
+          "price_ht_78": 600,
+          "price_ht_156": 585,
+          "millesime_a_venir": true
+        }
+      ]
+    },
+    {
+      "id": "prod_tradition_46",
+      "name": "Côtes-du-Rhône Belleruche",
+      "type": "wine",
+      "brand_id": "brand_tradition",
+      "supplier_id": "sup_chapoutier",
+      "producer_id": "prod_chapoutier",
+      "active": true,
+      "wine_attributes": {
+        "appellation": "Côtes-du-Rhône",
+        "cuvee": "Belleruche",
+        "color": "rouge",
+        "region": "Vallée du Rhône",
+        "gamme": "tradition",
+        "grapes": [
+          "Grenache"
+        ]
+      },
+      "variants": [
+        {
+          "id": "var_tradition_46_2024_375",
+          "vintage": 2024,
+          "format_cl": 37.5,
+          "availability": "in_stock",
+          "price_ht_36": 315,
+          "price_ht_78": 305,
+          "price_ht_156": 300
+        },
+        {
+          "id": "var_tradition_46_2024_75",
+          "vintage": 2024,
+          "format_cl": 75,
+          "availability": "in_stock",
+          "price_ht_36": 530,
+          "price_ht_78": 509,
+          "price_ht_156": 500
+        },
+        {
+          "id": "var_tradition_46_2024_150",
+          "vintage": 2024,
+          "format_cl": 150,
+          "availability": "in_stock",
+          "price_ht_36": null,
+          "price_ht_78": null,
+          "price_ht_156": 1145
+        },
+        {
+          "id": "var_tradition_46_2025_375",
+          "vintage": 2025,
+          "format_cl": 37.5,
+          "availability": "in_stock",
+          "price_ht_36": 315,
+          "price_ht_78": 305,
+          "price_ht_156": 300,
+          "millesime_a_venir": true
+        },
+        {
+          "id": "var_tradition_46_2025_75",
+          "vintage": 2025,
+          "format_cl": 75,
+          "availability": "in_stock",
+          "price_ht_36": 530,
+          "price_ht_78": 509,
+          "price_ht_156": 500,
+          "millesime_a_venir": true
+        },
+        {
+          "id": "var_tradition_46_2025_150",
+          "vintage": 2025,
+          "format_cl": 150,
+          "availability": "in_stock",
+          "price_ht_36": null,
+          "price_ht_78": null,
+          "price_ht_156": 1145,
+          "millesime_a_venir": true
+        }
+      ]
+    },
+    {
+      "id": "prod_tradition_47",
+      "name": "Lubéron La Ciboise",
+      "type": "wine",
+      "brand_id": "brand_tradition",
+      "supplier_id": "sup_chapoutier",
+      "producer_id": "prod_chapoutier",
+      "active": true,
+      "wine_attributes": {
+        "appellation": "Lubéron",
+        "cuvee": "La Ciboise",
+        "color": "rouge",
+        "region": "Vallée du Rhône",
+        "gamme": "tradition",
+        "grapes": [
+          "Grenache"
+        ]
+      },
+      "variants": [
+        {
+          "id": "var_tradition_47_2024_75",
+          "vintage": 2024,
+          "format_cl": 75,
+          "availability": "in_stock",
+          "price_ht_36": 400,
+          "price_ht_78": 385,
+          "price_ht_156": 375
+        },
+        {
+          "id": "var_tradition_47_2025_75",
+          "vintage": 2025,
+          "format_cl": 75,
+          "availability": "in_stock",
+          "price_ht_36": 400,
+          "price_ht_78": 385,
+          "price_ht_156": 375,
+          "millesime_a_venir": true
+        }
+      ]
+    },
+    {
+      "id": "prod_tradition_48",
+      "name": "Costières de Nîmes La Ciboise",
+      "type": "wine",
+      "brand_id": "brand_tradition",
+      "supplier_id": "sup_chapoutier",
+      "producer_id": "prod_chapoutier",
+      "active": true,
+      "wine_attributes": {
+        "appellation": "Costières de Nîmes",
+        "cuvee": "La Ciboise",
+        "color": "rouge",
+        "region": "Vallée du Rhône",
+        "gamme": "tradition",
+        "grapes": [
+          "Grenache"
+        ]
+      },
+      "variants": [
+        {
+          "id": "var_tradition_48_2024_75",
+          "vintage": 2024,
+          "format_cl": 75,
+          "availability": "in_stock",
+          "price_ht_36": 390,
+          "price_ht_78": 375,
+          "price_ht_156": 365
+        },
+        {
+          "id": "var_tradition_48_2025_75",
+          "vintage": 2025,
+          "format_cl": 75,
+          "availability": "in_stock",
+          "price_ht_36": 390,
+          "price_ht_78": 375,
+          "price_ht_156": 365,
+          "millesime_a_venir": true
+        }
+      ]
+    },
+    {
+      "id": "prod_tradition_49",
+      "name": "Cornas Cerasinus",
+      "type": "wine",
+      "brand_id": "brand_tradition",
+      "supplier_id": "sup_chapoutier",
+      "producer_id": "prod_chapoutier",
+      "active": true,
+      "wine_attributes": {
+        "appellation": "Cornas",
+        "cuvee": "Cerasinus",
+        "color": "rouge",
+        "region": "Vallée du Rhône",
+        "gamme": "tradition",
+        "grapes": [
+          "Syrah"
+        ],
+        "certifications": [
+          "demeter",
+          "bio"
+        ]
+      },
+      "variants": [
+        {
+          "id": "var_tradition_49_2023_75",
+          "vintage": 2023,
+          "format_cl": 75,
+          "availability": "in_stock",
+          "price_ht_36": 2605,
+          "price_ht_78": 2510,
+          "price_ht_156": 2450
+        }
+      ]
+    },
+    {
+      "id": "prod_tradition_50",
+      "name": "Châteauneuf-du-Pape Facélie",
+      "type": "wine",
+      "brand_id": "brand_tradition",
+      "supplier_id": "sup_chapoutier",
+      "producer_id": "prod_chapoutier",
+      "active": true,
+      "wine_attributes": {
+        "appellation": "Châteauneuf-du-Pape",
+        "cuvee": "Facélie",
+        "color": "rouge",
+        "region": "Vallée du Rhône",
+        "gamme": "tradition",
+        "grapes": [
+          "Grenache"
+        ],
+        "certifications": [
+          "demeter",
+          "bio"
+        ]
+      },
+      "variants": [
+        {
+          "id": "var_tradition_50_2020_75",
+          "vintage": 2020,
+          "format_cl": 75,
+          "availability": "in_stock",
+          "price_ht_36": 2190,
+          "price_ht_78": 2115,
+          "price_ht_156": 2060
+        },
+        {
+          "id": "var_tradition_50_2021_75",
+          "vintage": 2021,
+          "format_cl": 75,
+          "availability": "in_stock",
+          "price_ht_36": 2190,
+          "price_ht_78": 2115,
+          "price_ht_156": 2060,
+          "millesime_a_venir": true
+        }
+      ]
+    },
+    {
+      "id": "prod_tradition_51",
+      "name": "Côtes-du-Rhône Adunatio",
+      "type": "wine",
+      "brand_id": "brand_tradition",
+      "supplier_id": "sup_chapoutier",
+      "producer_id": "prod_chapoutier",
+      "active": true,
+      "wine_attributes": {
+        "appellation": "Côtes-du-Rhône",
+        "cuvee": "Adunatio",
+        "color": "rouge",
+        "region": "Vallée du Rhône",
+        "gamme": "tradition",
+        "grapes": [
+          "Grenache"
+        ],
+        "certifications": [
+          "demeter",
+          "bio"
+        ]
+      },
+      "variants": [
+        {
+          "id": "var_tradition_51_2024_75",
+          "vintage": 2024,
+          "format_cl": 75,
+          "availability": "in_stock",
+          "price_ht_36": 565,
+          "price_ht_78": 545,
+          "price_ht_156": 530
+        },
+        {
+          "id": "var_tradition_51_2025_75",
+          "vintage": 2025,
+          "format_cl": 75,
+          "availability": "in_stock",
+          "price_ht_36": 565,
+          "price_ht_78": 545,
+          "price_ht_156": 530,
+          "millesime_a_venir": true
+        }
+      ]
+    },
+    {
+      "id": "prod_tradition_52",
+      "name": "Costières-de-Nîmes Areca",
+      "type": "wine",
+      "brand_id": "brand_tradition",
+      "supplier_id": "sup_chapoutier",
+      "producer_id": "prod_chapoutier",
+      "active": true,
+      "wine_attributes": {
+        "appellation": "Costières-de-Nîmes",
+        "cuvee": "Areca",
+        "color": "rouge",
+        "region": "Vallée du Rhône",
+        "gamme": "tradition",
+        "grapes": [
+          "Grenache"
+        ],
+        "certifications": [
+          "demeter",
+          "bio"
+        ]
+      },
+      "variants": [
+        {
+          "id": "var_tradition_52_2024_75",
+          "vintage": 2024,
+          "format_cl": 75,
+          "availability": "in_stock",
+          "price_ht_36": 459,
+          "price_ht_78": 445,
+          "price_ht_156": 434
+        },
+        {
+          "id": "var_tradition_52_2025_75",
+          "vintage": 2025,
+          "format_cl": 75,
+          "availability": "in_stock",
+          "price_ht_36": 459,
+          "price_ht_78": 445,
+          "price_ht_156": 434,
+          "millesime_a_venir": true
+        }
+      ]
+    },
+    {
+      "id": "prod_tradition_53",
+      "name": "Côtes-du-Rhône Adunatio",
+      "type": "wine",
+      "brand_id": "brand_tradition",
+      "supplier_id": "sup_chapoutier",
+      "producer_id": "prod_chapoutier",
+      "active": true,
+      "wine_attributes": {
+        "appellation": "Côtes-du-Rhône",
+        "cuvee": "Adunatio",
+        "color": "blanc",
+        "region": "Vallée du Rhône",
+        "gamme": "tradition",
+        "grapes": [
+          "Grenache Blanc"
+        ],
+        "certifications": [
+          "demeter",
+          "bio"
+        ]
+      },
+      "variants": [
+        {
+          "id": "var_tradition_53_2024_75",
+          "vintage": 2024,
+          "format_cl": 75,
+          "availability": "in_stock",
+          "price_ht_36": 565,
+          "price_ht_78": 545,
+          "price_ht_156": 530
+        },
+        {
+          "id": "var_tradition_53_2025_75",
+          "vintage": 2025,
+          "format_cl": 75,
+          "availability": "in_stock",
+          "price_ht_36": 565,
+          "price_ht_78": 545,
+          "price_ht_156": 530,
+          "millesime_a_venir": true
+        }
+      ]
+    },
+    {
+      "id": "prod_tradition_54",
+      "name": "Saint-Joseph Deschants",
+      "type": "wine",
+      "brand_id": "brand_tradition",
+      "supplier_id": "sup_chapoutier",
+      "producer_id": "prod_chapoutier",
+      "active": true,
+      "wine_attributes": {
+        "appellation": "Saint-Joseph",
+        "cuvee": "Deschants",
+        "color": "blanc",
+        "region": "Vallée du Rhône",
+        "gamme": "tradition",
+        "grapes": [
+          "Marsanne"
+        ]
+      },
+      "variants": [
+        {
+          "id": "var_tradition_54_2024_75",
+          "vintage": 2024,
+          "format_cl": 75,
+          "availability": "in_stock",
+          "price_ht_36": 1395,
+          "price_ht_78": 1345,
+          "price_ht_156": 1315
+        },
+        {
+          "id": "var_tradition_54_2025_75",
+          "vintage": 2025,
+          "format_cl": 75,
+          "availability": "in_stock",
+          "price_ht_36": 1395,
+          "price_ht_78": 1345,
+          "price_ht_156": 1315,
+          "millesime_a_venir": true
+        }
+      ]
+    },
+    {
+      "id": "prod_tradition_55",
+      "name": "Saint-Péray Les Tanneurs",
+      "type": "wine",
+      "brand_id": "brand_tradition",
+      "supplier_id": "sup_chapoutier",
+      "producer_id": "prod_chapoutier",
+      "active": true,
+      "wine_attributes": {
+        "appellation": "Saint-Péray",
+        "cuvee": "Les Tanneurs",
+        "color": "blanc",
+        "region": "Vallée du Rhône",
+        "gamme": "tradition",
+        "grapes": [
+          "Marsanne"
+        ]
+      },
+      "variants": [
+        {
+          "id": "var_tradition_55_2024_75",
+          "vintage": 2024,
+          "format_cl": 75,
+          "availability": "in_stock",
+          "price_ht_36": 1300,
+          "price_ht_78": 1255,
+          "price_ht_156": 1225
+        },
+        {
+          "id": "var_tradition_55_2025_75",
+          "vintage": 2025,
+          "format_cl": 75,
+          "availability": "in_stock",
+          "price_ht_36": 1300,
+          "price_ht_78": 1255,
+          "price_ht_156": 1225,
+          "millesime_a_venir": true
+        }
+      ]
+    },
+    {
+      "id": "prod_tradition_56",
+      "name": "Crozes-Ermitage Petite Ruche",
+      "type": "wine",
+      "brand_id": "brand_tradition",
+      "supplier_id": "sup_chapoutier",
+      "producer_id": "prod_chapoutier",
+      "active": true,
+      "wine_attributes": {
+        "appellation": "Crozes-Ermitage",
+        "cuvee": "Petite Ruche",
+        "color": "blanc",
+        "region": "Vallée du Rhône",
+        "gamme": "tradition",
+        "grapes": [
+          "Marsanne"
+        ]
+      },
+      "variants": [
+        {
+          "id": "var_tradition_56_2023_75",
+          "vintage": 2023,
+          "format_cl": 75,
+          "availability": "in_stock",
+          "price_ht_36": 1095,
+          "price_ht_78": 1060,
+          "price_ht_156": 1030
+        },
+        {
+          "id": "var_tradition_56_2024_75",
+          "vintage": 2024,
+          "format_cl": 75,
+          "availability": "in_stock",
+          "price_ht_36": 1095,
+          "price_ht_78": 1060,
+          "price_ht_156": 1030,
+          "millesime_a_venir": true
+        }
+      ]
+    },
+    {
+      "id": "prod_tradition_57",
+      "name": "Côtes-du-Rhône Belleruche",
+      "type": "wine",
+      "brand_id": "brand_tradition",
+      "supplier_id": "sup_chapoutier",
+      "producer_id": "prod_chapoutier",
+      "active": true,
+      "wine_attributes": {
+        "appellation": "Côtes-du-Rhône",
+        "cuvee": "Belleruche",
+        "color": "blanc",
+        "region": "Vallée du Rhône",
+        "gamme": "tradition",
+        "grapes": [
+          "Grenache Blanc"
+        ]
+      },
+      "variants": [
+        {
+          "id": "var_tradition_57_2025_375",
+          "vintage": 2025,
+          "format_cl": 37.5,
+          "availability": "in_stock",
+          "price_ht_36": 325,
+          "price_ht_78": 315,
+          "price_ht_156": 310
+        },
+        {
+          "id": "var_tradition_57_2025_75",
+          "vintage": 2025,
+          "format_cl": 75,
+          "availability": "in_stock",
+          "price_ht_36": 545,
+          "price_ht_78": 525,
+          "price_ht_156": 515
+        },
+        {
+          "id": "var_tradition_57_2025_150",
+          "vintage": 2025,
+          "format_cl": 150,
+          "availability": "in_stock",
+          "price_ht_36": null,
+          "price_ht_78": null,
+          "price_ht_156": 1175
+        }
+      ]
+    },
+    {
+      "id": "prod_tradition_58",
+      "name": "Lubéron La Ciboise",
+      "type": "wine",
+      "brand_id": "brand_tradition",
+      "supplier_id": "sup_chapoutier",
+      "producer_id": "prod_chapoutier",
+      "active": true,
+      "wine_attributes": {
+        "appellation": "Lubéron",
+        "cuvee": "La Ciboise",
+        "color": "blanc",
+        "region": "Vallée du Rhône",
+        "gamme": "tradition",
+        "grapes": [
+          "Grenache Blanc"
+        ]
+      },
+      "variants": [
+        {
+          "id": "var_tradition_58_2025_75",
+          "vintage": 2025,
+          "format_cl": 75,
+          "availability": "in_stock",
+          "price_ht_36": 400,
+          "price_ht_78": 385,
+          "price_ht_156": 375
+        }
+      ]
+    },
+    {
+      "id": "prod_tradition_59",
+      "name": "Tavel Beaurevoir",
+      "type": "wine",
+      "brand_id": "brand_tradition",
+      "supplier_id": "sup_chapoutier",
+      "producer_id": "prod_chapoutier",
+      "active": true,
+      "wine_attributes": {
+        "appellation": "Tavel",
+        "cuvee": "Beaurevoir",
+        "color": "rosé",
+        "region": "Vallée du Rhône",
+        "gamme": "tradition",
+        "grapes": [
+          "Grenache"
+        ]
+      },
+      "variants": [
+        {
+          "id": "var_tradition_59_2024_75",
+          "vintage": 2024,
+          "format_cl": 75,
+          "availability": "in_stock",
+          "price_ht_36": 710,
+          "price_ht_78": 685,
+          "price_ht_156": 670
+        },
+        {
+          "id": "var_tradition_59_2025_75",
+          "vintage": 2025,
+          "format_cl": 75,
+          "availability": "in_stock",
+          "price_ht_36": 710,
+          "price_ht_78": 685,
+          "price_ht_156": 670,
+          "millesime_a_venir": true
+        }
+      ]
+    },
+    {
+      "id": "prod_tradition_60",
+      "name": "Côtes-du-Rhône Belleruche",
+      "type": "wine",
+      "brand_id": "brand_tradition",
+      "supplier_id": "sup_chapoutier",
+      "producer_id": "prod_chapoutier",
+      "active": true,
+      "wine_attributes": {
+        "appellation": "Côtes-du-Rhône",
+        "cuvee": "Belleruche",
+        "color": "rosé",
+        "region": "Vallée du Rhône",
+        "gamme": "tradition",
+        "grapes": [
+          "Grenache"
+        ]
+      },
+      "variants": [
+        {
+          "id": "var_tradition_60_2024_75",
+          "vintage": 2024,
+          "format_cl": 75,
+          "availability": "in_stock",
+          "price_ht_36": 520,
+          "price_ht_78": 500,
+          "price_ht_156": 490
+        },
+        {
+          "id": "var_tradition_60_2025_75",
+          "vintage": 2025,
+          "format_cl": 75,
+          "availability": "in_stock",
+          "price_ht_36": 520,
+          "price_ht_78": 500,
+          "price_ht_156": 490,
+          "millesime_a_venir": true
+        }
+      ]
+    },
+    {
+      "id": "prod_mathilde_61",
+      "name": "Duché d'Uzès Solèdre",
+      "type": "wine",
+      "brand_id": "brand_mathilde_chapoutier",
+      "supplier_id": "sup_chapoutier",
+      "producer_id": "prod_mathilde_chapoutier",
+      "active": true,
+      "wine_attributes": {
+        "appellation": "Duché d'Uzès",
+        "cuvee": "Solèdre",
+        "color": "rouge",
+        "region": "Languedoc",
+        "gamme": "tradition",
+        "grapes": [
+          "Grenache",
+          "Syrah"
+        ]
+      },
+      "variants": [
+        {
+          "id": "var_mathilde_61_2023_75",
+          "vintage": 2023,
+          "format_cl": 75,
+          "availability": "in_stock",
+          "price_ht_36": 535,
+          "price_ht_78": 515,
+          "price_ht_156": 505
+        },
+        {
+          "id": "var_mathilde_61_2024_75",
+          "vintage": 2024,
+          "format_cl": 75,
+          "availability": "in_stock",
+          "price_ht_36": 535,
+          "price_ht_78": 515,
+          "price_ht_156": 505,
+          "millesime_a_venir": true
+        }
+      ]
+    },
+    {
+      "id": "prod_mathilde_62",
+      "name": "Duché d'Uzès Solèdre",
+      "type": "wine",
+      "brand_id": "brand_mathilde_chapoutier",
+      "supplier_id": "sup_chapoutier",
+      "producer_id": "prod_mathilde_chapoutier",
+      "active": true,
+      "wine_attributes": {
+        "appellation": "Duché d'Uzès",
+        "cuvee": "Solèdre",
+        "color": "blanc",
+        "region": "Languedoc",
+        "gamme": "tradition",
+        "grapes": [
+          "Viognier",
+          "Grenache Blanc",
+          "Roussanne",
+          "Marsanne"
+        ]
+      },
+      "variants": [
+        {
+          "id": "var_mathilde_62_2024_75",
+          "vintage": 2024,
+          "format_cl": 75,
+          "availability": "in_stock",
+          "price_ht_36": 535,
+          "price_ht_78": 515,
+          "price_ht_156": 505
+        },
+        {
+          "id": "var_mathilde_62_2025_75",
+          "vintage": 2025,
+          "format_cl": 75,
+          "availability": "in_stock",
+          "price_ht_36": 535,
+          "price_ht_78": 515,
+          "price_ht_156": 505,
+          "millesime_a_venir": true
+        }
+      ]
+    },
+    {
+      "id": "prod_mathilde_63",
+      "name": "Duché d'Uzès Solèdre",
+      "type": "wine",
+      "brand_id": "brand_mathilde_chapoutier",
+      "supplier_id": "sup_chapoutier",
+      "producer_id": "prod_mathilde_chapoutier",
+      "active": true,
+      "wine_attributes": {
+        "appellation": "Duché d'Uzès",
+        "cuvee": "Solèdre",
+        "color": "rosé",
+        "region": "Languedoc",
+        "gamme": "tradition",
+        "grapes": [
+          "Grenache noir",
+          "Cinsault"
+        ]
+      },
+      "variants": [
+        {
+          "id": "var_mathilde_63_2023_75",
+          "vintage": 2023,
+          "format_cl": 75,
+          "availability": "in_stock",
+          "price_ht_36": 535,
+          "price_ht_78": 515,
+          "price_ht_156": 505
+        },
+        {
+          "id": "var_mathilde_63_2024_75",
+          "vintage": 2024,
+          "format_cl": 75,
+          "availability": "in_stock",
+          "price_ht_36": 535,
+          "price_ht_78": 515,
+          "price_ht_156": 505
+        },
+        {
+          "id": "var_mathilde_63_2025_75",
+          "vintage": 2025,
+          "format_cl": 75,
+          "availability": "in_stock",
+          "price_ht_36": 535,
+          "price_ht_78": 515,
+          "price_ht_156": 505
+        }
+      ]
+    },
+    {
+      "id": "prod_mathilde_64",
+      "name": "Côtes-du-Rhône Aurado",
+      "type": "wine",
+      "brand_id": "brand_mathilde_chapoutier",
+      "supplier_id": "sup_chapoutier",
+      "producer_id": "prod_mathilde_chapoutier",
+      "active": true,
+      "wine_attributes": {
+        "appellation": "Côtes-du-Rhône",
+        "cuvee": "Aurado",
+        "color": "rouge",
+        "region": "Vallée du Rhône",
+        "gamme": "tradition",
+        "grapes": [
+          "Grenache",
+          "Syrah"
+        ],
+        "certifications": [
+          "demeter",
+          "bio"
+        ]
+      },
+      "variants": [
+        {
+          "id": "var_mathilde_64_2024_75",
+          "vintage": 2024,
+          "format_cl": 75,
+          "availability": "in_stock",
+          "price_ht_36": 565,
+          "price_ht_78": 545,
+          "price_ht_156": 530
+        },
+        {
+          "id": "var_mathilde_64_2025_75",
+          "vintage": 2025,
+          "format_cl": 75,
+          "availability": "in_stock",
+          "price_ht_36": 565,
+          "price_ht_78": 545,
+          "price_ht_156": 530,
+          "millesime_a_venir": true
+        }
+      ]
+    },
+    {
+      "id": "prod_mathilde_65",
+      "name": "Languedoc Emmarina",
+      "type": "wine",
+      "brand_id": "brand_mathilde_chapoutier",
+      "supplier_id": "sup_chapoutier",
+      "producer_id": "prod_mathilde_chapoutier",
+      "active": true,
+      "wine_attributes": {
+        "appellation": "Languedoc",
+        "cuvee": "Emmarina",
+        "color": "rouge",
+        "region": "Languedoc",
+        "gamme": "tradition",
+        "grapes": [
+          "Grenache",
+          "Syrah"
+        ]
+      },
+      "variants": [
+        {
+          "id": "var_mathilde_65_2023_75",
+          "vintage": 2023,
+          "format_cl": 75,
+          "availability": "in_stock",
+          "price_ht_36": 455,
+          "price_ht_78": 440,
+          "price_ht_156": 430
+        },
+        {
+          "id": "var_mathilde_65_2024_75",
+          "vintage": 2024,
+          "format_cl": 75,
+          "availability": "in_stock",
+          "price_ht_36": 455,
+          "price_ht_78": 440,
+          "price_ht_156": 430,
+          "millesime_a_venir": true
+        }
+      ]
+    },
+    {
+      "id": "prod_mathilde_66",
+      "name": "Côtes de Provence Orsuro",
+      "type": "wine",
+      "brand_id": "brand_mathilde_chapoutier",
+      "supplier_id": "sup_chapoutier",
+      "producer_id": "prod_mathilde_chapoutier",
+      "active": true,
+      "wine_attributes": {
+        "appellation": "Côtes de Provence",
+        "cuvee": "Orsuro",
+        "color": "rosé",
+        "region": "Provence",
+        "gamme": "tradition",
+        "grapes": [
+          "Grenache"
+        ]
+      },
+      "variants": [
+        {
+          "id": "var_mathilde_66_2025_75",
+          "vintage": 2025,
+          "format_cl": 75,
+          "availability": "in_stock",
+          "price_ht_36": 660,
+          "price_ht_78": 635,
+          "price_ht_156": 620
+        }
+      ]
+    },
+    {
+      "id": "prod_mathilde_67",
+      "name": "Côtes de Provence Sainte Victoire Aurisso",
+      "type": "wine",
+      "brand_id": "brand_mathilde_chapoutier",
+      "supplier_id": "sup_chapoutier",
+      "producer_id": "prod_mathilde_chapoutier",
+      "active": true,
+      "wine_attributes": {
+        "appellation": "Côtes de Provence Sainte Victoire",
+        "cuvee": "Aurisso",
+        "color": "rosé",
+        "region": "Provence",
+        "gamme": "tradition",
+        "grapes": [
+          "Grenache"
+        ]
+      },
+      "variants": [
+        {
+          "id": "var_mathilde_67_2024_75",
+          "vintage": 2024,
+          "format_cl": 75,
+          "availability": "in_stock",
+          "price_ht_36": 869,
+          "price_ht_78": 840,
+          "price_ht_156": 819
+        },
+        {
+          "id": "var_mathilde_67_2025_75",
+          "vintage": 2025,
+          "format_cl": 75,
+          "availability": "in_stock",
+          "price_ht_36": 869,
+          "price_ht_78": 840,
+          "price_ht_156": 819,
+          "millesime_a_venir": true
+        }
+      ]
+    },
+    {
+      "id": "prod_mathilde_68",
+      "name": "Ribera del Duero Irifi",
+      "type": "wine",
+      "brand_id": "brand_mathilde_chapoutier",
+      "supplier_id": "sup_chapoutier",
+      "producer_id": "prod_mathilde_chapoutier",
+      "active": true,
+      "wine_attributes": {
+        "appellation": "Ribera del Duero",
+        "cuvee": "Irifi",
+        "color": "rouge",
+        "region": "Spain",
+        "gamme": "tradition",
+        "grapes": [
+          "Tempranillo"
+        ],
+        "certifications": [
+          "demeter",
+          "bio"
+        ]
+      },
+      "variants": [
+        {
+          "id": "var_mathilde_68_2018_75",
+          "vintage": 2018,
+          "format_cl": 75,
+          "availability": "in_stock",
+          "price_ht_36": 660,
+          "price_ht_78": 635,
+          "price_ht_156": 620
+        },
+        {
+          "id": "var_mathilde_68_2023_75",
+          "vintage": 2023,
+          "format_cl": 75,
+          "availability": "in_stock",
+          "price_ht_36": 660,
+          "price_ht_78": 635,
+          "price_ht_156": 620,
+          "millesime_a_venir": true
+        }
+      ]
+    },
+    {
+      "id": "prod_mathilde_69",
+      "name": "Rías Baixas Melidao",
+      "type": "wine",
+      "brand_id": "brand_mathilde_chapoutier",
+      "supplier_id": "sup_chapoutier",
+      "producer_id": "prod_mathilde_chapoutier",
+      "active": true,
+      "wine_attributes": {
+        "appellation": "Rías Baixas",
+        "cuvee": "Melidao",
+        "color": "blanc",
+        "region": "Spain",
+        "gamme": "tradition",
+        "grapes": [
+          "Albariño"
+        ]
+      },
+      "variants": [
+        {
+          "id": "var_mathilde_69_2022_75",
+          "vintage": 2022,
+          "format_cl": 75,
+          "availability": "in_stock",
+          "price_ht_36": 935,
+          "price_ht_78": 905,
+          "price_ht_156": 880
+        },
+        {
+          "id": "var_mathilde_69_2023_75",
+          "vintage": 2023,
+          "format_cl": 75,
+          "availability": "in_stock",
+          "price_ht_36": 935,
+          "price_ht_78": 905,
+          "price_ht_156": 880,
+          "millesime_a_venir": true
+        }
+      ]
+    },
+    {
+      "id": "prod_marius_70",
+      "name": "IGP Collines Rhodaniennes Avenue de la Gare",
+      "type": "wine",
+      "brand_id": "brand_marius",
+      "supplier_id": "sup_chapoutier",
+      "producer_id": "prod_marius_chapoutier",
+      "active": true,
+      "wine_attributes": {
+        "appellation": "IGP Collines Rhodaniennes",
+        "cuvee": "Avenue de la Gare",
+        "color": "rouge",
+        "region": "Vallée du Rhône",
+        "gamme": "tradition",
+        "grapes": [
+          "Syrah"
+        ]
+      },
+      "variants": [
+        {
+          "id": "var_marius_70_2024_75",
+          "vintage": 2024,
+          "format_cl": 75,
+          "availability": "in_stock",
+          "price_ht_36": 565,
+          "price_ht_78": 545,
+          "price_ht_156": 530
+        },
+        {
+          "id": "var_marius_70_2025_75",
+          "vintage": 2025,
+          "format_cl": 75,
+          "availability": "in_stock",
+          "price_ht_36": 565,
+          "price_ht_78": 545,
+          "price_ht_156": 530,
+          "millesime_a_venir": true
+        }
+      ]
+    },
+    {
+      "id": "prod_marius_71",
+      "name": "IGP Collines Rhodaniennes Avenue de la Gare",
+      "type": "wine",
+      "brand_id": "brand_marius",
+      "supplier_id": "sup_chapoutier",
+      "producer_id": "prod_marius_chapoutier",
+      "active": true,
+      "wine_attributes": {
+        "appellation": "IGP Collines Rhodaniennes",
+        "cuvee": "Avenue de la Gare",
+        "color": "blanc",
+        "region": "Vallée du Rhône",
+        "gamme": "tradition",
+        "grapes": [
+          "Marsanne"
+        ]
+      },
+      "variants": [
+        {
+          "id": "var_marius_71_2023_75",
+          "vintage": 2023,
+          "format_cl": 75,
+          "availability": "in_stock",
+          "price_ht_36": 565,
+          "price_ht_78": 545,
+          "price_ht_156": 530
+        },
+        {
+          "id": "var_marius_71_2024_75",
+          "vintage": 2024,
+          "format_cl": 75,
+          "availability": "in_stock",
+          "price_ht_36": 565,
+          "price_ht_78": 545,
+          "price_ht_156": 530,
+          "millesime_a_venir": true
+        }
+      ]
+    },
+    {
+      "id": "prod_marius_72",
+      "name": "IGP Pays d'Oc Marius Carte Postale",
+      "type": "wine",
+      "brand_id": "brand_marius",
+      "supplier_id": "sup_chapoutier",
+      "producer_id": "prod_marius_chapoutier",
+      "active": true,
+      "wine_attributes": {
+        "appellation": "IGP Pays d'Oc",
+        "cuvee": "Marius Carte Postale",
+        "color": "blanc",
+        "region": "Languedoc",
+        "gamme": "tradition",
+        "grapes": [
+          "Viognier"
+        ]
+      },
+      "variants": [
+        {
+          "id": "var_marius_72_2024_75",
+          "vintage": 2024,
+          "format_cl": 75,
+          "availability": "in_stock",
+          "price_ht_36": 415,
+          "price_ht_78": 400,
+          "price_ht_156": 390
+        },
+        {
+          "id": "var_marius_72_2025_75",
+          "vintage": 2025,
+          "format_cl": 75,
+          "availability": "in_stock",
+          "price_ht_36": 415,
+          "price_ht_78": 400,
+          "price_ht_156": 390,
+          "millesime_a_venir": true
+        }
+      ]
+    },
+    {
+      "id": "prod_marius_73",
+      "name": "IGP Pays d'Oc Marius",
+      "type": "wine",
+      "brand_id": "brand_marius",
+      "supplier_id": "sup_chapoutier",
+      "producer_id": "prod_marius_chapoutier",
+      "active": true,
+      "wine_attributes": {
+        "appellation": "IGP Pays d'Oc",
+        "cuvee": "Marius",
+        "color": "rouge",
+        "region": "Languedoc",
+        "gamme": "tradition",
+        "grapes": [
+          "Grenache"
+        ]
+      },
+      "variants": [
+        {
+          "id": "var_marius_73_2024_75",
+          "vintage": 2024,
+          "format_cl": 75,
+          "availability": "in_stock",
+          "price_ht_36": 365,
+          "price_ht_78": 350,
+          "price_ht_156": 345
+        },
+        {
+          "id": "var_marius_73_2025_75",
+          "vintage": 2025,
+          "format_cl": 75,
+          "availability": "in_stock",
+          "price_ht_36": 365,
+          "price_ht_78": 350,
+          "price_ht_156": 345,
+          "millesime_a_venir": true
+        }
+      ]
+    },
+    {
+      "id": "prod_marius_74",
+      "name": "IGP Pays d'Oc Marius",
+      "type": "wine",
+      "brand_id": "brand_marius",
+      "supplier_id": "sup_chapoutier",
+      "producer_id": "prod_marius_chapoutier",
+      "active": true,
+      "wine_attributes": {
+        "appellation": "IGP Pays d'Oc",
+        "cuvee": "Marius",
+        "color": "blanc",
+        "region": "Languedoc",
+        "gamme": "tradition",
+        "grapes": [
+          "Grenache Blanc"
+        ]
+      },
+      "variants": [
+        {
+          "id": "var_marius_74_2024_75",
+          "vintage": 2024,
+          "format_cl": 75,
+          "availability": "in_stock",
+          "price_ht_36": 365,
+          "price_ht_78": 350,
+          "price_ht_156": 345
+        },
+        {
+          "id": "var_marius_74_2025_75",
+          "vintage": 2025,
+          "format_cl": 75,
+          "availability": "in_stock",
+          "price_ht_36": 365,
+          "price_ht_78": 350,
+          "price_ht_156": 345,
+          "millesime_a_venir": true
+        }
+      ]
+    },
+    {
+      "id": "prod_marius_75",
+      "name": "IGP Pays d'Oc Marius",
+      "type": "wine",
+      "brand_id": "brand_marius",
+      "supplier_id": "sup_chapoutier",
+      "producer_id": "prod_marius_chapoutier",
+      "active": true,
+      "wine_attributes": {
+        "appellation": "IGP Pays d'Oc",
+        "cuvee": "Marius",
+        "color": "rosé",
+        "region": "Languedoc",
+        "gamme": "tradition",
+        "grapes": [
+          "Grenache"
+        ]
+      },
+      "variants": [
+        {
+          "id": "var_marius_75_2024_75",
+          "vintage": 2024,
+          "format_cl": 75,
+          "availability": "in_stock",
+          "price_ht_36": 365,
+          "price_ht_78": 350,
+          "price_ht_156": 345
+        },
+        {
+          "id": "var_marius_75_2025_75",
+          "vintage": 2025,
+          "format_cl": 75,
+          "availability": "in_stock",
+          "price_ht_36": 365,
+          "price_ht_78": 350,
+          "price_ht_156": 345
+        }
+      ]
+    },
+    {
+      "id": "prod_marius_76",
+      "name": "Marius Bag in Box",
+      "type": "wine",
+      "brand_id": "brand_marius",
+      "supplier_id": "sup_chapoutier",
+      "producer_id": "prod_marius_chapoutier",
+      "active": true,
+      "wine_attributes": {
+        "appellation": "IGP Pays d'Oc",
+        "cuvee": "Marius",
+        "color": "rouge",
+        "region": "Languedoc",
+        "gamme": "tradition",
+        "grapes": [
+          "Syrah",
+          "Grenache"
+        ]
+      },
+      "variants": [
+        {
+          "id": "var_marius_76_2024_5l",
+          "vintage": 2024,
+          "format_cl": 5000,
+          "availability": "in_stock",
+          "price_ht_36": 1655,
+          "price_ht_78": 1600,
+          "price_ht_156": 1560
+        },
+        {
+          "id": "var_marius_76_2025_5l",
+          "vintage": 2025,
+          "format_cl": 5000,
+          "availability": "in_stock",
+          "price_ht_36": 1655,
+          "price_ht_78": 1600,
+          "price_ht_156": 1560,
+          "millesime_a_venir": true
+        }
+      ]
+    },
+    {
+      "id": "prod_marius_77",
+      "name": "Vin de France Rouge Clair",
+      "type": "wine",
+      "brand_id": "brand_marius",
+      "supplier_id": "sup_chapoutier",
+      "producer_id": "prod_marius_chapoutier",
+      "active": true,
+      "wine_attributes": {
+        "appellation": "Vin de France",
+        "cuvee": "Rouge Clair",
+        "color": "rosé",
+        "region": "France",
+        "gamme": "tradition",
+        "grapes": [
+          "Grenache"
+        ]
+      },
+      "variants": [
+        {
+          "id": "var_marius_77_2024_75",
+          "vintage": 2024,
+          "format_cl": 75,
+          "availability": "in_stock",
+          "price_ht_36": 575,
+          "price_ht_78": 555,
+          "price_ht_156": 540
+        },
+        {
+          "id": "var_marius_77_2025_75",
+          "vintage": 2025,
+          "format_cl": 75,
+          "availability": "in_stock",
+          "price_ht_36": 575,
+          "price_ht_78": 555,
+          "price_ht_156": 540,
+          "millesime_a_venir": true
+        }
+      ]
+    },
+    {
+      "id": "prod_bila_78",
+      "name": "Côtes-du-Rhône Villages Lesquerde",
+      "type": "wine",
+      "brand_id": "brand_specialites",
+      "supplier_id": "sup_chapoutier",
+      "producer_id": "prod_bila_haut",
+      "active": true,
+      "wine_attributes": {
+        "appellation": "Côtes-du-Rhône Villages Lesquerde",
+        "cuvee": "Lesquerde",
+        "color": "rouge",
+        "region": "Roussillon",
+        "gamme": "selection_parcellaire",
+        "grapes": [
+          "Grenache"
+        ],
+        "certifications": [
+          "demeter",
+          "bio"
+        ]
+      },
+      "variants": [
+        {
+          "id": "var_bila_78_2018_75",
+          "vintage": 2018,
+          "format_cl": 75,
+          "availability": "in_stock",
+          "price_ht_36": 5100,
+          "price_ht_78": 5100,
+          "price_ht_156": 5100
+        },
+        {
+          "id": "var_bila_78_2018_150",
+          "vintage": 2018,
+          "format_cl": 150,
+          "availability": "in_stock",
+          "price_ht_36": null,
+          "price_ht_78": null,
+          "price_ht_156": 10500
+        },
+        {
+          "id": "var_bila_78_2019_75",
+          "vintage": 2019,
+          "format_cl": 75,
+          "availability": "in_stock",
+          "price_ht_36": 5100,
+          "price_ht_78": 5100,
+          "price_ht_156": 5100
+        },
+        {
+          "id": "var_bila_78_2019_150",
+          "vintage": 2019,
+          "format_cl": 150,
+          "availability": "in_stock",
+          "price_ht_36": null,
+          "price_ht_78": null,
+          "price_ht_156": 10500
+        },
+        {
+          "id": "var_bila_78_2020_75",
+          "vintage": 2020,
+          "format_cl": 75,
+          "availability": "in_stock",
+          "price_ht_36": 5100,
+          "price_ht_78": 5100,
+          "price_ht_156": 5100
+        },
+        {
+          "id": "var_bila_78_2020_150",
+          "vintage": 2020,
+          "format_cl": 150,
+          "availability": "in_stock",
+          "price_ht_36": null,
+          "price_ht_78": null,
+          "price_ht_156": 10500
+        },
+        {
+          "id": "var_bila_78_2021_75",
+          "vintage": 2021,
+          "format_cl": 75,
+          "availability": "in_stock",
+          "price_ht_36": 5100,
+          "price_ht_78": 5100,
+          "price_ht_156": 5100
+        },
+        {
+          "id": "var_bila_78_2021_150",
+          "vintage": 2021,
+          "format_cl": 150,
+          "availability": "in_stock",
+          "price_ht_36": null,
+          "price_ht_78": null,
+          "price_ht_156": 10500
+        },
+        {
+          "id": "var_bila_78_2022_75",
+          "vintage": 2022,
+          "format_cl": 75,
+          "availability": "in_stock",
+          "price_ht_36": 5100,
+          "price_ht_78": 5100,
+          "price_ht_156": 5100
+        },
+        {
+          "id": "var_bila_78_2022_150",
+          "vintage": 2022,
+          "format_cl": 150,
+          "availability": "in_stock",
+          "price_ht_36": null,
+          "price_ht_78": null,
+          "price_ht_156": 10500
+        }
+      ]
+    },
+    {
+      "id": "prod_bila_79",
+      "name": "Côtes-du-Rhône Villages Latour de France",
+      "type": "wine",
+      "brand_id": "brand_specialites",
+      "supplier_id": "sup_chapoutier",
+      "producer_id": "prod_bila_haut",
+      "active": true,
+      "wine_attributes": {
+        "appellation": "Côtes-du-Rhône Villages Latour de France",
+        "cuvee": "Latour de France",
+        "color": "rouge",
+        "region": "Roussillon",
+        "gamme": "selection_parcellaire",
+        "grapes": [
+          "Grenache"
+        ],
+        "certifications": [
+          "demeter",
+          "bio"
+        ]
+      },
+      "variants": [
+        {
+          "id": "var_bila_79_2018_75",
+          "vintage": 2018,
+          "format_cl": 75,
+          "availability": "in_stock",
+          "price_ht_36": 3000,
+          "price_ht_78": 3000,
+          "price_ht_156": 3000
+        },
+        {
+          "id": "var_bila_79_2018_150",
+          "vintage": 2018,
+          "format_cl": 150,
+          "availability": "in_stock",
+          "price_ht_36": null,
+          "price_ht_78": null,
+          "price_ht_156": 6300
+        },
+        {
+          "id": "var_bila_79_2019_75",
+          "vintage": 2019,
+          "format_cl": 75,
+          "availability": "in_stock",
+          "price_ht_36": 3000,
+          "price_ht_78": 3000,
+          "price_ht_156": 3000
+        },
+        {
+          "id": "var_bila_79_2019_150",
+          "vintage": 2019,
+          "format_cl": 150,
+          "availability": "in_stock",
+          "price_ht_36": null,
+          "price_ht_78": null,
+          "price_ht_156": 6300
+        },
+        {
+          "id": "var_bila_79_2020_75",
+          "vintage": 2020,
+          "format_cl": 75,
+          "availability": "in_stock",
+          "price_ht_36": 3000,
+          "price_ht_78": 3000,
+          "price_ht_156": 3000
+        },
+        {
+          "id": "var_bila_79_2020_150",
+          "vintage": 2020,
+          "format_cl": 150,
+          "availability": "in_stock",
+          "price_ht_36": null,
+          "price_ht_78": null,
+          "price_ht_156": 6300
+        },
+        {
+          "id": "var_bila_79_2021_75",
+          "vintage": 2021,
+          "format_cl": 75,
+          "availability": "in_stock",
+          "price_ht_36": 3000,
+          "price_ht_78": 3000,
+          "price_ht_156": 3000
+        },
+        {
+          "id": "var_bila_79_2021_150",
+          "vintage": 2021,
+          "format_cl": 150,
+          "availability": "in_stock",
+          "price_ht_36": null,
+          "price_ht_78": null,
+          "price_ht_156": 6300
+        },
+        {
+          "id": "var_bila_79_2022_75",
+          "vintage": 2022,
+          "format_cl": 75,
+          "availability": "in_stock",
+          "price_ht_36": 3500,
+          "price_ht_78": 3500,
+          "price_ht_156": 3500
+        },
+        {
+          "id": "var_bila_79_2022_150",
+          "vintage": 2022,
+          "format_cl": 150,
+          "availability": "in_stock",
+          "price_ht_36": null,
+          "price_ht_78": null,
+          "price_ht_156": 7300
+        }
+      ]
+    },
+    {
+      "id": "prod_bila_80",
+      "name": "Collioure Chrysopée",
+      "type": "wine",
+      "brand_id": "brand_specialites",
+      "supplier_id": "sup_chapoutier",
+      "producer_id": "prod_bila_haut",
+      "active": true,
+      "wine_attributes": {
+        "appellation": "Collioure",
+        "cuvee": "Chrysopée",
+        "color": "rouge",
+        "region": "Roussillon",
+        "gamme": "selection_parcellaire",
+        "grapes": [
+          "Grenache"
+        ]
+      },
+      "variants": [
+        {
+          "id": "var_bila_80_2018_75",
+          "vintage": 2018,
+          "format_cl": 75,
+          "availability": "in_stock",
+          "price_ht_36": 2600,
+          "price_ht_78": 2600,
+          "price_ht_156": 2600
+        },
+        {
+          "id": "var_bila_80_2018_150",
+          "vintage": 2018,
+          "format_cl": 150,
+          "availability": "in_stock",
+          "price_ht_36": null,
+          "price_ht_78": null,
+          "price_ht_156": 5500
+        },
+        {
+          "id": "var_bila_80_2022_75",
+          "vintage": 2022,
+          "format_cl": 75,
+          "availability": "in_stock",
+          "price_ht_36": 3400,
+          "price_ht_78": 3400,
+          "price_ht_156": 3400
+        },
+        {
+          "id": "var_bila_80_2022_150",
+          "vintage": 2022,
+          "format_cl": 150,
+          "availability": "in_stock",
+          "price_ht_36": null,
+          "price_ht_78": null,
+          "price_ht_156": 7100
+        }
+      ]
+    },
+    {
+      "id": "prod_bila_81",
+      "name": "Collioure Chrysopée",
+      "type": "wine",
+      "brand_id": "brand_specialites",
+      "supplier_id": "sup_chapoutier",
+      "producer_id": "prod_bila_haut",
+      "active": true,
+      "wine_attributes": {
+        "appellation": "Collioure",
+        "cuvee": "Chrysopée",
+        "color": "blanc",
+        "region": "Roussillon",
+        "gamme": "selection_parcellaire",
+        "grapes": [
+          "Grenache Blanc"
+        ]
+      },
+      "variants": [
+        {
+          "id": "var_bila_81_2018_75",
+          "vintage": 2018,
+          "format_cl": 75,
+          "availability": "in_stock",
+          "price_ht_36": 2800,
+          "price_ht_78": 2800,
+          "price_ht_156": 2800
+        },
+        {
+          "id": "var_bila_81_2018_150",
+          "vintage": 2018,
+          "format_cl": 150,
+          "availability": "in_stock",
+          "price_ht_36": null,
+          "price_ht_78": null,
+          "price_ht_156": 5700
+        },
+        {
+          "id": "var_bila_81_2022_75",
+          "vintage": 2022,
+          "format_cl": 75,
+          "availability": "in_stock",
+          "price_ht_36": 3600,
+          "price_ht_78": 3600,
+          "price_ht_156": 3600
+        }
+      ]
+    },
+    {
+      "id": "prod_bila_82",
+      "name": "Côtes-du-Rhône Villages L'Esquerda",
+      "type": "wine",
+      "brand_id": "brand_tradition",
+      "supplier_id": "sup_chapoutier",
+      "producer_id": "prod_bila_haut",
+      "active": true,
+      "wine_attributes": {
+        "appellation": "Côtes-du-Rhône Villages",
+        "cuvee": "L'Esquerda",
+        "color": "rouge",
+        "region": "Roussillon",
+        "gamme": "tradition",
+        "grapes": [
+          "Grenache"
+        ],
+        "certifications": [
+          "demeter",
+          "bio"
+        ]
+      },
+      "variants": [
+        {
+          "id": "var_bila_82_2021_75",
+          "vintage": 2021,
+          "format_cl": 75,
+          "availability": "in_stock",
+          "price_ht_36": 944,
+          "price_ht_78": 910,
+          "price_ht_156": 890
+        },
+        {
+          "id": "var_bila_82_2022_75",
+          "vintage": 2022,
+          "format_cl": 75,
+          "availability": "in_stock",
+          "price_ht_36": 944,
+          "price_ht_78": 910,
+          "price_ht_156": 890,
+          "millesime_a_venir": true
+        }
+      ]
+    },
+    {
+      "id": "prod_bila_83",
+      "name": "Côtes-du-Rhône Villages Latour Occultum Lapidem",
+      "type": "wine",
+      "brand_id": "brand_tradition",
+      "supplier_id": "sup_chapoutier",
+      "producer_id": "prod_bila_haut",
+      "active": true,
+      "wine_attributes": {
+        "appellation": "Côtes-du-Rhône Villages",
+        "cuvee": "Occultum Lapidem",
+        "color": "rouge",
+        "region": "Roussillon",
+        "gamme": "tradition",
+        "grapes": [
+          "Grenache"
+        ],
+        "certifications": [
+          "demeter",
+          "bio"
+        ]
+      },
+      "variants": [
+        {
+          "id": "var_bila_83_2020_75",
+          "vintage": 2020,
+          "format_cl": 75,
+          "availability": "in_stock",
+          "price_ht_36": 885,
+          "price_ht_78": 855,
+          "price_ht_156": 835
+        },
+        {
+          "id": "var_bila_83_2020_150",
+          "vintage": 2020,
+          "format_cl": 150,
+          "availability": "in_stock",
+          "price_ht_36": null,
+          "price_ht_78": null,
+          "price_ht_156": 1814
+        },
+        {
+          "id": "var_bila_83_2021_75",
+          "vintage": 2021,
+          "format_cl": 75,
+          "availability": "in_stock",
+          "price_ht_36": 885,
+          "price_ht_78": 855,
+          "price_ht_156": 835,
+          "millesime_a_venir": true
+        },
+        {
+          "id": "var_bila_83_2021_150",
+          "vintage": 2021,
+          "format_cl": 150,
+          "availability": "in_stock",
+          "price_ht_36": null,
+          "price_ht_78": null,
+          "price_ht_156": 1814,
+          "millesime_a_venir": true
+        }
+      ]
+    },
+    {
+      "id": "prod_bila_84",
+      "name": "Côtes-du-Rhône Villages Bila-Haut",
+      "type": "wine",
+      "brand_id": "brand_tradition",
+      "supplier_id": "sup_chapoutier",
+      "producer_id": "prod_bila_haut",
+      "active": true,
+      "wine_attributes": {
+        "appellation": "Côtes-du-Rhône Villages",
+        "cuvee": "Bila-Haut",
+        "color": "rouge",
+        "region": "Roussillon",
+        "gamme": "tradition",
+        "grapes": [
+          "Grenache"
+        ]
+      },
+      "variants": [
+        {
+          "id": "var_bila_84_2024_75",
+          "vintage": 2024,
+          "format_cl": 75,
+          "availability": "in_stock",
+          "price_ht_36": 480,
+          "price_ht_78": 459,
+          "price_ht_156": 450
+        },
+        {
+          "id": "var_bila_84_2025_75",
+          "vintage": 2025,
+          "format_cl": 75,
+          "availability": "in_stock",
+          "price_ht_36": 480,
+          "price_ht_78": 459,
+          "price_ht_156": 450,
+          "millesime_a_venir": true
+        }
+      ]
+    },
+    {
+      "id": "prod_bila_85",
+      "name": "Côtes-du-Rhône Occultum Lapidem",
+      "type": "wine",
+      "brand_id": "brand_tradition",
+      "supplier_id": "sup_chapoutier",
+      "producer_id": "prod_bila_haut",
+      "active": true,
+      "wine_attributes": {
+        "appellation": "Côtes-du-Rhône",
+        "cuvee": "Occultum Lapidem",
+        "color": "blanc",
+        "region": "Roussillon",
+        "gamme": "tradition",
+        "grapes": [
+          "Grenache Blanc"
+        ],
+        "certifications": [
+          "demeter",
+          "bio"
+        ]
+      },
+      "variants": [
+        {
+          "id": "var_bila_85_2021_75",
+          "vintage": 2021,
+          "format_cl": 75,
+          "availability": "in_stock",
+          "price_ht_36": 885,
+          "price_ht_78": 855,
+          "price_ht_156": 835
+        },
+        {
+          "id": "var_bila_85_2022_75",
+          "vintage": 2022,
+          "format_cl": 75,
+          "availability": "in_stock",
+          "price_ht_36": 885,
+          "price_ht_78": 855,
+          "price_ht_156": 835,
+          "millesime_a_venir": true
+        }
+      ]
+    },
+    {
+      "id": "prod_bila_86",
+      "name": "Côtes-du-Rhône Bila-Haut",
+      "type": "wine",
+      "brand_id": "brand_tradition",
+      "supplier_id": "sup_chapoutier",
+      "producer_id": "prod_bila_haut",
+      "active": true,
+      "wine_attributes": {
+        "appellation": "Côtes-du-Rhône",
+        "cuvee": "Bila-Haut",
+        "color": "blanc",
+        "region": "Roussillon",
+        "gamme": "tradition",
+        "grapes": [
+          "Grenache Blanc"
+        ]
+      },
+      "variants": [
+        {
+          "id": "var_bila_86_2024_75",
+          "vintage": 2024,
+          "format_cl": 75,
+          "availability": "in_stock",
+          "price_ht_36": 480,
+          "price_ht_78": 459,
+          "price_ht_156": 450
+        },
+        {
+          "id": "var_bila_86_2025_75",
+          "vintage": 2025,
+          "format_cl": 75,
+          "availability": "in_stock",
+          "price_ht_36": 480,
+          "price_ht_78": 459,
+          "price_ht_156": 450,
+          "millesime_a_venir": true
+        }
+      ]
+    },
+    {
+      "id": "prod_bila_87",
+      "name": "Banyuls Blanc Traditionnel",
+      "type": "wine",
+      "brand_id": "brand_specialites",
+      "supplier_id": "sup_chapoutier",
+      "producer_id": "prod_bila_haut",
+      "active": true,
+      "wine_attributes": {
+        "appellation": "Banyuls",
+        "cuvee": "Blanc Traditionnel",
+        "color": "blanc",
+        "region": "Roussillon",
+        "gamme": "tradition",
+        "grapes": [
+          "Grenache Blanc"
+        ]
+      },
+      "variants": [
+        {
+          "id": "var_bila_87_1999_50",
+          "vintage": 1999,
+          "format_cl": 50,
+          "availability": "in_stock",
+          "price_ht_36": 2355,
+          "price_ht_78": 2270,
+          "price_ht_156": 2215
+        }
+      ]
+    },
+    {
+      "id": "prod_bila_88",
+      "name": "Banyuls Rouge Terra Vinya",
+      "type": "wine",
+      "brand_id": "brand_specialites",
+      "supplier_id": "sup_chapoutier",
+      "producer_id": "prod_bila_haut",
+      "active": true,
+      "wine_attributes": {
+        "appellation": "Banyuls",
+        "cuvee": "Terra Vinya",
+        "color": "rouge",
+        "region": "Roussillon",
+        "gamme": "tradition",
+        "grapes": [
+          "Grenache"
+        ]
+      },
+      "variants": [
+        {
+          "id": "var_bila_88_2020_50",
+          "vintage": 2020,
+          "format_cl": 50,
+          "availability": "in_stock",
+          "price_ht_36": 1930,
+          "price_ht_78": 1860,
+          "price_ht_156": 1814
+        }
+      ]
+    },
+    {
+      "id": "prod_schiefer_89",
+      "name": "Alsace Riesling Lieu-Dit Buehl",
+      "type": "wine",
+      "brand_id": "brand_specialites",
+      "supplier_id": "sup_chapoutier",
+      "producer_id": "prod_schieferkopf",
+      "active": true,
+      "wine_attributes": {
+        "appellation": "Alsace Riesling",
+        "cuvee": "Lieu-Dit Buehl",
+        "color": "blanc",
+        "region": "Alsace",
+        "gamme": "selection_parcellaire",
+        "grapes": [
+          "Riesling"
+        ]
+      },
+      "variants": [
+        {
+          "id": "var_schiefer_89_2014_75",
+          "vintage": 2014,
+          "format_cl": 75,
+          "availability": "in_stock",
+          "price_ht_36": 1600,
+          "price_ht_78": 1600,
+          "price_ht_156": 1600
+        },
+        {
+          "id": "var_schiefer_89_2014_150",
+          "vintage": 2014,
+          "format_cl": 150,
+          "availability": "in_stock",
+          "price_ht_36": null,
+          "price_ht_78": null,
+          "price_ht_156": 3500
+        },
+        {
+          "id": "var_schiefer_89_2015_75",
+          "vintage": 2015,
+          "format_cl": 75,
+          "availability": "in_stock",
+          "price_ht_36": 1900,
+          "price_ht_78": 1900,
+          "price_ht_156": 1900
+        },
+        {
+          "id": "var_schiefer_89_2015_150",
+          "vintage": 2015,
+          "format_cl": 150,
+          "availability": "in_stock",
+          "price_ht_36": null,
+          "price_ht_78": null,
+          "price_ht_156": 4100
+        }
+      ]
+    },
+    {
+      "id": "prod_schiefer_90",
+      "name": "Alsace Riesling Lieu-Dit Fels",
+      "type": "wine",
+      "brand_id": "brand_specialites",
+      "supplier_id": "sup_chapoutier",
+      "producer_id": "prod_schieferkopf",
+      "active": true,
+      "wine_attributes": {
+        "appellation": "Alsace Riesling",
+        "cuvee": "Lieu-Dit Fels",
+        "color": "blanc",
+        "region": "Alsace",
+        "gamme": "selection_parcellaire",
+        "grapes": [
+          "Riesling"
+        ]
+      },
+      "variants": [
+        {
+          "id": "var_schiefer_90_2014_75",
+          "vintage": 2014,
+          "format_cl": 75,
+          "availability": "in_stock",
+          "price_ht_36": 1700,
+          "price_ht_78": 1700,
+          "price_ht_156": 1700
+        },
+        {
+          "id": "var_schiefer_90_2014_150",
+          "vintage": 2014,
+          "format_cl": 150,
+          "availability": "in_stock",
+          "price_ht_36": null,
+          "price_ht_78": null,
+          "price_ht_156": 3700
+        },
+        {
+          "id": "var_schiefer_90_2016_75",
+          "vintage": 2016,
+          "format_cl": 75,
+          "availability": "in_stock",
+          "price_ht_36": 2100,
+          "price_ht_78": 2100,
+          "price_ht_156": 2100
+        },
+        {
+          "id": "var_schiefer_90_2016_150",
+          "vintage": 2016,
+          "format_cl": 150,
+          "availability": "in_stock",
+          "price_ht_36": null,
+          "price_ht_78": null,
+          "price_ht_156": 4500
+        }
+      ]
+    },
+    {
+      "id": "prod_schiefer_91",
+      "name": "Alsace Pinot Noir",
+      "type": "wine",
+      "brand_id": "brand_tradition",
+      "supplier_id": "sup_chapoutier",
+      "producer_id": "prod_schieferkopf",
+      "active": true,
+      "wine_attributes": {
+        "appellation": "Alsace",
+        "cuvee": "Pinot Noir",
+        "color": "rouge",
+        "region": "Alsace",
+        "gamme": "tradition",
+        "grapes": [
+          "Pinot Noir"
+        ]
+      },
+      "variants": [
+        {
+          "id": "var_schiefer_91_2022_75",
+          "vintage": 2022,
+          "format_cl": 75,
+          "availability": "in_stock",
+          "price_ht_36": 935,
+          "price_ht_78": 905,
+          "price_ht_156": 880
+        },
+        {
+          "id": "var_schiefer_91_2023_75",
+          "vintage": 2023,
+          "format_cl": 75,
+          "availability": "in_stock",
+          "price_ht_36": 935,
+          "price_ht_78": 905,
+          "price_ht_156": 880,
+          "millesime_a_venir": true
+        }
+      ]
+    },
+    {
+      "id": "prod_schiefer_92",
+      "name": "Alsace Riesling Via Saint-Jacques",
+      "type": "wine",
+      "brand_id": "brand_tradition",
+      "supplier_id": "sup_chapoutier",
+      "producer_id": "prod_schieferkopf",
+      "active": true,
+      "wine_attributes": {
+        "appellation": "Alsace",
+        "cuvee": "Via Saint-Jacques",
+        "color": "blanc",
+        "region": "Alsace",
+        "gamme": "tradition",
+        "grapes": [
+          "Riesling"
+        ],
+        "certifications": [
+          "demeter",
+          "bio"
+        ]
+      },
+      "variants": [
+        {
+          "id": "var_schiefer_92_2019_75",
+          "vintage": 2019,
+          "format_cl": 75,
+          "availability": "in_stock",
+          "price_ht_36": 919,
+          "price_ht_78": 890,
+          "price_ht_156": 865
+        },
+        {
+          "id": "var_schiefer_92_2019_150",
+          "vintage": 2019,
+          "format_cl": 150,
+          "availability": "in_stock",
+          "price_ht_36": null,
+          "price_ht_78": null,
+          "price_ht_156": 2030
+        },
+        {
+          "id": "var_schiefer_92_2021_75",
+          "vintage": 2021,
+          "format_cl": 75,
+          "availability": "in_stock",
+          "price_ht_36": 919,
+          "price_ht_78": 890,
+          "price_ht_156": 865,
+          "millesime_a_venir": true
+        },
+        {
+          "id": "var_schiefer_92_2021_150",
+          "vintage": 2021,
+          "format_cl": 150,
+          "availability": "in_stock",
+          "price_ht_36": null,
+          "price_ht_78": null,
+          "price_ht_156": 2030,
+          "millesime_a_venir": true
+        }
+      ]
+    },
+    {
+      "id": "prod_schiefer_93",
+      "name": "Gewürztraminer",
+      "type": "wine",
+      "brand_id": "brand_tradition",
+      "supplier_id": "sup_chapoutier",
+      "producer_id": "prod_schieferkopf",
+      "active": true,
+      "wine_attributes": {
+        "appellation": "Alsace",
+        "cuvee": "Gewürztraminer",
+        "color": "blanc",
+        "region": "Alsace",
+        "gamme": "tradition",
+        "grapes": [
+          "Gewürztraminer"
+        ]
+      },
+      "variants": [
+        {
+          "id": "var_schiefer_93_2023_75",
+          "vintage": 2023,
+          "format_cl": 75,
+          "availability": "in_stock",
+          "price_ht_36": 900,
+          "price_ht_78": 865,
+          "price_ht_156": 844
+        },
+        {
+          "id": "var_schiefer_93_2024_75",
+          "vintage": 2024,
+          "format_cl": 75,
+          "availability": "in_stock",
+          "price_ht_36": 900,
+          "price_ht_78": 865,
+          "price_ht_156": 844,
+          "millesime_a_venir": true
+        }
+      ]
+    },
+    {
+      "id": "prod_schiefer_94",
+      "name": "Riesling Baden",
+      "type": "wine",
+      "brand_id": "brand_tradition",
+      "supplier_id": "sup_chapoutier",
+      "producer_id": "prod_schieferkopf",
+      "active": true,
+      "wine_attributes": {
+        "appellation": "Baden",
+        "cuvee": "Riesling",
+        "color": "blanc",
+        "region": "Germany",
+        "gamme": "tradition",
+        "grapes": [
+          "Riesling"
+        ]
+      },
+      "variants": [
+        {
+          "id": "var_schiefer_94_2024_75",
+          "vintage": 2024,
+          "format_cl": 75,
+          "availability": "in_stock",
+          "price_ht_36": 580,
+          "price_ht_78": 560,
+          "price_ht_156": 545
+        },
+        {
+          "id": "var_schiefer_94_2025_75",
+          "vintage": 2025,
+          "format_cl": 75,
+          "availability": "in_stock",
+          "price_ht_36": 580,
+          "price_ht_78": 560,
+          "price_ht_156": 545,
+          "millesime_a_venir": true
+        }
+      ]
+    },
+    {
+      "id": "prod_ferrages_95",
+      "name": "Côtes de Provence Esquirol",
+      "type": "wine",
+      "brand_id": "brand_specialites",
+      "supplier_id": "sup_chapoutier",
+      "producer_id": "prod_ferrages",
+      "active": true,
+      "wine_attributes": {
+        "appellation": "Côtes de Provence",
+        "cuvee": "Esquirol",
+        "color": "rouge",
+        "region": "Provence",
+        "gamme": "selection_parcellaire",
+        "grapes": [
+          "Grenache"
+        ]
+      },
+      "variants": [
+        {
+          "id": "var_ferrages_95_2018_75",
+          "vintage": 2018,
+          "format_cl": 75,
+          "availability": "in_stock",
+          "price_ht_36": 1650,
+          "price_ht_78": 1650,
+          "price_ht_156": 1650
+        }
+      ]
+    },
+    {
+      "id": "prod_ferrages_96",
+      "name": "Mon Plaisir",
+      "type": "wine",
+      "brand_id": "brand_tradition",
+      "supplier_id": "sup_chapoutier",
+      "producer_id": "prod_ferrages",
+      "active": true,
+      "wine_attributes": {
+        "appellation": "Côtes de Provence",
+        "cuvee": "Mon Plaisir",
+        "color": "rouge",
+        "region": "Provence",
+        "gamme": "tradition",
+        "grapes": [
+          "Grenache"
+        ],
+        "certifications": [
+          "demeter",
+          "bio"
+        ]
+      },
+      "variants": [
+        {
+          "id": "var_ferrages_96_2024_75",
+          "vintage": 2024,
+          "format_cl": 75,
+          "availability": "in_stock",
+          "price_ht_36": 715,
+          "price_ht_78": 690,
+          "price_ht_156": 675
+        },
+        {
+          "id": "var_ferrages_96_2025_75",
+          "vintage": 2025,
+          "format_cl": 75,
+          "availability": "in_stock",
+          "price_ht_36": 715,
+          "price_ht_78": 690,
+          "price_ht_156": 675,
+          "millesime_a_venir": true
+        }
+      ]
+    },
+    {
+      "id": "prod_ferrages_97",
+      "name": "Mon Plaisir",
+      "type": "wine",
+      "brand_id": "brand_tradition",
+      "supplier_id": "sup_chapoutier",
+      "producer_id": "prod_ferrages",
+      "active": true,
+      "wine_attributes": {
+        "appellation": "Côtes de Provence",
+        "cuvee": "Mon Plaisir",
+        "color": "blanc",
+        "region": "Provence",
+        "gamme": "tradition",
+        "grapes": [
+          "Grenache Blanc"
+        ],
+        "certifications": [
+          "demeter",
+          "bio"
+        ]
+      },
+      "variants": [
+        {
+          "id": "var_ferrages_97_2023_75",
+          "vintage": 2023,
+          "format_cl": 75,
+          "availability": "in_stock",
+          "price_ht_36": 715,
+          "price_ht_78": 690,
+          "price_ht_156": 675
+        },
+        {
+          "id": "var_ferrages_97_2024_75",
+          "vintage": 2024,
+          "format_cl": 75,
+          "availability": "in_stock",
+          "price_ht_36": 715,
+          "price_ht_78": 690,
+          "price_ht_156": 675,
+          "millesime_a_venir": true
+        }
+      ]
+    },
+    {
+      "id": "prod_ferrages_98",
+      "name": "Mon Plaisir",
+      "type": "wine",
+      "brand_id": "brand_tradition",
+      "supplier_id": "sup_chapoutier",
+      "producer_id": "prod_ferrages",
+      "active": true,
+      "wine_attributes": {
+        "appellation": "Côtes de Provence",
+        "cuvee": "Mon Plaisir",
+        "color": "rosé",
+        "region": "Provence",
+        "gamme": "tradition",
+        "grapes": [
+          "Grenache"
+        ]
+      },
+      "variants": [
+        {
+          "id": "var_ferrages_98_2024_75",
+          "vintage": 2024,
+          "format_cl": 75,
+          "availability": "in_stock",
+          "price_ht_36": 910,
+          "price_ht_78": 875,
+          "price_ht_156": 855
+        },
+        {
+          "id": "var_ferrages_98_2024_150",
+          "vintage": 2024,
+          "format_cl": 150,
+          "availability": "in_stock",
+          "price_ht_36": null,
+          "price_ht_78": null,
+          "price_ht_156": 2010
+        },
+        {
+          "id": "var_ferrages_98_2025_75",
+          "vintage": 2025,
+          "format_cl": 75,
+          "availability": "in_stock",
+          "price_ht_36": 910,
+          "price_ht_78": 875,
+          "price_ht_156": 855,
+          "millesime_a_venir": true
+        },
+        {
+          "id": "var_ferrages_98_2025_150",
+          "vintage": 2025,
+          "format_cl": 150,
+          "availability": "in_stock",
+          "price_ht_36": null,
+          "price_ht_78": null,
+          "price_ht_156": 2010,
+          "millesime_a_venir": true
+        }
+      ]
+    },
+    {
+      "id": "prod_ferrages_99",
+      "name": "Roumery",
+      "type": "wine",
+      "brand_id": "brand_tradition",
+      "supplier_id": "sup_chapoutier",
+      "producer_id": "prod_ferrages",
+      "active": true,
+      "wine_attributes": {
+        "appellation": "Côtes de Provence",
+        "cuvee": "Roumery",
+        "color": "rosé",
+        "region": "Provence",
+        "gamme": "tradition",
+        "grapes": [
+          "Grenache"
+        ],
+        "certifications": [
+          "demeter",
+          "bio"
+        ]
+      },
+      "variants": [
+        {
+          "id": "var_ferrages_99_2025_75",
+          "vintage": 2025,
+          "format_cl": 75,
+          "availability": "in_stock",
+          "price_ht_36": 700,
+          "price_ht_78": 675,
+          "price_ht_156": 660
+        },
+        {
+          "id": "var_ferrages_99_2025_150",
+          "vintage": 2025,
+          "format_cl": 150,
+          "availability": "in_stock",
+          "price_ht_36": null,
+          "price_ht_78": null,
+          "price_ht_156": 1614
+        }
+      ]
+    },
+    {
+      "id": "prod_stetienne_100",
+      "name": "Côtes-du-Rhône Villages La Garrigue",
+      "type": "wine",
+      "brand_id": "brand_tradition",
+      "supplier_id": "sup_chapoutier",
+      "producer_id": "prod_saint_etienne",
+      "active": true,
+      "wine_attributes": {
+        "appellation": "Côtes-du-Rhône Villages",
+        "cuvee": "La Garrigue",
+        "color": "rouge",
+        "region": "Vallée du Rhône",
+        "gamme": "tradition",
+        "grapes": [
+          "Grenache"
+        ],
+        "certifications": [
+          "demeter",
+          "bio"
+        ]
+      },
+      "variants": [
+        {
+          "id": "var_stetienne_100_2024_75",
+          "vintage": 2024,
+          "format_cl": 75,
+          "availability": "in_stock",
+          "price_ht_36": 785,
+          "price_ht_78": 755,
+          "price_ht_156": 740
+        },
+        {
+          "id": "var_stetienne_100_2025_75",
+          "vintage": 2025,
+          "format_cl": 75,
+          "availability": "in_stock",
+          "price_ht_36": 785,
+          "price_ht_78": 755,
+          "price_ht_156": 740,
+          "millesime_a_venir": true
+        }
+      ]
+    },
+    {
+      "id": "prod_stetienne_101",
+      "name": "Côtes-du-Rhône Les Albizzias",
+      "type": "wine",
+      "brand_id": "brand_tradition",
+      "supplier_id": "sup_chapoutier",
+      "producer_id": "prod_saint_etienne",
+      "active": true,
+      "wine_attributes": {
+        "appellation": "Côtes-du-Rhône",
+        "cuvee": "Les Albizzias",
+        "color": "rouge",
+        "region": "Vallée du Rhône",
+        "gamme": "tradition",
+        "grapes": [
+          "Grenache"
+        ],
+        "certifications": [
+          "demeter",
+          "bio"
+        ]
+      },
+      "variants": [
+        {
+          "id": "var_stetienne_101_2024_75",
+          "vintage": 2024,
+          "format_cl": 75,
+          "availability": "in_stock",
+          "price_ht_36": 590,
+          "price_ht_78": 570,
+          "price_ht_156": 555
+        },
+        {
+          "id": "var_stetienne_101_2025_75",
+          "vintage": 2025,
+          "format_cl": 75,
+          "availability": "in_stock",
+          "price_ht_36": 590,
+          "price_ht_78": 570,
+          "price_ht_156": 555,
+          "millesime_a_venir": true
+        }
+      ]
+    },
+    {
+      "id": "prod_stetienne_102",
+      "name": "Costières de Nîmes Le Caprea",
+      "type": "wine",
+      "brand_id": "brand_tradition",
+      "supplier_id": "sup_chapoutier",
+      "producer_id": "prod_saint_etienne",
+      "active": true,
+      "wine_attributes": {
+        "appellation": "Costières de Nîmes",
+        "cuvee": "Le Caprea",
+        "color": "rouge",
+        "region": "Vallée du Rhône",
+        "gamme": "tradition",
+        "grapes": [
+          "Grenache"
+        ],
+        "certifications": [
+          "demeter",
+          "bio"
+        ]
+      },
+      "variants": [
+        {
+          "id": "var_stetienne_102_2018_75",
+          "vintage": 2018,
+          "format_cl": 75,
+          "availability": "in_stock",
+          "price_ht_36": 585,
+          "price_ht_78": 565,
+          "price_ht_156": 550
+        }
+      ]
+    },
+    {
+      "id": "prod_stetienne_103",
+      "name": "Côtes-du-Rhône Les Abelhas",
+      "type": "wine",
+      "brand_id": "brand_tradition",
+      "supplier_id": "sup_chapoutier",
+      "producer_id": "prod_saint_etienne",
+      "active": true,
+      "wine_attributes": {
+        "appellation": "Côtes-du-Rhône",
+        "cuvee": "Les Abelhas",
+        "color": "blanc",
+        "region": "Vallée du Rhône",
+        "gamme": "tradition",
+        "grapes": [
+          "Grenache Blanc"
+        ],
+        "certifications": [
+          "demeter",
+          "bio"
+        ]
+      },
+      "variants": [
+        {
+          "id": "var_stetienne_103_2024_75",
+          "vintage": 2024,
+          "format_cl": 75,
+          "availability": "in_stock",
+          "price_ht_36": 625,
+          "price_ht_78": 605,
+          "price_ht_156": 590
+        },
+        {
+          "id": "var_stetienne_103_2025_75",
+          "vintage": 2025,
+          "format_cl": 75,
+          "availability": "in_stock",
+          "price_ht_36": 625,
+          "price_ht_78": 605,
+          "price_ht_156": 590,
+          "millesime_a_venir": true
+        }
+      ]
+    },
+    {
+      "id": "prod_tournon_104",
+      "name": "Lady's Lane Shiraz",
+      "type": "wine",
+      "brand_id": "brand_specialites",
+      "supplier_id": "sup_chapoutier",
+      "producer_id": "prod_tournon",
+      "active": true,
+      "wine_attributes": {
+        "appellation": "Victoria",
+        "cuvee": "Lady's Lane",
+        "color": "rouge",
+        "region": "Victoria",
+        "gamme": "selection_parcellaire",
+        "grapes": [
+          "Shiraz"
+        ]
+      },
+      "variants": [
+        {
+          "id": "var_tournon_104_2022_75",
+          "vintage": 2022,
+          "format_cl": 75,
+          "availability": "in_stock",
+          "price_ht_36": 1800,
+          "price_ht_78": 1800,
+          "price_ht_156": 1800
+        },
+        {
+          "id": "var_tournon_104_2022_150",
+          "vintage": 2022,
+          "format_cl": 150,
+          "availability": "in_stock",
+          "price_ht_36": null,
+          "price_ht_78": null,
+          "price_ht_156": 3900
+        }
+      ]
+    },
+    {
+      "id": "prod_tournon_105",
+      "name": "Shays Flat Shiraz",
+      "type": "wine",
+      "brand_id": "brand_tradition",
+      "supplier_id": "sup_chapoutier",
+      "producer_id": "prod_tournon",
+      "active": true,
+      "wine_attributes": {
+        "appellation": "Victoria",
+        "cuvee": "Shays Flat",
+        "color": "rouge",
+        "region": "Victoria",
+        "gamme": "tradition",
+        "grapes": [
+          "Shiraz"
+        ]
+      },
+      "variants": [
+        {
+          "id": "var_tournon_105_2016_75",
+          "vintage": 2016,
+          "format_cl": 75,
+          "availability": "in_stock",
+          "price_ht_36": 1030,
+          "price_ht_78": 990,
+          "price_ht_156": 969
+        },
+        {
+          "id": "var_tournon_105_2017_75",
+          "vintage": 2017,
+          "format_cl": 75,
+          "availability": "in_stock",
+          "price_ht_36": 1030,
+          "price_ht_78": 990,
+          "price_ht_156": 969,
+          "millesime_a_venir": true
+        }
+      ]
+    },
+    {
+      "id": "prod_tournon_106",
+      "name": "Mathilda Shiraz",
+      "type": "wine",
+      "brand_id": "brand_tradition",
+      "supplier_id": "sup_chapoutier",
+      "producer_id": "prod_tournon",
+      "active": true,
+      "wine_attributes": {
+        "appellation": "Victoria",
+        "cuvee": "Mathilda",
+        "color": "rouge",
+        "region": "Victoria",
+        "gamme": "tradition",
+        "grapes": [
+          "Shiraz"
+        ]
+      },
+      "variants": [
+        {
+          "id": "var_tournon_106_2023_75",
+          "vintage": 2023,
+          "format_cl": 75,
+          "availability": "in_stock",
+          "price_ht_36": 615,
+          "price_ht_78": 595,
+          "price_ht_156": 580
+        },
+        {
+          "id": "var_tournon_106_2024_75",
+          "vintage": 2024,
+          "format_cl": 75,
+          "availability": "in_stock",
+          "price_ht_36": 615,
+          "price_ht_78": 595,
+          "price_ht_156": 580,
+          "millesime_a_venir": true
+        }
+      ]
+    },
+    {
+      "id": "prod_tournon_107",
+      "name": "Mathilda Viognier Marsanne",
+      "type": "wine",
+      "brand_id": "brand_tradition",
+      "supplier_id": "sup_chapoutier",
+      "producer_id": "prod_tournon",
+      "active": true,
+      "wine_attributes": {
+        "appellation": "Victoria",
+        "cuvee": "Mathilda",
+        "color": "blanc",
+        "region": "Victoria",
+        "gamme": "tradition",
+        "grapes": [
+          "Viognier",
+          "Marsanne"
+        ]
+      },
+      "variants": [
+        {
+          "id": "var_tournon_107_2023_75",
+          "vintage": 2023,
+          "format_cl": 75,
+          "availability": "in_stock",
+          "price_ht_36": 615,
+          "price_ht_78": 595,
+          "price_ht_156": 580
+        },
+        {
+          "id": "var_tournon_107_2024_75",
+          "vintage": 2024,
+          "format_cl": 75,
+          "availability": "in_stock",
+          "price_ht_36": 615,
+          "price_ht_78": 595,
+          "price_ht_156": 580,
+          "millesime_a_venir": true
+        }
+      ]
+    },
+    {
+      "id": "prod_tournon_108",
+      "name": "Landsborough Chardonnay",
+      "type": "wine",
+      "brand_id": "brand_tradition",
+      "supplier_id": "sup_chapoutier",
+      "producer_id": "prod_tournon",
+      "active": true,
+      "wine_attributes": {
+        "appellation": "Victoria",
+        "cuvee": "Landsborough",
+        "color": "blanc",
+        "region": "Victoria",
+        "gamme": "tradition",
+        "grapes": [
+          "Chardonnay"
+        ]
+      },
+      "variants": [
+        {
+          "id": "var_tournon_108_2021_75",
+          "vintage": 2021,
+          "format_cl": 75,
+          "availability": "in_stock",
+          "price_ht_36": 1155,
+          "price_ht_78": 1110,
+          "price_ht_156": 1085
+        },
+        {
+          "id": "var_tournon_108_2024_75",
+          "vintage": 2024,
+          "format_cl": 75,
+          "availability": "in_stock",
+          "price_ht_36": 1155,
+          "price_ht_78": 1110,
+          "price_ht_156": 1085,
+          "millesime_a_venir": true
+        }
+      ]
+    },
+    {
+      "id": "prod_dos_109",
+      "name": "Pinteivera",
+      "type": "wine",
+      "brand_id": "brand_tradition",
+      "supplier_id": "sup_chapoutier",
+      "producer_id": "prod_dos_lusiad",
+      "active": true,
+      "wine_attributes": {
+        "appellation": "Douro",
+        "cuvee": "Pinteivera",
+        "color": "rouge",
+        "region": "Vallée du Douro",
+        "gamme": "tradition",
+        "grapes": [
+          "Touriga Nacional"
+        ]
+      },
+      "variants": [
+        {
+          "id": "var_dos_109_2023_75",
+          "vintage": 2023,
+          "format_cl": 75,
+          "availability": "in_stock",
+          "price_ht_36": 969,
+          "price_ht_78": 935,
+          "price_ht_156": 915
+        },
+        {
+          "id": "var_dos_109_2024_75",
+          "vintage": 2024,
+          "format_cl": 75,
+          "availability": "in_stock",
+          "price_ht_36": 969,
+          "price_ht_78": 935,
+          "price_ht_156": 915,
+          "millesime_a_venir": true
+        }
+      ]
+    },
+    {
+      "id": "prod_dos_110",
+      "name": "Eleivera",
+      "type": "wine",
+      "brand_id": "brand_tradition",
+      "supplier_id": "sup_chapoutier",
+      "producer_id": "prod_dos_lusiad",
+      "active": true,
+      "wine_attributes": {
+        "appellation": "Douro",
+        "cuvee": "Eleivera",
+        "color": "rouge",
+        "region": "Vallée du Douro",
+        "gamme": "tradition",
+        "grapes": [
+          "Touriga Nacional"
+        ]
+      },
+      "variants": [
+        {
+          "id": "var_dos_110_2023_75",
+          "vintage": 2023,
+          "format_cl": 75,
+          "availability": "in_stock",
+          "price_ht_36": 550,
+          "price_ht_78": 535,
+          "price_ht_156": 520
+        },
+        {
+          "id": "var_dos_110_2024_75",
+          "vintage": 2024,
+          "format_cl": 75,
+          "availability": "in_stock",
+          "price_ht_36": 550,
+          "price_ht_78": 535,
+          "price_ht_156": 520,
+          "millesime_a_venir": true
+        }
+      ]
+    },
+    {
+      "id": "prod_dos_111",
+      "name": "Pinteivera",
+      "type": "wine",
+      "brand_id": "brand_tradition",
+      "supplier_id": "sup_chapoutier",
+      "producer_id": "prod_dos_lusiad",
+      "active": true,
+      "wine_attributes": {
+        "appellation": "Douro",
+        "cuvee": "Pinteivera",
+        "color": "blanc",
+        "region": "Vallée du Douro",
+        "gamme": "tradition",
+        "grapes": [
+          "Rabigato",
+          "Gouveio",
+          "Codega"
+        ]
+      },
+      "variants": [
+        {
+          "id": "var_dos_111_2019_75",
+          "vintage": 2019,
+          "format_cl": 75,
+          "availability": "in_stock",
+          "price_ht_36": 969,
+          "price_ht_78": 935,
+          "price_ht_156": 915
+        },
+        {
+          "id": "var_dos_111_2020_75",
+          "vintage": 2020,
+          "format_cl": 75,
+          "availability": "in_stock",
+          "price_ht_36": 969,
+          "price_ht_78": 935,
+          "price_ht_156": 915,
+          "millesime_a_venir": true
+        }
+      ]
+    },
+    {
+      "id": "prod_dos_112",
+      "name": "Eleivera",
+      "type": "wine",
+      "brand_id": "brand_tradition",
+      "supplier_id": "sup_chapoutier",
+      "producer_id": "prod_dos_lusiad",
+      "active": true,
+      "wine_attributes": {
+        "appellation": "Douro",
+        "cuvee": "Eleivera",
+        "color": "blanc",
+        "region": "Vallée du Douro",
+        "gamme": "tradition",
+        "grapes": [
+          "Rabigato"
+        ]
+      },
+      "variants": [
+        {
+          "id": "var_dos_112_2023_75",
+          "vintage": 2023,
+          "format_cl": 75,
+          "availability": "in_stock",
+          "price_ht_36": 550,
+          "price_ht_78": 535,
+          "price_ht_156": 520
+        },
+        {
+          "id": "var_dos_112_2024_75",
+          "vintage": 2024,
+          "format_cl": 75,
+          "availability": "in_stock",
+          "price_ht_36": 550,
+          "price_ht_78": 535,
+          "price_ht_156": 520,
+          "millesime_a_venir": true
+        }
+      ]
+    },
+    {
+      "id": "prod_soto_113",
+      "name": "Camino Gumiel",
+      "type": "wine",
+      "brand_id": "brand_specialites",
+      "supplier_id": "sup_chapoutier",
+      "producer_id": "prod_dominio_soto",
+      "active": true,
+      "wine_attributes": {
+        "appellation": "Ribera del Duero",
+        "cuvee": "Camino Gumiel",
+        "color": "rouge",
+        "region": "Ribera del Duero",
+        "gamme": "selection_parcellaire",
+        "grapes": [
+          "Tempranillo"
+        ],
+        "certifications": [
+          "demeter",
+          "bio"
+        ]
+      },
+      "variants": [
+        {
+          "id": "var_soto_113_2021_75",
+          "vintage": 2021,
+          "format_cl": 75,
+          "availability": "in_stock",
+          "price_ht_36": 2200,
+          "price_ht_78": 2200,
+          "price_ht_156": 2200
+        },
+        {
+          "id": "var_soto_113_2022_75",
+          "vintage": 2022,
+          "format_cl": 75,
+          "availability": "in_stock",
+          "price_ht_36": 2200,
+          "price_ht_78": 2200,
+          "price_ht_156": 2200,
+          "millesime_a_venir": true
+        }
+      ]
+    },
+    {
+      "id": "prod_soto_114",
+      "name": "Lirios",
+      "type": "wine",
+      "brand_id": "brand_specialites",
+      "supplier_id": "sup_chapoutier",
+      "producer_id": "prod_dominio_soto",
+      "active": true,
+      "wine_attributes": {
+        "appellation": "Ribera del Duero",
+        "cuvee": "Lirios",
+        "color": "rouge",
+        "region": "Ribiera del Duero",
+        "gamme": "selection_parcellaire",
+        "grapes": [
+          "Tempranillo"
+        ],
+        "certifications": [
+          "demeter",
+          "bio"
+        ]
+      },
+      "variants": [
+        {
+          "id": "var_soto_114_2022_75",
+          "vintage": 2022,
+          "format_cl": 75,
+          "availability": "in_stock",
+          "price_ht_36": 1900,
+          "price_ht_78": 1900,
+          "price_ht_156": 1900
+        },
+        {
+          "id": "var_soto_114_2023_75",
+          "vintage": 2023,
+          "format_cl": 75,
+          "availability": "in_stock",
+          "price_ht_36": 1900,
+          "price_ht_78": 1900,
+          "price_ht_156": 1900,
+          "millesime_a_venir": true
+        }
+      ]
+    },
+    {
+      "id": "prod_soto_115",
+      "name": "Gran Reserva Tempranillo",
+      "type": "wine",
+      "brand_id": "brand_specialites",
+      "supplier_id": "sup_chapoutier",
+      "producer_id": "prod_dominio_soto",
+      "active": true,
+      "wine_attributes": {
+        "appellation": "Ribera del Duero",
+        "cuvee": "Gran Reserva",
+        "color": "rouge",
+        "region": "Ribera del Duero",
+        "gamme": "tradition",
+        "grapes": [
+          "Tempranillo"
+        ],
+        "certifications": [
+          "demeter",
+          "bio"
+        ]
+      },
+      "variants": [
+        {
+          "id": "var_soto_115_2018_75",
+          "vintage": 2018,
+          "format_cl": 75,
+          "availability": "in_stock",
+          "price_ht_36": 1825,
+          "price_ht_78": 1764,
+          "price_ht_156": 1720
+        },
+        {
+          "id": "var_soto_115_2019_75",
+          "vintage": 2019,
+          "format_cl": 75,
+          "availability": "in_stock",
+          "price_ht_36": 1825,
+          "price_ht_78": 1764,
+          "price_ht_156": 1720
+        }
+      ]
+    },
+    {
+      "id": "prod_soto_116",
+      "name": "Reserva Tempranillo",
+      "type": "wine",
+      "brand_id": "brand_tradition",
+      "supplier_id": "sup_chapoutier",
+      "producer_id": "prod_dominio_soto",
+      "active": true,
+      "wine_attributes": {
+        "appellation": "Ribera del Duero",
+        "cuvee": "Reserva",
+        "color": "rouge",
+        "region": "Ribera del Duero",
+        "gamme": "tradition",
+        "grapes": [
+          "Tempranillo"
+        ],
+        "certifications": [
+          "demeter",
+          "bio"
+        ]
+      },
+      "variants": [
+        {
+          "id": "var_soto_116_2019_75",
+          "vintage": 2019,
+          "format_cl": 75,
+          "availability": "in_stock",
+          "price_ht_36": 1330,
+          "price_ht_78": 1280,
+          "price_ht_156": 1250
+        }
+      ]
+    },
+    {
+      "id": "prod_soto_117",
+      "name": "Crianza Tempranillo",
+      "type": "wine",
+      "brand_id": "brand_tradition",
+      "supplier_id": "sup_chapoutier",
+      "producer_id": "prod_dominio_soto",
+      "active": true,
+      "wine_attributes": {
+        "appellation": "Ribera del Duero",
+        "cuvee": "Crianza",
+        "color": "rouge",
+        "region": "Ribera del Duero",
+        "gamme": "tradition",
+        "grapes": [
+          "Tempranillo"
+        ],
+        "certifications": [
+          "demeter",
+          "bio"
+        ]
+      },
+      "variants": [
+        {
+          "id": "var_soto_117_2020_75",
+          "vintage": 2020,
+          "format_cl": 75,
+          "availability": "in_stock",
+          "price_ht_36": 1080,
+          "price_ht_78": 1040,
+          "price_ht_156": 1015
+        },
+        {
+          "id": "var_soto_117_2021_75",
+          "vintage": 2021,
+          "format_cl": 75,
+          "availability": "in_stock",
+          "price_ht_36": 1080,
+          "price_ht_78": 1040,
+          "price_ht_156": 1015,
+          "millesime_a_venir": true
+        }
+      ]
+    },
+    {
+      "id": "prod_soto_118",
+      "name": "Ribera del Duero Tempranillo",
+      "type": "wine",
+      "brand_id": "brand_tradition",
+      "supplier_id": "sup_chapoutier",
+      "producer_id": "prod_dominio_soto",
+      "active": true,
+      "wine_attributes": {
+        "appellation": "Ribera del Duero",
+        "cuvee": "Tempranillo",
+        "color": "rouge",
+        "region": "Ribera del Duero",
+        "gamme": "tradition",
+        "grapes": [
+          "Tempranillo"
+        ],
+        "certifications": [
+          "demeter",
+          "bio"
+        ]
+      },
+      "variants": [
+        {
+          "id": "var_soto_118_2022_75",
+          "vintage": 2022,
+          "format_cl": 75,
+          "availability": "in_stock",
+          "price_ht_36": 675,
+          "price_ht_78": 655,
+          "price_ht_156": 635
+        },
+        {
+          "id": "var_soto_118_2023_75",
+          "vintage": 2023,
+          "format_cl": 75,
+          "availability": "in_stock",
+          "price_ht_36": 675,
+          "price_ht_78": 655,
+          "price_ht_156": 635,
+          "millesime_a_venir": true
+        }
+      ]
+    },
+    {
+      "id": "prod_pic_119",
+      "name": "Cornas",
+      "type": "wine",
+      "brand_id": "brand_pic_rencontres",
+      "supplier_id": "sup_chapoutier",
+      "producer_id": "prod_chapoutier",
+      "active": true,
+      "wine_attributes": {
+        "appellation": "Cornas",
+        "cuvee": "Cornas",
+        "color": "rouge",
+        "region": "Vallée du Rhône",
+        "gamme": "prestige",
+        "grapes": [
+          "Syrah"
+        ],
+        "certifications": [
+          "demeter",
+          "bio"
+        ]
+      },
+      "variants": [
+        {
+          "id": "var_pic_119_2023_75",
+          "vintage": 2023,
+          "format_cl": 75,
+          "availability": "in_stock",
+          "price_ht_36": 2635,
+          "price_ht_78": 2545,
+          "price_ht_156": 2480
+        },
+        {
+          "id": "var_pic_119_2024_75",
+          "vintage": 2024,
+          "format_cl": 75,
+          "availability": "in_stock",
+          "price_ht_36": 2635,
+          "price_ht_78": 2545,
+          "price_ht_156": 2480,
+          "millesime_a_venir": true
+        }
+      ]
+    },
+    {
+      "id": "prod_pic_120",
+      "name": "Saint-Péray Les Payrolles",
+      "type": "wine",
+      "brand_id": "brand_pic_rencontres",
+      "supplier_id": "sup_chapoutier",
+      "producer_id": "prod_chapoutier",
+      "active": true,
+      "wine_attributes": {
+        "appellation": "Saint-Péray",
+        "cuvee": "Les Payrolles",
+        "color": "blanc",
+        "region": "Vallée du Rhône",
+        "gamme": "selection_parcellaire",
+        "grapes": [
+          "Marsanne"
+        ],
+        "certifications": [
+          "demeter",
+          "bio"
+        ]
+      },
+      "variants": [
+        {
+          "id": "var_pic_120_2018_75",
+          "vintage": 2018,
+          "format_cl": 75,
+          "availability": "in_stock",
+          "price_ht_36": 2815,
+          "price_ht_78": 2815,
+          "price_ht_156": 2815
+        },
+        {
+          "id": "var_pic_120_2018_150",
+          "vintage": 2018,
+          "format_cl": 150,
+          "availability": "in_stock",
+          "price_ht_36": null,
+          "price_ht_78": null,
+          "price_ht_156": 5775
+        },
+        {
+          "id": "var_pic_120_2019_75",
+          "vintage": 2019,
+          "format_cl": 75,
+          "availability": "in_stock",
+          "price_ht_36": 2815,
+          "price_ht_78": 2815,
+          "price_ht_156": 2815
+        }
+      ]
+    },
+    {
+      "id": "prod_pic_121",
+      "name": "Saint-Péray Effervescent Le Pin",
+      "type": "wine",
+      "brand_id": "brand_pic_rencontres",
+      "supplier_id": "sup_chapoutier",
+      "producer_id": "prod_chapoutier",
+      "active": true,
+      "wine_attributes": {
+        "appellation": "Saint-Péray",
+        "cuvee": "Le Pin",
+        "color": "blanc",
+        "region": "Vallée du Rhône",
+        "gamme": "prestige",
+        "grapes": [
+          "Marsanne"
+        ],
+        "certifications": [
+          "demeter",
+          "bio"
+        ]
+      },
+      "variants": [
+        {
+          "id": "var_pic_121_2019_75",
+          "vintage": 2019,
+          "format_cl": 75,
+          "availability": "in_stock",
+          "price_ht_36": 1689,
+          "price_ht_78": 1689,
+          "price_ht_156": 1689
+        },
+        {
+          "id": "var_pic_121_2019_150",
+          "vintage": 2019,
+          "format_cl": 150,
+          "availability": "in_stock",
+          "price_ht_36": null,
+          "price_ht_78": null,
+          "price_ht_156": 3529
+        }
+      ]
+    },
+    {
+      "id": "prod_alleno_122",
+      "name": "Saint-Joseph Couronne de Chabot",
+      "type": "wine",
+      "brand_id": "brand_alleno_rencontres",
+      "supplier_id": "sup_chapoutier",
+      "producer_id": "prod_chapoutier",
+      "active": true,
+      "wine_attributes": {
+        "appellation": "Saint-Joseph",
+        "cuvee": "Couronne de Chabot",
+        "color": "rouge",
+        "region": "Vallée du Rhône",
+        "gamme": "prestige",
+        "grapes": [
+          "Syrah"
+        ]
+      },
+      "variants": [
+        {
+          "id": "var_alleno_122_2022_75",
+          "vintage": 2022,
+          "format_cl": 75,
+          "availability": "in_stock",
+          "price_ht_36": 1950,
+          "price_ht_78": 1885,
+          "price_ht_156": 1835
+        },
+        {
+          "id": "var_alleno_122_2022_150",
+          "vintage": 2022,
+          "format_cl": 150,
+          "availability": "in_stock",
+          "price_ht_36": null,
+          "price_ht_78": null,
+          "price_ht_156": 3820
+        },
+        {
+          "id": "var_alleno_122_2023_75",
+          "vintage": 2023,
+          "format_cl": 75,
+          "availability": "in_stock",
+          "price_ht_36": 1950,
+          "price_ht_78": 1885,
+          "price_ht_156": 1835,
+          "millesime_a_venir": true
+        },
+        {
+          "id": "var_alleno_122_2023_150",
+          "vintage": 2023,
+          "format_cl": 150,
+          "availability": "in_stock",
+          "price_ht_36": null,
+          "price_ht_78": null,
+          "price_ht_156": 3820,
+          "millesime_a_venir": true
+        }
+      ]
+    },
+    {
+      "id": "prod_alleno_123",
+      "name": "Saint-Joseph Couronne de Chabot",
+      "type": "wine",
+      "brand_id": "brand_alleno_rencontres",
+      "supplier_id": "sup_chapoutier",
+      "producer_id": "prod_chapoutier",
+      "active": true,
+      "wine_attributes": {
+        "appellation": "Saint-Joseph",
+        "cuvee": "Couronne de Chabot",
+        "color": "blanc",
+        "region": "Vallée du Rhône",
+        "gamme": "prestige",
+        "grapes": [
+          "Marsanne"
+        ]
+      },
+      "variants": [
+        {
+          "id": "var_alleno_123_2020_75",
+          "vintage": 2020,
+          "format_cl": 75,
+          "availability": "in_stock",
+          "price_ht_36": 2750,
+          "price_ht_78": 2655,
+          "price_ht_156": 2590
+        },
+        {
+          "id": "var_alleno_123_2021_75",
+          "vintage": 2021,
+          "format_cl": 75,
+          "availability": "in_stock",
+          "price_ht_36": 2750,
+          "price_ht_78": 2655,
+          "price_ht_156": 2590,
+          "millesime_a_venir": true
+        }
+      ]
+    },
+    {
+      "id": "prod_viola_124",
+      "name": "Fleurie La Levrattière",
+      "type": "wine",
+      "brand_id": "brand_viola_rencontres",
+      "supplier_id": "sup_chapoutier",
+      "producer_id": "prod_chapoutier",
+      "active": true,
+      "wine_attributes": {
+        "appellation": "Fleurie",
+        "cuvee": "La Levrattière",
+        "color": "rouge",
+        "region": "Beaujolais",
+        "gamme": "tradition",
+        "grapes": [
+          "Gamay"
+        ]
+      },
+      "variants": [
+        {
+          "id": "var_viola_124_2020_75",
+          "vintage": 2020,
+          "format_cl": 75,
+          "availability": "in_stock",
+          "price_ht_36": 1040,
+          "price_ht_78": 1005,
+          "price_ht_156": 980
+        },
+        {
+          "id": "var_viola_124_2021_75",
+          "vintage": 2021,
+          "format_cl": 75,
+          "availability": "in_stock",
+          "price_ht_36": 1040,
+          "price_ht_78": 1005,
+          "price_ht_156": 980,
+          "millesime_a_venir": true
+        }
+      ]
+    },
+    {
+      "id": "prod_viola_125",
+      "name": "Saint-Véran",
+      "type": "wine",
+      "brand_id": "brand_viola_rencontres",
+      "supplier_id": "sup_chapoutier",
+      "producer_id": "prod_chapoutier",
+      "active": true,
+      "wine_attributes": {
+        "appellation": "Saint-Véran",
+        "cuvee": "Saint-Véran",
+        "color": "blanc",
+        "region": "Beaujolais",
+        "gamme": "tradition",
+        "grapes": [
+          "Chardonnay"
+        ]
+      },
+      "variants": [
+        {
+          "id": "var_viola_125_2024_75",
+          "vintage": 2024,
+          "format_cl": 75,
+          "availability": "in_stock",
+          "price_ht_36": 1330,
+          "price_ht_78": 1280,
+          "price_ht_156": 1250
+        },
+        {
+          "id": "var_viola_125_2025_75",
+          "vintage": 2025,
+          "format_cl": 75,
+          "availability": "in_stock",
+          "price_ht_36": 1330,
+          "price_ht_78": 1280,
+          "price_ht_156": 1250,
+          "millesime_a_venir": true
+        }
+      ]
+    },
+    {
+      "id": "prod_trenel_126",
+      "name": "Pouilly-Fuissé 1er Cru Au Vignerais",
+      "type": "wine",
+      "brand_id": "brand_trenel",
+      "supplier_id": "sup_chapoutier",
+      "producer_id": "prod_trenel",
+      "active": true,
+      "wine_attributes": {
+        "appellation": "Pouilly-Fuissé",
+        "cuvee": "Au Vignerais",
+        "color": "blanc",
+        "region": "Beaujolais",
+        "gamme": "prestige",
+        "grapes": [
+          "Chardonnay"
+        ]
+      },
+      "variants": [
+        {
+          "id": "var_trenel_126_2024_75",
+          "vintage": 2024,
+          "format_cl": 75,
+          "availability": "in_stock",
+          "price_ht_36": 2270,
+          "price_ht_78": 2190,
+          "price_ht_156": 2135,
+          "millesime_a_venir": true
+        }
+      ]
+    },
+    {
+      "id": "prod_trenel_127",
+      "name": "Pouilly-Vinzelles Les Quarts",
+      "type": "wine",
+      "brand_id": "brand_trenel",
+      "supplier_id": "sup_chapoutier",
+      "producer_id": "prod_trenel",
+      "active": true,
+      "wine_attributes": {
+        "appellation": "Pouilly-Vinzelles",
+        "cuvee": "Les Quarts",
+        "color": "blanc",
+        "region": "Beaujolais",
+        "gamme": "prestige",
+        "grapes": [
+          "Chardonnay"
+        ]
+      },
+      "variants": [
+        {
+          "id": "var_trenel_127_2023_75",
+          "vintage": 2023,
+          "format_cl": 75,
+          "availability": "in_stock",
+          "price_ht_36": 1939,
+          "price_ht_78": 1870,
+          "price_ht_156": 1825,
+          "millesime_a_venir": true
+        },
+        {
+          "id": "var_trenel_127_2023_150",
+          "vintage": 2023,
+          "format_cl": 150,
+          "availability": "in_stock",
+          "price_ht_36": null,
+          "price_ht_78": null,
+          "price_ht_156": 3800,
+          "millesime_a_venir": true
+        },
+        {
+          "id": "var_trenel_127_2023_300",
+          "vintage": 2023,
+          "format_cl": 300,
+          "availability": "in_stock",
+          "price_ht_36": null,
+          "price_ht_78": null,
+          "price_ht_156": 10800,
+          "millesime_a_venir": true
+        }
+      ]
+    },
+    {
+      "id": "prod_trenel_128",
+      "name": "Saint-Véran L'Homozynme",
+      "type": "wine",
+      "brand_id": "brand_trenel",
+      "supplier_id": "sup_chapoutier",
+      "producer_id": "prod_trenel",
+      "active": true,
+      "wine_attributes": {
+        "appellation": "Saint-Véran",
+        "cuvee": "L'Homozynme",
+        "color": "blanc",
+        "region": "Beaujolais",
+        "gamme": "prestige",
+        "grapes": [
+          "Chardonnay"
+        ],
+        "certifications": [
+          "demeter",
+          "bio"
+        ]
+      },
+      "variants": [
+        {
+          "id": "var_trenel_128_2023_75",
+          "vintage": 2023,
+          "format_cl": 75,
+          "availability": "in_stock",
+          "price_ht_36": 1750,
+          "price_ht_78": 1685,
+          "price_ht_156": 1645,
+          "millesime_a_venir": true
+        },
+        {
+          "id": "var_trenel_128_2023_150",
+          "vintage": 2023,
+          "format_cl": 150,
+          "availability": "in_stock",
+          "price_ht_36": null,
+          "price_ht_78": null,
+          "price_ht_156": 3440,
+          "millesime_a_venir": true
+        },
+        {
+          "id": "var_trenel_128_2023_300",
+          "vintage": 2023,
+          "format_cl": 300,
+          "availability": "in_stock",
+          "price_ht_36": null,
+          "price_ht_78": null,
+          "price_ht_156": 10000,
+          "millesime_a_venir": true
+        }
+      ]
+    },
+    {
+      "id": "prod_trenel_129",
+      "name": "Moulin-à-Vent Les Thorins",
+      "type": "wine",
+      "brand_id": "brand_trenel",
+      "supplier_id": "sup_chapoutier",
+      "producer_id": "prod_trenel",
+      "active": true,
+      "wine_attributes": {
+        "appellation": "Moulin-à-Vent",
+        "cuvee": "Les Thorins",
+        "color": "rouge",
+        "region": "Beaujolais",
+        "gamme": "prestige",
+        "grapes": [
+          "Gamay"
+        ],
+        "certifications": [
+          "demeter",
+          "bio"
+        ]
+      },
+      "variants": [
+        {
+          "id": "var_trenel_129_2023_75",
+          "vintage": 2023,
+          "format_cl": 75,
+          "availability": "in_stock",
+          "price_ht_36": 1470,
+          "price_ht_78": 1420,
+          "price_ht_156": 1385
+        },
+        {
+          "id": "var_trenel_129_2023_150",
+          "vintage": 2023,
+          "format_cl": 150,
+          "availability": "in_stock",
+          "price_ht_36": null,
+          "price_ht_78": null,
+          "price_ht_156": 2915
+        },
+        {
+          "id": "var_trenel_129_2023_300",
+          "vintage": 2023,
+          "format_cl": 300,
+          "availability": "in_stock",
+          "price_ht_36": null,
+          "price_ht_78": null,
+          "price_ht_156": 8900
+        }
+      ]
+    },
+    {
+      "id": "prod_trenel_130",
+      "name": "Morgon Côte du Py Les Strates",
+      "type": "wine",
+      "brand_id": "brand_trenel",
+      "supplier_id": "sup_chapoutier",
+      "producer_id": "prod_trenel",
+      "active": true,
+      "wine_attributes": {
+        "appellation": "Morgon",
+        "cuvee": "Les Strates",
+        "color": "rouge",
+        "region": "Beaujolais",
+        "gamme": "prestige",
+        "grapes": [
+          "Gamay"
+        ],
+        "certifications": [
+          "demeter",
+          "bio"
+        ]
+      },
+      "variants": [
+        {
+          "id": "var_trenel_130_2023_75",
+          "vintage": 2023,
+          "format_cl": 75,
+          "availability": "in_stock",
+          "price_ht_36": 1410,
+          "price_ht_78": 1360,
+          "price_ht_156": 1325
+        },
+        {
+          "id": "var_trenel_130_2024_75",
+          "vintage": 2024,
+          "format_cl": 75,
+          "availability": "in_stock",
+          "price_ht_36": 1410,
+          "price_ht_78": 1360,
+          "price_ht_156": 1325,
+          "millesime_a_venir": true
+        }
+      ]
+    },
+    {
+      "id": "prod_trenel_131",
+      "name": "Juliénas Les Captans",
+      "type": "wine",
+      "brand_id": "brand_trenel",
+      "supplier_id": "sup_chapoutier",
+      "producer_id": "prod_trenel",
+      "active": true,
+      "wine_attributes": {
+        "appellation": "Juliénas",
+        "cuvee": "Les Captans",
+        "color": "rouge",
+        "region": "Beaujolais",
+        "gamme": "prestige",
+        "grapes": [
+          "Gamay"
+        ]
+      },
+      "variants": [
+        {
+          "id": "var_trenel_131_2020_75",
+          "vintage": 2020,
+          "format_cl": 75,
+          "availability": "in_stock",
+          "price_ht_36": 1370,
+          "price_ht_78": 1320,
+          "price_ht_156": 1290
+        },
+        {
+          "id": "var_trenel_131_2020_150",
+          "vintage": 2020,
+          "format_cl": 150,
+          "availability": "in_stock",
+          "price_ht_36": null,
+          "price_ht_78": null,
+          "price_ht_156": 2725
+        }
+      ]
+    },
+    {
+      "id": "prod_trenel_132",
+      "name": "Fleurie La Madone",
+      "type": "wine",
+      "brand_id": "brand_trenel",
+      "supplier_id": "sup_chapoutier",
+      "producer_id": "prod_trenel",
+      "active": true,
+      "wine_attributes": {
+        "appellation": "Fleurie",
+        "cuvee": "La Madone",
+        "color": "rouge",
+        "region": "Beaujolais",
+        "gamme": "prestige",
+        "grapes": [
+          "Gamay"
+        ]
+      },
+      "variants": [
+        {
+          "id": "var_trenel_132_2023_75",
+          "vintage": 2023,
+          "format_cl": 75,
+          "availability": "in_stock",
+          "price_ht_36": 1100,
+          "price_ht_78": 1065,
+          "price_ht_156": 1035,
+          "millesime_a_venir": true
+        },
+        {
+          "id": "var_trenel_132_2023_150",
+          "vintage": 2023,
+          "format_cl": 150,
+          "availability": "in_stock",
+          "price_ht_36": null,
+          "price_ht_78": null,
+          "price_ht_156": 2220,
+          "millesime_a_venir": true
+        },
+        {
+          "id": "var_trenel_132_2023_300",
+          "vintage": 2023,
+          "format_cl": 300,
+          "availability": "in_stock",
+          "price_ht_36": null,
+          "price_ht_78": null,
+          "price_ht_156": 7400,
+          "millesime_a_venir": true
+        }
+      ]
+    },
+    {
+      "id": "prod_trenel_133",
+      "name": "Moulin-à-Vent",
+      "type": "wine",
+      "brand_id": "brand_trenel",
+      "supplier_id": "sup_chapoutier",
+      "producer_id": "prod_trenel",
+      "active": true,
+      "wine_attributes": {
+        "appellation": "Moulin-à-Vent",
+        "cuvee": "Moulin-à-Vent",
+        "color": "rouge",
+        "region": "Beaujolais",
+        "gamme": "tradition",
+        "grapes": [
+          "Gamay"
+        ]
+      },
+      "variants": [
+        {
+          "id": "var_trenel_133_2024_75",
+          "vintage": 2024,
+          "format_cl": 75,
+          "availability": "in_stock",
+          "price_ht_36": 1000,
+          "price_ht_78": 965,
+          "price_ht_156": 940
+        },
+        {
+          "id": "var_trenel_133_2025_75",
+          "vintage": 2025,
+          "format_cl": 75,
+          "availability": "in_stock",
+          "price_ht_36": 1010,
+          "price_ht_78": 975,
+          "price_ht_156": 950,
+          "millesime_a_venir": true
+        }
+      ]
+    },
+    {
+      "id": "prod_trenel_134",
+      "name": "Saint-Amour",
+      "type": "wine",
+      "brand_id": "brand_trenel",
+      "supplier_id": "sup_chapoutier",
+      "producer_id": "prod_trenel",
+      "active": true,
+      "wine_attributes": {
+        "appellation": "Saint-Amour",
+        "cuvee": "Saint-Amour",
+        "color": "rouge",
+        "region": "Beaujolais",
+        "gamme": "tradition",
+        "grapes": [
+          "Gamay"
+        ]
+      },
+      "variants": [
+        {
+          "id": "var_trenel_134_2024_375",
+          "vintage": 2024,
+          "format_cl": 37.5,
+          "availability": "in_stock",
+          "price_ht_36": 490,
+          "price_ht_78": 475,
+          "price_ht_156": 465
+        },
+        {
+          "id": "var_trenel_134_2024_75",
+          "vintage": 2024,
+          "format_cl": 75,
+          "availability": "in_stock",
+          "price_ht_36": 875,
+          "price_ht_78": 844,
+          "price_ht_156": 825
+        },
+        {
+          "id": "var_trenel_134_2025_375",
+          "vintage": 2025,
+          "format_cl": 37.5,
+          "availability": "in_stock",
+          "price_ht_36": 490,
+          "price_ht_78": 475,
+          "price_ht_156": 465,
+          "millesime_a_venir": true
+        },
+        {
+          "id": "var_trenel_134_2025_75",
+          "vintage": 2025,
+          "format_cl": 75,
+          "availability": "in_stock",
+          "price_ht_36": 875,
+          "price_ht_78": 844,
+          "price_ht_156": 825,
+          "millesime_a_venir": true
+        }
+      ]
+    }
+  ]
+}

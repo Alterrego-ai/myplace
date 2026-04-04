@@ -1,0 +1,1155 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Carte Cadeau — Sauf Imprévu</title>
+<style>
+/* ── Reset & Base ── */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --primary:#3D6B8C;--primary-light:#5a8aab;--primary-dark:#2a4f6b;
+  --accent:#c8a96e;--accent-soft:rgba(200,169,110,0.15);--accent-glow:rgba(200,169,110,0.3);
+  --bg:#f7f8fa;--bg-card:#ffffff;--bg-subtle:#f0f3f7;
+  --text:#1a2332;--text-secondary:#5a6a7e;--text-muted:#8a9ab0;
+  --border:rgba(0,0,0,0.07);--radius:16px;--radius-sm:12px;
+  --primary-gradient:linear-gradient(135deg,var(--primary),var(--primary-light));
+  --font:-apple-system,BlinkMacSystemFont,'Inter','SF Pro Display','Segoe UI',sans-serif;
+  --safe-top:env(safe-area-inset-top,0px);--safe-bottom:env(safe-area-inset-bottom,0px);
+}
+[data-theme="dark"],body[data-theme="dark"]{
+  --bg:#0f1923;--bg-card:#1a2636;--bg-subtle:#212f3f;
+  --text:#eef2f7;--text-secondary:#8fa3bb;--text-muted:#5a7288;
+  --border:rgba(255,255,255,0.07);
+}
+@media(prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --bg:#0f1923;--bg-card:#1a2636;--bg-subtle:#212f3f;
+    --text:#eef2f7;--text-secondary:#8fa3bb;--text-muted:#5a7288;
+    --border:rgba(255,255,255,0.07);
+  }
+}
+html{font-family:var(--font);background:var(--bg);color:var(--text);-webkit-font-smoothing:antialiased;overflow-x:hidden}
+body{min-height:100dvh;display:flex;flex-direction:column}
+a{color:var(--primary);text-decoration:none}
+input,textarea,button{font-family:inherit;outline:none}
+
+/* ── Animations ── */
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+@keyframes shimmer{0%{background-position:-200% 0}100%{background-position:200% 0}}
+@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.05)}}
+@keyframes cardFloat{0%,100%{transform:translateY(0) rotate(-1deg)}50%{transform:translateY(-6px) rotate(0.5deg)}}
+@keyframes confetti-fall{0%{transform:translateY(-10px) rotate(0);opacity:1}100%{transform:translateY(60px) rotate(360deg);opacity:0}}
+@keyframes glow{0%,100%{box-shadow:0 4px 20px rgba(200,169,110,0.2)}50%{box-shadow:0 4px 30px rgba(200,169,110,0.4)}}
+@keyframes wiggle{0%,100%{transform:rotate(0deg)}25%{transform:rotate(-2deg)}75%{transform:rotate(2deg)}}
+
+.fade-up{animation:fadeUp 0.5s ease both}
+.fade-up-1{animation-delay:0.05s}.fade-up-2{animation-delay:0.1s}.fade-up-3{animation-delay:0.15s}
+.fade-up-4{animation-delay:0.2s}.fade-up-5{animation-delay:0.25s}
+
+/* ── Layout ── */
+.gc-page{max-width:480px;margin:0 auto;padding:0 20px;width:100%;flex:1;display:flex;flex-direction:column}
+.gc-header{
+  padding:28px 20px 16px;padding-top:calc(var(--safe-top) + 28px);text-align:center;
+  background:linear-gradient(180deg,rgba(200,169,110,0.08) 0%,transparent 100%);
+  border-radius:0 0 24px 24px;margin:0 -20px 4px;
+}
+.gc-header-emoji{font-size:40px;margin-bottom:6px;animation:wiggle 2s ease-in-out infinite}
+.gc-header-logo{width:36px;height:36px;border-radius:8px;object-fit:cover;border:1.5px solid var(--border);display:none}
+.gc-header-title{font-size:14px;font-weight:700;color:var(--accent);margin-top:4px;letter-spacing:0.06em;text-transform:uppercase}
+
+/* ── Steps indicator ── */
+.gc-steps{display:flex;align-items:center;justify-content:center;gap:6px;padding:16px 0 24px}
+.gc-step-dot{width:8px;height:8px;border-radius:50%;background:var(--border);transition:all 0.4s ease}
+.gc-step-dot.active{background:var(--accent);width:24px;border-radius:4px}
+.gc-step-dot.done{background:var(--accent)}
+
+/* ── Step container ── */
+.gc-step{display:none;flex:1;flex-direction:column;animation:fadeUp 0.35s ease both}
+.gc-step.visible{display:flex}
+.gc-step-title{font-size:26px;font-weight:800;letter-spacing:-0.02em;margin-bottom:6px}
+.gc-step-sub{font-size:15px;color:var(--text-secondary);margin-bottom:28px;line-height:1.5;font-style:italic}
+
+/* ── Amount step ── */
+.gc-amount-presets{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:20px}
+.gc-amount-btn{
+  background:var(--bg-card);border:2px solid var(--border);border-radius:var(--radius);
+  padding:20px 8px;text-align:center;cursor:pointer;transition:all 0.25s ease;
+  font-size:22px;font-weight:800;color:var(--text);position:relative;overflow:hidden;
+  box-shadow:0 2px 8px rgba(0,0,0,0.04);
+}
+.gc-amount-btn:active{transform:scale(0.94)}
+.gc-amount-btn.selected{
+  border-color:var(--accent);background:linear-gradient(135deg,rgba(200,169,110,0.1),rgba(200,169,110,0.05));
+  box-shadow:0 4px 20px rgba(200,169,110,0.2);
+  transform:scale(1.03);
+}
+
+/* ── Amount slider ── */
+.gc-amount-slider-wrap{text-align:center;padding:8px 0 4px}
+.gc-amount-display{
+  font-size:36px;font-weight:800;color:var(--accent);margin-bottom:2px;
+  letter-spacing:-0.02em;transition:transform 0.15s;
+}
+.gc-amount-feeling{
+  font-size:14px;font-weight:600;color:var(--text-secondary);font-style:italic;
+  margin-bottom:14px;transition:opacity 0.2s;min-height:20px;
+}
+.gc-amount-slider{
+  -webkit-appearance:none;appearance:none;width:100%;height:6px;
+  border-radius:3px;background:linear-gradient(90deg,var(--accent) 0%,var(--bg-subtle) 0%);
+  outline:none;cursor:pointer;
+}
+.gc-amount-slider::-webkit-slider-thumb{
+  -webkit-appearance:none;width:28px;height:28px;border-radius:50%;
+  background:var(--bg-card);border:3px solid var(--accent);
+  box-shadow:0 2px 10px rgba(200,169,110,0.3);cursor:pointer;transition:transform 0.15s;
+}
+.gc-amount-slider::-webkit-slider-thumb:active{transform:scale(1.2)}
+.gc-amount-slider::-moz-range-thumb{
+  width:28px;height:28px;border-radius:50%;border:3px solid var(--accent);
+  background:var(--bg-card);box-shadow:0 2px 10px rgba(200,169,110,0.3);cursor:pointer;
+}
+.gc-amount-range{display:flex;justify-content:space-between;margin-top:6px;font-size:11px;color:var(--text-muted)}
+
+/* ── Color picker ── */
+.gc-color-picker{
+  display:flex;gap:12px;justify-content:center;flex-wrap:wrap;padding:8px 0 8px;
+}
+.gc-color-swatch{
+  width:44px;height:44px;border-radius:50%;cursor:pointer;
+  border:3px solid transparent;transition:all 0.25s;
+  box-shadow:0 2px 8px rgba(0,0,0,0.1);
+}
+.gc-color-swatch:active{transform:scale(0.9)}
+.gc-color-swatch.selected{
+  border-color:var(--text);transform:scale(1.15);
+  box-shadow:0 4px 16px rgba(0,0,0,0.2);
+}
+.gc-color-name{
+  text-align:center;font-size:13px;font-weight:600;color:var(--text-secondary);
+  margin-bottom:20px;font-style:italic;min-height:20px;
+}
+
+/* Card backgrounds by color */
+.card-bg-gold{background:linear-gradient(135deg,#c8a96e,#e8d5a8)}
+.card-bg-dark{background:linear-gradient(135deg,#1a1a25,#2a2a35)}
+.card-bg-wine{background:linear-gradient(135deg,#6b2d5b,#4a1942)}
+.card-bg-navy{background:linear-gradient(135deg,#2a4a6b,#3D6B8C)}
+.card-bg-forest{background:linear-gradient(135deg,#2d5a3d,#3d7a52)}
+.card-bg-rose{background:linear-gradient(135deg,#c47a7a,#d4a0a0)}
+.card-bg-coral{background:linear-gradient(135deg,#d4836b,#e8a890)}
+.card-bg-slate{background:linear-gradient(135deg,#5a6a7e,#8a9ab0)}
+
+/* ── Recipient step ── */
+.gc-field{margin-bottom:16px}
+.gc-field label{display:block;font-size:13px;font-weight:700;color:var(--text);margin-bottom:8px;letter-spacing:0.01em}
+.gc-field input,.gc-field textarea{
+  width:100%;background:var(--bg-card);border:2px solid var(--border);border-radius:var(--radius);
+  padding:14px 16px;color:var(--text);font-size:15px;transition:all 0.25s;
+  box-shadow:0 1px 4px rgba(0,0,0,0.03);
+}
+.gc-field input:focus,.gc-field textarea:focus{border-color:var(--accent);box-shadow:0 4px 16px rgba(200,169,110,0.12)}
+.gc-field input::placeholder,.gc-field textarea::placeholder{color:var(--text-muted)}
+.gc-field textarea{resize:none;min-height:80px;line-height:1.5}
+.gc-field-hint{font-size:11px;color:var(--text-muted);margin-top:4px}
+.gc-from-row{display:flex;gap:10px}
+.gc-from-row .gc-field{flex:1}
+
+/* ── Field header + Inspire ── */
+.gc-field-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px}
+.gc-field-header label{margin-bottom:0}
+.gc-inspire-btn{
+  background:none;border:1.5px solid var(--primary);border-radius:16px;
+  padding:5px 12px;font-size:11px;font-weight:600;color:var(--primary);
+  cursor:pointer;transition:all 0.2s;
+}
+.gc-inspire-btn:active{transform:scale(0.95);background:rgba(61,107,140,0.1)}
+
+/* ── Occasion grid ── */
+.gc-occasion-grid{
+  display:grid;grid-template-columns:auto auto 1fr;gap:8px;
+}
+.gc-occasion-btn{
+  padding:10px 12px;background:var(--bg-card);border:1.5px solid var(--border);
+  border-radius:var(--radius-sm);font-size:12px;font-weight:500;color:var(--text-secondary);
+  cursor:pointer;transition:all 0.25s;text-align:center;white-space:nowrap;
+  box-shadow:0 1px 4px rgba(0,0,0,0.03);
+}
+.gc-occasion-btn:active{transform:scale(0.96)}
+.gc-occasion-btn.selected{
+  border-color:var(--accent);background:rgba(200,169,110,0.08);color:var(--accent);
+}
+.gc-occasion-small{font-size:12px;color:var(--text-muted);font-weight:500}
+.gc-occasion-small.selected{color:var(--text-secondary);border-color:var(--text-muted);background:var(--bg-subtle)}
+.gc-occasion-combo{display:flex;align-items:center;justify-content:center;gap:6px}
+.gc-occasion-arrow{font-size:10px;opacity:0.6}
+.gc-occasion-story-btn{
+  grid-column:1 / -1;font-style:italic;
+  border:1.5px solid var(--accent);color:var(--accent);
+  background:linear-gradient(135deg,rgba(200,169,110,0.06),rgba(200,169,110,0.02));
+  padding:14px 12px;font-size:13px;
+}
+.gc-occasion-story-btn:active{background:rgba(200,169,110,0.12)}
+
+/* ── Occasion picker modal ── */
+.gc-occasion-overlay{
+  display:none;position:fixed;inset:0;z-index:1000;
+  background:rgba(0,0,0,0.5);backdrop-filter:blur(6px);
+  align-items:flex-end;justify-content:center;padding:0;
+  animation:fadeUp 0.25s ease both;
+}
+.gc-occasion-overlay.visible{display:flex}
+.gc-occasion-modal{
+  background:var(--bg-card);border-radius:var(--radius) var(--radius) 0 0;
+  padding:20px 0 calc(var(--safe-bottom) + 12px);width:100%;max-width:480px;
+  max-height:70vh;overflow-y:auto;
+}
+.gc-occasion-modal-title{
+  font-size:16px;font-weight:700;text-align:center;padding:0 20px 16px;
+  color:var(--text);border-bottom:1px solid var(--border);
+}
+.gc-occasion-list{padding:8px 0}
+.gc-occasion-item{
+  padding:14px 24px;font-size:15px;color:var(--text);cursor:pointer;
+  transition:background 0.15s;
+}
+.gc-occasion-item:active{background:var(--bg-subtle)}
+.gc-occasion-item.selected{color:var(--primary);font-weight:600}
+.gc-occasion-divider{height:1px;padding:0;margin:4px 24px;background:var(--border);cursor:default}
+.gc-occasion-story-item{color:var(--primary);font-weight:600;font-style:italic}
+
+/* ── Story modal ── */
+.gc-story-overlay{
+  display:none;position:fixed;inset:0;z-index:1000;
+  background:rgba(0,0,0,0.6);backdrop-filter:blur(8px);
+  align-items:center;justify-content:center;padding:20px;
+  animation:fadeUp 0.3s ease both;
+}
+.gc-story-overlay.visible{display:flex}
+.gc-story-modal{
+  background:var(--bg-card);border-radius:var(--radius);padding:32px 24px;
+  max-width:440px;width:100%;position:relative;
+  box-shadow:0 20px 60px rgba(0,0,0,0.3);
+}
+.gc-story-close{
+  position:absolute;top:12px;right:16px;background:none;border:none;
+  font-size:24px;color:var(--text-muted);cursor:pointer;padding:4px;
+}
+.gc-story-icon{font-size:40px;text-align:center;margin-bottom:12px}
+.gc-story-title{
+  font-size:22px;font-weight:700;text-align:center;margin-bottom:8px;color:var(--text);
+}
+.gc-story-intro{
+  font-size:13px;line-height:1.7;color:var(--text-secondary);text-align:center;
+  margin-bottom:20px;font-style:italic;
+}
+.gc-story-textarea{
+  width:100%;min-height:120px;background:var(--bg-subtle);border:1.5px solid var(--border);
+  border-radius:var(--radius-sm);padding:16px;color:var(--text);font-size:15px;
+  line-height:1.6;resize:none;transition:border-color 0.2s;
+}
+.gc-story-textarea:focus{border-color:var(--primary)}
+.gc-story-textarea::placeholder{color:var(--text-muted);font-style:italic}
+
+/* ── Delivery step ── */
+.gc-delivery-methods{display:flex;flex-direction:column;gap:10px;margin-bottom:20px}
+.gc-delivery-opt{
+  display:flex;align-items:center;gap:14px;padding:16px;
+  background:var(--bg-subtle);border:1.5px solid var(--border);border-radius:var(--radius-sm);
+  cursor:pointer;transition:all 0.2s;
+}
+.gc-delivery-opt:active{transform:scale(0.98)}
+.gc-delivery-opt.selected{border-color:var(--primary);background:rgba(61,107,140,0.08)}
+.gc-delivery-opt .icon{font-size:24px;width:36px;text-align:center;flex-shrink:0}
+.gc-delivery-opt .info{flex:1}
+.gc-delivery-opt .info .name{font-size:14px;font-weight:600}
+.gc-delivery-opt .info .desc{font-size:12px;color:var(--text-muted);margin-top:2px}
+.gc-delivery-opt .check{width:20px;height:20px;border-radius:50%;border:2px solid var(--border);display:flex;align-items:center;justify-content:center;transition:all 0.2s;flex-shrink:0}
+.gc-delivery-opt.selected .check{border-color:var(--primary);background:var(--primary)}
+.gc-delivery-opt.selected .check::after{content:'✓';color:var(--bg);font-size:12px;font-weight:700}
+
+.gc-schedule{margin-top:4px}
+.gc-schedule-toggle{
+  display:flex;align-items:center;gap:10px;padding:14px 16px;
+  background:var(--bg-subtle);border:1.5px solid var(--border);border-radius:var(--radius-sm);
+  cursor:pointer;transition:all 0.2s;
+}
+.gc-schedule-toggle.active{border-color:var(--primary)}
+.gc-schedule-toggle .switch,.gc-teasing-toggle .switch{
+  width:40px;height:22px;border-radius:11px;background:var(--border);
+  position:relative;transition:background 0.2s;flex-shrink:0;
+}
+.gc-schedule-toggle .switch::after,.gc-teasing-toggle .switch::after{
+  content:'';position:absolute;top:2px;left:2px;width:18px;height:18px;
+  border-radius:50%;background:#fff;transition:transform 0.2s;
+}
+.gc-schedule-toggle.active .switch,.gc-teasing-toggle.active .switch{background:var(--primary)}
+.gc-schedule-toggle.active .switch::after,.gc-teasing-toggle.active .switch::after{transform:translateX(18px)}
+.gc-schedule-date{margin-top:10px;display:none}
+.gc-schedule-date.show{display:block}
+.gc-schedule-date input[type="date"],.gc-schedule-date input[type="datetime-local"]{
+  width:100%;background:var(--bg-subtle);border:1.5px solid var(--border);border-radius:var(--radius-sm);
+  padding:14px 16px;color:var(--text);font-size:15px;
+}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]) .gc-schedule-date input{color-scheme:dark}}
+[data-theme="dark"] .gc-schedule-date input{color-scheme:dark}
+
+.gc-teasing{margin-top:16px}
+.gc-teasing-toggle{
+  display:flex;align-items:center;gap:10px;padding:14px 16px;
+  background:var(--bg-subtle);border:1.5px solid var(--border);border-radius:var(--radius-sm);
+  cursor:pointer;transition:all 0.2s;
+}
+.gc-teasing-toggle.active{border-color:var(--primary)}
+.gc-teasing-info{font-size:12px;color:var(--text-muted);margin-top:6px;padding:0 4px;line-height:1.5}
+
+/* ── Preview card ── */
+.gc-preview-wrap{
+  perspective:800px;display:flex;justify-content:center;margin:10px 0 24px;
+}
+.gc-preview-card{
+  width:320px;min-height:200px;border-radius:var(--radius);overflow:hidden;
+  position:relative;animation:cardFloat 4s ease-in-out infinite;
+  box-shadow:0 20px 60px rgba(0,0,0,0.4),0 0 30px var(--accent-glow);
+}
+.gc-preview-card .bg{position:absolute;inset:0;z-index:0}
+.gc-preview-card .content{position:relative;z-index:1;padding:20px;display:flex;flex-direction:column;min-height:200px}
+.gc-preview-header{display:flex;justify-content:space-between;align-items:center}
+.gc-preview-identity{display:flex;align-items:center;gap:8px}
+.gc-preview-logo{width:32px;height:32px;border-radius:6px;object-fit:cover;border:1px solid rgba(255,255,255,0.2)}
+.gc-preview-brand{font-size:12px;font-weight:700;color:#fff;text-transform:uppercase;letter-spacing:0.06em;text-shadow:0 1px 4px rgba(0,0,0,0.3)}
+.gc-preview-amount{font-size:36px;font-weight:800;color:#fff;letter-spacing:-0.02em;text-shadow:0 2px 10px rgba(0,0,0,0.3)}
+.gc-preview-amount .eur{font-size:20px;font-weight:600;margin-left:2px;opacity:0.7}
+.gc-preview-center{flex:1}
+.gc-preview-to{font-size:13px;color:rgba(255,255,255,0.8);margin-top:4px}
+.gc-preview-msg{font-size:11px;color:rgba(255,255,255,0.5);margin-top:4px;font-style:italic;max-height:30px;overflow:hidden}
+.gc-preview-footer{display:flex;justify-content:space-between;align-items:flex-end}
+.gc-preview-from{font-size:11px;color:rgba(255,255,255,0.5)}
+.gc-preview-badge{
+  font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.14em;
+  padding:6px 14px;border-radius:5px;
+  background:rgba(255,255,255,0.15);backdrop-filter:blur(6px);color:#fff;
+}
+.gc-preview-card.color-gold .gc-preview-badge{background:rgba(0,0,0,0.2)}
+
+/* ── Summary step ── */
+.gc-summary{display:flex;flex-direction:column;gap:14px;margin-bottom:24px}
+.gc-summary-row{
+  display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--border);
+}
+.gc-summary-row:last-child{border:none}
+.gc-summary-label{font-size:13px;color:var(--text-muted)}
+.gc-summary-value{font-size:14px;font-weight:600;text-align:right;max-width:60%}
+
+/* ── Buttons ── */
+.gc-btn-primary{
+  width:100%;padding:18px;border:none;border-radius:var(--radius);
+  font-size:16px;font-weight:700;cursor:pointer;transition:all 0.25s;
+  background:linear-gradient(135deg,var(--primary),var(--primary-light,#5a8aab));
+  color:#fff;letter-spacing:0.02em;position:relative;overflow:hidden;
+  box-shadow:0 4px 16px rgba(61,107,140,0.3);
+}
+.gc-btn-primary:hover{transform:translateY(-1px);box-shadow:0 6px 24px rgba(61,107,140,0.35)}
+.gc-btn-primary:active{transform:scale(0.98)}
+.gc-btn-primary:disabled{opacity:0.4;pointer-events:none}
+.gc-btn-primary.loading{pointer-events:none}
+.gc-btn-primary.loading::after{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,0.3),transparent);
+  background-size:200% 100%;animation:shimmer 1.5s infinite;
+}
+
+.gc-btn-secondary{
+  width:auto;padding:14px 18px;border:none;border-radius:var(--radius);
+  background:transparent;color:var(--text-muted);font-size:13px;font-weight:600;
+  cursor:pointer;transition:all 0.2s;margin-top:0;
+}
+.gc-btn-secondary:active{transform:scale(0.97);color:var(--text-secondary)}
+
+.gc-btn-row{padding:8px 0 calc(var(--safe-bottom) + 16px);margin-top:auto;display:flex;gap:10px}
+.gc-btn-row .gc-btn-primary{flex:1}
+.gc-btn-row .gc-btn-secondary{flex:0 0 auto;width:auto;margin-top:0;padding:14px 18px;order:-1}
+
+/* ── Success screen ── */
+.gc-success{display:none;flex-direction:column;align-items:center;justify-content:center;text-align:center;flex:1;padding:40px 20px}
+.gc-success.visible{display:flex}
+.gc-success-icon{font-size:64px;margin-bottom:20px;animation:pulse 2s ease infinite}
+.gc-success-title{font-size:28px;font-weight:700;margin-bottom:8px}
+.gc-success-sub{font-size:14px;color:var(--text-secondary);line-height:1.6;max-width:300px}
+.gc-confetti{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:999;overflow:hidden}
+.gc-confetti span{
+  position:absolute;top:-10px;width:8px;height:8px;border-radius:2px;
+  animation:confetti-fall 2.5s ease-out forwards;
+}
+
+/* ── Quick mode ── */
+.gc-quick-mode{
+  display:flex;align-items:center;gap:8px;padding:10px 16px;
+  background:rgba(61,107,140,0.1);border-radius:20px;margin-bottom:20px;
+  cursor:pointer;transition:all 0.2s;
+}
+.gc-quick-mode .bolt{font-size:14px}
+.gc-quick-mode .txt{font-size:12px;font-weight:600;color:var(--primary)}
+.gc-quick-mode .arrow{margin-left:auto;color:var(--primary);font-size:14px}
+</style>
+</head>
+<body>
+
+<div class="gc-page" id="gcPage">
+  <!-- Header -->
+  <div class="gc-header fade-up">
+    <div class="gc-header-emoji">🎁</div>
+    <div class="gc-header-title">Carte Cadeau — Sauf Imprévu</div>
+  </div>
+
+  <!-- Steps indicator -->
+  <div class="gc-steps fade-up fade-up-1" id="gcSteps">
+    <div class="gc-step-dot active" data-step="0"></div>
+    <div class="gc-step-dot" data-step="1"></div>
+    <div class="gc-step-dot" data-step="2"></div>
+    <div class="gc-step-dot" data-step="3"></div>
+    <div class="gc-step-dot" data-step="4"></div>
+  </div>
+
+  <!-- STEP 0 : Montant -->
+  <div class="gc-step visible" id="step0">
+    <div class="gc-step-title fade-up fade-up-2">Combien souhaitez-vous offrir ?</div>
+    <div class="gc-step-sub fade-up fade-up-3">Quel que soit le montant, c'est le geste qui compte...</div>
+
+    <div class="gc-field fade-up fade-up-2">
+      <label>Pour quelle occasion ?</label>
+      <div class="gc-occasion-grid">
+        <div class="gc-occasion-btn gc-occasion-small selected" data-occasion="none" onclick="pickQuickOccasion(this)">Juste pour offrir</div>
+        <div class="gc-occasion-btn gc-occasion-small" data-occasion="self" onclick="pickQuickOccasion(this)">🙂 Pour moi</div>
+        <div class="gc-occasion-btn gc-occasion-combo" data-occasion="special" onclick="openOccasionPicker()">🎉 Occasion spéciale <span class="gc-occasion-arrow">&#9662;</span></div>
+        <div class="gc-occasion-btn gc-occasion-story-btn" data-occasion="story" onclick="pickQuickOccasion(this)">💝 J'ai une histoire à raconter...</div>
+      </div>
+    </div>
+
+    <div class="gc-amount-presets fade-up fade-up-3">
+      <div class="gc-amount-btn" data-amount="50" onclick="selectAmount(50,this)">50€</div>
+      <div class="gc-amount-btn selected" data-amount="100" onclick="selectAmount(100,this)">100€</div>
+      <div class="gc-amount-btn" data-amount="150" onclick="selectAmount(150,this)">150€</div>
+      <div class="gc-amount-btn" data-amount="250" onclick="selectAmount(250,this)">250€</div>
+    </div>
+
+    <div class="gc-amount-slider-wrap fade-up fade-up-4">
+      <div class="gc-amount-display" id="amountDisplay">100 €</div>
+      <div class="gc-amount-feeling" id="amountFeeling">Généreux</div>
+      <input type="range" id="amountSlider" class="gc-amount-slider" min="50" max="250" step="5" value="100" oninput="slideAmount(this)">
+      <div class="gc-amount-range"><span>50 €</span><span>250 €</span></div>
+    </div>
+
+    <div class="gc-btn-row">
+      <button class="gc-btn-primary fade-up fade-up-5" onclick="nextStep()">C'est parti !</button>
+    </div>
+  </div>
+
+  <!-- STEP 1 : Design -->
+  <div class="gc-step" id="step1">
+    <div class="gc-step-title">Quelle allure pour votre cadeau ?</div>
+    <div class="gc-step-sub">L'écrin compte autant que l'attention</div>
+
+    <!-- Live preview -->
+    <div class="gc-preview-wrap">
+      <div class="gc-preview-card" id="previewCard">
+        <div class="bg card-bg-gold" id="previewBg"></div>
+        <div class="content">
+          <div class="gc-preview-header">
+            <div class="gc-preview-identity">
+              <img src="https://ciss-media-dev.s3.fr-par.scw.cloud/pointofsales/47408/15-vauban-brc-187.png" class="gc-preview-logo" alt="">
+              <div class="gc-preview-brand">Sauf Imprévu</div>
+            </div>
+            <div class="gc-preview-amount" id="previewAmount">100<span class="eur">€</span></div>
+          </div>
+          <div class="gc-preview-center"></div>
+          <div class="gc-preview-footer">
+            <div class="gc-preview-from" id="previewFrom"></div>
+            <div class="gc-preview-badge">Carte Cadeau</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="gc-color-picker">
+      <div class="gc-color-swatch selected" data-color="gold" style="background:linear-gradient(135deg,#c8a96e,#e8d5a8)" onclick="selectColor(this)"></div>
+      <div class="gc-color-swatch" data-color="dark" style="background:linear-gradient(135deg,#1a1a25,#2a2a35)" onclick="selectColor(this)"></div>
+      <div class="gc-color-swatch" data-color="wine" style="background:linear-gradient(135deg,#6b2d5b,#4a1942)" onclick="selectColor(this)"></div>
+      <div class="gc-color-swatch" data-color="navy" style="background:linear-gradient(135deg,#2a4a6b,#3D6B8C)" onclick="selectColor(this)"></div>
+      <div class="gc-color-swatch" data-color="forest" style="background:linear-gradient(135deg,#2d5a3d,#3d7a52)" onclick="selectColor(this)"></div>
+      <div class="gc-color-swatch" data-color="rose" style="background:linear-gradient(135deg,#c47a7a,#d4a0a0)" onclick="selectColor(this)"></div>
+      <div class="gc-color-swatch" data-color="coral" style="background:linear-gradient(135deg,#d4836b,#e8a890)" onclick="selectColor(this)"></div>
+      <div class="gc-color-swatch" data-color="slate" style="background:linear-gradient(135deg,#5a6a7e,#8a9ab0)" onclick="selectColor(this)"></div>
+    </div>
+    <div class="gc-color-name" id="colorName">Or</div>
+
+    <div class="gc-btn-row">
+      <button class="gc-btn-primary" onclick="nextStep()">J'adore, on continue</button>
+      <button class="gc-btn-secondary" onclick="prevStep()">← Retour</button>
+    </div>
+  </div>
+
+  <!-- STEP 2 : Occasion + Destinataire + Message -->
+  <div class="gc-step" id="step2">
+    <div class="gc-step-title">Qui a cette chance ?</div>
+    <div class="gc-step-sub">Ajoutez votre touche personnelle</div>
+
+    <div class="gc-field">
+      <label>Nom du bénéficiaire</label>
+      <input type="text" id="recipientName" placeholder="Marie, Les Dupont, Maman..." oninput="updatePreview()">
+    </div>
+
+    <div class="gc-field">
+      <div class="gc-field-header"><label>Votre message</label><button type="button" class="gc-inspire-btn" onclick="inspireMessage()">✨ Inspirez-moi</button></div>
+      <textarea id="giftMessage" placeholder="Pour toi, avec toute mon affection..." oninput="updatePreview()"></textarea>
+    </div>
+
+    <div class="gc-from-row">
+      <div class="gc-field">
+        <label>De la part de</label>
+        <input type="text" id="senderName" placeholder="Votre nom, un surnom, Le Père Noël..." oninput="updatePreview()">
+      </div>
+    </div>
+
+    <div class="gc-btn-row">
+      <button class="gc-btn-primary" onclick="nextStep()">Plus qu'une étape !</button>
+      <button class="gc-btn-secondary" onclick="prevStep()">← Retour</button>
+    </div>
+  </div>
+
+  <!-- STEP 3 : Livraison -->
+  <div class="gc-step" id="step3">
+    <div class="gc-step-title">La touche finale</div>
+    <div class="gc-step-sub">Comment souhaitez-vous faire plaisir ?</div>
+
+    <div class="gc-delivery-methods">
+      <div class="gc-delivery-opt selected" data-method="email" onclick="selectDelivery(this)">
+        <div class="icon">✉️</div>
+        <div class="info"><div class="name">Par email</div><div class="desc">Réception instantanée dans sa boîte mail</div></div>
+        <div class="check"></div>
+      </div>
+      <div class="gc-delivery-opt" data-method="sms" onclick="selectDelivery(this)">
+        <div class="icon">💬</div>
+        <div class="info"><div class="name">Par SMS</div><div class="desc">Un lien magique par texto</div></div>
+        <div class="check"></div>
+      </div>
+      <div class="gc-delivery-opt" data-method="whatsapp" onclick="selectDelivery(this)">
+        <div class="icon">📱</div>
+        <div class="info"><div class="name">Par WhatsApp</div><div class="desc">Envoi direct dans la conversation</div></div>
+        <div class="check"></div>
+      </div>
+    </div>
+
+    <div class="gc-field" id="deliveryContact">
+      <label id="deliveryContactLabel">Email du destinataire</label>
+      <input type="email" id="deliveryInput" placeholder="marie@email.com">
+    </div>
+
+    <!-- Programmation -->
+    <div class="gc-schedule">
+      <div class="gc-schedule-toggle" id="scheduleToggle" onclick="toggleSchedule()">
+        <div>
+          <div style="font-size:14px;font-weight:600;">Programmer l'envoi</div>
+          <div style="font-size:12px;color:var(--text-muted);margin-top:2px">Choisir une date et heure</div>
+        </div>
+        <div class="switch"></div>
+      </div>
+      <div class="gc-schedule-date" id="scheduleDate">
+        <input type="datetime-local" id="scheduleDateInput">
+      </div>
+    </div>
+
+    <!-- Teasing -->
+    <div class="gc-teasing">
+      <div class="gc-teasing-toggle" id="teasingToggle" onclick="toggleTeasing()">
+        <div>
+          <div style="font-size:14px;font-weight:600;">Envoyer un teasing 🎁</div>
+          <div style="font-size:12px;color:var(--text-muted);margin-top:2px">Un message mystère avant le cadeau</div>
+        </div>
+        <div class="switch"></div>
+      </div>
+      <div class="gc-teasing-info" id="teasingInfo" style="display:none">Le destinataire recevra un message : <em>"Quelqu'un pense à toi… Un cadeau arrive bientôt chez Sauf Imprévu"</em></div>
+    </div>
+
+    <div class="gc-btn-row">
+      <button class="gc-btn-primary" onclick="nextStep()">On y est presque !</button>
+      <button class="gc-btn-secondary" onclick="prevStep()">← Retour</button>
+    </div>
+  </div>
+
+  <!-- STEP 4 : Récapitulatif & Paiement -->
+  <div class="gc-step" id="step4">
+    <div class="gc-step-title">Tout est parfait ?</div>
+    <div class="gc-step-sub">Un dernier coup d'œil avant de faire plaisir</div>
+
+    <!-- Preview card -->
+    <div class="gc-preview-wrap">
+      <div class="gc-preview-card" id="previewCardFinal">
+        <div class="bg card-bg-gold" id="previewBgFinal"></div>
+        <div class="content">
+          <div class="gc-preview-header">
+            <div class="gc-preview-identity">
+              <img src="https://ciss-media-dev.s3.fr-par.scw.cloud/pointofsales/47408/15-vauban-brc-187.png" class="gc-preview-logo" alt="">
+              <div class="gc-preview-brand">Sauf Imprévu</div>
+            </div>
+            <div class="gc-preview-amount" id="previewAmountFinal">100<span class="eur">€</span></div>
+          </div>
+          <div class="gc-preview-center"></div>
+          <div class="gc-preview-to" id="previewToFinal"></div>
+          <div class="gc-preview-msg" id="previewMsgFinal"></div>
+          <div class="gc-preview-footer">
+            <div class="gc-preview-from" id="previewFromFinal"></div>
+            <div class="gc-preview-badge">Carte Cadeau</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="gc-summary" id="gcSummary"></div>
+
+    <div class="gc-btn-row">
+      <button class="gc-btn-primary" id="payBtn" onclick="handlePayment()">
+        Offrir pour <span id="payAmount">100 €</span>
+      </button>
+      <button class="gc-btn-secondary" onclick="prevStep()">← Ajuster un détail</button>
+    </div>
+  </div>
+
+  <!-- Success screen -->
+  <div class="gc-success" id="successScreen">
+    <div class="gc-success-icon">🎉</div>
+    <div class="gc-success-title fade-up">Bravo, quel beau geste !</div>
+    <div class="gc-success-sub fade-up fade-up-1" id="successMsg">Votre carte cadeau est en route.</div>
+    <div class="gc-btn-row" style="width:100%;max-width:300px">
+      <button class="gc-btn-primary fade-up fade-up-2" onclick="location.reload()">Faire plaisir à quelqu'un d'autre</button>
+      <button class="gc-btn-secondary fade-up fade-up-3" onclick="window.close()">Fermer</button>
+    </div>
+  </div>
+</div>
+
+<!-- Occasion picker modal -->
+<div class="gc-occasion-overlay" id="occasionOverlay" onclick="closeOccasionIf(event)">
+  <div class="gc-occasion-modal">
+    <div class="gc-occasion-modal-title">Pour quelle occasion ?</div>
+    <div class="gc-occasion-list">
+      <div class="gc-occasion-item" data-occasion="birthday" onclick="pickOccasion(this)">🎂 Anniversaire</div>
+      <div class="gc-occasion-item" data-occasion="christmas" onclick="pickOccasion(this)">🎄 Noël</div>
+      <div class="gc-occasion-item" data-occasion="mothers" onclick="pickOccasion(this)">💐 Fête des mères</div>
+      <div class="gc-occasion-item" data-occasion="fathers" onclick="pickOccasion(this)">👔 Fête des pères</div>
+      <div class="gc-occasion-item" data-occasion="wedding" onclick="pickOccasion(this)">💍 Mariage</div>
+      <div class="gc-occasion-item" data-occasion="thanks" onclick="pickOccasion(this)">🙏 Remerciement</div>
+      <div class="gc-occasion-item" data-occasion="valentines" onclick="pickOccasion(this)">❤️ Saint-Valentin</div>
+      <div class="gc-occasion-item" data-occasion="housewarming" onclick="pickOccasion(this)">🏠 Crémaillère</div>
+      <div class="gc-occasion-item" data-occasion="retirement" onclick="pickOccasion(this)">🥂 Départ à la retraite</div>
+    </div>
+  </div>
+</div>
+
+<!-- Story modal -->
+<div class="gc-story-overlay" id="storyOverlay" onclick="closeStoryIf(event)">
+  <div class="gc-story-modal">
+    <button class="gc-story-close" onclick="closeStory()">&times;</button>
+    <div class="gc-story-icon">💝</div>
+    <div class="gc-story-title">Racontez-nous...</div>
+    <div class="gc-story-intro">Prenez un instant. Pourquoi ce cadeau ?<br>Qu'est-ce qui vous touche chez cette personne ?<br>Les émotions rendent les cadeaux uniques...</div>
+    <textarea id="storyInput" class="gc-story-textarea" placeholder="Mon meilleur ami m'a fait découvrir le vin il y a 10 ans. Aujourd'hui je voudrais lui offrir un moment pour qu'on se retrouve autour d'une belle bouteille..." oninput="updateStoryCount()"></textarea>
+    <button class="gc-btn-primary" onclick="confirmStory()">C'est dit, avec le cœur</button>
+  </div>
+</div>
+
+<script>
+// ── State ──
+var state = {
+  step: 0,
+  amount: 100,
+  design: 'gold',
+  recipientName: '',
+  message: '',
+  senderName: '',
+  delivery: 'email',
+  contact: '',
+  scheduled: false,
+  scheduleDate: '',
+  teasing: false,
+  occasion: 'none',
+  story: ''
+};
+
+// ── Amount ──
+function selectAmount(val, el) {
+  state.amount = val;
+  document.querySelectorAll('.gc-amount-btn').forEach(function(b) { b.classList.remove('selected'); });
+  el.classList.add('selected');
+  syncSlider(val);
+}
+
+var amountFeelings = [
+  [50, 'Attentionné'], [80, 'Généreux'],
+  [120, 'Grandiose'], [200, 'Inoubliable'], [250, 'Exceptionnel']
+];
+
+function getFeeling(v) {
+  var f = amountFeelings[0][1];
+  for (var i = 0; i < amountFeelings.length; i++) {
+    if (v >= amountFeelings[i][0]) f = amountFeelings[i][1];
+  }
+  return f;
+}
+
+function slideAmount(slider) {
+  var v = parseInt(slider.value);
+  state.amount = v;
+  document.getElementById('amountDisplay').textContent = v + ' €';
+  document.getElementById('amountFeeling').textContent = getFeeling(v);
+  // Update fill gradient
+  var pct = ((v - 50) / (250 - 50)) * 100;
+  slider.style.background = 'linear-gradient(90deg,var(--accent) ' + pct + '%,var(--bg-subtle) ' + pct + '%)';
+  // Sync presets
+  document.querySelectorAll('.gc-amount-btn').forEach(function(b) {
+    b.classList.toggle('selected', parseInt(b.getAttribute('data-amount')) === v);
+  });
+  updatePreview();
+}
+
+function syncSlider(val) {
+  var slider = document.getElementById('amountSlider');
+  slider.value = val;
+  slideAmount(slider);
+}
+
+// ── Design (color) ──
+var colorNames = {
+  gold:'Or', dark:'Noir', wine:'Bordeaux', navy:'Marine',
+  forest:'Forêt', rose:'Rose', coral:'Corail', slate:'Ardoise'
+};
+
+function selectColor(el) {
+  document.querySelectorAll('.gc-color-swatch').forEach(function(c) { c.classList.remove('selected'); });
+  el.classList.add('selected');
+  state.design = el.getAttribute('data-color');
+  document.getElementById('colorName').textContent = colorNames[state.design] || state.design;
+  updatePreview();
+}
+
+// Keep selectDesign for occasion auto-select compatibility
+function selectDesign(el) { selectColor(el); }
+
+// ── Occasion ──
+var occasionMessages = {
+  self: '',
+  story: '',
+  none: 'Pour toi, avec toute mon affection...',
+  birthday: 'Joyeux anniversaire ! Offre-toi un moment inoubliable...',
+  christmas: 'Joyeux Noël ! Un cadeau qui se savoure...',
+  mothers: 'Bonne fête maman ! Tu mérites ce qu\'il y a de mieux...',
+  fathers: 'Bon fête papa ! Un moment rien que pour toi...',
+  wedding: 'Félicitations aux mariés ! Trinquez à votre bonheur...',
+  thanks: 'Merci du fond du cœur, ce cadeau est pour vous...',
+  valentines: 'Pour toi mon amour, avec tout mon cœur...',
+  housewarming: 'Bienvenue chez vous ! De quoi fêter ça dignement...',
+  retirement: 'Félicitations ! Vous l\'avez bien mérité...'
+};
+var occasionDesigns = {
+  birthday: 'coral', christmas: 'forest', valentines: 'rose',
+  wedding: 'gold', thanks: 'gold', none: 'gold', self: 'navy'
+};
+
+function selectOccasionUI(occasion) {
+  // Highlight the right grid button
+  document.querySelectorAll('.gc-occasion-btn').forEach(function(b) { b.classList.remove('selected'); });
+  var direct = document.querySelector('.gc-occasion-btn[data-occasion="' + occasion + '"]');
+  if (direct) {
+    direct.classList.add('selected');
+  } else {
+    // It's a specific occasion from the list → highlight "Occasion spéciale"
+    var combo = document.querySelector('.gc-occasion-combo');
+    combo.classList.add('selected');
+    combo.innerHTML = '🎉 ' + (occasionNames[occasion] || 'Occasion spéciale') + ' <span class="gc-occasion-arrow">&#9662;</span>';
+  }
+}
+
+var occasionNames = {
+  birthday:'Anniversaire', christmas:'Noël', mothers:'Fête des mères',
+  fathers:'Fête des pères', wedding:'Mariage', thanks:'Remerciement',
+  valentines:'Saint-Valentin', housewarming:'Crémaillère', retirement:'Départ à la retraite'
+};
+
+function applyOccasion() {
+  if (state.occasion === 'story') openStory();
+  if (state.occasion === 'self') state.recipientName = '';
+
+  var ta = document.getElementById('giftMessage');
+  if (!ta.value) ta.placeholder = occasionMessages[state.occasion] || occasionMessages.none;
+
+  var matchColor = occasionDesigns[state.occasion];
+  if (matchColor) {
+    var swatch = document.querySelector('.gc-color-swatch[data-color="' + matchColor + '"]');
+    if (swatch) selectColor(swatch);
+  }
+}
+
+function pickQuickOccasion(el) {
+  state.occasion = el.getAttribute('data-occasion');
+  // Reset combo label if switching away
+  var combo = document.querySelector('.gc-occasion-combo');
+  combo.innerHTML = '🎉 Occasion spéciale <span class="gc-occasion-arrow">&#9662;</span>';
+  selectOccasionUI(state.occasion);
+  applyOccasion();
+}
+
+function openOccasionPicker() {
+  document.querySelectorAll('.gc-occasion-item').forEach(function(it) {
+    it.classList.remove('selected');
+    if (it.getAttribute('data-occasion') === state.occasion) it.classList.add('selected');
+  });
+  document.getElementById('occasionOverlay').classList.add('visible');
+}
+
+function closeOccasionIf(e) {
+  if (e.target === document.getElementById('occasionOverlay')) {
+    document.getElementById('occasionOverlay').classList.remove('visible');
+  }
+}
+
+function pickOccasion(el) {
+  if (!el.getAttribute('data-occasion')) return;
+  state.occasion = el.getAttribute('data-occasion');
+  document.getElementById('occasionOverlay').classList.remove('visible');
+  selectOccasionUI(state.occasion);
+  applyOccasion();
+}
+
+function updateStoryCount() {
+  var ta = document.getElementById('storyInput');
+  document.getElementById('storyCount').textContent = ta.value.length;
+  state.story = ta.value;
+}
+
+function openStory() {
+  document.getElementById('storyOverlay').classList.add('visible');
+  setTimeout(function() { document.getElementById('storyInput').focus(); }, 100);
+}
+
+function closeStory() {
+  document.getElementById('storyOverlay').classList.remove('visible');
+  // If no story written, revert to "none"
+  if (!state.story) {
+    document.querySelectorAll('.gc-occasion-pill').forEach(function(p) { p.classList.remove('selected'); });
+    document.querySelector('[data-occasion="none"]').classList.add('selected');
+    state.occasion = 'none';
+  }
+}
+
+function closeStoryIf(e) {
+  if (e.target === document.getElementById('storyOverlay')) closeStory();
+}
+
+function confirmStory() {
+  state.story = document.getElementById('storyInput').value;
+  document.getElementById('storyOverlay').classList.remove('visible');
+  // Show a subtle confirmation on the pill
+  var pill = document.querySelector('[data-occasion="story"]');
+  if (state.story) {
+    pill.textContent = '💝 Mon histoire ✓';
+  }
+}
+
+// ── Inspire ──
+var inspireMessages = {
+  self: [
+    'Parce que je le mérite bien.',
+    'Un moment rien que pour moi. Enfin.',
+    'Pour me faire plaisir, tout simplement.',
+    'Je prends soin de moi aujourd\'hui.'
+  ],
+  story: [
+    'Les mots ne suffisent pas toujours, mais ce cadeau parle pour moi.',
+    'Ce cadeau porte tout ce que je n\'arrive pas à dire.',
+    'Pour toi, du fond du cœur. Tu comprendras.',
+    'Chaque attention compte. Celle-ci vient de loin.'
+  ],
+  none: [
+    'Pour toi, avec toute mon affection. Profite de chaque instant !',
+    'Parce que tu le mérites, tout simplement.',
+    'Un petit bonheur à savourer, de ma part.',
+    'Fais-toi plaisir, c\'est le but !',
+    'Pour toi, parce que les belles choses se partagent.'
+  ],
+  birthday: [
+    'Joyeux anniversaire ! Que cette année soit aussi belle que toi.',
+    'Un an de plus, un cadeau de plus. Profite bien !',
+    'Pour tes [âge] ans, un moment d\'exception rien que pour toi.',
+    'Joyeux anniversaire ! Offre-toi ce qui te fait envie.'
+  ],
+  christmas: [
+    'Joyeux Noël ! Un cadeau qui se déguste et se partage.',
+    'Ho ho ho ! Le Père Noël a pensé à toi...',
+    'Pour un Noël plein de saveurs et de surprises.'
+  ],
+  mothers: [
+    'Merci pour tout, maman. Ce cadeau est pour toi.',
+    'Pour la plus merveilleuse des mamans, avec amour.',
+    'Maman, offre-toi un moment rien qu\'à toi. Tu le mérites !'
+  ],
+  fathers: [
+    'Papa, ce cadeau est pour toi. Fais-toi plaisir !',
+    'Pour le meilleur des papas, avec toute mon admiration.',
+    'Papa, à ton tour de te faire chouchouter !'
+  ],
+  wedding: [
+    'Félicitations ! Trinquez à votre amour.',
+    'Pour les plus beaux jours de votre vie, à deux.',
+    'Que votre union soit aussi savoureuse que ce cadeau !'
+  ],
+  thanks: [
+    'Merci du fond du cœur. Ce cadeau parle pour moi.',
+    'Pour vous dire merci, avec toute ma gratitude.',
+    'Un grand merci, vous avez fait la différence.'
+  ],
+  valentines: [
+    'Mon cœur, ce cadeau est pour toi, avec tout mon amour.',
+    'Pour nous deux, parce que chaque moment compte.',
+    'Je t\'aime. Savoure ce cadeau comme je savoure nos instants.'
+  ],
+  housewarming: [
+    'Bienvenue chez vous ! De quoi inaugurer comme il se doit.',
+    'Pour arroser votre nouveau chez-vous avec style !',
+    'Félicitations pour votre nid douillet !'
+  ],
+  retirement: [
+    'Félicitations ! Le meilleur reste à venir.',
+    'À votre liberté ! Profitez de chaque instant.',
+    'Vous l\'avez bien mérité. Savourez !'
+  ]
+};
+
+function inspireMessage() {
+  var occ = state.occasion || 'none';
+  var msgs = inspireMessages[occ] || inspireMessages.none;
+  var ta = document.getElementById('giftMessage');
+  // Avoid repeating the same message
+  var current = ta.value;
+  var filtered = msgs.filter(function(m) { return m !== current; });
+  if (!filtered.length) filtered = msgs;
+  var msg = filtered[Math.floor(Math.random() * filtered.length)];
+  ta.value = msg;
+  updatePreview();
+}
+
+// ── Delivery ──
+function selectDelivery(el) {
+  document.querySelectorAll('.gc-delivery-opt').forEach(function(o) { o.classList.remove('selected'); });
+  el.classList.add('selected');
+  state.delivery = el.getAttribute('data-method');
+  var label = document.getElementById('deliveryContactLabel');
+  var input = document.getElementById('deliveryInput');
+  if (state.delivery === 'email') {
+    label.textContent = 'Email du destinataire';
+    input.type = 'email'; input.placeholder = 'marie@email.com';
+  } else {
+    label.textContent = 'Téléphone du destinataire';
+    input.type = 'tel'; input.placeholder = '06 12 34 56 78';
+  }
+}
+
+// ── Schedule / Teasing ──
+function toggleSchedule() {
+  state.scheduled = !state.scheduled;
+  var tog = document.getElementById('scheduleToggle');
+  var dt = document.getElementById('scheduleDate');
+  tog.classList.toggle('active', state.scheduled);
+  dt.classList.toggle('show', state.scheduled);
+  if (state.scheduled) {
+    var now = new Date();
+    now.setHours(now.getHours() + 1, 0, 0, 0);
+    document.getElementById('scheduleDateInput').min = now.toISOString().slice(0, 16);
+  }
+}
+
+function toggleTeasing() {
+  state.teasing = !state.teasing;
+  document.getElementById('teasingToggle').classList.toggle('active', state.teasing);
+  document.getElementById('teasingInfo').style.display = state.teasing ? '' : 'none';
+}
+
+// ── Preview ──
+function updatePreview() {
+  var bgClass = 'bg card-bg-' + state.design;
+  ['previewBg', 'previewBgFinal'].forEach(function(id) {
+    var el = document.getElementById(id);
+    el.className = bgClass;
+    el.closest('.gc-preview-card').className = 'gc-preview-card color-' + state.design;
+  });
+  ['previewAmount', 'previewAmountFinal'].forEach(function(id) {
+    document.getElementById(id).innerHTML = state.amount + '<span class="eur">€</span>';
+  });
+  var to = state.recipientName ? 'Pour ' + state.recipientName : '';
+  document.getElementById('previewToFinal').textContent = to;
+  var msg = state.message || '';
+  document.getElementById('previewMsgFinal').textContent = msg;
+  var from = state.senderName ? 'De ' + state.senderName : '';
+  ['previewFrom', 'previewFromFinal'].forEach(function(id) {
+    document.getElementById(id).textContent = from;
+  });
+  document.getElementById('payAmount').textContent = state.amount + ' €';
+  document.getElementById('msgCount').textContent = (document.getElementById('giftMessage').value || '').length;
+}
+
+// ── Navigation ──
+function nextStep() {
+  // Collect values
+  if (state.step === 2) {
+    state.recipientName = document.getElementById('recipientName').value;
+    state.message = document.getElementById('giftMessage').value;
+    state.senderName = document.getElementById('senderName').value;
+  }
+  if (state.step === 3) {
+    state.contact = document.getElementById('deliveryInput').value;
+    if (state.scheduled) state.scheduleDate = document.getElementById('scheduleDateInput').value;
+  }
+  if (state.step === 3) buildSummary();
+
+  state.step++;
+  showStep();
+}
+
+function prevStep() {
+  state.step--;
+  showStep();
+}
+
+function showStep() {
+  document.querySelectorAll('.gc-step').forEach(function(s) { s.classList.remove('visible'); });
+  var el = document.getElementById('step' + state.step);
+  if (el) {
+    el.classList.add('visible');
+    el.style.animation = 'none';
+    el.offsetHeight;
+    el.style.animation = '';
+  }
+  // Update dots
+  document.querySelectorAll('.gc-step-dot').forEach(function(dot, i) {
+    dot.classList.remove('active', 'done');
+    if (i === state.step) dot.classList.add('active');
+    else if (i < state.step) dot.classList.add('done');
+  });
+  // Adapt step 2 for self mode
+  if (state.step === 2) {
+    var isSelf = state.occasion === 'self';
+    var step2Title = document.querySelector('#step2 .gc-step-title');
+    var step2Sub = document.querySelector('#step2 .gc-step-sub');
+    var recipientField = document.getElementById('recipientName').closest('.gc-field');
+    var fromRow = document.querySelector('.gc-from-row');
+    if (isSelf) {
+      step2Title.textContent = 'Un petit mot pour vous ?';
+      step2Sub.textContent = 'Facultatif — mais vous le méritez bien';
+      recipientField.style.display = 'none';
+      fromRow.style.display = 'none';
+    } else {
+      step2Title.textContent = 'Qui a cette chance ?';
+      step2Sub.textContent = 'Ajoutez votre touche personnelle';
+      recipientField.style.display = '';
+      fromRow.style.display = '';
+    }
+  }
+  // Scroll top
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+  updatePreview();
+}
+
+// ── Summary ──
+function buildSummary() {
+  var methods = { email: 'Par email', sms: 'Par SMS', whatsapp: 'Par WhatsApp' };
+  var rows = [
+    { label: 'Montant', value: state.amount + ' €' },
+    { label: 'Design', value: getDesignName(state.design) },
+  ];
+  if (state.occasion && state.occasion !== 'none') {
+    var occasions = { self:'Pour moi', birthday:'Anniversaire', christmas:'Noël', mothers:'Fête des mères', fathers:'Fête des pères', wedding:'Mariage', thanks:'Remerciement', valentines:'Saint-Valentin', housewarming:'Crémaillère', retirement:'Départ à la retraite', story:'Histoire personnelle' };
+    rows.push({ label: 'Occasion', value: occasions[state.occasion] || state.occasion });
+  }
+  if (state.story) {
+    rows.push({ label: 'Votre histoire', value: '« ' + state.story.substring(0, 50) + (state.story.length > 50 ? '…' : '') + ' »' });
+  }
+  if (state.recipientName) rows.push({ label: 'Pour', value: state.recipientName });
+  if (state.senderName) rows.push({ label: 'De', value: state.senderName });
+  if (state.message) rows.push({ label: 'Message', value: state.message.substring(0, 40) + (state.message.length > 40 ? '…' : '') });
+  rows.push({ label: 'Envoi', value: methods[state.delivery] || state.delivery });
+  if (state.contact) rows.push({ label: 'À', value: state.contact });
+  if (state.scheduled && state.scheduleDate) {
+    var d = new Date(state.scheduleDate);
+    rows.push({ label: 'Programmé', value: d.toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', hour: '2-digit', minute: '2-digit' }) });
+  }
+  if (state.teasing) rows.push({ label: 'Teasing', value: 'Oui 🎁' });
+
+  var html = '';
+  rows.forEach(function(r) {
+    html += '<div class="gc-summary-row"><span class="gc-summary-label">' + r.label + '</span><span class="gc-summary-value">' + r.value + '</span></div>';
+  });
+  document.getElementById('gcSummary').innerHTML = html;
+}
+
+function getDesignName(d) {
+  return colorNames[d] || d;
+}
+
+// ── Payment ──
+function handlePayment() {
+  var btn = document.getElementById('payBtn');
+  btn.classList.add('loading');
+  btn.textContent = 'Traitement en cours…';
+
+  // Simulate API call (will be replaced by Boostore API)
+  setTimeout(function() {
+    btn.classList.remove('loading');
+    showSuccess();
+  }, 2000);
+}
+
+function showSuccess() {
+  document.querySelectorAll('.gc-step').forEach(function(s) { s.classList.remove('visible'); });
+  document.getElementById('gcSteps').style.display = 'none';
+  var screen = document.getElementById('successScreen');
+  screen.classList.add('visible');
+
+  var msg = '';
+  if (state.recipientName) {
+    msg = state.recipientName + ' va être ravi' + (state.recipientName.slice(-1)==='e'?'e':'') + ' ! ';
+  }
+  msg += 'Votre carte de ' + state.amount + '€ ';
+  var methods = { email: 'arrive par email', sms: 'arrive par SMS', whatsapp: 'arrive via WhatsApp' };
+  msg += methods[state.delivery] || 'est en chemin';
+  if (state.scheduled && state.scheduleDate) {
+    var d = new Date(state.scheduleDate);
+    msg += ' le ' + d.toLocaleDateString('fr-FR', { day: 'numeric', month: 'long' });
+  }
+  msg += '. Merci pour votre générosité !';
+  document.getElementById('successMsg').textContent = msg;
+
+  launchConfetti();
+}
+
+function launchConfetti() {
+  var container = document.createElement('div');
+  container.className = 'gc-confetti';
+  document.body.appendChild(container);
+  var colors = ['#3D6B8C', '#5a8aab', '#c8a96e', '#e8d5a8', '#fff'];
+  for (var i = 0; i < 40; i++) {
+    var span = document.createElement('span');
+    span.style.left = Math.random() * 100 + '%';
+    span.style.background = colors[Math.floor(Math.random() * colors.length)];
+    span.style.animationDelay = Math.random() * 1 + 's';
+    span.style.animationDuration = (2 + Math.random() * 2) + 's';
+    container.appendChild(span);
+  }
+  setTimeout(function() { container.remove(); }, 4000);
+}
+
+// ── Init ──
+syncSlider(state.amount);
+updatePreview();
+</script>
+</body>
+</html>

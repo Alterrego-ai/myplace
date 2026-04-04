@@ -1538,6 +1538,23 @@ color: var(--text-secondary);
 letter-spacing: 0.01em;
 }
 
+/* ── CARTE CADEAU HOME BTN ── */
+.gc-home-btn {
+  display: flex; align-items: center; gap: 14px;
+  padding: 16px 18px; margin: 12px 0 0;
+  background: linear-gradient(135deg, rgba(200,169,110,0.1), rgba(200,169,110,0.04));
+  border: 1.5px solid var(--accent, #c8a96e);
+  border-radius: var(--radius, 16px);
+  text-decoration: none; color: var(--text);
+  transition: all 0.25s; cursor: pointer;
+}
+.gc-home-btn:active { transform: scale(0.98); }
+.gc-home-emoji { font-size: 28px; }
+.gc-home-text { flex: 1; }
+.gc-home-title { display: block; font-size: 15px; font-weight: 700; color: var(--text); }
+.gc-home-sub { display: block; font-size: 12px; color: var(--text-secondary); margin-top: 2px; font-style: italic; }
+.gc-home-arrow { font-size: 18px; color: var(--accent, #c8a96e); font-weight: 700; }
+
 /* ── COMPTE BLOCK ── */
 
 /* ── RÉSEAUX ── */
@@ -2851,6 +2868,16 @@ margin: 20px 20px 0;
     <span class="cta-label" data-i18n="cta_partager">Partager</span>
   </button>
 </div>
+
+<!-- CARTE CADEAU -->
+<a href="carte-cadeau.html" class="gc-home-btn fade-up" id="gcHomeBtn">
+  <span class="gc-home-emoji">🎁</span>
+  <div class="gc-home-text">
+    <span class="gc-home-title">Offrir une Carte Cadeau</span>
+    <span class="gc-home-sub">Faites plaisir à ceux que vous aimez...</span>
+  </div>
+  <span class="gc-home-arrow">→</span>
+</a>
 
 <!-- NOUS SUIVRE (compte + avis + réseaux) -->
 

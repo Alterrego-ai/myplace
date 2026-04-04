@@ -1,0 +1,481 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Wine Bar Database Schema",
+  "description": "Comprehensive product database schema for Sauf Imprévu wine bar",
+  "entities": {
+    "suppliers": {
+      "description": "Suppliers - Who you order from and pay",
+      "fields": [
+        {
+          "name": "id",
+          "type": "string",
+          "required": true,
+          "description": "Unique supplier identifier"
+        },
+        {
+          "name": "name",
+          "type": "string",
+          "required": true,
+          "description": "Supplier company name"
+        },
+        {
+          "name": "address",
+          "type": "string",
+          "required": false,
+          "description": "Full physical address"
+        },
+        {
+          "name": "phone",
+          "type": "string",
+          "required": false,
+          "description": "Contact phone number"
+        },
+        {
+          "name": "email",
+          "type": "string",
+          "required": false,
+          "description": "Contact email address"
+        },
+        {
+          "name": "website",
+          "type": "string",
+          "required": false,
+          "description": "Supplier website URL"
+        },
+        {
+          "name": "logo_url",
+          "type": "string",
+          "required": false,
+          "description": "URL to supplier logo image"
+        },
+        {
+          "name": "ordering_conditions",
+          "type": "object",
+          "required": false,
+          "description": "Supplier ordering requirements",
+          "properties": {
+            "min_bottles": {
+              "type": "integer",
+              "description": "Minimum bottle order quantity"
+            },
+            "min_magnums": {
+              "type": "integer",
+              "description": "Minimum magnum order quantity"
+            },
+            "min_amount_ht": {
+              "type": "number",
+              "description": "Minimum order amount in EUR (excluding tax)"
+            },
+            "franco_threshold": {
+              "type": "number",
+              "description": "Free shipping threshold amount"
+            },
+            "corsica_supplement": {
+              "type": "number",
+              "description": "Additional cost per unit for Corsica delivery"
+            },
+            "notes": {
+              "type": "string",
+              "description": "Additional ordering notes"
+            }
+          }
+        },
+        {
+          "name": "tariff_valid_until",
+          "type": "string",
+          "format": "date",
+          "required": false,
+          "description": "Date when supplier tariff expires"
+        }
+      ]
+    },
+    "producers": {
+      "description": "Producers - Who makes the product (can differ from supplier)",
+      "fields": [
+        {
+          "name": "id",
+          "type": "string",
+          "required": true,
+          "description": "Unique producer identifier"
+        },
+        {
+          "name": "name",
+          "type": "string",
+          "required": true,
+          "description": "Producer/winery name"
+        },
+        {
+          "name": "country",
+          "type": "string",
+          "required": false,
+          "description": "Country of origin"
+        },
+        {
+          "name": "region",
+          "type": "string",
+          "required": false,
+          "description": "Wine region"
+        },
+        {
+          "name": "description",
+          "type": "string",
+          "required": false,
+          "description": "Producer description and background"
+        },
+        {
+          "name": "logo_url",
+          "type": "string",
+          "required": false,
+          "description": "URL to producer logo image"
+        },
+        {
+          "name": "website",
+          "type": "string",
+          "required": false,
+          "description": "Producer website URL"
+        },
+        {
+          "name": "philosophy",
+          "type": "string",
+          "required": false,
+          "description": "Production philosophy (biodynamie, bio, conventionnel, etc.)"
+        }
+      ]
+    },
+    "brands": {
+      "description": "Brands - Commercial line / marque",
+      "fields": [
+        {
+          "name": "id",
+          "type": "string",
+          "required": true,
+          "description": "Unique brand identifier"
+        },
+        {
+          "name": "name",
+          "type": "string",
+          "required": true,
+          "description": "Brand/marque name"
+        },
+        {
+          "name": "producer_id",
+          "type": "string",
+          "required": false,
+          "description": "Associated producer ID"
+        },
+        {
+          "name": "description",
+          "type": "string",
+          "required": false,
+          "description": "Brand description"
+        },
+        {
+          "name": "logo_url",
+          "type": "string",
+          "required": false,
+          "description": "URL to brand logo image"
+        }
+      ]
+    },
+    "products": {
+      "description": "Base product (generic, extensible to non-wine later)",
+      "fields": [
+        {
+          "name": "id",
+          "type": "string",
+          "required": true,
+          "description": "Unique product identifier"
+        },
+        {
+          "name": "name",
+          "type": "string",
+          "required": true,
+          "description": "Product name"
+        },
+        {
+          "name": "type",
+          "type": "string",
+          "required": true,
+          "enum": ["wine", "spirit", "beer", "liqueur", "book", "fashion"],
+          "description": "Product type/category"
+        },
+        {
+          "name": "brand_id",
+          "type": "string",
+          "required": false,
+          "description": "Associated brand ID"
+        },
+        {
+          "name": "supplier_id",
+          "type": "string",
+          "required": true,
+          "description": "Primary supplier ID"
+        },
+        {
+          "name": "producer_id",
+          "type": "string",
+          "required": false,
+          "description": "Producer ID"
+        },
+        {
+          "name": "description",
+          "type": "string",
+          "required": false,
+          "description": "Product description"
+        },
+        {
+          "name": "image_url",
+          "type": "string",
+          "required": false,
+          "description": "Product image URL"
+        },
+        {
+          "name": "active",
+          "type": "boolean",
+          "required": true,
+          "default": true,
+          "description": "Whether product is actively sold"
+        },
+        {
+          "name": "created_at",
+          "type": "string",
+          "format": "date-time",
+          "required": true,
+          "description": "Creation timestamp"
+        },
+        {
+          "name": "updated_at",
+          "type": "string",
+          "format": "date-time",
+          "required": true,
+          "description": "Last update timestamp"
+        }
+      ]
+    },
+    "wine_attributes": {
+      "description": "Extension for wine products (1:1 with product)",
+      "fields": [
+        {
+          "name": "product_id",
+          "type": "string",
+          "required": true,
+          "description": "Reference to wine product"
+        },
+        {
+          "name": "appellation",
+          "type": "string",
+          "required": false,
+          "description": "Wine appellation/AOC"
+        },
+        {
+          "name": "cuvee",
+          "type": "string",
+          "required": false,
+          "description": "Cuvee name"
+        },
+        {
+          "name": "color",
+          "type": "string",
+          "required": false,
+          "enum": ["rouge", "blanc", "rosé", "effervescent", "vin_doux"],
+          "description": "Wine color type"
+        },
+        {
+          "name": "grapes",
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "required": false,
+          "description": "Array of cepage (grape variety) names"
+        },
+        {
+          "name": "region",
+          "type": "string",
+          "required": false,
+          "description": "Wine region"
+        },
+        {
+          "name": "sub_region",
+          "type": "string",
+          "required": false,
+          "description": "Sub-region or specific vineyard area"
+        },
+        {
+          "name": "gamme",
+          "type": "string",
+          "required": false,
+          "enum": ["fac_et_spera", "excellence", "prestige", "tradition", "alchimie", "specialites", "selection_parcellaire", "mathilde_chapoutier", "marius", "bila_haut", "autres"],
+          "description": "Wine range/gamme classification"
+        },
+        {
+          "name": "certifications",
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": ["demeter", "bio", "raisins_bio", "réemploi"]
+          },
+          "required": false,
+          "description": "Array of certifications"
+        },
+        {
+          "name": "parker_score",
+          "type": "string",
+          "required": false,
+          "description": "Parker score as string (e.g., '98-100', '95')"
+        },
+        {
+          "name": "serving_temp",
+          "type": "string",
+          "required": false,
+          "description": "Recommended serving temperature"
+        },
+        {
+          "name": "food_pairings",
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "required": false,
+          "description": "Suggested food pairings"
+        },
+        {
+          "name": "is_selection_parcellaire",
+          "type": "boolean",
+          "required": false,
+          "default": false,
+          "description": "Whether this is a parcel selection wine"
+        }
+      ]
+    },
+    "variants": {
+      "description": "Millésime × Format combinations with pricing",
+      "fields": [
+        {
+          "name": "id",
+          "type": "string",
+          "required": true,
+          "description": "Unique variant identifier"
+        },
+        {
+          "name": "product_id",
+          "type": "string",
+          "required": true,
+          "description": "Reference to product"
+        },
+        {
+          "name": "vintage",
+          "type": "integer",
+          "required": false,
+          "description": "Vintage year (null for non-wine or NV)"
+        },
+        {
+          "name": "format_cl",
+          "type": "number",
+          "required": true,
+          "description": "Bottle format in centiliters (35, 37.5, 50, 70, 75, 150, 300, 500, 600)"
+        },
+        {
+          "name": "availability",
+          "type": "string",
+          "required": true,
+          "enum": ["in_stock", "sold_out", "on_hold", "pre_order"],
+          "description": "Current availability status"
+        },
+        {
+          "name": "price_ht_36",
+          "type": "number",
+          "required": false,
+          "description": "Price HT for 36-bottle orders"
+        },
+        {
+          "name": "price_ht_78",
+          "type": "number",
+          "required": false,
+          "description": "Price HT for 78-bottle orders"
+        },
+        {
+          "name": "price_ht_156",
+          "type": "number",
+          "required": false,
+          "description": "Price HT for 156+ bottle orders"
+        },
+        {
+          "name": "sell_price_ttc",
+          "type": "number",
+          "required": false,
+          "description": "Your retail price including tax"
+        },
+        {
+          "name": "notes",
+          "type": "string",
+          "required": false,
+          "description": "Special notes (e.g., 'disponible en bouteille réemploi', 'sous allocation')"
+        },
+        {
+          "name": "millesime_a_venir",
+          "type": "boolean",
+          "required": false,
+          "default": false,
+          "description": "Whether this is a future vintage"
+        }
+      ]
+    },
+    "stock": {
+      "description": "Your own inventory",
+      "fields": [
+        {
+          "name": "id",
+          "type": "string",
+          "required": true,
+          "description": "Unique stock record identifier"
+        },
+        {
+          "name": "variant_id",
+          "type": "string",
+          "required": true,
+          "description": "Reference to product variant"
+        },
+        {
+          "name": "quantity_on_hand",
+          "type": "integer",
+          "required": true,
+          "description": "Current quantity in stock"
+        },
+        {
+          "name": "quantity_reserved",
+          "type": "integer",
+          "required": false,
+          "default": 0,
+          "description": "Quantity reserved for orders"
+        },
+        {
+          "name": "reorder_threshold",
+          "type": "integer",
+          "required": false,
+          "description": "Minimum quantity before reorder alert"
+        },
+        {
+          "name": "location",
+          "type": "string",
+          "required": false,
+          "description": "Physical storage location (cave, reserve, etc.)"
+        },
+        {
+          "name": "last_restock_date",
+          "type": "string",
+          "format": "date",
+          "required": false,
+          "description": "Date of last restock"
+        },
+        {
+          "name": "next_restock_eta",
+          "type": "string",
+          "format": "date",
+          "required": false,
+          "description": "Expected date of next restock"
+        }
+      ]
+    }
+  }
+}
