@@ -258,6 +258,18 @@ function authRoutes(router) {
     res.redirect('/admin');
   });
 
+  // --- API LOGOUT : détruit la session côté serveur (appelé en fetch depuis le frontend) ---
+  router.post('/auth/logout-api', (req, res) => {
+    if (req.session) {
+      req.session.destroy((err) => {
+        if (err) console.error('Session destroy error:', err);
+        res.json({ ok: true });
+      });
+    } else {
+      res.json({ ok: true });
+    }
+  });
+
   // --- LOGOUT : déconnexion locale + mySafe ---
   // Accepte ?returnTo=<url> pour le cross-domain (myPlace)
   router.get('/auth/logout', async (req, res) => {
@@ -292,6 +304,20 @@ function authRoutes(router) {
       console.error('❌ OIDC logout error:', err.message);
       res.redirect('/admin');
     }
+  });
+
+  // --- PROFIL mySafe : redirige vers la page de gestion du compte mySafe ---
+  // Renvoie une page HTML intermédiaire qui navigue via JS (évite le 302 intercepté par Capacitor)
+  router.get('/auth/mysafe-profile', (req, res) => {
+    const mySafeUrl = 'https://mysafe.services';
+    res.send(`<!DOCTYPE html><html><head><meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      <style>body{display:flex;align-items:center;justify-content:center;height:100vh;margin:0;font-family:-apple-system,sans-serif;background:#f5f5f5;color:#333;}
+      .loader{text-align:center}.spinner{width:32px;height:32px;border:3px solid #e0e0e0;border-top:3px solid #3D6B8C;border-radius:50%;animation:spin 0.8s linear infinite;margin:0 auto 12px;}
+      @keyframes spin{to{transform:rotate(360deg)}}</style>
+      </head><body><div class="loader"><div class="spinner"></div><div>Redirection vers mySafe...</div></div>
+      <script>window.location.href="${mySafeUrl}";</script>
+      </body></html>`);
   });
 
   // --- API : info utilisateur courant (pour le frontend same-origin) ---

@@ -5757,7 +5757,7 @@ margin: 20px 20px 0;
         var parts = token.split('.');
         var payload = JSON.parse(atob(parts[0].replace(/-/g, '+').replace(/_/g, '/')));
         payload._token = token;
-        localStorage.setItem(SSO_KEY, JSON.stringify(payload));
+        ssoSave(SSO_KEY, payload);
         updateAuthUI(payload);
       } catch(e) {
         console.warn('SSO postMessage token parse error:', e);
@@ -5780,7 +5780,7 @@ margin: 20px 20px 0;
       if (!data) return null;
       var parsed = JSON.parse(data);
       if (parsed.exp && parsed.exp < Math.floor(Date.now() / 1000)) {
-        localStorage.removeItem(SSO_KEY);
+        ssoRemove(SSO_KEY);
         return null;
       }
       return parsed;
@@ -5973,7 +5973,7 @@ margin: 20px 20px 0;
     html +=
       '<div style="padding:12px 20px 20px;">' +
         '<div style="background:var(--bg-subtle);border-radius:var(--radius-sm);overflow:hidden;">' +
-          '<a href="https://mysafe.services' + (user._token ? '#auth=' + user._token : '') + '" target="_blank" style="display:flex;align-items:center;gap:10px;padding:14px 16px;text-decoration:none;color:var(--primary);">' +
+          '<a href="#" onclick="event.preventDefault();closeAllSheets();navigateToMySafe();" style="display:flex;align-items:center;gap:10px;padding:14px 16px;text-decoration:none;color:var(--primary);">' +
             '<svg width="16" height="16" viewBox="0 0 640 640" fill="currentColor" style="flex-shrink:0;"><path d="M240 192C240 147.8 275.8 112 320 112C364.2 112 400 147.8 400 192C400 236.2 364.2 272 320 272C275.8 272 240 236.2 240 192zM448 192C448 121.3 390.7 64 320 64C249.3 64 192 121.3 192 192C192 262.7 249.3 320 320 320C390.7 320 448 262.7 448 192zM144 544C144 473.3 201.3 416 272 416L368 416C438.7 416 496 473.3 496 544L496 552C496 565.3 506.7 576 520 576C533.3 576 544 565.3 544 552L544 544C544 446.8 465.2 368 368 368L272 368C174.8 368 96 446.8 96 544L96 552C96 565.3 106.7 576 120 576C133.3 576 144 565.3 144 552L144 544z"/></svg>' +
             '<span style="font-size:14px;font-weight:500;color:var(--text);">Modifier mes informations</span>' +
             '<svg style="margin-left:auto;" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg>' +
@@ -6156,34 +6156,80 @@ margin: 20px 20px 0;
     sheet.classList.add('visible');
   }
 
+  // ── Navigation vers mySafe pour modifier le profil ──
+  // Reste dans le WKWebView pour garder les cookies OIDC
+  function navigateToMySafe() {
+    var user = getStoredUser();
+    // Synchroniser la session serveur d'abord (pour que /auth/mysafe-profile fonctionne)
+    var syncPromise = (user && user._token)
+      ? fetch('/auth/sync', {
+          method: 'POST',
+          headers: { 'Authorization': 'Bearer ' + user._token, 'Content-Type': 'application/json' },
+          credentials: 'include'
+        }).catch(function() {})
+      : Promise.resolve();
+
+    syncPromise.then(function() {
+      // Naviguer via le serveur qui redirigera vers mySafe avec la session OIDC active
+      window.location.href = '/auth/mysafe-profile';
+    });
+  }
+
   function ssoLogout() {
-    // 1. Déconnexion locale immédiate
-    localStorage.removeItem(SSO_KEY);
-    closeAllSheets();
-    updateAuthUI(null);
+    // 1. Déconnexion locale immédiate (natif + localStorage)
+    ssoRemove(SSO_KEY);
 
-    // 2b. Réinitialiser le menu admin → Moi redevient normal
-    isUserAdmin = false;
-    closeAdminMenu();
-    var staffFab = document.getElementById('staffFloatingBtn');
-    if (staffFab) staffFab.style.display = 'none';
-    var staffBtn = document.getElementById('staffBtnSection');
-    if (staffBtn) staffBtn.style.display = 'none';
+    // 2. Détruire la session serveur PUIS reload
+    fetch('/auth/logout-api', { method: 'POST', credentials: 'include' })
+      .finally(function() { window.location.reload(); });
+  }
 
-    // 2. Logout serveur mySafe en arrière-plan (ne bloque pas l'utilisateur)
-    // On utilise un iframe caché pour éviter de quitter la page
-    try {
-      var iframe = document.createElement('iframe');
-      iframe.style.display = 'none';
-      iframe.src = getSSOLogoutUrl();
-      document.body.appendChild(iframe);
-      setTimeout(function() { iframe.remove(); }, 5000);
-    } catch(e) {
-      console.warn('SSO server logout failed:', e);
+  // ── Stockage hybride : Capacitor Preferences (natif) + localStorage (web) ──
+  var useNativeStorage = !!(window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.Preferences);
+
+  function ssoSave(key, value) {
+    var json = JSON.stringify(value);
+    localStorage.setItem(key, json);
+    if (useNativeStorage) {
+      window.Capacitor.Plugins.Preferences.set({ key: key, value: json }).catch(function() {});
     }
   }
 
-  // ── Init SSO : vérifier le hash au retour ou le localStorage ──
+  function ssoRemove(key) {
+    localStorage.removeItem(key);
+    if (useNativeStorage) {
+      window.Capacitor.Plugins.Preferences.remove({ key: key }).catch(function() {});
+    }
+  }
+
+  function ssoLoad(key) {
+    return new Promise(function(resolve) {
+      // Essayer le natif d'abord (plus fiable sur iOS)
+      if (useNativeStorage) {
+        window.Capacitor.Plugins.Preferences.get({ key: key }).then(function(result) {
+          if (result && result.value) {
+            try { resolve(JSON.parse(result.value)); } catch(e) { resolve(null); }
+          } else {
+            // Fallback localStorage
+            resolve(ssoLoadSync(key));
+          }
+        }).catch(function() {
+          resolve(ssoLoadSync(key));
+        });
+      } else {
+        resolve(ssoLoadSync(key));
+      }
+    });
+  }
+
+  function ssoLoadSync(key) {
+    try {
+      var data = localStorage.getItem(key);
+      return data ? JSON.parse(data) : null;
+    } catch(e) { return null; }
+  }
+
+  // ── Init SSO : vérifier le hash au retour, le stockage local, puis le serveur ──
   (function initSSO() {
     // 0. Migration : supprimer les vieux tokens sans champ "name"
     try {
@@ -6192,6 +6238,7 @@ margin: 20px 20px 0;
         var parsed = JSON.parse(old);
         if (!parsed.name) {
           localStorage.removeItem(SSO_KEY);
+          if (useNativeStorage) window.Capacitor.Plugins.Preferences.remove({ key: SSO_KEY }).catch(function(){});
         }
       }
     } catch(e) {}
@@ -6205,7 +6252,7 @@ margin: 20px 20px 0;
           var parts = token.split('.');
           var payload = JSON.parse(atob(parts[0].replace(/-/g, '+').replace(/_/g, '/')));
           payload._token = token;
-          localStorage.setItem(SSO_KEY, JSON.stringify(payload));
+          ssoSave(SSO_KEY, payload);
           // Nettoyer l'URL
           history.replaceState(null, '', window.location.pathname + window.location.search);
 
@@ -6216,6 +6263,13 @@ margin: 20px 20px 0;
             return;
           }
 
+          // Sync la session côté serveur pour que /auth/me fonctionne aussi
+          fetch('/auth/sync', {
+            method: 'POST',
+            headers: { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' },
+            credentials: 'include'
+          }).catch(function() {});
+
           updateAuthUI(payload);
           return;
         } catch(e) {
@@ -6224,9 +6278,59 @@ margin: 20px 20px 0;
       }
     }
 
-    // 2. Sinon, vérifier le localStorage
-    var user = getStoredUser();
-    updateAuthUI(user);
+    // 2. Vérifier le stockage local (natif + localStorage)
+    ssoLoad(SSO_KEY).then(function(stored) {
+      if (stored) {
+        // Vérifier expiration
+        if (stored.exp && stored.exp < Math.floor(Date.now() / 1000)) {
+          ssoRemove(SSO_KEY);
+          stored = null;
+        }
+      }
+
+      if (stored) {
+        updateAuthUI(stored);
+        // Sync serveur en arrière-plan si on a un token
+        if (stored._token) {
+          fetch('/auth/sync', {
+            method: 'POST',
+            headers: { 'Authorization': 'Bearer ' + stored._token, 'Content-Type': 'application/json' },
+            credentials: 'include'
+          }).catch(function() {});
+        }
+        return;
+      }
+
+      // 3. Dernier recours : vérifier si le serveur a une session active (cookie)
+      fetch('/auth/me', { credentials: 'include' })
+        .then(function(r) { return r.json(); })
+        .then(function(data) {
+          if (data.authenticated && data.user) {
+            // Le serveur a une session → recréer le token local
+            // On appelle /auth/verify ou on stocke directement les infos
+            var localUser = {
+              sub: data.user.sub,
+              account_id: data.user.account_id || null,
+              name: data.user.name,
+              email: data.user.email,
+              picture: data.user.picture || null,
+              birthday: data.user.birthday || null,
+              phone: data.user.phone || null,
+              address: data.user.address || null,
+              // Pas de _token ici, mais suffisant pour l'UI
+              // On met un exp local de 24h pour forcer un refresh régulier
+              exp: Math.floor(Date.now() / 1000) + (24 * 60 * 60)
+            };
+            ssoSave(SSO_KEY, localUser);
+            updateAuthUI(localUser);
+          } else {
+            updateAuthUI(null);
+          }
+        })
+        .catch(function() {
+          updateAuthUI(null);
+        });
+    });
   })();
 
   // ── Sélecteur de langue ──

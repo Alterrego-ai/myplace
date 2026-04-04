@@ -4,7 +4,12 @@
   "webDir": "public",
   "server": {
     "url": "https://www.myplace.coach",
-    "cleartext": false
+    "cleartext": false,
+    "allowNavigation": [
+      "openid.mysafe.services",
+      "*.mysafe.services",
+      "mysafe.services"
+    ]
   },
   "ios": {
     "contentInset": "always",
