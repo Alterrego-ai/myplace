@@ -67,8 +67,8 @@ input,textarea,button{font-family:inherit;outline:none}
 /* ── Step container ── */
 .gc-step{display:none;flex:1;flex-direction:column;animation:fadeUp 0.35s ease both}
 .gc-step.visible{display:flex}
-.gc-step-title{font-size:26px;font-weight:800;letter-spacing:-0.02em;margin-bottom:6px}
-.gc-step-sub{font-size:15px;color:var(--text-secondary);margin-bottom:28px;line-height:1.5;font-style:italic}
+.gc-step-title{font-size:22px;font-weight:800;letter-spacing:-0.02em;margin-bottom:6px;text-align:center}
+.gc-step-sub{font-size:14px;color:var(--text-secondary);margin-bottom:24px;line-height:1.5;font-style:italic;text-align:center}
 
 /* ── Amount step ── */
 .gc-amount-presets{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:16px}
@@ -114,10 +114,10 @@ input,textarea,button{font-family:inherit;outline:none}
 
 /* ── Color picker ── */
 .gc-color-picker{
-  display:flex;gap:10px;justify-content:center;flex-wrap:wrap;padding:8px 0 8px;
+  display:flex;gap:8px;justify-content:center;padding:8px 0 8px;
 }
 .gc-color-swatch{
-  width:38px;height:38px;border-radius:50%;cursor:pointer;
+  width:34px;height:34px;flex-shrink:0;border-radius:50%;cursor:pointer;
   border:3px solid transparent;transition:all 0.25s;
   box-shadow:0 2px 8px rgba(0,0,0,0.1);
 }
@@ -222,35 +222,37 @@ input,textarea,button{font-family:inherit;outline:none}
 /* ── Story modal ── */
 .gc-story-overlay{
   display:none;position:fixed;inset:0;z-index:1000;
-  background:rgba(0,0,0,0.6);backdrop-filter:blur(8px);
-  align-items:center;justify-content:center;padding:20px;
+  background:rgba(0,0,0,0.5);backdrop-filter:blur(6px);
+  align-items:flex-end;justify-content:center;padding:0;
   animation:fadeUp 0.3s ease both;
 }
 .gc-story-overlay.visible{display:flex}
 .gc-story-modal{
-  background:var(--bg-card);border-radius:var(--radius);padding:32px 24px;
-  max-width:440px;width:100%;position:relative;
-  box-shadow:0 20px 60px rgba(0,0,0,0.3);
+  background:var(--bg-card);border-radius:var(--radius) var(--radius) 0 0;
+  padding:28px 20px calc(var(--safe-bottom) + 20px);
+  width:100%;max-width:480px;position:relative;
+  box-shadow:0 -10px 40px rgba(0,0,0,0.2);
+  display:flex;flex-direction:column;
 }
 .gc-story-close{
-  position:absolute;top:12px;right:16px;background:none;border:none;
-  font-size:24px;color:var(--text-muted);cursor:pointer;padding:4px;
+  position:absolute;top:16px;right:16px;background:none;border:none;
+  font-size:22px;color:var(--text-muted);cursor:pointer;padding:4px;
 }
-.gc-story-icon{font-size:40px;text-align:center;margin-bottom:12px}
+.gc-story-icon{font-size:36px;text-align:center;margin-bottom:8px}
 .gc-story-title{
-  font-size:22px;font-weight:700;text-align:center;margin-bottom:8px;color:var(--text);
+  font-size:20px;font-weight:700;text-align:center;margin-bottom:6px;color:var(--text);
 }
 .gc-story-intro{
-  font-size:13px;line-height:1.7;color:var(--text-secondary);text-align:center;
-  margin-bottom:20px;font-style:italic;
+  font-size:12px;line-height:1.6;color:var(--text-muted);text-align:center;
+  margin-bottom:24px;
 }
 .gc-story-textarea{
-  width:100%;min-height:120px;background:var(--bg-subtle);border:1.5px solid var(--border);
+  width:100%;min-height:180px;flex:1;background:var(--bg-subtle);border:1.5px solid var(--border);
   border-radius:var(--radius-sm);padding:16px;color:var(--text);font-size:15px;
   line-height:1.6;resize:none;transition:border-color 0.2s;
 }
 .gc-story-textarea:focus{border-color:var(--primary)}
-.gc-story-textarea::placeholder{color:var(--text-muted);font-style:italic}
+.gc-story-textarea::placeholder{color:var(--text-muted);opacity:0.5;font-style:italic}
 
 /* ── Delivery step ── */
 .gc-delivery-methods{display:flex;flex-direction:column;gap:10px;margin-bottom:20px}
@@ -415,11 +417,11 @@ input,textarea,button{font-family:inherit;outline:none}
 
   <!-- STEP 0 : Montant -->
   <div class="gc-step visible" id="step0">
-    <div class="gc-step-title fade-up fade-up-2">Combien souhaitez-vous offrir ?</div>
+    <div class="gc-step-title fade-up fade-up-2">Combien souhaitez-vous offrir&nbsp;?</div>
     <div class="gc-step-sub fade-up fade-up-3">Quel que soit le montant, c'est le geste qui compte...</div>
 
     <div class="gc-field fade-up fade-up-2">
-      <label>Pour quelle occasion ?</label>
+      <label>Pour quelle occasion&nbsp;?</label>
       <div class="gc-occasion-grid">
         <div class="gc-occasion-btn gc-occasion-small selected" data-occasion="none" onclick="pickQuickOccasion(this)">Juste pour offrir</div>
         <div class="gc-occasion-btn gc-occasion-small" data-occasion="self" onclick="pickQuickOccasion(this)">🙂 Pour moi</div>
@@ -449,7 +451,7 @@ input,textarea,button{font-family:inherit;outline:none}
 
   <!-- STEP 1 : Design -->
   <div class="gc-step" id="step1">
-    <div class="gc-step-title">Quelle allure pour votre cadeau ?</div>
+    <div class="gc-step-title">Quelle allure pour votre cadeau&nbsp;?</div>
     <div class="gc-step-sub">L'écrin compte autant que l'attention</div>
 
     <!-- Live preview -->
@@ -493,7 +495,7 @@ input,textarea,button{font-family:inherit;outline:none}
 
   <!-- STEP 2 : Occasion + Destinataire + Message -->
   <div class="gc-step" id="step2">
-    <div class="gc-step-title">Qui a cette chance ?</div>
+    <div class="gc-step-title">Qui a cette chance&nbsp;?</div>
     <div class="gc-step-sub">Ajoutez votre touche personnelle</div>
 
     <div class="gc-field">
@@ -522,7 +524,7 @@ input,textarea,button{font-family:inherit;outline:none}
   <!-- STEP 3 : Livraison -->
   <div class="gc-step" id="step3">
     <div class="gc-step-title">La touche finale</div>
-    <div class="gc-step-sub">Comment souhaitez-vous faire plaisir ?</div>
+    <div class="gc-step-sub">Comment souhaitez-vous faire plaisir&nbsp;?</div>
 
     <div class="gc-delivery-methods">
       <div class="gc-delivery-opt selected" data-method="email" onclick="selectDelivery(this)">
@@ -581,7 +583,7 @@ input,textarea,button{font-family:inherit;outline:none}
 
   <!-- STEP 4 : Récapitulatif & Paiement -->
   <div class="gc-step" id="step4">
-    <div class="gc-step-title">Tout est parfait ?</div>
+    <div class="gc-step-title">Tout est parfait&nbsp;?</div>
     <div class="gc-step-sub">Un dernier coup d'œil avant de faire plaisir</div>
 
     <!-- Preview card -->
@@ -632,7 +634,7 @@ input,textarea,button{font-family:inherit;outline:none}
 <!-- Occasion picker modal -->
 <div class="gc-occasion-overlay" id="occasionOverlay" onclick="closeOccasionIf(event)">
   <div class="gc-occasion-modal">
-    <div class="gc-occasion-modal-title">Pour quelle occasion ?</div>
+    <div class="gc-occasion-modal-title">Pour quelle occasion&nbsp;?</div>
     <div class="gc-occasion-list">
       <div class="gc-occasion-item" data-occasion="birthday" onclick="pickOccasion(this)">🎂 Anniversaire</div>
       <div class="gc-occasion-item" data-occasion="christmas" onclick="pickOccasion(this)">🎄 Noël</div>
@@ -654,8 +656,10 @@ input,textarea,button{font-family:inherit;outline:none}
     <div class="gc-story-icon">💝</div>
     <div class="gc-story-title">Racontez-nous...</div>
     <div class="gc-story-intro">Prenez un instant. Pourquoi ce cadeau ?<br>Qu'est-ce qui vous touche chez cette personne ?<br>Les émotions rendent les cadeaux uniques...</div>
-    <textarea id="storyInput" class="gc-story-textarea" placeholder="Mon meilleur ami m'a fait découvrir le vin il y a 10 ans. Aujourd'hui je voudrais lui offrir un moment pour qu'on se retrouve autour d'une belle bouteille..." oninput="updateStoryCount()"></textarea>
-    <button class="gc-btn-primary" onclick="confirmStory()">C'est dit, avec le cœur</button>
+    <textarea id="storyInput" class="gc-story-textarea" placeholder="Racontez votre histoire ici..." oninput="updateStoryCount()"></textarea>
+    <div style="margin-top:16px">
+      <button class="gc-btn-primary" onclick="confirmStory()">C'est dit, avec le cœur</button>
+    </div>
   </div>
 </div>
 
@@ -1048,7 +1052,7 @@ function showStep() {
       recipientField.style.display = 'none';
       fromRow.style.display = 'none';
     } else {
-      step2Title.textContent = 'Qui a cette chance ?';
+      step2Title.textContent = 'Qui a cette chance&nbsp;?';
       step2Sub.textContent = 'Ajoutez votre touche personnelle';
       recipientField.style.display = '';
       fromRow.style.display = '';
