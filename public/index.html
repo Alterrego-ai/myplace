@@ -5876,6 +5876,7 @@ margin: 20px 20px 0;
       // ── Hero user button → icône par défaut ──
       var heroBtn2 = document.getElementById('heroUserBtn');
       if (heroBtn2) {
+        heroBtn2.innerHTML = '<svg viewBox="0 0 640 640" fill="currentColor" style="width:22px;height:22px;"><path d="M476.1 480.6C462.1 425.1 411.9 384 352 384L288 384C228.1 384 177.9 425.1 163.9 480.6C122 439.9 96 383 96 320C96 196.3 196.3 96 320 96C443.7 96 544 196.3 544 320C544 383 518 439.9 476.1 480.6zM320 304C293.5 304 272 282.5 272 256C272 229.5 293.5 208 320 208C346.5 208 368 229.5 368 256C368 282.5 346.5 304 320 304zM240 256C240 300.2 275.8 336 320 336C364.2 336 400 300.2 400 256C400 211.8 364.2 176 320 176C275.8 176 240 211.8 240 256z"/></svg>';
         heroBtn2.onclick = function(e) { e.preventDefault(); startSSOLogin(); };
       }
     }
