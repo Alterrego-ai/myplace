@@ -1021,8 +1021,10 @@ function updatePreview() {
   ['previewFrom', 'previewFromFinal'].forEach(function(id) {
     document.getElementById(id).textContent = from;
   });
-  document.getElementById('payAmount').textContent = state.amount + ' €';
-  document.getElementById('msgCount').textContent = (document.getElementById('giftMessage').value || '').length;
+  var payAmountEl = document.getElementById('payAmount');
+  if (payAmountEl) payAmountEl.textContent = state.amount + ' €';
+  var msgCountEl = document.getElementById('msgCount');
+  if (msgCountEl) msgCountEl.textContent = (document.getElementById('giftMessage').value || '').length;
 }
 
 // ── Navigation ──
