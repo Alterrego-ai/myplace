@@ -7,6 +7,12 @@ const fs = require('fs');
 const { authRoutes, requireAuth, injectUser, initOIDC } = require('./auth');
 const { chatRoutes } = require('./chat');
 
+// ── Stripe (Carte Cadeau) ──
+const stripeEnabled = !!process.env.STRIPE_SECRET_KEY;
+const stripe = stripeEnabled ? require('stripe')(process.env.STRIPE_SECRET_KEY) : null;
+if (stripeEnabled) console.log('✓ Stripe initialisé');
+else console.warn('⚠ Stripe désactivé (STRIPE_SECRET_KEY non défini)');
+
 // Git commit hash pour le footer — Railway fournit RAILWAY_GIT_COMMIT_SHA
 const pkg = require('./package.json');
 let GIT_HASH = process.env.RAILWAY_GIT_COMMIT_SHA
@@ -69,6 +75,39 @@ if (process.env.OIDC_CLIENT_ID) {
 }
 
 app.use(express.static(path.join(__dirname, 'public')));
+
+// ── Stripe — Carte Cadeau Payment Intent ────────────────────────────────────
+app.get('/api/stripe-config', (req, res) => {
+  if (!stripeEnabled) return res.status(503).json({ error: 'Stripe non configuré' });
+  res.json({ publishableKey: process.env.STRIPE_PUBLISHABLE_KEY });
+});
+
+app.post('/api/create-payment-intent', async (req, res) => {
+  if (!stripeEnabled) return res.status(503).json({ error: 'Stripe non configuré' });
+  try {
+    const { amount, metadata } = req.body;
+    const amountCents = Math.round(Number(amount) * 100);
+    if (!amountCents || amountCents < 5000 || amountCents > 25000) {
+      return res.status(400).json({ error: 'Montant invalide (50-250€)' });
+    }
+    const paymentIntent = await stripe.paymentIntents.create({
+      amount: amountCents,
+      currency: 'eur',
+      automatic_payment_methods: { enabled: true },
+      metadata: {
+        type: 'carte_cadeau',
+        recipient: metadata?.recipientName || '',
+        sender: metadata?.senderName || '',
+        occasion: metadata?.occasion || '',
+        delivery: metadata?.delivery || '',
+      },
+    });
+    res.json({ clientSecret: paymentIntent.client_secret });
+  } catch (err) {
+    console.error('Stripe error:', err.message);
+    res.status(500).json({ error: 'Erreur de paiement' });
+  }
+});
 
 // ── Upload images ───────────────────────────────────────────────────────────
 const uploadsDir = path.join(__dirname, 'public', 'uploads');

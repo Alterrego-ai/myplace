@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>Carte Cadeau — Sauf Imprévu</title>
+<script src="https://js.stripe.com/v3/"></script>
 <style>
 /* ── Reset & Base ── */
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
@@ -374,6 +375,19 @@ input,textarea,button{font-family:inherit;outline:none}
 .gc-btn-row .gc-btn-primary{flex:1}
 .gc-btn-row .gc-btn-secondary{flex:0 0 auto;width:auto;margin-top:0;padding:14px 18px;order:-1}
 
+/* ── Stripe Payment Element ── */
+.gc-payment-wrap{
+  margin:16px 0;padding:20px;background:var(--bg-card);border-radius:var(--radius);
+  border:1px solid var(--border);box-shadow:0 2px 12px rgba(0,0,0,0.04);
+}
+.gc-payment-wrap label{font-size:13px;font-weight:600;color:var(--text-secondary);margin-bottom:10px;display:block}
+#payment-element{min-height:80px}
+#payment-message{display:none;font-size:13px;color:#d32f2f;text-align:center;margin-top:10px;line-height:1.4}
+#payment-message.visible{display:block}
+.gc-secure-badge{display:flex;align-items:center;justify-content:center;gap:6px;margin-top:12px;font-size:11px;color:var(--text-muted)}
+.gc-secure-badge svg{width:14px;height:14px;fill:currentColor}
+.gc-btn-primary.loading{opacity:0.7;pointer-events:none}
+
 /* ── Success screen ── */
 .gc-success{display:none;flex-direction:column;align-items:center;justify-content:center;text-align:center;flex:1;padding:40px 20px}
 .gc-success.visible{display:flex}
@@ -610,6 +624,16 @@ input,textarea,button{font-family:inherit;outline:none}
     </div>
 
     <div class="gc-summary" id="gcSummary"></div>
+
+    <div class="gc-payment-wrap" id="paymentWrap" style="display:none">
+      <label>Paiement sécurisé</label>
+      <div id="payment-element"></div>
+      <div id="payment-message"></div>
+      <div class="gc-secure-badge">
+        <svg viewBox="0 0 24 24"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1s3.1 1.39 3.1 3.1v2z"/></svg>
+        Paiement chiffré — Stripe
+      </div>
+    </div>
 
     <div class="gc-btn-row">
       <button class="gc-btn-primary" id="payBtn" onclick="handlePayment()">
@@ -1017,6 +1041,9 @@ function nextStep() {
 
   state.step++;
   showStep();
+
+  // Mount Stripe Payment Element on step 4
+  if (state.step === 4) mountPaymentElement();
 }
 
 function prevStep() {
@@ -1099,17 +1126,113 @@ function getDesignName(d) {
   return colorNames[d] || d;
 }
 
-// ── Payment ──
-function handlePayment() {
+// ── Stripe Payment ──
+var stripeInstance = null;
+var stripeElements = null;
+var paymentElementMounted = false;
+var clientSecret = null;
+
+async function initStripe() {
+  if (stripeInstance) return;
+  try {
+    var res = await fetch('/api/stripe-config');
+    var config = await res.json();
+    if (config.publishableKey) {
+      stripeInstance = Stripe(config.publishableKey);
+    }
+  } catch(e) {
+    console.warn('Stripe config unavailable, payment disabled');
+  }
+}
+
+async function mountPaymentElement() {
+  if (!stripeInstance) {
+    await initStripe();
+    if (!stripeInstance) {
+      showPaymentError('Paiement indisponible. Veuillez réessayer.');
+      return;
+    }
+  }
+  // Create PaymentIntent
+  try {
+    var res = await fetch('/api/create-payment-intent', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        amount: state.amount,
+        metadata: {
+          recipientName: state.recipientName,
+          senderName: state.senderName,
+          occasion: state.occasion,
+          delivery: state.delivery
+        }
+      })
+    });
+    var data = await res.json();
+    if (data.error) throw new Error(data.error);
+    clientSecret = data.clientSecret;
+  } catch(e) {
+    showPaymentError('Impossible d\'initialiser le paiement : ' + e.message);
+    return;
+  }
+
+  // Mount Payment Element
+  var appearance = {
+    theme: 'stripe',
+    variables: {
+      colorPrimary: '#3D6B8C',
+      colorBackground: getComputedStyle(document.documentElement).getPropertyValue('--bg-card').trim() || '#ffffff',
+      colorText: getComputedStyle(document.documentElement).getPropertyValue('--text').trim() || '#1a2332',
+      fontFamily: '-apple-system,BlinkMacSystemFont,Inter,SF Pro Display,Segoe UI,sans-serif',
+      borderRadius: '12px',
+      spacingUnit: '4px'
+    }
+  };
+  stripeElements = stripeInstance.elements({ clientSecret: clientSecret, appearance: appearance, locale: 'fr' });
+  var paymentElement = stripeElements.create('payment', {
+    layout: { type: 'tabs', defaultCollapsed: false }
+  });
+  document.getElementById('payment-element').innerHTML = '';
+  paymentElement.mount('#payment-element');
+  document.getElementById('paymentWrap').style.display = '';
+  paymentElementMounted = true;
+}
+
+function showPaymentError(msg) {
+  var el = document.getElementById('payment-message');
+  el.textContent = msg;
+  el.classList.add('visible');
+}
+
+async function handlePayment() {
+  if (!stripeElements || !clientSecret) {
+    showPaymentError('Le formulaire de paiement n\'est pas prêt. Patientez...');
+    return;
+  }
   var btn = document.getElementById('payBtn');
   btn.classList.add('loading');
   btn.textContent = 'Traitement en cours…';
+  document.getElementById('payment-message').classList.remove('visible');
 
-  // Simulate API call (will be replaced by Boostore API)
-  setTimeout(function() {
+  var result = await stripeInstance.confirmPayment({
+    elements: stripeElements,
+    confirmParams: {
+      return_url: window.location.origin + '/carte-cadeau.html?success=1',
+    },
+    redirect: 'if_required'
+  });
+
+  if (result.error) {
+    btn.classList.remove('loading');
+    btn.innerHTML = 'Offrir pour <span id="payAmount">' + state.amount + ' €</span>';
+    showPaymentError(result.error.message);
+  } else if (result.paymentIntent && result.paymentIntent.status === 'succeeded') {
     btn.classList.remove('loading');
     showSuccess();
-  }, 2000);
+  } else {
+    // Payment might need redirect (3D Secure etc.) — handled by return_url
+    btn.classList.remove('loading');
+  }
 }
 
 function showSuccess() {
@@ -1154,6 +1277,20 @@ function launchConfetti() {
 // ── Init ──
 syncSlider(state.amount);
 updatePreview();
+initStripe(); // Preload Stripe config
+
+// Handle 3D Secure return
+(function() {
+  var params = new URLSearchParams(window.location.search);
+  if (params.get('success') === '1' || params.get('payment_intent')) {
+    // Returned from 3DS redirect → show success
+    document.querySelectorAll('.gc-step').forEach(function(s) { s.classList.remove('visible'); });
+    document.getElementById('gcSteps').style.display = 'none';
+    showSuccess();
+    // Clean URL
+    window.history.replaceState({}, '', window.location.pathname);
+  }
+})();
 </script>
 </body>
 </html>
