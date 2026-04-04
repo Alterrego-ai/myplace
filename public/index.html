@@ -126,11 +126,6 @@ border-radius: 0;
 }
 
 /* On desktop, clip the hero top corners to match phone screen */
-@media (min-width: 769px) {
-  .hero {
-    border-radius: 42px 42px 0 0;
-  }
-}
 
 .hero-img {
 width: 100%;
@@ -711,17 +706,6 @@ color: #fff;
 .loc-ar-sub { font-size: 11px; color: var(--text-tertiary); margin-top: 1px; }
 
 /* Desktop: constrain sheet inside app-container */
-@media (min-width: 769px) {
-  .sheet-overlay {
-    position: absolute;
-    border-radius: 42px;
-  }
-  .bottom-sheet {
-    position: absolute;
-    max-width: 100%;
-    border-radius: 24px 24px 40px 40px;
-  }
-}
 
 .sheet-handle {
 width: 36px;
@@ -1609,12 +1593,6 @@ align-self: center;
   padding-bottom: calc(20px + env(safe-area-inset-bottom, 0px));
   max-width: 600px;
 }
-@media (min-width: 769px) {
-  .admin-sheet {
-    position: absolute;
-    max-width: none;
-  }
-}
 .admin-sheet.visible { transform: translateY(0); }
 .admin-sheet-handle {
   width: 36px; height: 4px; background: var(--border); border-radius: 2px;
@@ -1634,11 +1612,6 @@ align-self: center;
 .admin-sheet-overlay {
   position: fixed; top: 0; left: 0; right: 0; bottom: 0;
   z-index: 899; display: none; background: rgba(0,0,0,0.3);
-}
-@media (min-width: 769px) {
-  .admin-sheet-overlay {
-    position: absolute;
-  }
 }
 .admin-sheet-overlay.visible { display: block; }
 
@@ -2139,14 +2112,6 @@ background: var(--primary); color: #fff; font-size: 26px; font-weight: 700; over
 }
 .wallet-sheet.visible { transform: translateY(0); box-shadow: 0 -8px 40px rgba(0,0,0,0.18); }
 /* Desktop: inside app-container */
-@media (min-width: 769px) {
-  .wallet-sheet {
-    position: absolute;
-    max-width: 100%;
-    border-radius: 20px 20px 42px 42px;
-    max-height: 85%;
-  }
-}
 .wallet-sheet .sheet-handle {
   width: 36px; height: 4px; border-radius: 2px;
   background: var(--border); margin: 10px auto 0;
@@ -2246,19 +2211,6 @@ background: var(--primary); color: #fff; font-size: 26px; font-weight: 700; over
 .admin-bottom-bar .nav-label { font-size: 11px; font-weight: 600; letter-spacing: 0.02em; }
 
 /* Desktop: admin iframe inside app-container, not full overlay */
-@media (min-width: 769px) {
-  .admin-overlay {
-    position: absolute;
-    border-radius: 42px;
-    overflow: hidden;
-  }
-  .admin-overlay iframe {
-    border-radius: 42px 42px 0 0;
-  }
-  .admin-bottom-bar {
-    border-radius: 0 0 42px 42px;
-  }
-}
 
 /* ── BOTTOM BAR (floating pill) ── */
 .bottom-bar {
@@ -2290,14 +2242,6 @@ box-shadow: 0 0 0 0.5px var(--border);
 }
 
 /* Desktop: absolute inside app-container */
-@media (min-width: 769px) {
-  .bottom-bar {
-    position: absolute;
-    bottom: 16px;
-    width: calc(100% - 24px);
-    max-width: 100%;
-  }
-}
 
 .nav-item {
 display: flex;
