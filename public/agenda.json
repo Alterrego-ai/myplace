@@ -163,7 +163,7 @@
   ],
 
   "reservations": {
-    "enabled": true,
+    "enabled": false,
     "slot_duration_min": 30,
     "max_party_size": 12,
     "min_advance_hours": 2,

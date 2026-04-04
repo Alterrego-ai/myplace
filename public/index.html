@@ -495,7 +495,9 @@ display: flex; align-items: center; justify-content: center; flex-shrink: 0;
 .loc-copy { font-size: 11px; color: var(--text-tertiary); display: flex; align-items: center; gap: 4px; flex-shrink: 0; }
 
 /* Nav buttons */
-.loc-nav-grid { display: flex; justify-content: center; gap: 20px; margin-bottom: 12px; padding: 4px 0; }
+.loc-nav-grid { display: flex; gap: 16px; margin-bottom: 12px; padding: 4px 16px; overflow-x: auto; scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
+.loc-nav-grid::-webkit-scrollbar { display: none; }
+.loc-nav-grid .loc-nav-btn { scroll-snap-align: start; flex-shrink: 0; }
 .loc-nav-btn {
 display: flex; flex-direction: column; align-items: center; gap: 6px;
 text-decoration: none; color: var(--text);
@@ -3041,37 +3043,51 @@ margin: 20px 20px 0;
 
     <!-- Navigation buttons -->
     <div class="loc-nav-grid">
-      <!-- Apple Maps (masqué sur Android) -->
-      <a class="loc-nav-btn" id="locNavApple" href="https://maps.apple.com/?address=15+Rue+Vauban,+69006+Lyon&ll=45.7649859,4.8434166" target="_blank">
-        <div class="loc-nav-icon" style="background:#000;border-radius:12px;display:flex;align-items:center;justify-content:center;">
-          <svg width="32" height="32" viewBox="0 0 24 24" fill="none"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z" fill="#4CD964"/><path d="M12 2C8.13 2 5 5.13 5 9c0 2.62 1.17 5.24 2.87 7.59L12 21l4.13-4.41C17.83 14.24 19 11.62 19 9c0-3.87-3.13-7-7-7z" fill="#34C759"/><circle cx="12" cy="9" r="2.5" fill="#fff"/></svg>
+      <!-- Apple Maps -->
+      <a class="loc-nav-btn" id="locNavApple" href="#" onclick="openNativeMap('apple');return false;">
+        <div class="loc-nav-icon" style="background:#000;border-radius:12px;">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z" fill="#34C759"/><circle cx="12" cy="9" r="2.5" fill="#fff"/></svg>
         </div>
-        <div class="loc-nav-text"><div class="loc-nav-label">Plans</div><div class="loc-nav-sub">Apple Maps</div></div>
+        <div class="loc-nav-text"><div class="loc-nav-label">Plans</div></div>
       </a>
       <!-- Google Maps -->
-      <a class="loc-nav-btn" id="locNavGoogle" href="https://maps.google.com/?q=Sauf+Imprévu,+15+Rue+Vauban,+69006+Lyon" target="_blank">
-        <div class="loc-nav-icon" style="background:#fff;border-radius:12px;display:flex;align-items:center;justify-content:center;border:1px solid #e0e0e0;">
+      <a class="loc-nav-btn" id="locNavGoogle" href="#" onclick="openNativeMap('google');return false;">
+        <div class="loc-nav-icon" style="background:#fff;border-radius:12px;border:1px solid #e0e0e0;">
           <svg width="32" height="32" viewBox="0 0 48 48"><path d="M24 4C17.4 4 12 9.4 12 16c0 9 12 24 12 24s12-15 12-24c0-6.6-5.4-12-12-12z" fill="#EA4335"/><circle cx="24" cy="16" r="5" fill="#fff"/><path d="M24 4c3.3 0 6.3 1.3 8.5 3.5" stroke="#4285F4" stroke-width="2" fill="none"/><path d="M24 4c-3.3 0-6.3 1.3-8.5 3.5" stroke="#FBBC05" stroke-width="2" fill="none"/><path d="M15.5 7.5C13.5 9.7 12 12.7 12 16" stroke="#34A853" stroke-width="2" fill="none"/></svg>
         </div>
-        <div class="loc-nav-text"><div class="loc-nav-label">Google Maps</div><div class="loc-nav-sub">Carte & itinéraire</div></div>
+        <div class="loc-nav-text"><div class="loc-nav-label">Google Maps</div></div>
       </a>
       <!-- Waze -->
-      <a class="loc-nav-btn loc-nav-full" id="locNavWaze" href="https://waze.com/ul?q=15+Rue+Vauban,+69006+Lyon&navigate=yes" target="_blank">
-        <div class="loc-nav-icon" style="background:#33CCFF;border-radius:12px;display:flex;align-items:center;justify-content:center;">
+      <a class="loc-nav-btn" id="locNavWaze" href="#" onclick="openNativeMap('waze');return false;">
+        <div class="loc-nav-icon" style="background:#33CCFF;border-radius:12px;">
           <svg width="32" height="32" viewBox="0 0 48 48"><circle cx="24" cy="22" r="14" fill="#fff"/><circle cx="19" cy="19" r="2.5" fill="#333"/><circle cx="29" cy="19" r="2.5" fill="#333"/><path d="M18 27c0 0 3 4 6 4s6-4 6-4" stroke="#333" stroke-width="2" stroke-linecap="round" fill="none"/></svg>
         </div>
-        <div class="loc-nav-text"><div class="loc-nav-label">Waze</div><div class="loc-nav-sub">Navigation temps réel</div></div>
+        <div class="loc-nav-text"><div class="loc-nav-label">Waze</div></div>
+      </a>
+      <!-- Citymapper -->
+      <a class="loc-nav-btn" id="locNavCitymapper" href="#" onclick="openNativeMap('citymapper');return false;">
+        <div class="loc-nav-icon" style="background:#2ECC40;border-radius:12px;">
+          <svg width="32" height="32" viewBox="0 0 48 48"><circle cx="24" cy="24" r="16" fill="#fff"/><path d="M16 18l6 12 4-6 6 6" stroke="#2ECC40" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>
+        </div>
+        <div class="loc-nav-text"><div class="loc-nav-label">Citymapper</div></div>
+      </a>
+      <!-- Uber -->
+      <a class="loc-nav-btn" id="locNavUber" href="#" onclick="openNativeMap('uber');return false;">
+        <div class="loc-nav-icon" style="background:#000;border-radius:12px;">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="#fff"><path d="M3 12.5V3h4.5v9.5c0 2.5 2 4.5 4.5 4.5s4.5-2 4.5-4.5V3H21v9.5c0 5-4 9-9 9s-9-4-9-9z"/></svg>
+        </div>
+        <div class="loc-nav-text"><div class="loc-nav-label">Uber</div></div>
       </a>
       <!-- Copier -->
       <button class="loc-nav-btn" onclick="copyAddress()">
-        <div class="loc-nav-icon loc-nav-icon--util" style="background:var(--bg-subtle);">
+        <div class="loc-nav-icon loc-nav-icon--util" style="background:var(--bg-subtle);border-radius:12px;">
           <svg viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
         </div>
         <div class="loc-nav-text"><div class="loc-nav-label" id="locCopyLabel">Copier</div></div>
       </button>
       <!-- Partager -->
       <button class="loc-nav-btn" onclick="shareLocation()">
-        <div class="loc-nav-icon loc-nav-icon--util" style="background:var(--bg-subtle);">
+        <div class="loc-nav-icon loc-nav-icon--util" style="background:var(--bg-subtle);border-radius:12px;">
           <svg viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12v8a2 2 0 002 2h12a2 2 0 002-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg>
         </div>
         <div class="loc-nav-text"><div class="loc-nav-label">Partager</div></div>
@@ -4826,65 +4842,60 @@ margin: 20px 20px 0;
 
   function buildHoursSheet() {
     var status = getHoursStatus();
-    _hrsTodayIdx = status.dayIdx;
+    var days = ['Lundi','Mardi','Mercredi','Jeudi','Vendredi','Samedi','Dimanche'];
+    var hours = [
+      { day: 'Lundi', h: '10h – 00h', sub: 'Déjeuner 12h–14h · Happy Hour 18h–19h30 · Dîner 19h–22h' },
+      { day: 'Mardi', h: '10h – 00h', sub: 'Déjeuner 12h–14h · Happy Hour 18h–19h30 · Dîner 19h–22h' },
+      { day: 'Mercredi', h: '10h – 00h', sub: 'Déjeuner 12h–14h · Happy Hour 18h–19h30 · Dîner 19h–22h' },
+      { day: 'Jeudi', h: '10h – 01h', sub: 'Déjeuner 12h–14h · Happy Hour 18h–19h30 · Dîner 19h–22h' },
+      { day: 'Vendredi', h: '10h – 01h', sub: 'Déjeuner 12h–14h · Happy Hour 18h–19h30 · Dîner 19h–22h' },
+      { day: 'Samedi', h: 'Fermé', sub: '' },
+      { day: 'Dimanche', h: 'Fermé', sub: '' }
+    ];
+    var todayIdx = new Date().getDay();
+    todayIdx = todayIdx === 0 ? 6 : todayIdx - 1; // Mon=0
 
-    // ── Sticky header: Today card + Week strip ──
-    var hdr = '';
-    var moisCourt = ['Janvier','Février','Mars','Avril','Mai','Juin','Juillet','Août','Septembre','Octobre','Novembre','Décembre'];
-    var currentMonth = moisCourt[new Date().getMonth()];
-    hdr += '<div class="hrs-today-card" style="display:flex;align-items:center;justify-content:space-between;">';
-    hdr += '  <div>';
-    hdr += '    <div class="hrs-today-label">Aujourd\'hui · ' + status.todayLabel + '</div>';
-    hdr += '    <div class="hrs-today-hours">' + status.todayHours + '</div>';
-    hdr += '  </div>';
-    hdr += '  <div class="hrs-datepicker-wrap">';
-    hdr += '    <button class="hrs-datepicker-btn" onclick="document.getElementById(\'hrsDateInput\').showPicker()"><span id="hrsMonthLabel">' + currentMonth + '</span> <span class="hrs-datepicker-chevron"></span></button>';
-    hdr += '    <input type="date" id="hrsDateInput" class="hrs-datepicker-input" onchange="hrsGoToDate(this.value)">';
-    hdr += '  </div>';
+    var hdr = '<div class="hrs-today-card">';
+    hdr += '  <div class="hrs-today-label">Aujourd\'hui · ' + status.todayLabel + '</div>';
+    hdr += '  <div class="hrs-today-hours">' + status.todayHours + '</div>';
     hdr += '</div>';
-
-    hdr += '<div class="hrs-week-strip" id="hrsWeekStripWrap"></div>';
-    hdr += '<div class="hrs-selected-date" id="hrsSelectedDateLabel"></div>';
     document.getElementById('hoursSheetHeader').innerHTML = hdr;
 
-    _hrsWeekOffset = 0;
-    hrsRenderWeekStrip();
+    var html = '<div style="padding:8px 20px 20px;">';
+    for (var i = 0; i < hours.length; i++) {
+      var isClosed = hours[i].h === 'Fermé';
+      var isToday = i === todayIdx;
+      html += '<div style="display:flex;align-items:flex-start;justify-content:space-between;padding:12px 0;' + (i < hours.length - 1 ? 'border-bottom:1px solid var(--border);' : '') + (isToday ? 'background:rgba(200,169,110,0.06);margin:0 -12px;padding:12px;border-radius:10px;' : '') + '">';
+      html += '  <div style="font-size:14px;font-weight:' + (isToday ? '700' : '500') + ';color:' + (isClosed ? 'var(--text-tertiary)' : 'var(--text)') + ';">' + hours[i].day + (isToday ? ' <span style="font-size:10px;background:var(--accent);color:#fff;padding:2px 6px;border-radius:4px;margin-left:6px;">Auj.</span>' : '') + '</div>';
+      html += '  <div style="text-align:right;">';
+      html += '    <div style="font-size:14px;font-weight:600;color:' + (isClosed ? '#e74c3c' : 'var(--primary)') + ';">' + hours[i].h + '</div>';
+      if (hours[i].sub) html += '    <div style="font-size:11px;color:var(--text-tertiary);margin-top:2px;max-width:200px;">' + hours[i].sub + '</div>';
+      html += '  </div>';
+      html += '</div>';
+    }
 
-    // ── Scrollable content: agenda + specials ──
-    var html = '';
-    html += '<div id="hrsTimelineContainer" style="padding:0;"></div>';
-
-    // ── Special days ──
+    // Special days
     var upcoming = HOURS_DATA.special.filter(function(s) {
       return new Date(s.date) >= new Date(new Date().toISOString().slice(0,10));
     });
     if (upcoming.length > 0) {
-      html += '<div class="hrs-special">';
-      html += '  <div class="hrs-special-title"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg> À noter</div>';
+      html += '<div style="margin-top:16px;padding-top:12px;border-top:1px solid var(--border);">';
+      html += '<div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:8px;">À noter</div>';
       for (var j = 0; j < upcoming.length; j++) {
         var sp = upcoming[j];
         var spDate = new Date(sp.date);
         var spDay = spDate.getDate() + ' ' + ['jan','fév','mar','avr','mai','jun','jul','aoû','sep','oct','nov','déc'][spDate.getMonth()];
-        html += '<div class="hrs-special-item">';
-        html += '  <div class="hrs-special-icon">' + (sp.icon || (sp.closed ? '🚫' : '🎉')) + '</div>';
-        html += '  <div class="hrs-special-info">';
-        html += '    <div class="hrs-special-date">' + spDay + ' · ' + sp.label + '</div>';
-        html += '    <div class="hrs-special-label">' + (sp.closed ? 'Fermé' : sp.hours) + '</div>';
-        html += '  </div>';
+        html += '<div style="display:flex;align-items:center;gap:10px;padding:6px 0;">';
+        html += '  <span style="font-size:18px;">' + (sp.icon || (sp.closed ? '🚫' : '🎉')) + '</span>';
+        html += '  <div><div style="font-size:12px;font-weight:600;color:var(--text);">' + spDay + ' · ' + sp.label + '</div>';
+        html += '  <div style="font-size:11px;color:var(--text-tertiary);">' + (sp.closed ? 'Fermé' : sp.hours) + '</div></div>';
         html += '</div>';
       }
       html += '</div>';
     }
 
-    // Events are now shown directly in the vertical agenda timeline
-
+    html += '</div>';
     document.getElementById('hoursSheetContent').innerHTML = html;
-
-    // Select today by default
-    selectHrsDay(status.dayIdx);
-
-    // ── Fetch weather (Lyon) ──
-    fetchWeatherForHours();
   }
 
   var _hrsWeekForecast = null;
@@ -5387,6 +5398,28 @@ margin: 20px 20px 0;
   var _locGeoWatchId = null;
   var LOC_LAT = 45.7649859;
   var LOC_LNG = 4.8434166;
+
+  function openNativeMap(app) {
+    var addr = '15+Rue+Vauban,+69006+Lyon';
+    var lat = 45.7649859, lng = 4.8434166;
+    var name = 'Sauf Imprévu';
+    var schemes = {
+      apple:      { native: 'maps://?q=' + name + '&ll=' + lat + ',' + lng, web: 'https://maps.apple.com/?address=' + addr + '&ll=' + lat + ',' + lng },
+      google:     { native: 'comgooglemaps://?q=' + name + ',' + addr + '&center=' + lat + ',' + lng, web: 'https://maps.google.com/?q=' + name + ',+' + addr },
+      waze:       { native: 'waze://?ll=' + lat + ',' + lng + '&navigate=yes', web: 'https://waze.com/ul?q=' + addr + '&navigate=yes' },
+      citymapper: { native: 'citymapper://directions?endcoord=' + lat + ',' + lng + '&endname=' + encodeURIComponent(name), web: 'https://citymapper.com/directions?endcoord=' + lat + ',' + lng + '&endname=' + encodeURIComponent(name) },
+      uber:       { native: 'uber://?action=setPickup&dropoff[latitude]=' + lat + '&dropoff[longitude]=' + lng + '&dropoff[nickname]=' + encodeURIComponent(name), web: 'https://m.uber.com/ul/?drop[0]=%7B%22latitude%22:' + lat + ',%22longitude%22:' + lng + '%7D' }
+    };
+    var s = schemes[app];
+    if (!s) return;
+    // Sur iOS natif, essaie le scheme natif d'abord
+    if (window.Capacitor || /iPhone|iPad/.test(navigator.userAgent)) {
+      var w = window.open(s.native, '_system');
+      setTimeout(function() { if (!document.hidden) window.open(s.web, '_blank'); }, 600);
+    } else {
+      window.open(s.web, '_blank');
+    }
+  }
 
   function openAddressSheet() {
     lockBodyScroll();
