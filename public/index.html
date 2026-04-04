@@ -80,8 +80,7 @@ body[data-theme=”dark”] {
 /* ── DARK MODE OVERRIDE (classe JS, bypass variables) ── */
 html.dark-active { background: #1a2636 !important; }
 body.dark-active { background: #0f1923 !important; color: #eef2f7 !important; }
-body.dark-active .phone-screen { background: #0f1923 !important; }
-body.dark-active .phone-scroll { background: #0f1923 !important; }
+body.dark-active .app-container { background: #0f1923 !important; }
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -97,126 +96,17 @@ min-height: -webkit-fill-available;
 margin: 0;
 }
 
-/* ── Phone frame (desktop only) ── */
-.phone-shell {
-display: flex;
-flex-direction: column;
-align-items: center;
-justify-content: flex-start;
-min-height: 100vh;
-background: #f0ece4;
-padding: 30px 20px;
-}
-.phone-frame {
-position: relative;
-width: 375px;
-height: 812px;
-border-radius: 50px;
-background: #1a1a1a;
-padding: 12px;
-box-shadow:
-  0 0 0 1px rgba(0,0,0,0.1),
-  0 20px 60px rgba(0,0,0,0.15),
-  0 4px 20px rgba(0,0,0,0.1);
-transform-origin: top center;
-/* scale dynamique défini par JS */
-}
-.phone-frame::before {
-content: '';
-position: absolute;
-top: 12px; left: 50%;
-transform: translateX(-50%);
-width: 126px; height: 34px;
-background: #1a1a1a;
-border-radius: 0 0 20px 20px;
-z-index: 10;
-}
-.phone-screen {
-position: relative;
-width: 100%;
-height: 100%;
-border-radius: 42px;
-overflow: hidden;
-background: var(--bg, #f7f8fa);
-color: var(--text, #1a2332);
-}
-.phone-scroll {
-width: 100%;
-height: 100%;
-overflow-y: auto;
-overflow-x: hidden;
-border-radius: 42px;
--webkit-overflow-scrolling: touch;
-}
-.phone-scroll::-webkit-scrollbar { display: none; }
-
-/* Default to light theme inside phone on desktop */
-@media (min-width: 769px) {
-  .phone-screen {
-    --bg: #f7f8fa;
-    --bg-card: #ffffff;
-    --bg-subtle: #f0f3f7;
-    --text: #1a2332;
-    --text-secondary: #5a6a7e;
-    --text-tertiary: #8a9ab0;
-    --border: rgba(0,0,0,0.07);
-    --open-color: #2d9c6e;
-    --open-bg: #e8f7f2;
-    --closed-color: #c0392b;
-    --closed-bg: #fdecea;
-  }
-  [data-theme="dark"] .phone-screen {
-    --bg: #0f1923;
-    --bg-card: #1a2636;
-    --bg-subtle: #212f3f;
-    --text: #eef2f7;
-    --text-secondary: #8fa3bb;
-    --text-tertiary: #5a7288;
-    --border: rgba(255,255,255,0.07);
-    --open-color: #3dbf87;
-    --open-bg: rgba(61,191,135,0.12);
-    --closed-color: #e05c4b;
-    --closed-bg: rgba(224,92,75,0.12);
-  }
-}
-
-/* ── Mobile: no frame ── */
-@media (max-width: 768px) {
-  /* CRITICAL: body bg = bottom-bar bg → no visible band on iOS overscroll */
-  body {
-    background: var(--bg-card);
-  }
-  .phone-shell {
-    display: contents;
-  }
-  .phone-frame {
-    display: contents;
-  }
-  .phone-frame::before {
-    display: none;
-  }
-  .phone-screen {
-    display: block;
-    width: 100%;
-    max-width: 600px;
-    margin: 0 auto;
-    min-height: 100dvh;
-    background: var(--bg-card);
-    color: var(--text);
-    border-radius: 0;
-    overflow: visible;
-    height: auto;
-    position: static;
-  }
-  .phone-scroll {
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-    min-height: 100dvh;
-    overflow: visible;
-    border-radius: 0;
-    background: var(--bg);
-  }
+/* ── App container (no phone frame) ── */
+.app-container {
+  width: 100%;
+  max-width: 600px;
+  margin: 0 auto;
+  min-height: 100dvh;
+  background: var(--bg);
+  color: var(--text);
+  display: flex;
+  flex-direction: column;
+  overflow-x: hidden;
 }
 
 /* ── HERO ── */
@@ -820,7 +710,7 @@ color: #fff;
 .loc-ar-label { font-size: 14px; font-weight: 600; }
 .loc-ar-sub { font-size: 11px; color: var(--text-tertiary); margin-top: 1px; }
 
-/* Desktop: constrain sheet inside phone-screen */
+/* Desktop: constrain sheet inside app-container */
 @media (min-width: 769px) {
   .sheet-overlay {
     position: absolute;
@@ -2248,7 +2138,7 @@ background: var(--primary); color: #fff; font-size: 26px; font-weight: 700; over
   padding-bottom: calc(16px + env(safe-area-inset-bottom, 0px));
 }
 .wallet-sheet.visible { transform: translateY(0); box-shadow: 0 -8px 40px rgba(0,0,0,0.18); }
-/* Desktop: inside phone-screen */
+/* Desktop: inside app-container */
 @media (min-width: 769px) {
   .wallet-sheet {
     position: absolute;
@@ -2355,7 +2245,7 @@ background: var(--primary); color: #fff; font-size: 26px; font-weight: 700; over
 .admin-bottom-bar .nav-item svg { width: 28px; height: 28px; display: block; }
 .admin-bottom-bar .nav-label { font-size: 11px; font-weight: 600; letter-spacing: 0.02em; }
 
-/* Desktop: admin iframe inside phone-screen, not full overlay */
+/* Desktop: admin iframe inside app-container, not full overlay */
 @media (min-width: 769px) {
   .admin-overlay {
     position: absolute;
@@ -2399,7 +2289,7 @@ box-shadow: 0 0 0 0.5px var(--border);
   box-shadow: 0 0 0 0.5px var(--border);
 }
 
-/* Desktop: absolute inside phone-screen */
+/* Desktop: absolute inside app-container */
 @media (min-width: 769px) {
   .bottom-bar {
     position: absolute;
@@ -2774,10 +2664,7 @@ margin: 20px 20px 0;
   </div>
 </div>
 
-<div class="phone-shell">
-  <div class="phone-frame">
-    <div class="phone-screen">
-      <div class="phone-scroll">
+<div class="app-container">
 
 <!-- HERO -->
 
@@ -3111,8 +2998,6 @@ margin: 20px 20px 0;
 
 <!-- BOTTOM BAR -->
 
-      </div><!-- /phone-scroll -->
-
 <!-- ADMIN (géré via openStaffSheet dans le profileSheet) -->
 
 <!-- ADMIN IFRAME OVERLAY -->
@@ -3146,7 +3031,7 @@ margin: 20px 20px 0;
   </nav>
 </div>
 
-<!-- BOTTOM BAR (outside phone-scroll, fixed in phone-screen) -->
+<!-- BOTTOM BAR (outside app-container, fixed in app-container) -->
 <nav class="bottom-bar" style="display:none;">
   <a href="#" class="nav-item active" id="navAccueil" onclick="event.preventDefault(); showAccueilSection();">
     <svg viewBox="0 0 640 640" fill="currentColor">
@@ -3758,9 +3643,7 @@ margin: 20px 20px 0;
   </div>
 </div>
 
-    </div><!-- /phone-screen -->
-  </div><!-- /phone-frame -->
-</div><!-- /phone-shell -->
+</div><!-- /app-container -->
 
 <script src="https://unpkg.com/@dotlottie/player-component@2.7.12/dist/dotlottie-player.mjs" type="module"></script>
 <script src="/i18n.js"></script>
@@ -3776,21 +3659,6 @@ margin: 20px 20px 0;
         StatusBar.setStyle({ style: 'LIGHT' }); // texte blanc sur le hero
       }
     }
-  })();
-
-  // Phone frame : scale dynamique à 90% de la hauteur viewport
-  (function() {
-    const frame = document.querySelector('.phone-frame');
-    if (!frame) return;
-    function scalePhone() {
-      if (window.innerWidth <= 768) { frame.style.transform = ''; return; }
-      const targetH = window.innerHeight * 0.9;
-      const frameH = 812 + 24; // height + padding
-      const s = Math.min(targetH / frameH, 1);
-      frame.style.transform = 'scale(' + s + ')';
-    }
-    scalePhone();
-    window.addEventListener('resize', scalePhone);
   })();
 
   // Theme
@@ -3858,8 +3726,8 @@ margin: 20px 20px 0;
       }
       darkStyle.textContent =
         'html, body { background: #1a2636 !important; }' +
-        '.phone-screen { background: #1a2636 !important; color: #eef2f7 !important; }' +
-        '.phone-scroll { background: #0f1923 !important; color: #eef2f7 !important; }' +
+        '.app-container { background: #1a2636 !important; color: #eef2f7 !important; }' +
+        '.app-container { background: #0f1923 !important; color: #eef2f7 !important; }' +
         '.spacer { background: #0f1923 !important; }' +
         '.bottom-bar { background: #1a2636 !important; box-shadow: 0 0 0 0.5px rgba(255,255,255,0.07) !important; }' +
         '.logo-wrap, .section, .user-row, .google-row { background: #1a2636 !important; }' +
@@ -3877,7 +3745,7 @@ margin: 20px 20px 0;
     // CSS variables pour les composants enfants
     var vars = themeVars[theme] || themeVars.light;
     var targets = [document.documentElement, document.body];
-    var ps = document.querySelector('.phone-screen');
+    var ps = document.querySelector('.app-container');
     if (ps) targets.push(ps);
     for (var i = 0; i < targets.length; i++) {
       for (var k in vars) {
@@ -5222,7 +5090,7 @@ margin: 20px 20px 0;
   var mainSections = null;
   function getMainSections() {
     if (!mainSections) {
-      var scroll = document.querySelector('.phone-scroll') || document.documentElement;
+      var scroll = document.querySelector('.app-container') || document.documentElement;
       mainSections = [];
       for (var i = 0; i < scroll.children.length; i++) {
         var el = scroll.children[i];
@@ -5242,7 +5110,7 @@ margin: 20px 20px 0;
     });
     actu.classList.add('visible');
     setActiveNav('navActu');
-    var s = document.querySelector('.phone-scroll') || document.documentElement;
+    var s = document.querySelector('.app-container') || document.documentElement;
     s.scrollTo({ top: 0, behavior: 'instant' });
   }
 
@@ -5253,7 +5121,7 @@ margin: 20px 20px 0;
       el.style.display = '';
     });
     setActiveNav('navAccueil');
-    var s = document.querySelector('.phone-scroll') || document.documentElement;
+    var s = document.querySelector('.app-container') || document.documentElement;
     s.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
@@ -5264,9 +5132,9 @@ margin: 20px 20px 0;
     var sheet = document.getElementById(type === 'apple' ? 'walletAppleSheet' : 'walletGoogleSheet');
     if (!sheet) return;
 
-    // Desktop : déplacer dans phone-screen
+    // Desktop : déplacer dans app-container
     if (isDesktop) {
-      var phoneScreen = document.querySelector('.phone-screen');
+      var phoneScreen = document.querySelector('.app-container');
       if (phoneScreen && sheet.parentElement !== phoneScreen) {
         phoneScreen.appendChild(sheet);
       }
@@ -5456,7 +5324,7 @@ margin: 20px 20px 0;
   function handleShare() {
     if (isDesktop) {
       var url = '/share.html';
-      var phoneScreen = document.querySelector('.phone-screen');
+      var phoneScreen = document.querySelector('.app-container');
       if (!phoneScreen) { window.location.href = url; return; }
       var existing = document.getElementById('shareIframe');
       if (existing) existing.remove();
@@ -5491,7 +5359,7 @@ margin: 20px 20px 0;
       window.location.href = url;
       return;
     }
-    var phoneScreen = document.querySelector('.phone-screen');
+    var phoneScreen = document.querySelector('.app-container');
     if (!phoneScreen) { window.location.href = url; return; }
     var existing = document.getElementById('walletIframe');
     if (existing) existing.remove();
@@ -5515,7 +5383,7 @@ margin: 20px 20px 0;
       window.location.href = url;
       return;
     }
-    var phoneScreen = document.querySelector('.phone-screen');
+    var phoneScreen = document.querySelector('.app-container');
     if (!phoneScreen) { window.location.href = url; return; }
     var existing = document.getElementById('scanIframe');
     if (existing) existing.remove();
@@ -6505,16 +6373,16 @@ margin: 20px 20px 0;
     // Permettre "retour" navigateur pour fermer
     history.pushState({ adminOpen: true }, '', window.location.href);
 
-    // Desktop : positionner dans phone-screen
+    // Desktop : positionner dans app-container
     if (isDesktop) {
-      var phoneScreen = document.querySelector('.phone-screen');
+      var phoneScreen = document.querySelector('.app-container');
       if (phoneScreen) {
         overlay.style.position = 'absolute';
         overlay.style.top = '0';
         overlay.style.left = '0';
         overlay.style.right = '0';
         overlay.style.bottom = '0';
-        // Déplacer dans phone-screen si pas déjà dedans
+        // Déplacer dans app-container si pas déjà dedans
         if (overlay.parentElement !== phoneScreen) {
           phoneScreen.appendChild(overlay);
         }
@@ -6565,8 +6433,8 @@ margin: 20px 20px 0;
       window.location.href = url;
       return;
     }
-    // Desktop : iframe dans le phone-screen
-    var phoneScreen = document.querySelector('.phone-screen');
+    // Desktop : iframe dans le app-container
+    var phoneScreen = document.querySelector('.app-container');
     if (!phoneScreen) { window.location.href = url; return; }
     var existing = document.getElementById('chatIframe');
     if (existing) { existing.remove(); }
