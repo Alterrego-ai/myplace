@@ -1084,21 +1084,13 @@ html, body {
   }
   function showResaRecap() {
     syncResaDomToState();
-    // Validation nom + tel
-    if (!resaState.nom || resaState.nom.trim().length < 2) {
-      var n = document.getElementById('resaNom'); if (n) { n.classList.add('invalid'); n.focus(); }
-      return;
-    }
-    if (!isValidPhoneFR(resaState.telephone)) {
-      var t = document.getElementById('resaTel'); if (t) { t.classList.add('invalid'); t.focus(); }
-      return;
-    }
-    // Persistance
-    persistResaIdentity();
     if (resaState.personnes >= 10) {
+      var contactPrivPart = (resaState.nom || resaState.telephone)
+        ? ' Contact : ' + resaState.nom + (resaState.telephone ? ' (' + formatPhoneFR(resaState.telephone) + ')' : '') + '.'
+        : '';
       cancelResa();
       setChatSubject('Privatisation');
-      chatInput.value = 'Je souhaite privatiser l\'espace pour un groupe de ' + resaState.personnes + ' personnes le ' + resaState.date + '. Contact : ' + resaState.nom + ' · ' + formatPhoneFR(resaState.telephone) + '. Pouvez-vous me recontacter pour les détails ?';
+      chatInput.value = 'Je souhaite privatiser l\'espace pour un groupe de ' + resaState.personnes + ' personnes le ' + resaState.date + '.' + contactPrivPart + ' Pouvez-vous me recontacter pour les détails ?';
       sendMessage();
       return;
     }
@@ -1127,6 +1119,22 @@ html, body {
     loadAgenda().then(function(a){ renderReservationForm(getBookingServices(a)); });
   }
   function confirmResa() {
+    // Validation uniquement ici (blocage minimal : on ne bloque qu'à la confirmation finale)
+    var missingNom = !resaState.nom || resaState.nom.trim().length < 2;
+    var missingTel = !isValidPhoneFR(resaState.telephone);
+    if (missingNom || missingTel) {
+      resaState.identityEdit = true;
+      resaState.mode = 'edit';
+      loadAgenda().then(function(a){
+        renderReservationForm(getBookingServices(a));
+        setTimeout(function(){
+          var el = document.getElementById(missingNom ? 'resaNom' : 'resaTel');
+          if (el) { el.classList.add('invalid'); el.focus(); }
+        }, 50);
+      });
+      return;
+    }
+    persistResaIdentity();
     var dateObj = new Date(resaState.date + 'T00:00:00');
     var dateLabel = dateObj.toLocaleDateString('fr-FR', { weekday:'long', day:'numeric', month:'long' });
     var souhaitPart = resaState.souhait ? ' · ' + resaState.souhait : '';
