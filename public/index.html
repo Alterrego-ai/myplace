@@ -531,52 +531,35 @@ overflow: hidden;
 
 /* Compass card — premium */
 .loc-compass-card {
-position: relative;
-display: flex; align-items: center; gap: 20px;
-padding: 20px;
-margin-bottom: 12px;
-background: linear-gradient(135deg, rgba(61,107,140,0.06) 0%, rgba(61,107,140,0.02) 100%);
-border: 1px solid rgba(61,107,140,0.15);
-border-radius: 16px;
-box-shadow: 0 2px 12px rgba(0,0,0,0.04), 0 0 0 1px rgba(255,255,255,0.06) inset;
-overflow: hidden;
+display: flex; align-items: center; gap: 14px; width: 100%;
+padding: 14px 16px; background: var(--bg-card);
+border: 1px solid var(--border); border-radius: var(--radius);
+cursor: pointer; font-family: var(--font); text-align: left;
+color: var(--text); margin-bottom: 12px;
 }
-.loc-compass-card::before {
-content: ''; position: absolute; inset: 0; pointer-events: none;
-background: radial-gradient(ellipse at 30% 20%, rgba(61,107,140,0.08) 0%, transparent 60%);
-}
+.loc-compass-card:active { background: var(--bg-subtle); }
 .loc-compass-ring {
-width: 100px; height: 100px; flex-shrink: 0;
-position: relative; z-index: 1;
-filter: drop-shadow(0 1px 3px rgba(0,0,0,0.08));
+width: 42px; height: 42px; flex-shrink: 0;
+border-radius: 11px;
+background: linear-gradient(135deg, var(--primary), rgba(61,107,140,0.75));
+display: flex; align-items: center; justify-content: center;
+color: #fff;
 }
 .loc-compass-svg { width: 100%; height: 100%; }
-.loc-compass-info { flex: 1; min-width: 0; position: relative; z-index: 1; }
-.loc-compass-dist {
-font-size: 32px; font-weight: 800; color: var(--text);
-letter-spacing: -0.03em; line-height: 1;
-font-feature-settings: 'tnum';
-}
+.loc-compass-info { flex: 1; min-width: 0; }
 .loc-compass-label {
-font-size: 13px; color: var(--text-secondary); margin-top: 4px;
-font-weight: 500;
+font-size: 14px; font-weight: 600; color: var(--text);
 }
-.loc-compass-time {
-font-size: 12px; color: var(--text-tertiary); margin-top: 8px;
-display: flex; gap: 12px; flex-wrap: wrap;
+.loc-compass-dist-label {
+font-size: 11px; color: var(--text-tertiary); margin-top: 1px;
 }
-.loc-compass-time span {
-display: inline-flex; align-items: center; gap: 4px;
-background: rgba(61,107,140,0.06); padding: 3px 8px; border-radius: 20px;
-font-weight: 500;
+.loc-compass-dist {
+font-size: 16px; font-weight: 700; color: var(--primary);
+letter-spacing: -0.01em; font-feature-settings: 'tnum';
+flex-shrink: 0;
 }
-.loc-compass-card.loc-arrived {
-border-color: rgba(5,150,105,0.3);
-background: linear-gradient(135deg, rgba(16,185,129,0.08), rgba(5,150,105,0.03));
-}
-.loc-compass-card.loc-arrived::before {
-background: radial-gradient(ellipse at 30% 20%, rgba(16,185,129,0.1) 0%, transparent 60%);
-}
+.loc-compass-time { display: none; }
+.loc-compass-card.loc-arrived { border-color: rgba(5,150,105,0.35); background: rgba(16,185,129,0.06); }
 .loc-compass-card.loc-arrived .loc-compass-dist { color: #059669; }
 
 /* Compass activation button — inline in info */
@@ -683,17 +666,20 @@ cursor: pointer; display: flex; align-items: center; justify-content: center;
 
 /* Transport buttons */
 .loc-transport-grid {
-display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 12px;
+display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin-bottom: 12px;
 }
 .loc-transport-btn {
-display: flex; flex-direction: row; align-items: center; justify-content: center; gap: 6px;
-padding: 10px 8px; background: var(--bg-card);
+display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px;
+padding: 8px 4px; background: var(--bg-card);
 border: 1px solid var(--border); border-radius: var(--radius-sm);
 color: var(--text-secondary); font-family: var(--font);
-font-size: 12px; font-weight: 600; cursor: pointer;
+font-size: 11px; font-weight: 600; cursor: pointer;
 transition: all 0.15s;
 }
 .loc-transport-btn svg { flex-shrink: 0; }
+.loc-transport-btn .loc-trans-label { font-size: 11px; font-weight: 600; }
+.loc-transport-btn .loc-trans-time { font-size: 11px; font-weight: 700; color: var(--primary); }
+.loc-transport-btn.active .loc-trans-time { color: var(--primary); }
 .loc-transport-btn:active { background: var(--bg-subtle); }
 .loc-transport-btn.active {
 border-color: var(--primary); color: var(--primary);
@@ -3107,15 +3093,23 @@ margin: 20px 20px 0;
     <div class="loc-transport-grid">
       <button class="loc-transport-btn" id="locTransWalk" onclick="setLocTransport('walk')">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="5" r="2"/><path d="M10 22l2-7 3 3v6"/><path d="M14 13l-2-2-4 4"/><path d="M10 9l-2 8"/></svg>
-        <span>À pied</span>
+        <span class="loc-trans-label">À pied</span>
+        <span class="loc-trans-time" id="locTimeWalk">—</span>
       </button>
       <button class="loc-transport-btn" id="locTransBike" onclick="setLocTransport('bike')">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="5.5" cy="17.5" r="3.5"/><circle cx="18.5" cy="17.5" r="3.5"/><path d="M15 6a1 1 0 100-2 1 1 0 000 2zm-3 11.5V14l-3-3 4-3 2 3h3"/></svg>
-        <span>Vélo</span>
+        <span class="loc-trans-label">Vélo</span>
+        <span class="loc-trans-time" id="locTimeBike">—</span>
+      </button>
+      <button class="loc-transport-btn" id="locTransCar" onclick="setLocTransport('car')">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 17h14M5 17a2 2 0 01-2-2v-3l2-5h14l2 5v3a2 2 0 01-2 2M5 17v2M19 17v2"/><circle cx="7" cy="17" r="1.5"/><circle cx="17" cy="17" r="1.5"/></svg>
+        <span class="loc-trans-label">Voiture</span>
+        <span class="loc-trans-time" id="locTimeCar">—</span>
       </button>
       <button class="loc-transport-btn" id="locTransPublic" onclick="setLocTransport('public')">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="14" rx="2"/><path d="M3 10h18"/><path d="M7 21l2-4"/><path d="M17 21l-2-4"/><circle cx="7.5" cy="14" r="1"/><circle cx="16.5" cy="14" r="1"/></svg>
-        <span>Transports</span>
+        <span class="loc-trans-label">Transports</span>
+        <span class="loc-trans-time" id="locTimePublic">—</span>
       </button>
     </div>
 
@@ -3172,49 +3166,24 @@ margin: 20px 20px 0;
       </button>
     </div>
 
-    <!-- Boussole + Distance + Temps -->
-    <div class="loc-compass-card" id="locCompassCard">
+    <!-- Boussole compacte -->
+    <button class="loc-compass-card" id="locCompassCard" onclick="activateLocCompass()">
       <div class="loc-compass-ring" id="locCompassRing">
-        <svg viewBox="0 0 120 120" class="loc-compass-svg">
-          <defs>
-            <linearGradient id="compassArrowGrad" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stop-color="var(--primary)"/>
-              <stop offset="100%" stop-color="rgba(61,107,140,0.6)"/>
-            </linearGradient>
-            <filter id="compassGlow" x="-50%" y="-50%" width="200%" height="200%">
-              <feGaussianBlur stdDeviation="2" result="blur"/>
-              <feComposite in="SourceGraphic" in2="blur" operator="over"/>
-            </filter>
-          </defs>
-          <!-- Cercle extérieur double -->
-          <circle cx="60" cy="60" r="56" fill="none" stroke="var(--border)" stroke-width="1" opacity="0.4"/>
-          <circle cx="60" cy="60" r="52" fill="none" stroke="var(--border)" stroke-width="0.5" opacity="0.2" stroke-dasharray="2 4"/>
-          <!-- Graduations fines -->
-          <g stroke="var(--text-tertiary)" opacity="0.35">
-            <line x1="60" y1="6" x2="60" y2="14" stroke-width="1.2"/>
-            <line x1="60" y1="106" x2="60" y2="114" stroke-width="0.6"/>
-            <line x1="6" y1="60" x2="14" y2="60" stroke-width="0.6"/>
-            <line x1="106" y1="60" x2="114" y2="60" stroke-width="0.6"/>
-          </g>
-          <!-- N/S/E/O labels -->
-          <text x="60" y="23" text-anchor="middle" fill="var(--primary)" font-size="9" font-weight="700" letter-spacing="0.5">N</text>
-          <text x="60" y="115" text-anchor="middle" fill="var(--text-tertiary)" font-size="7" font-weight="500">S</text>
-          <text x="112" y="63" text-anchor="middle" fill="var(--text-tertiary)" font-size="7" font-weight="500">E</text>
-          <text x="8" y="63" text-anchor="middle" fill="var(--text-tertiary)" font-size="7" font-weight="500">O</text>
-          <!-- Flèche directionnelle (tournée par JS) -->
-          <g id="locCompassArrow" transform="rotate(0, 60, 60)" filter="url(#compassGlow)">
-            <polygon points="60,22 54,58 60,54 66,58" fill="url(#compassArrowGrad)" opacity="0.9"/>
-            <polygon points="60,98 54,62 60,66 66,62" fill="var(--text-tertiary)" opacity="0.25"/>
-            <circle cx="60" cy="60" r="5" fill="var(--primary)" stroke="#fff" stroke-width="1.5"/>
+        <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="22" height="22">
+          <circle cx="12" cy="12" r="10"/>
+          <g id="locCompassArrow" transform="rotate(0, 12, 12)">
+            <polygon points="12,5 9.5,13 12,12 14.5,13" fill="#fff" stroke="none"/>
+            <polygon points="12,19 9.5,11 12,12 14.5,11" fill="rgba(255,255,255,0.35)" stroke="none"/>
           </g>
         </svg>
       </div>
       <div class="loc-compass-info">
-        <div class="loc-compass-dist" id="locDistValue">—</div>
-        <div class="loc-compass-label" id="locDistLabel">Localisation…</div>
+        <div class="loc-compass-label">M'orienter avec la boussole</div>
+        <div class="loc-compass-dist-label" id="locDistLabel">Localisation…</div>
         <div class="loc-compass-time" id="locTravelTime"></div>
       </div>
-    </div>
+      <div class="loc-compass-dist" id="locDistValue">—</div>
+    </button>
 
     <!-- Bouton AR -->
     <button class="loc-ar-btn" id="locArBtn" onclick="openLocAR()">
@@ -5594,7 +5563,8 @@ margin: 20px 20px 0;
     var walk = Math.ceil(meters / 80); // ~5 km/h
     var bike = Math.ceil(meters / 250); // ~15 km/h
     var car = Math.max(1, Math.ceil(meters / 500)); // ~30 km/h en ville
-    return { walk: walk, bike: bike, car: car };
+    var pub = Math.ceil(meters / 200); // ~12 km/h incluant attente
+    return { walk: walk, bike: bike, car: car, pub: pub };
   }
 
   function updateLocDistance(pos) {
@@ -5606,20 +5576,30 @@ margin: 20px 20px 0;
     var distLabel = document.getElementById('locDistLabel');
     var timeEl = document.getElementById('locTravelTime');
 
+    var tWalk = document.getElementById('locTimeWalk');
+    var tBike = document.getElementById('locTimeBike');
+    var tCar = document.getElementById('locTimeCar');
+    var tPub = document.getElementById('locTimePublic');
+
     if (dist < 15) {
       card.classList.add('loc-arrived');
       distVal.textContent = 'Arrivé !';
       distLabel.textContent = 'Vous êtes à Sauf Imprévu';
-      timeEl.innerHTML = '';
+      if (timeEl) timeEl.innerHTML = '';
+      if (tWalk) tWalk.textContent = '—';
+      if (tBike) tBike.textContent = '—';
+      if (tCar) tCar.textContent = '—';
+      if (tPub) tPub.textContent = '—';
     } else {
       card.classList.remove('loc-arrived');
       distVal.textContent = formatLocDist(dist);
       distLabel.textContent = 'de Sauf Imprévu';
       var t = travelTimes(dist);
-      timeEl.innerHTML =
-        '<span>🚶 ' + t.walk + ' min</span>' +
-        '<span>🚲 ' + t.bike + ' min</span>' +
-        '<span>🚗 ' + t.car + ' min</span>';
+      if (timeEl) timeEl.innerHTML = '';
+      if (tWalk) tWalk.textContent = t.walk + ' min';
+      if (tBike) tBike.textContent = t.bike + ' min';
+      if (tCar) tCar.textContent = t.car + ' min';
+      if (tPub) tPub.textContent = t.pub + ' min';
     }
 
     // Mettre à jour la boussole
@@ -5636,41 +5616,38 @@ margin: 20px 20px 0;
     }
     var arrow = document.getElementById('locCompassArrow');
     if (arrow) {
-      arrow.setAttribute('transform', 'rotate(' + rotation.toFixed(1) + ', 60, 60)');
+      arrow.setAttribute('transform', 'rotate(' + rotation.toFixed(1) + ', 12, 12)');
     }
   }
 
-  // DeviceOrientation pour la boussole
-  function initLocCompass() {
-    // Supprimer ancien bouton si présent
-    var old = document.getElementById('locCompassActivate');
-    if (old) old.remove();
-
+  // Activer la boussole au tap sur la carte compacte
+  var _locCompassActivated = false;
+  function activateLocCompass() {
+    if (_locCompassActivated) return;
     if (typeof DeviceOrientationEvent !== 'undefined' && typeof DeviceOrientationEvent.requestPermission === 'function') {
-      // iOS 13+ : bouton inline dans la zone info
-      var info = document.querySelector('.loc-compass-info');
-      var btn = document.createElement('button');
-      btn.id = 'locCompassActivate';
-      btn.className = 'loc-compass-activate';
-      btn.innerHTML =
-        '<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></svg>' +
-        'Activer la boussole';
-      btn.onclick = function() {
-        DeviceOrientationEvent.requestPermission().then(function(state) {
-          if (state === 'granted') {
-            window.addEventListener('deviceorientation', handleLocOrientation, true);
-            btn.classList.add('loc-compass-activate--granted');
-            btn.innerHTML =
-              '<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>' +
-              'Activée !';
-            setTimeout(function() { btn.style.opacity = '0'; btn.style.transition = 'opacity 0.4s'; setTimeout(function() { btn.remove(); }, 400); }, 1500);
-          }
-        }).catch(function(){});
-      };
-      info.appendChild(btn);
+      DeviceOrientationEvent.requestPermission().then(function(state) {
+        if (state === 'granted') {
+          window.addEventListener('deviceorientation', handleLocOrientation, true);
+          _locCompassActivated = true;
+          var lbl = document.querySelector('#locCompassCard .loc-compass-label');
+          if (lbl) lbl.textContent = 'Boussole active';
+        }
+      }).catch(function(){});
     } else if ('DeviceOrientationEvent' in window) {
       window.addEventListener('deviceorientation', handleLocOrientation, true);
+      _locCompassActivated = true;
     }
+  }
+
+  // DeviceOrientation pour la boussole — activation désormais via le tap sur la carte compacte
+  function initLocCompass() {
+    // Android/desktop : auto-bind (pas de permission requise)
+    if (typeof DeviceOrientationEvent === 'undefined') return;
+    if (typeof DeviceOrientationEvent.requestPermission === 'function') {
+      // iOS 13+ : attendre le tap utilisateur sur locCompassCard → activateLocCompass()
+      return;
+    }
+    window.addEventListener('deviceorientation', handleLocOrientation, true);
   }
 
   function handleLocOrientation(e) {
@@ -5700,7 +5677,7 @@ margin: 20px 20px 0;
     if (btn) btn.classList.add('active');
 
     // Afficher l'itinéraire Google Maps dans une iframe (in-app)
-    var dirflg = mode === 'walk' ? 'w' : (mode === 'bike' ? 'b' : 'r');
+    var dirflg = mode === 'walk' ? 'w' : (mode === 'bike' ? 'b' : (mode === 'car' ? 'd' : 'r'));
     var saddr = (_locUserLat != null && _locUserLng != null) ? (_locUserLat + ',' + _locUserLng) : '';
     var gUrl = 'https://maps.google.com/maps?saddr=' + encodeURIComponent(saddr) +
                '&daddr=' + LOC_LAT + ',' + LOC_LNG +
