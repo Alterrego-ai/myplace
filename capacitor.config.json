@@ -13,7 +13,8 @@
   },
   "ios": {
     "contentInset": "always",
-    "allowsLinkPreview": false
+    "allowsLinkPreview": false,
+    "backgroundColor": "#1a2636"
   },
   "plugins": {
     "SocialLogin": {
