@@ -5758,12 +5758,107 @@ margin: 20px 20px 0;
   });
 
   // ── Déclencher le login : popup sur desktop, redirect sur mobile ──
-  function startSSOLogin() {
+  // ── Détection environnement natif Capacitor iOS ──
+  function isNativeIOS() {
+    return !!(window.Capacitor && window.Capacitor.isNativePlatform && window.Capacitor.isNativePlatform()
+              && window.Capacitor.getPlatform && window.Capacitor.getPlatform() === 'ios');
+  }
+
+  // ── Sign in with Apple (iOS natif) ──
+  async function appleSignIn() {
+    try {
+      if (!window.Capacitor || !window.Capacitor.Plugins || !window.Capacitor.Plugins.SignInWithApple) {
+        console.warn('SignInWithApple plugin indisponible, fallback mySafe');
+        window.location.href = getSSOLoginUrl();
+        return;
+      }
+      var SignInWithApple = window.Capacitor.Plugins.SignInWithApple;
+      var result = await SignInWithApple.authorize({
+        clientId: 'fr.saufimprevu.app',
+        redirectURI: 'https://www.myplace.coach/auth/apple/callback',
+        scopes: 'email name',
+        state: Math.random().toString(36).slice(2),
+      });
+      var r = result && result.response ? result.response : result;
+      if (!r || !r.identityToken) throw new Error('Pas de identityToken');
+
+      // Envoyer au serveur pour vérification + création session
+      var resp = await fetch('/auth/apple', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({
+          identityToken: r.identityToken,
+          user: {
+            givenName: r.givenName || null,
+            familyName: r.familyName || null,
+            email: r.email || null,
+          },
+        }),
+      });
+      var data = await resp.json();
+      if (!data.ok) throw new Error(data.error || 'Auth Apple refusée');
+
+      // Stocker localement + mettre à jour l'UI
+      var payload = Object.assign({}, data.user, { _provider: 'apple' });
+      ssoSave(SSO_KEY, payload);
+      updateAuthUI(payload);
+    } catch (err) {
+      console.error('Apple sign-in error:', err);
+      alert('Connexion Apple échouée : ' + (err.message || err));
+    }
+  }
+
+  // ── Feuille de choix login (iOS natif) ──
+  function openLoginChoiceSheet() {
+    var existing = document.getElementById('loginChoiceSheet');
+    if (existing) existing.remove();
+    var sheet = document.createElement('div');
+    sheet.id = 'loginChoiceSheet';
+    sheet.style.cssText = 'position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,0.5);display:flex;align-items:flex-end;justify-content:center;';
+    sheet.onclick = function(e) { if (e.target === sheet) sheet.remove(); };
+    sheet.innerHTML =
+      '<div style="background:var(--bg);width:100%;max-width:520px;border-radius:20px 20px 0 0;padding:24px 20px calc(24px + env(safe-area-inset-bottom,0px));box-shadow:0 -4px 24px rgba(0,0,0,0.2);">' +
+        '<div style="width:40px;height:4px;background:var(--border);border-radius:2px;margin:-8px auto 16px;"></div>' +
+        '<h3 style="margin:0 0 6px;font-size:20px;font-weight:700;color:var(--text);">Se connecter</h3>' +
+        '<p style="margin:0 0 20px;font-size:13px;color:var(--text-secondary);line-height:1.4;">Choisissez votre méthode de connexion préférée.</p>' +
+
+        // Apple button
+        '<button onclick="document.getElementById(\'loginChoiceSheet\').remove();appleSignIn();" style="width:100%;display:flex;align-items:center;gap:12px;padding:14px 16px;background:#000;color:#fff;border:none;border-radius:12px;cursor:pointer;font-size:15px;font-weight:600;margin-bottom:8px;">' +
+          '<svg width="20" height="20" viewBox="0 0 384 512" fill="#fff" style="flex-shrink:0;"><path d="M318.7 268.7c-.2-36.7 16.4-64.4 50-84.8-18.8-26.9-47.2-41.7-84.7-44.6-35.5-2.8-74.3 20.7-88.5 20.7-15 0-49.4-19.7-76.4-19.7C63.3 141.2 4 184.8 4 273.5q0 39.3 14.4 81.2c12.8 36.7 59 126.7 107.2 125.2 25.2-.6 43-17.9 75.8-17.9 31.8 0 48.3 17.9 76.4 17.9 48.6-.7 90.4-82.5 102.6-119.3-65.2-30.7-61.7-90-61.7-91.9zm-56.6-164.2c27.3-32.4 24.8-61.9 24-72.5-24.1 1.4-52 16.4-67.9 34.9-17.5 19.8-27.8 44.3-25.6 71.9 26.1 2 49.9-11.4 69.5-34.3z"/></svg>' +
+          'Continuer avec Apple' +
+        '</button>' +
+        '<p style="margin:0 0 20px;font-size:11px;color:var(--text-tertiary);line-height:1.4;padding:0 4px;">Rapide et sécurisé via FaceID. Apple peut masquer votre adresse email.</p>' +
+
+        // mySafe button
+        '<button onclick="document.getElementById(\'loginChoiceSheet\').remove();startMySafeLogin();" style="width:100%;display:flex;align-items:center;gap:12px;padding:14px 16px;background:var(--bg-card);color:var(--text);border:1px solid var(--border);border-radius:12px;cursor:pointer;font-size:15px;font-weight:600;margin-bottom:8px;">' +
+          '<svg width="20" height="20" viewBox="0 0 640 640" fill="var(--primary)" style="flex-shrink:0;"><path d="M320 320c70.7 0 128-57.3 128-128S390.7 64 320 64 192 121.3 192 192s57.3 128 128 128zm0 32c-97.2 0-176 78.8-176 176v16c0 17.7 14.3 32 32 32h288c17.7 0 32-14.3 32-32v-16c0-97.2-78.8-176-176-176z"/></svg>' +
+          'Continuer avec mySafe' +
+        '</button>' +
+        '<p style="margin:0 0 8px;font-size:11px;color:var(--text-tertiary);line-height:1.4;padding:0 4px;">Votre identité numérique souveraine, réutilisable sur tous les services partenaires.</p>' +
+
+        '<button onclick="document.getElementById(\'loginChoiceSheet\').remove();" style="width:100%;padding:12px;background:transparent;color:var(--text-secondary);border:none;cursor:pointer;font-size:14px;margin-top:12px;">Annuler</button>' +
+      '</div>';
+    document.body.appendChild(sheet);
+  }
+
+  // mySafe login direct (sans passer par le choix)
+  function startMySafeLogin() {
     if (isDesktop) {
       openSSOPopup();
     } else {
       window.location.href = getSSOLoginUrl();
     }
+  }
+
+  function startSSOLogin() {
+    // Sur iOS natif : afficher le choix Apple / mySafe
+    if (isNativeIOS()) {
+      openLoginChoiceSheet();
+      return;
+    }
+    // Web : mySafe directement
+    startMySafeLogin();
   }
 
   function getStoredUser() {
