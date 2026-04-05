@@ -237,7 +237,7 @@ html, body {
 }
 .chat-chip:active { opacity: 0.8; }
 .chat-chip-ico { font-size: 15px; line-height: 1; flex-shrink: 0; }
-.chat-chip.locked { opacity: 0.55; cursor: not-allowed; position: relative; }
+.chat-chip.locked { opacity: 0.55; cursor: not-allowed; position: relative; white-space: nowrap; max-width: none; }
 .chat-chip.locked:active { opacity: 0.55; }
 .chat-chip-row { display: flex; flex-direction: column; align-items: flex-end; gap: 4px; }
 .chat-chip-meta {
@@ -929,12 +929,12 @@ html, body {
 
     return '<div class="chat-resa-title">📅 Réserver une table</div>' +
       warn +
-      '<div class="chat-resa-field"><div class="chat-resa-label">Date</div>' +
+      '<div class="chat-resa-field"><div class="chat-resa-label">Date souhaitée</div>' +
         '<input type="date" class="chat-resa-date-input" id="resaDate" value="' + resaState.date + '" min="' + min + '" max="' + max + '" onchange="onResaDateChange(this.value)">' +
       '</div>' +
       serviceChips +
       (svcsForDate.length > 0 ? (
-      '<div class="chat-resa-field"><div class="chat-resa-label">Heure (par 10 min)</div>' +
+      '<div class="chat-resa-field"><div class="chat-resa-label">Heure</div>' +
         '<div class="chat-resa-stepper">' +
           '<button type="button" class="chat-resa-step-btn" ' + (canDecH?'':'disabled') + ' onclick="stepResaHeure(-10)">−</button>' +
           '<div class="chat-resa-step-value clickable" onclick="openResaTimePicker()">' + resaState.heure +
@@ -943,7 +943,7 @@ html, body {
           '<button type="button" class="chat-resa-step-btn" ' + (canIncH?'':'disabled') + ' onclick="stepResaHeure(10)">+</button>' +
         '</div>' +
       '</div>' +
-      '<div class="chat-resa-field"><div class="chat-resa-label">Personnes</div>' +
+      '<div class="chat-resa-field"><div class="chat-resa-label">Nombre de convives</div>' +
         '<div class="chat-resa-stepper">' +
           '<button type="button" class="chat-resa-step-btn" ' + (canDecP?'':'disabled') + ' onclick="stepResaPersonnes(-1)">−</button>' +
           '<div class="chat-resa-step-value">' + persLabel + '</div>' +
@@ -951,7 +951,7 @@ html, body {
         '</div>' +
         (resaState.personnes >= 10 ? '<div class="chat-resa-warn" style="margin-top:6px;">Groupe ≥ 10 : contactez-nous pour une privatisation.</div>' : '') +
       '</div>' +
-      '<div class="chat-resa-field"><div class="chat-resa-label">Un souhait particulier ? (facultatif)</div>' +
+      '<div class="chat-resa-field"><div class="chat-resa-label">Une consigne en particulier ?</div>' +
         '<textarea class="chat-resa-textarea" id="resaSouhait" rows="1" placeholder="allergies, anniversaire, accès fauteuil…" oninput="resaState.souhait=this.value">' + (resaState.souhait||'') + '</textarea>' +
       '</div>' +
       buildIdentityHTML() +
@@ -965,7 +965,7 @@ html, body {
     // Mode compact si nom+tel déjà présents et pas en édition
     var hasBoth = resaState.nom && resaState.telephone;
     if (hasBoth && !resaState.identityEdit) {
-      return '<div class="chat-resa-field"><div class="chat-resa-label">Contact</div>' +
+      return '<div class="chat-resa-field"><div class="chat-resa-label">Réserver au nom de</div>' +
         '<div class="chat-resa-identity-compact">' +
           '<div class="info">' +
             '<div class="name">' + escapeHtml(resaState.nom) + '</div>' +
@@ -979,7 +979,7 @@ html, body {
     var telInvalid = resaState.telephone && !isValidPhoneFR(resaState.telephone);
     var saveCheck = !isLogged ? '' :
       '<label class="chat-resa-save-check"><input type="checkbox" id="resaSaveProfile" checked> Mémoriser dans mon profil</label>';
-    return '<div class="chat-resa-field"><div class="chat-resa-label">Contact</div>' +
+    return '<div class="chat-resa-field"><div class="chat-resa-label">Réserver au nom de</div>' +
       '<div class="chat-resa-identity-grid">' +
         '<input type="text" class="chat-resa-text-input" id="resaNom" placeholder="Nom" value="' + escapeHtml(resaState.nom||'') + '" oninput="resaState.nom=this.value" autocomplete="name">' +
         '<input type="tel" inputmode="numeric" class="chat-resa-text-input' + (telInvalid?' invalid':'') + '" id="resaTel" placeholder="06 12 34 56 78" value="' + escapeHtml(telVal) + '" oninput="onResaTelInput(this)" autocomplete="tel-national">' +
@@ -1101,7 +1101,7 @@ html, body {
     syncResaDomToState();
     if (resaState.personnes >= 10) {
       var contactPrivPart = (resaState.nom || resaState.telephone)
-        ? ' Contact : ' + resaState.nom + (resaState.telephone ? ' (' + formatPhoneFR(resaState.telephone) + ')' : '') + '.'
+        ? ' Réserver au nom de : ' + resaState.nom + (resaState.telephone ? ' (' + formatPhoneFR(resaState.telephone) + ')' : '') + '.'
         : '';
       cancelResa();
       setChatSubject('Privatisation');
@@ -1153,7 +1153,7 @@ html, body {
     var dateObj = new Date(resaState.date + 'T00:00:00');
     var dateLabel = dateObj.toLocaleDateString('fr-FR', { weekday:'long', day:'numeric', month:'long' });
     var souhaitPart = resaState.souhait ? ' · ' + resaState.souhait : '';
-    var contactPart = ' · Contact : ' + resaState.nom + ' (' + formatPhoneFR(resaState.telephone) + ')';
+    var contactPart = ' · Réserver au nom de : ' + resaState.nom + ' (' + formatPhoneFR(resaState.telephone) + ')';
     var msg = 'Demande de réservation : ' + dateLabel + ' à ' + resaState.heure +
               ' pour ' + resaState.personnes + (resaState.personnes===1?' personne':' personnes') +
               souhaitPart + contactPart + '. Merci de confirmer la disponibilité.';
