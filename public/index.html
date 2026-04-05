@@ -2313,9 +2313,13 @@ gap: 6px;
 
 .hero-status-group {
 position: absolute;
-top: calc(16px + env(safe-area-inset-top, 0px));
-left: 16px;
+bottom: 100%;
+left: 0;
+margin-bottom: 8px;
 z-index: 50;
+width: 100%;
+display: flex;
+justify-content: center;
 }
 
 .hero-user-btn {
@@ -2618,13 +2622,6 @@ margin: 20px 20px 0;
   <img class="hero-img" src="https://ciss-test-bucket-int.s3.fr-par.scw.cloud/pointofsales/47408/15-vauban-brc-194.png" alt="Sauf Imprévu Bar à vins" />
   <div class="hero-overlay"></div>
   <span class="type-badge">Bar à vins · Restaurant</span>
-  <div class="hero-status-group">
-    <button class="hero-status open" onclick="toggleHours()" aria-expanded="false">
-      <span class="status-dot"></span>
-      <span data-i18n="status_open">Ouvert</span>
-      <svg class="hero-status-chevron" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg>
-    </button>
-  </div>
   <button class="hero-user-btn" id="heroUserBtn" aria-label="Mon profil">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
       <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
@@ -2637,6 +2634,13 @@ margin: 20px 20px 0;
 
 <div class="identity fade-up">
   <div class="logo-wrap" id="logoWrap" style="position:relative;cursor:pointer;" onclick="onLogoClick()">
+    <div class="hero-status-group">
+      <button class="hero-status open" onclick="event.stopPropagation();toggleHours()" aria-expanded="false">
+        <span class="status-dot"></span>
+        <span data-i18n="status_open">Ouvert</span>
+        <svg class="hero-status-chevron" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg>
+      </button>
+    </div>
     <img src="https://ciss-media-dev.s3.fr-par.scw.cloud/pointofsales/47408/15-vauban-brc-187.png" alt="Logo Sauf Imprévu" />
     <!-- Mini-fab Maïa — pastille notification coin haut-droit -->
     <div class="maia-mini-fab" id="maiaMiniFab" style="display:none;">
