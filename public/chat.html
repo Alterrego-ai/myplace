@@ -228,6 +228,69 @@ html, body {
   overflow: hidden; flex-shrink: 0;
 }
 .chat-chip-avatar img { width: 100%; height: 100%; object-fit: cover; }
+/* ── Formulaire Réservation (bulle spéciale assistant) ── */
+.chat-resa-row { display: flex; align-items: flex-end; gap: 8px; align-self: flex-start; max-width: 92%; width: 100%; }
+.chat-resa-avatar { width: 36px; height: 36px; border-radius: 50%; flex-shrink: 0; object-fit: cover; background: #fff; border: 2px solid var(--primary); }
+.chat-resa-form {
+  flex: 1; background: var(--bg-subtle); border-radius: 18px; border-bottom-left-radius: 4px;
+  padding: 14px 14px 12px; display: flex; flex-direction: column; gap: 12px;
+}
+.chat-resa-title { font-size: 14px; font-weight: 700; color: var(--text); }
+.chat-resa-field { display: flex; flex-direction: column; gap: 6px; }
+.chat-resa-label { font-size: 11px; font-weight: 600; color: var(--text-tertiary); text-transform: uppercase; letter-spacing: 0.4px; }
+.chat-resa-date-input {
+  border: 1px solid var(--border); border-radius: 10px; padding: 10px 12px;
+  background: var(--bg-card); color: var(--text); font-family: var(--font); font-size: 14px;
+  outline: none; width: 100%;
+}
+.chat-resa-date-input:focus { border-color: var(--primary); }
+.chat-resa-service-chips { display: flex; gap: 6px; }
+.chat-resa-service-chip {
+  flex: 1; padding: 8px 10px; border-radius: 10px; border: 1px solid var(--border);
+  background: var(--bg-card); color: var(--text); font-family: var(--font); font-size: 13px; font-weight: 600;
+  cursor: pointer; text-align: center;
+}
+.chat-resa-service-chip.active { background: var(--primary); color: #fff; border-color: var(--primary); }
+.chat-resa-stepper { display: flex; align-items: center; gap: 8px; }
+.chat-resa-step-btn {
+  width: 32px; height: 32px; border-radius: 50%; border: 1px solid var(--border);
+  background: var(--bg-card); color: var(--text); font-size: 18px; font-weight: 700;
+  cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+}
+.chat-resa-step-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+.chat-resa-step-btn:active:not(:disabled) { background: var(--bg-subtle); }
+.chat-resa-step-value {
+  flex: 1; text-align: center; font-size: 18px; font-weight: 700; color: var(--text);
+  background: var(--bg-card); border: 1px solid var(--border); border-radius: 10px;
+  padding: 6px 8px; font-variant-numeric: tabular-nums;
+}
+.chat-resa-textarea {
+  border: 1px solid var(--border); border-radius: 10px; padding: 8px 10px;
+  background: var(--bg-card); color: var(--text); font-family: var(--font); font-size: 13px;
+  outline: none; resize: none; min-height: 36px; max-height: 80px; line-height: 1.3;
+}
+.chat-resa-textarea:focus { border-color: var(--primary); }
+.chat-resa-recap {
+  background: var(--bg-card); border: 1px solid var(--border); border-radius: 10px;
+  padding: 10px 12px; display: flex; flex-direction: column; gap: 4px;
+}
+.chat-resa-recap-line { font-size: 13px; color: var(--text); display: flex; gap: 6px; }
+.chat-resa-recap-line b { color: var(--text); font-weight: 600; }
+.chat-resa-actions { display: grid; grid-template-columns: 1fr 1fr 1.3fr; gap: 6px; margin-top: 2px; }
+.chat-resa-btn {
+  padding: 10px 8px; border-radius: 10px; border: 1px solid var(--border);
+  background: var(--bg-card); color: var(--text); font-family: var(--font); font-size: 12px; font-weight: 600;
+  cursor: pointer; text-align: center;
+}
+.chat-resa-btn.primary { background: var(--primary); color: #fff; border-color: var(--primary); font-size: 13px; }
+.chat-resa-btn:active { opacity: 0.8; }
+.chat-resa-warn {
+  background: #fef3c7; color: #78350f; border-radius: 8px; padding: 8px 10px; font-size: 12px; font-weight: 500;
+}
+[data-theme="dark"] .chat-resa-warn { background: #3a2d0f; color: #fde68a; }
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .chat-resa-warn { background: #3a2d0f; color: #fde68a; }
+}
 /* Input bar */
 .chat-input-bar {
   display: flex; gap: 8px; padding: 8px 12px;
@@ -645,10 +708,263 @@ html, body {
     if (el) el.textContent = subject;
   }
   function quickAction(type) {
-    var msg, subject;
-    if (type === 'reserve') { msg = 'Je souhaite réserver une table'; subject = 'Réserver une table'; }
-    else { msg = 'Je souhaite laisser un message'; subject = 'Laisser un message'; }
-    setChatSubject(subject);
+    if (type === 'reserve') {
+      setChatSubject('Réserver une table');
+      showReservationForm();
+      return;
+    }
+    setChatSubject('Laisser un message');
+    chatInput.value = 'Je souhaite laisser un message';
+    sendMessage();
+  }
+
+  // ═══════════════════════════════════════════════════════════════
+  // ── FORMULAIRE RÉSERVATION ──
+  // ═══════════════════════════════════════════════════════════════
+  var AGENDA = null;
+  function loadAgenda() {
+    if (AGENDA) return Promise.resolve(AGENDA);
+    return fetch('/agenda.json').then(function(r){ return r.json(); }).then(function(d){ AGENDA = d; return d; });
+  }
+
+  // Parse RRULE BYDAY into array [0-6] (0=dim, 1=lun...)
+  function bydayToNums(byday) {
+    var map = { SU:0, MO:1, TU:2, WE:3, TH:4, FR:5, SA:6 };
+    return byday.split(',').map(function(d){ return map[d.trim()]; }).filter(function(x){ return x !== undefined; });
+  }
+  function getBookingServices(agenda) {
+    return (agenda.services || []).filter(function(s){ return s.booking && s.booking.enabled; });
+  }
+  function getServiceForDate(date, services) {
+    var day = new Date(date + 'T00:00:00').getDay();
+    return services.filter(function(s){
+      var m = s.recurrence.rrule.match(/BYDAY=([A-Z,]+)/);
+      if (!m) return false;
+      return bydayToNums(m[1]).indexOf(day) >= 0;
+    });
+  }
+  function pad2(n) { return (n < 10 ? '0' : '') + n; }
+  function timeToMin(t) { var p = t.split(':'); return parseInt(p[0])*60 + parseInt(p[1]); }
+  function minToTime(m) { return pad2(Math.floor(m/60)) + ':' + pad2(m%60); }
+
+  // État du formulaire
+  var resaState = {
+    date: null, service: null, heure: null, personnes: 2, souhait: '', mode: 'edit' // 'edit' | 'recap'
+  };
+
+  function showReservationForm() {
+    var welcome = messages.querySelector('.chat-welcome');
+    if (welcome) welcome.remove();
+    chatPage.classList.add('has-started');
+    // Retirer un ancien form éventuel
+    var old = document.getElementById('chatResaRow'); if (old) old.remove();
+
+    loadAgenda().then(function(agenda) {
+      var bookingServices = getBookingServices(agenda);
+      // Date par défaut : aujourd'hui si ouvrable sinon prochain jour ouvrable
+      var today = new Date();
+      var dateStr = today.toISOString().slice(0,10);
+      for (var i = 0; i < 14; i++) {
+        var svcs = getServiceForDate(dateStr, bookingServices);
+        if (svcs.length > 0) break;
+        today.setDate(today.getDate() + 1);
+        dateStr = today.toISOString().slice(0,10);
+      }
+      resaState.date = dateStr;
+      var svcsForDate = getServiceForDate(resaState.date, bookingServices);
+      // Service par défaut : midi si <16h, sinon soir
+      var nowH = new Date().getHours();
+      resaState.service = (svcsForDate.find(function(s){return s.id.indexOf('dejeuner')>=0;}) && nowH < 15) ?
+        svcsForDate.find(function(s){return s.id.indexOf('dejeuner')>=0;}) :
+        (svcsForDate.find(function(s){return s.id.indexOf('diner')>=0;}) || svcsForDate[0]);
+      resaState.heure = resaState.service ? resaState.service.booking.firstSlot : '12:00';
+      resaState.mode = 'edit';
+      renderReservationForm(bookingServices);
+    }).catch(function(err) {
+      console.error('Agenda load failed', err);
+      appendBubble("Je ne parviens pas à charger les disponibilités. Vous pouvez décrire votre demande directement.", 'assistant');
+    });
+  }
+
+  function renderReservationForm(bookingServices) {
+    var row = document.getElementById('chatResaRow');
+    if (!row) {
+      row = document.createElement('div');
+      row.id = 'chatResaRow';
+      row.className = 'chat-resa-row';
+      var avatar = document.createElement('img');
+      avatar.src = '/img/maia.png?v=3'; avatar.alt = 'Maïa';
+      avatar.className = 'chat-resa-avatar';
+      var form = document.createElement('div');
+      form.className = 'chat-resa-form';
+      form.id = 'chatResaForm';
+      row.appendChild(avatar);
+      row.appendChild(form);
+      messages.appendChild(row);
+    }
+    var form = document.getElementById('chatResaForm');
+    var svcsForDate = getServiceForDate(resaState.date, bookingServices);
+
+    if (resaState.mode === 'recap') {
+      form.innerHTML = buildRecapHTML();
+    } else {
+      form.innerHTML = buildFormHTML(svcsForDate, bookingServices);
+    }
+    messages.scrollTop = messages.scrollHeight;
+  }
+
+  function buildFormHTML(svcsForDate, allServices) {
+    var today = new Date(); var min = today.toISOString().slice(0,10);
+    var max = new Date(today.getTime() + 30*24*3600*1000).toISOString().slice(0,10);
+    var warn = '';
+    if (svcsForDate.length === 0) {
+      warn = '<div class="chat-resa-warn">Fermé ce jour-là. Choisissez un autre jour (Lun-Ven).</div>';
+    }
+    // Services chips (seulement si plusieurs)
+    var serviceChips = '';
+    if (svcsForDate.length > 1) {
+      serviceChips = '<div class="chat-resa-field"><div class="chat-resa-label">Service</div><div class="chat-resa-service-chips">' +
+        svcsForDate.map(function(s){
+          var active = resaState.service && resaState.service.id === s.id;
+          return '<button type="button" class="chat-resa-service-chip' + (active?' active':'') + '" onclick="selectResaService(\'' + s.id + '\')">' + (s.icon||'') + ' ' + s.label + '</button>';
+        }).join('') + '</div></div>';
+    }
+    // Bornes heure selon service
+    var firstMin = resaState.service ? timeToMin(resaState.service.booking.firstSlot) : 720;
+    var lastMin = resaState.service ? timeToMin(resaState.service.booking.lastSlot) : 840;
+    var curMin = timeToMin(resaState.heure);
+    var canDecH = curMin > firstMin;
+    var canIncH = curMin < lastMin;
+    // Stepper personnes
+    var canDecP = resaState.personnes > 1;
+    var canIncP = resaState.personnes < 10;
+    var persLabel = resaState.personnes + (resaState.personnes === 1 ? ' personne' : ' personnes');
+
+    return '<div class="chat-resa-title">📅 Réserver une table</div>' +
+      warn +
+      '<div class="chat-resa-field"><div class="chat-resa-label">Date</div>' +
+        '<input type="date" class="chat-resa-date-input" id="resaDate" value="' + resaState.date + '" min="' + min + '" max="' + max + '" onchange="onResaDateChange(this.value)">' +
+      '</div>' +
+      serviceChips +
+      (svcsForDate.length > 0 ? (
+      '<div class="chat-resa-field"><div class="chat-resa-label">Heure (par 10 min)</div>' +
+        '<div class="chat-resa-stepper">' +
+          '<button type="button" class="chat-resa-step-btn" ' + (canDecH?'':'disabled') + ' onclick="stepResaHeure(-10)">−</button>' +
+          '<div class="chat-resa-step-value">' + resaState.heure + '</div>' +
+          '<button type="button" class="chat-resa-step-btn" ' + (canIncH?'':'disabled') + ' onclick="stepResaHeure(10)">+</button>' +
+        '</div>' +
+      '</div>' +
+      '<div class="chat-resa-field"><div class="chat-resa-label">Personnes</div>' +
+        '<div class="chat-resa-stepper">' +
+          '<button type="button" class="chat-resa-step-btn" ' + (canDecP?'':'disabled') + ' onclick="stepResaPersonnes(-1)">−</button>' +
+          '<div class="chat-resa-step-value">' + persLabel + '</div>' +
+          '<button type="button" class="chat-resa-step-btn" ' + (canIncP?'':'disabled') + ' onclick="stepResaPersonnes(1)">+</button>' +
+        '</div>' +
+        (resaState.personnes >= 10 ? '<div class="chat-resa-warn" style="margin-top:6px;">Groupe ≥ 10 : contactez-nous pour une privatisation.</div>' : '') +
+      '</div>' +
+      '<div class="chat-resa-field"><div class="chat-resa-label">Un souhait particulier ? (facultatif)</div>' +
+        '<textarea class="chat-resa-textarea" id="resaSouhait" rows="1" placeholder="allergies, anniversaire, accès fauteuil…" oninput="resaState.souhait=this.value">' + (resaState.souhait||'') + '</textarea>' +
+      '</div>' +
+      '<div class="chat-resa-actions">' +
+        '<button type="button" class="chat-resa-btn" onclick="cancelResa()">Annuler</button>' +
+        '<button type="button" class="chat-resa-btn" onclick="focusResaSouhait()">Préciser</button>' +
+        '<button type="button" class="chat-resa-btn primary" onclick="showResaRecap()">Confirmer</button>' +
+      '</div>'
+      ) : '');
+  }
+
+  function buildRecapHTML() {
+    var dateObj = new Date(resaState.date + 'T00:00:00');
+    var dateLabel = dateObj.toLocaleDateString('fr-FR', { weekday:'long', day:'numeric', month:'long' });
+    var souhaitLine = resaState.souhait ? '<div class="chat-resa-recap-line">💬 <b>' + resaState.souhait.replace(/</g,'&lt;') + '</b></div>' : '';
+    return '<div class="chat-resa-title">Récapitulatif</div>' +
+      '<div class="chat-resa-recap">' +
+        '<div class="chat-resa-recap-line">📅 <b>' + dateLabel + '</b></div>' +
+        '<div class="chat-resa-recap-line">🕒 <b>' + resaState.heure + '</b> · ' + (resaState.service ? resaState.service.label : '') + '</div>' +
+        '<div class="chat-resa-recap-line">👥 <b>' + resaState.personnes + (resaState.personnes===1?' personne':' personnes') + '</b></div>' +
+        souhaitLine +
+      '</div>' +
+      '<div class="chat-resa-actions">' +
+        '<button type="button" class="chat-resa-btn" onclick="cancelResa()">Annuler</button>' +
+        '<button type="button" class="chat-resa-btn" onclick="backToResaEdit()">Préciser</button>' +
+        '<button type="button" class="chat-resa-btn primary" onclick="confirmResa()">Confirmer</button>' +
+      '</div>';
+  }
+
+  // Actions du formulaire
+  function onResaDateChange(v) {
+    resaState.date = v;
+    loadAgenda().then(function(a) {
+      var svcs = getServiceForDate(v, getBookingServices(a));
+      if (svcs.length > 0) {
+        // Garder le service précédent si disponible, sinon prendre le 1er
+        var keep = svcs.find(function(s){ return resaState.service && s.id === resaState.service.id; });
+        resaState.service = keep || svcs[0];
+        resaState.heure = resaState.service.booking.firstSlot;
+      } else {
+        resaState.service = null;
+      }
+      renderReservationForm(getBookingServices(a));
+    });
+  }
+  function selectResaService(id) {
+    loadAgenda().then(function(a) {
+      var all = getBookingServices(a);
+      var s = all.find(function(x){ return x.id === id; });
+      if (s) { resaState.service = s; resaState.heure = s.booking.firstSlot; }
+      renderReservationForm(all);
+    });
+  }
+  function stepResaHeure(delta) {
+    var firstMin = timeToMin(resaState.service.booking.firstSlot);
+    var lastMin = timeToMin(resaState.service.booking.lastSlot);
+    var cur = timeToMin(resaState.heure) + delta;
+    if (cur < firstMin) cur = firstMin;
+    if (cur > lastMin) cur = lastMin;
+    resaState.heure = minToTime(cur);
+    loadAgenda().then(function(a){ renderReservationForm(getBookingServices(a)); });
+  }
+  function stepResaPersonnes(delta) {
+    var v = resaState.personnes + delta;
+    if (v < 1) v = 1; if (v > 10) v = 10;
+    resaState.personnes = v;
+    // Sync souhait depuis le DOM avant re-render
+    var ta = document.getElementById('resaSouhait'); if (ta) resaState.souhait = ta.value;
+    loadAgenda().then(function(a){ renderReservationForm(getBookingServices(a)); });
+  }
+  function focusResaSouhait() {
+    var ta = document.getElementById('resaSouhait'); if (ta) ta.focus();
+  }
+  function cancelResa() {
+    var row = document.getElementById('chatResaRow'); if (row) row.remove();
+    setChatSubject('Discuter avec Maïa');
+  }
+  function showResaRecap() {
+    var ta = document.getElementById('resaSouhait'); if (ta) resaState.souhait = ta.value;
+    if (resaState.personnes >= 10) {
+      cancelResa();
+      setChatSubject('Privatisation');
+      chatInput.value = 'Je souhaite privatiser l\'espace pour un groupe de ' + resaState.personnes + ' personnes le ' + resaState.date + '. Pouvez-vous me contacter pour les détails ?';
+      sendMessage();
+      return;
+    }
+    resaState.mode = 'recap';
+    loadAgenda().then(function(a){ renderReservationForm(getBookingServices(a)); });
+  }
+  function backToResaEdit() {
+    resaState.mode = 'edit';
+    loadAgenda().then(function(a){ renderReservationForm(getBookingServices(a)); });
+  }
+  function confirmResa() {
+    var dateObj = new Date(resaState.date + 'T00:00:00');
+    var dateLabel = dateObj.toLocaleDateString('fr-FR', { weekday:'long', day:'numeric', month:'long' });
+    var souhaitPart = resaState.souhait ? ' · ' + resaState.souhait : '';
+    var msg = 'Demande de réservation : ' + dateLabel + ' à ' + resaState.heure +
+              ' pour ' + resaState.personnes + (resaState.personnes===1?' personne':' personnes') +
+              souhaitPart + '. Merci de vérifier la disponibilité.';
+    // Remove the form
+    var row = document.getElementById('chatResaRow'); if (row) row.remove();
+    // Send to Maia
     chatInput.value = msg;
     sendMessage();
   }
