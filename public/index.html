@@ -2441,10 +2441,16 @@ margin: 20px 20px 0;
 }
 
 /* ── FEATURED EVENT CARD ── */
-.evt-section { padding: 16px 0 0; }
+.evt-section { padding: 28px 0 20px; }
 .evt-section-title {
   font-size: 14px; font-weight: 700; color: var(--text);
   margin: 0 20px 12px; display: flex; align-items: center; gap: 8px;
+}
+.evt-section-title-left { display: flex; align-items: center; gap: 8px; flex: 1; }
+.evt-section-title-link {
+  font-size: 12px; font-weight: 600; color: var(--primary);
+  text-decoration: none; display: inline-flex; align-items: center; gap: 2px;
+  cursor: pointer;
 }
 .evt-carousel {
   display: flex; gap: 12px;
@@ -2460,6 +2466,14 @@ margin: 20px 20px 0;
   scroll-snap-align: center;
   margin-top: 0 !important;
 }
+.evt-dots {
+  display: flex; justify-content: center; gap: 6px; margin-top: 12px;
+}
+.evt-dot {
+  width: 6px; height: 6px; border-radius: 50%;
+  background: var(--border); transition: all 0.25s ease;
+}
+.evt-dot.active { background: var(--primary); width: 18px; border-radius: 3px; }
 .evt-card {
   position: relative; border-radius: var(--radius); overflow: hidden;
   background: var(--bg-card); box-shadow: var(--shadow-md);
@@ -3820,15 +3834,20 @@ margin: 20px 20px 0;
   function renderFeaturedEvents() {
     if (!AGENDA_DATA || !AGENDA_DATA.events) return;
     var todayStr = new Date().toISOString().slice(0,10);
-    var upcoming = AGENDA_DATA.events.filter(function(e) { return e.date >= todayStr; });
-    if (upcoming.length === 0) return;
+    var allUpcoming = AGENDA_DATA.events.filter(function(e) { return e.date >= todayStr; });
+    if (allUpcoming.length === 0) return;
+    var upcoming = allUpcoming.slice(0, 5);
+    var hasMore = allUpcoming.length > upcoming.length;
 
     var section = document.getElementById('evtSection');
     if (!section) return;
     section.style.display = '';
 
-    var html = '<div class="evt-section-title"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg> Nos prochains événements</div>';
-    html += '<div class="evt-carousel">';
+    var html = '<div class="evt-section-title">';
+    html += '<div class="evt-section-title-left"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg> Nos prochains événements</div>';
+    html += '<a class="evt-section-title-link" onclick="openAllEvents()">Voir tout <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg></a>';
+    html += '</div>';
+    html += '<div class="evt-carousel" id="evtCarousel">';
 
     upcoming.forEach(function(ev, idx) {
       var d = new Date(ev.date);
@@ -3910,7 +3929,35 @@ margin: 20px 20px 0;
     });
     html += '</div>'; // carousel
 
+    if (upcoming.length > 1) {
+      html += '<div class="evt-dots" id="evtDots">';
+      for (var i = 0; i < upcoming.length; i++) {
+        html += '<div class="evt-dot' + (i === 0 ? ' active' : '') + '"></div>';
+      }
+      html += '</div>';
+    }
+
     section.innerHTML = html;
+
+    // Sync dots with scroll
+    var carousel = document.getElementById('evtCarousel');
+    var dotsWrap = document.getElementById('evtDots');
+    if (carousel && dotsWrap) {
+      var dots = dotsWrap.querySelectorAll('.evt-dot');
+      carousel.addEventListener('scroll', function() {
+        var cards = carousel.querySelectorAll('.evt-card');
+        if (!cards.length) return;
+        var cardWidth = cards[0].offsetWidth + 12; // gap
+        var idx = Math.round(carousel.scrollLeft / cardWidth);
+        idx = Math.max(0, Math.min(dots.length - 1, idx));
+        dots.forEach(function(d, i) { d.classList.toggle('active', i === idx); });
+      }, { passive: true });
+    }
+  }
+
+  function openAllEvents() {
+    // TODO: open full events list sheet
+    console.log('openAllEvents');
   }
 
   // ── Event detail bottom sheet ──
