@@ -192,6 +192,18 @@ html, body {
 .chat-bubble.typing {
   align-self: flex-start; background: var(--bg-subtle); color: var(--text-tertiary); font-style: italic;
 }
+/* Chips d'action émises par l'agent via [[chips]]...[[/chips]] */
+.chat-action-chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px; }
+.chat-action-chip {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 8px 12px; border-radius: 16px;
+  border: 1px solid var(--primary); background: var(--bg-card); color: var(--primary);
+  font-family: var(--font); font-size: 13px; font-weight: 600; cursor: pointer;
+}
+.chat-action-chip:active { background: var(--bg-subtle); }
+.chat-action-chip.locked { border-color: var(--border); color: var(--text-tertiary); opacity: 0.9; }
+.chat-action-chip.locked .lock { font-size: 11px; }
+.chat-action-chip.danger { border-color: var(--border); color: var(--text-tertiary); }
 .typing-dots span {
   animation: typingDot 1.4s infinite; display: inline-block; font-size: 18px; letter-spacing: 2px;
 }
@@ -253,9 +265,11 @@ html, body {
 .chat-resa-field { display: flex; flex-direction: column; gap: 6px; }
 .chat-resa-label { font-size: 11px; font-weight: 600; color: var(--text-tertiary); text-transform: uppercase; letter-spacing: 0.4px; }
 .chat-resa-date-input {
-  border: 1px solid var(--border); border-radius: 10px; padding: 10px 12px;
-  background: var(--bg-card); color: var(--text); font-family: var(--font); font-size: 14px;
-  outline: none; width: 100%;
+  border: 1px solid var(--border); border-radius: 10px; padding: 6px 8px;
+  background: var(--bg-card); color: var(--text); font-family: var(--font);
+  font-size: 18px; font-weight: 700; text-align: center;
+  outline: none; width: 100%; min-width: 0; font-variant-numeric: tabular-nums;
+  -webkit-appearance: none; appearance: none;
 }
 .chat-resa-date-input:focus { border-color: var(--primary); }
 .chat-resa-service-chips { display: flex; gap: 6px; }
@@ -1160,6 +1174,54 @@ html, body {
     sendMessage();
   }
 
+  // Parse bloc chips "Label|action:xxx|locked" (une chip par ligne)
+  function buildActionChips(raw) {
+    var lines = raw.split('\n').map(function(l){return l.trim();}).filter(Boolean);
+    if (!lines.length) return '';
+    var html = '<div class="chat-action-chips">';
+    lines.forEach(function(line){
+      var parts = line.split('|').map(function(p){return p.trim();});
+      var label = parts[0] || '';
+      var action = 'noop';
+      var flags = [];
+      for (var i=1;i<parts.length;i++) {
+        var p = parts[i];
+        if (p.indexOf('action:') === 0) action = p.slice(7);
+        else flags.push(p);
+      }
+      var locked = flags.indexOf('locked') >= 0;
+      var danger = flags.indexOf('danger') >= 0;
+      var cls = 'chat-action-chip' + (locked?' locked':'') + (danger?' danger':'');
+      var prefix = locked ? '<span class="lock">🔒</span> ' : '';
+      var safeLabel = String(label).replace(/&/g,'&amp;').replace(/</g,'&lt;');
+      var safeAction = String(action).replace(/"/g,'&quot;');
+      html += '<button type="button" class="' + cls + '" onclick="handleChatAction(\'' + safeAction + '\', this)">' + prefix + safeLabel + '</button>';
+    });
+    html += '</div>';
+    return html;
+  }
+
+  // Dispatcher des actions de chips
+  window.handleChatAction = function(action, btn) {
+    // Verrouille la zone de chips après clic (anti double-tap)
+    if (btn && btn.parentNode) { btn.parentNode.style.pointerEvents = 'none'; btn.parentNode.style.opacity = '0.6'; }
+    if (action === 'newDate') {
+      showReservationForm();
+    } else if (action === 'cancel') {
+      setChatSubject('Discuter avec Maïa');
+      appendBubble('D\'accord, je reste à votre disposition.', 'assistant');
+    } else if (action === 'showDates') {
+      // Feature premium verrouillée
+      appendBubble('Cette fonction est réservée aux membres. Créez un compte pour débloquer les disponibilités sur 30 jours.', 'assistant');
+    } else if (action === 'retryConfirm') {
+      confirmResa();
+    } else if (action && action.indexOf('send:') === 0) {
+      // send:texte libre → envoie un message
+      chatInput.value = action.slice(5);
+      sendMessage();
+    }
+  };
+
   function buildUserAvatarEl() {
     var el = document.createElement('div');
     el.className = 'chat-user-avatar';
@@ -1205,7 +1267,15 @@ html, body {
       if (role === 'typing') {
         bubble.innerHTML = '<span class="typing-dots"><span>.</span><span>.</span><span>.</span></span>';
       } else {
-        bubble.innerHTML = text.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br>');
+        // Extract chips block if present
+        var chipsHtml = '';
+        var cleanText = text;
+        var m = text.match(/\[\[chips\]\]([\s\S]*?)\[\[\/chips\]\]/);
+        if (m) {
+          cleanText = text.replace(m[0], '').trim();
+          chipsHtml = buildActionChips(m[1]);
+        }
+        bubble.innerHTML = cleanText.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br>') + chipsHtml;
       }
       row.appendChild(avatar);
       row.appendChild(bubble);

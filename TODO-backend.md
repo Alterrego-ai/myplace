@@ -47,3 +47,69 @@ Quand Maïa reçoit un message type :
 ### Endpoint dispo (à créer ou exposer à l'agent)
 `GET /api/availability?date=2026-04-14&service=diner&personnes=4`
 → `{ available: true, remaining: 20 }` basé sur `maxCouverts - reservations_du_service`.
+
+---
+
+## Tools à exposer à Maïa (agent)
+
+L'agent doit recevoir le message structuré du front (format) :
+> Demande de réservation : jeudi 16 avril à 12:30 pour 5 personnes · Contact : Romaric Riquoir (06 07 39 14 59). Merci de confirmer la disponibilité.
+
+Puis appeler **automatiquement** ces 2 tools dans l'ordre.
+
+### Tool 1 : `check_availability`
+**Paramètres** : `{ date: "YYYY-MM-DD", service: "dejeuner|diner", personnes: number }`
+**Retour** :
+```js
+// Cas dispo
+{ available: true, remaining: 12, capacity: 24 }
+// Cas complet
+{ available: false, reason: "full", capacity: 24, booked: 24 }
+// Cas fermé
+{ available: false, reason: "closed" }
+```
+**Impl** : lit `agenda.json` (maxCouverts du service) + SUM couverts des résas existantes pour (date, service).
+
+### Tool 2 : `create_reservation`
+**Paramètres** : `{ date, service, heure, personnes, nom, telephone, souhait, user_id? }`
+**Retour** : `{ ok: true, reservation_id: "..." }` ou `{ ok: false, error: "..." }`
+**Impl** : INSERT dans `reservations` + envoi SMS/email de confirmation (optionnel).
+
+---
+
+## Format de réponse de l'agent avec chips d'action
+
+Le front parse un bloc `[[chips]]…[[/chips]]` dans les messages de Maïa et rend des boutons cliquables.
+
+**Syntaxe** : une chip par ligne, format `Label|action:xxx|flag1|flag2`
+
+**Actions reconnues côté front** :
+- `newDate` → rouvre le formulaire de résa
+- `cancel` → ferme poliment la conversation résa
+- `showDates` → feature premium verrouillée (incite création de compte)
+- `retryConfirm` → relance confirmResa (ré-appelle le tool create_reservation)
+- `send:<texte libre>` → envoie le texte comme message user
+
+**Flags** :
+- `locked` → chip grisée avec cadenas 🔒 (premium)
+- `danger` → chip secondaire (Abandonner/Annuler)
+
+### Exemples pour le prompt de Maïa
+
+**Cas refus (complet)** :
+```
+Désolée, le déjeuner du jeudi 16 avril est complet 😕
+Souhaitez-vous essayer une autre date ?
+[[chips]]
+Changer de date|action:newDate
+Voir les dates libres|action:showDates|locked
+Abandonner|action:cancel|danger
+[[/chips]]
+```
+
+**Cas confirmation OK** :
+```
+✅ C'est confirmé, Romaric ! Je vous attends jeudi 16 avril à 12:30 pour 5 personnes.
+Un SMS de confirmation vient de partir au 06 07 39 14 59.
+```
+(pas de chips, juste le texte)
