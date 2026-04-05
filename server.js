@@ -112,6 +112,10 @@ app.use(session({
 // ── Auth OIDC mySafe ─────────────────────────────────────────────────────────
 app.use(injectUser);
 authRoutes(app);
+
+// ── Sign in with Apple ───────────────────────────────────────────────────────
+const { appleAuthRoutes } = require('./apple-auth');
+appleAuthRoutes(app, sessionDb);
 if (process.env.OIDC_CLIENT_ID) {
   initOIDC().then(() => console.log('✓ OIDC mySafe initialisé')).catch(e => console.warn('⚠ OIDC init:', e.message));
 } else {
