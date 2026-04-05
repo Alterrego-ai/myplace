@@ -2407,9 +2407,12 @@ font-weight: 500;
 }
 
 /* ── ANIMATIONS ── */
+/* Les fade-up ne jouent qu'après la disparition du splash (classe .ready sur body) */
 .fade-up {
 opacity: 0;
 transform: translateY(16px);
+}
+body.ready .fade-up {
 animation: fadeUp 0.45s cubic-bezier(0.4, 0, 0.2, 1) forwards;
 }
 
@@ -2417,12 +2420,14 @@ animation: fadeUp 0.45s cubic-bezier(0.4, 0, 0.2, 1) forwards;
 to { opacity: 1; transform: translateY(0); }
 }
 
-.fade-up:nth-child(1) { animation-delay: 0.05s; }
-.fade-up:nth-child(2) { animation-delay: 0.12s; }
-.fade-up:nth-child(3) { animation-delay: 0.19s; }
-.fade-up:nth-child(4) { animation-delay: 0.26s; }
-.fade-up:nth-child(5) { animation-delay: 0.33s; }
-.fade-up:nth-child(6) { animation-delay: 0.40s; }
+body.ready .fade-up:nth-child(1) { animation-delay: 0.05s; }
+body.ready .fade-up:nth-child(2) { animation-delay: 0.12s; }
+body.ready .fade-up:nth-child(3) { animation-delay: 0.19s; }
+body.ready .fade-up:nth-child(4) { animation-delay: 0.26s; }
+body.ready .fade-up:nth-child(5) { animation-delay: 0.33s; }
+body.ready .fade-up:nth-child(6) { animation-delay: 0.40s; }
+/* Si pas de splash (déjà vu), montrer directement */
+body.no-splash .fade-up { opacity: 1; transform: none; }
 
 /* ── DIVIDER ── */
 .divider {
@@ -3639,18 +3644,20 @@ margin: 20px 20px 0;
     var showSplash = !lastSeen || (now - parseInt(lastSeen, 10)) > oneDay;
 
     if (!showSplash) {
-      // Déjà vue aujourd'hui → masquer immédiatement
+      // Déjà vue aujourd'hui → masquer immédiatement, contenu visible direct
       splash.remove();
       document.documentElement.style.background = '';
+      document.body.classList.add('no-splash');
       return;
     }
 
-    // Première visite de la journée → afficher 3 secondes
+    // Première visite de la journée → afficher le splash, puis révéler le contenu
     localStorage.setItem(SPLASH_KEY, String(now));
     window.addEventListener('load', function() {
       setTimeout(function() {
         splash.classList.add('hidden');
         document.documentElement.style.background = '';
+        document.body.classList.add('ready');
         setTimeout(function() { splash.remove(); }, 600);
       }, 3000);
     });
