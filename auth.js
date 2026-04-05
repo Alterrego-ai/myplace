@@ -306,18 +306,44 @@ function authRoutes(router) {
     }
   });
 
-  // --- PROFIL mySafe : redirige vers la page de gestion du compte mySafe ---
-  // Renvoie une page HTML intermédiaire qui navigue via JS (évite le 302 intercepté par Capacitor)
-  router.get('/auth/mysafe-profile', (req, res) => {
-    const mySafeUrl = 'https://mysafe.services';
-    res.send(`<!DOCTYPE html><html><head><meta charset="utf-8">
-      <meta name="viewport" content="width=device-width,initial-scale=1">
-      <style>body{display:flex;align-items:center;justify-content:center;height:100vh;margin:0;font-family:-apple-system,sans-serif;background:#f5f5f5;color:#333;}
-      .loader{text-align:center}.spinner{width:32px;height:32px;border:3px solid #e0e0e0;border-top:3px solid #3D6B8C;border-radius:50%;animation:spin 0.8s linear infinite;margin:0 auto 12px;}
-      @keyframes spin{to{transform:rotate(360deg)}}</style>
-      </head><body><div class="loader"><div class="spinner"></div><div>Redirection vers mySafe...</div></div>
-      <script>window.location.href="${mySafeUrl}";</script>
-      </body></html>`);
+  // --- PROFIL mySafe : redirige vers mySafe avec le token OIDC ---
+  // Essaye plusieurs méthodes pour que mySafe reconnaisse l'utilisateur
+  router.get('/auth/mysafe-profile', async (req, res) => {
+    const mySafeBase = 'https://mysafe.services';
+
+    // Si on a les tokens OIDC en session, les transmettre à mySafe
+    if (req.session && req.session.tokens) {
+      const { access_token, id_token } = req.session.tokens;
+
+      // Méthode 1 : passer l'access_token en query param (standard OAuth2)
+      // mySafe peut l'utiliser pour créer une session
+      if (access_token) {
+        return res.redirect(`${mySafeBase}/account?access_token=${encodeURIComponent(access_token)}`);
+      }
+    }
+
+    // Pas de tokens → relancer le flow OIDC complet
+    try {
+      const oidcClient = await initOIDC();
+      const codeVerifier = generators.codeVerifier();
+      const codeChallenge = generators.codeChallenge(codeVerifier);
+      const state = generators.state();
+
+      req.session.oidc = { codeVerifier, state };
+      req.session.returnTo = '/auth/mysafe-profile';
+
+      const authUrl = oidcClient.authorizationUrl({
+        scope: 'openid birthday emails phones addresses account_id',
+        state,
+        code_challenge: codeChallenge,
+        code_challenge_method: 'S256',
+      });
+
+      res.redirect(authUrl);
+    } catch (err) {
+      console.error('❌ mySafe profile redirect error:', err.message);
+      res.redirect(mySafeBase);
+    }
   });
 
   // --- API : info utilisateur courant (pour le frontend same-origin) ---

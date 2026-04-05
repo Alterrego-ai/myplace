@@ -6,8 +6,8 @@ class MyViewController: CAPBridgeViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        // WebView edge-to-edge : pas de safe area en haut
-        webView?.scrollView.contentInsetAdjustmentBehavior = .never
+        // Laisser le WebView respecter les safe areas iOS (status bar, notch)
+        // Le CSS env(safe-area-inset-top) gère le positionnement du contenu
     }
 
     override var preferredStatusBarStyle: UIStatusBarStyle {
