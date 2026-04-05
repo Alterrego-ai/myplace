@@ -2315,7 +2315,7 @@ gap: 6px;
 position: absolute;
 bottom: 100%;
 left: 0;
-margin-bottom: 8px;
+margin-bottom: 48px;
 z-index: 50;
 width: 100%;
 display: flex;
@@ -2324,7 +2324,7 @@ justify-content: center;
 
 .hero-user-btn {
 position: absolute;
-top: calc(16px + env(safe-area-inset-top, 0px));
+top: calc(env(safe-area-inset-top, 0px) - 4px);
 right: 16px;
 z-index: 50;
 width: 36px;
@@ -5764,12 +5764,15 @@ margin: 20px 20px 0;
               && window.Capacitor.getPlatform && window.Capacitor.getPlatform() === 'ios');
   }
 
-  // ── Sign in with Apple (iOS natif) ──
+  // ── Sign in with Apple (via @capacitor-community/apple-sign-in) ──
   async function appleSignIn() {
     try {
       if (!window.Capacitor || !window.Capacitor.Plugins || !window.Capacitor.Plugins.SignInWithApple) {
-        console.warn('SignInWithApple plugin indisponible, fallback mySafe');
-        window.location.href = getSSOLoginUrl();
+        console.error('Plugin SignInWithApple introuvable', {
+          hasCapacitor: !!window.Capacitor,
+          plugins: window.Capacitor && window.Capacitor.Plugins ? Object.keys(window.Capacitor.Plugins) : [],
+        });
+        alert('Connexion Apple indisponible : le plugin n\'est pas installé dans cette version de l\'app.');
         return;
       }
       var SignInWithApple = window.Capacitor.Plugins.SignInWithApple;
@@ -5780,9 +5783,8 @@ margin: 20px 20px 0;
         state: Math.random().toString(36).slice(2),
       });
       var r = result && result.response ? result.response : result;
-      if (!r || !r.identityToken) throw new Error('Pas de identityToken');
+      if (!r || !r.identityToken) throw new Error('Pas de identityToken reçu');
 
-      // Envoyer au serveur pour vérification + création session
       var resp = await fetch('/auth/apple', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -5799,7 +5801,6 @@ margin: 20px 20px 0;
       var data = await resp.json();
       if (!data.ok) throw new Error(data.error || 'Auth Apple refusée');
 
-      // Stocker localement + mettre à jour l'UI
       var payload = Object.assign({}, data.user, { _provider: 'apple' });
       ssoSave(SSO_KEY, payload);
       updateAuthUI(payload);

@@ -16,8 +16,13 @@ const https = require('https');
 const APPLE_ISSUER = 'https://appleid.apple.com';
 const APPLE_JWKS_URL = 'https://appleid.apple.com/auth/keys';
 
-// Bundle ID = audience attendue dans le JWT
-const APPLE_AUDIENCE = process.env.APPLE_BUNDLE_ID || 'fr.saufimprevu.app';
+// Audiences acceptées dans le JWT :
+// - Bundle ID (app iOS native)
+// - Services ID (web via Apple JS SDK)
+const APPLE_AUDIENCES = [
+  process.env.APPLE_BUNDLE_ID || 'fr.saufimprevu.app',
+  process.env.APPLE_SERVICES_ID || 'com.saufimprevu.web',
+].filter(Boolean);
 
 // ── Cache des clés publiques Apple (TTL 1h) ──────────────────────────────────
 let jwksCache = null;
@@ -76,7 +81,7 @@ async function verifyAppleIdentityToken(idToken) {
 
   // Vérifier les claims
   if (payload.iss !== APPLE_ISSUER) throw new Error('Issuer invalide: ' + payload.iss);
-  if (payload.aud !== APPLE_AUDIENCE) throw new Error('Audience invalide: ' + payload.aud);
+  if (!APPLE_AUDIENCES.includes(payload.aud)) throw new Error('Audience invalide: ' + payload.aud);
   const now = Math.floor(Date.now() / 1000);
   if (payload.exp < now) throw new Error('Token expiré');
   if (payload.iat > now + 60) throw new Error('Token futur');

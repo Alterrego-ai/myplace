@@ -14,5 +14,15 @@
   "ios": {
     "contentInset": "always",
     "allowsLinkPreview": false
+  },
+  "plugins": {
+    "SocialLogin": {
+      "providers": {
+        "google": false,
+        "facebook": false,
+        "apple": true,
+        "twitter": false
+      }
+    }
   }
 }
