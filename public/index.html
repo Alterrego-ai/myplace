@@ -2313,18 +2313,23 @@ gap: 6px;
 
 .hero-status-group {
 position: absolute;
-bottom: 100%;
-left: 0;
-margin-bottom: 28px;
+top: calc(8px + env(safe-area-inset-top, 0px));
+left: 16px;
 z-index: 50;
-width: 100%;
-display: flex;
-justify-content: center;
+height: 36px;
+display: inline-flex;
+align-items: center;
+}
+
+.hero-status-group .hero-status {
+height: 36px;
+padding-top: 0;
+padding-bottom: 0;
 }
 
 .hero-user-btn {
 position: absolute;
-top: calc(-4px + env(safe-area-inset-top, 0px));
+top: calc(8px + env(safe-area-inset-top, 0px));
 right: 16px;
 z-index: 50;
 width: 36px;
@@ -2628,19 +2633,19 @@ margin: 20px 20px 0;
   <button class="hero-user-btn" id="heroUserBtn" aria-label="Mon profil">
     <svg viewBox="0 0 640 640" fill="var(--primary)" style="width:20px;height:20px;"><path d="M240 192C240 147.8 275.8 112 320 112C364.2 112 400 147.8 400 192C400 236.2 364.2 272 320 272C275.8 272 240 236.2 240 192zM448 192C448 121.3 390.7 64 320 64C249.3 64 192 121.3 192 192C192 262.7 249.3 320 320 320C390.7 320 448 262.7 448 192zM144 544C144 473.3 201.3 416 272 416L368 416C438.7 416 496 473.3 496 544L496 552C496 565.3 506.7 576 520 576C533.3 576 544 565.3 544 552L544 544C544 446.8 465.2 368 368 368L272 368C174.8 368 96 446.8 96 544L96 552C96 565.3 106.7 576 120 576C133.3 576 144 565.3 144 552L144 544z"/></svg>
   </button>
+  <div class="hero-status-group">
+    <button class="hero-status open" onclick="event.stopPropagation();toggleHours()" aria-expanded="false">
+      <span class="status-dot"></span>
+      <span data-i18n="status_open">Ouvert</span>
+      <svg class="hero-status-chevron" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg>
+    </button>
+  </div>
 </div>
 
 <!-- IDENTITY + STATUS -->
 
 <div class="identity fade-up">
   <div class="logo-wrap" id="logoWrap" style="position:relative;cursor:pointer;" onclick="onLogoClick()">
-    <div class="hero-status-group">
-      <button class="hero-status open" onclick="event.stopPropagation();toggleHours()" aria-expanded="false">
-        <span class="status-dot"></span>
-        <span data-i18n="status_open">Ouvert</span>
-        <svg class="hero-status-chevron" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg>
-      </button>
-    </div>
     <img src="https://ciss-media-dev.s3.fr-par.scw.cloud/pointofsales/47408/15-vauban-brc-187.png" alt="Logo Sauf Imprévu" />
     <!-- Mini-fab Maïa — pastille notification coin haut-droit -->
     <div class="maia-mini-fab" id="maiaMiniFab" style="display:none;">
