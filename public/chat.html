@@ -212,6 +212,22 @@ html, body {
 }
 .chat-chip:active { opacity: 0.8; }
 .chat-chip-ico { font-size: 15px; line-height: 1; flex-shrink: 0; }
+.chat-chip.locked { opacity: 0.55; cursor: not-allowed; position: relative; }
+.chat-chip.locked:active { opacity: 0.55; }
+.chat-chip-row { display: flex; flex-direction: column; align-items: flex-end; gap: 4px; }
+.chat-chip-meta {
+  display: flex; align-items: center; gap: 6px;
+  font-size: 11px; font-weight: 600; color: var(--text-tertiary);
+  padding-right: 4px;
+}
+.chat-chip-avatar {
+  width: 22px; height: 22px; border-radius: 50%;
+  background: var(--bg-subtle); border: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: center;
+  color: var(--text-tertiary); font-size: 10px; font-weight: 700;
+  overflow: hidden; flex-shrink: 0;
+}
+.chat-chip-avatar img { width: 100%; height: 100%; object-fit: cover; }
 /* Input bar */
 .chat-input-bar {
   display: flex; gap: 8px; padding: 8px 12px;
@@ -464,6 +480,15 @@ html, body {
         '<button class="chat-chip" onclick="quickAction(\'message\')">' +
           '<span class="chat-chip-ico">✉️</span> Laisser un message' +
         '</button>' +
+        '<div class="chat-chip-row">' +
+          '<button class="chat-chip locked" disabled>' +
+            '<span class="chat-chip-ico">🍷</span> Acheter à prix club' +
+          '</button>' +
+          '<div class="chat-chip-meta">' +
+            '<span>👑 Premium · bientôt</span>' +
+            '<div class="chat-chip-avatar" id="chatChipAvatar">?</div>' +
+          '</div>' +
+        '</div>' +
       '</div>' +
     '</div>';
   }
@@ -563,9 +588,26 @@ html, body {
   } else if (!isLogged) {
     messages.innerHTML = buildWelcome();
     chatInput.placeholder = I18N.t('chat_placeholder');
+    fillChipAvatar();
   } else {
     messages.innerHTML = buildWelcome();
     chatInput.placeholder = I18N.t('chat_placeholder');
+    fillChipAvatar();
+  }
+
+  // ── Mini avatar sur chips verrouillés (initiales ou photo) ──
+  function fillChipAvatar() {
+    var el = document.getElementById('chatChipAvatar');
+    if (!el) return;
+    if (isLogged && user) {
+      var hardcoded = { 'rriquoir@me.com': '/img/avatar_RR.jpg' };
+      var pic = user.picture || (user.email && hardcoded[user.email]) || null;
+      var name = user.name || '';
+      var initials = name.trim().split(/\s+/).slice(0,2).map(function(w){return w.charAt(0).toUpperCase();}).join('') || '?';
+      el.innerHTML = pic ? '<img src="' + pic + '" alt="" onerror="this.parentNode.textContent=\'' + initials + '\'">' : initials;
+    } else {
+      el.innerHTML = '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>';
+    }
   }
 
   // ── Pill login : avatar si loggué, icone user sinon ──
