@@ -232,9 +232,10 @@ html, body {
 .chat-resa-row { display: flex; align-items: flex-end; gap: 8px; align-self: flex-start; max-width: 92%; width: 100%; }
 .chat-resa-avatar { width: 36px; height: 36px; border-radius: 50%; flex-shrink: 0; object-fit: cover; background: #fff; border: 2px solid var(--primary); }
 .chat-resa-form {
-  flex: 1; background: var(--bg-subtle); border-radius: 18px; border-bottom-left-radius: 4px;
+  flex: 1; min-width: 0; background: var(--bg-subtle); border-radius: 18px; border-bottom-left-radius: 4px;
   padding: 14px 14px 12px; display: flex; flex-direction: column; gap: 12px;
 }
+.chat-resa-form *, .chat-resa-form *::before, .chat-resa-form *::after { box-sizing: border-box; }
 .chat-resa-title { font-size: 14px; font-weight: 700; color: var(--text); }
 .chat-resa-field { display: flex; flex-direction: column; gap: 6px; }
 .chat-resa-label { font-size: 11px; font-weight: 600; color: var(--text-tertiary); text-transform: uppercase; letter-spacing: 0.4px; }
@@ -260,10 +261,13 @@ html, body {
 .chat-resa-step-btn:disabled { opacity: 0.4; cursor: not-allowed; }
 .chat-resa-step-btn:active:not(:disabled) { background: var(--bg-subtle); }
 .chat-resa-step-value {
-  flex: 1; text-align: center; font-size: 18px; font-weight: 700; color: var(--text);
+  flex: 1; min-width: 0; text-align: center; font-size: 18px; font-weight: 700; color: var(--text);
   background: var(--bg-card); border: 1px solid var(--border); border-radius: 10px;
   padding: 6px 8px; font-variant-numeric: tabular-nums;
 }
+.chat-resa-step-value.clickable { cursor: pointer; position: relative; }
+.chat-resa-step-value.clickable:active { background: var(--bg-subtle); }
+.chat-resa-time-hidden { position: absolute; inset: 0; opacity: 0; border: 0; padding: 0; margin: 0; width: 100%; height: 100%; cursor: pointer; }
 .chat-resa-textarea {
   border: 1px solid var(--border); border-radius: 10px; padding: 8px 10px;
   background: var(--bg-card); color: var(--text); font-family: var(--font); font-size: 13px;
@@ -277,6 +281,7 @@ html, body {
 .chat-resa-recap-line { font-size: 13px; color: var(--text); display: flex; gap: 6px; }
 .chat-resa-recap-line b { color: var(--text); font-weight: 600; }
 .chat-resa-actions { display: grid; grid-template-columns: 1fr 1fr 1.3fr; gap: 6px; margin-top: 2px; }
+.chat-resa-actions.single { grid-template-columns: 1fr; }
 .chat-resa-btn {
   padding: 10px 8px; border-radius: 10px; border: 1px solid var(--border);
   background: var(--bg-card); color: var(--text); font-family: var(--font); font-size: 12px; font-weight: 600;
@@ -850,7 +855,9 @@ html, body {
       '<div class="chat-resa-field"><div class="chat-resa-label">Heure (par 10 min)</div>' +
         '<div class="chat-resa-stepper">' +
           '<button type="button" class="chat-resa-step-btn" ' + (canDecH?'':'disabled') + ' onclick="stepResaHeure(-10)">−</button>' +
-          '<div class="chat-resa-step-value">' + resaState.heure + '</div>' +
+          '<div class="chat-resa-step-value clickable" onclick="openResaTimePicker()">' + resaState.heure +
+            '<input type="time" class="chat-resa-time-hidden" id="resaTimeHidden" value="' + resaState.heure + '" min="' + resaState.service.booking.firstSlot + '" max="' + resaState.service.booking.lastSlot + '" step="600" onchange="onResaTimeChange(this.value)">' +
+          '</div>' +
           '<button type="button" class="chat-resa-step-btn" ' + (canIncH?'':'disabled') + ' onclick="stepResaHeure(10)">+</button>' +
         '</div>' +
       '</div>' +
@@ -865,10 +872,8 @@ html, body {
       '<div class="chat-resa-field"><div class="chat-resa-label">Un souhait particulier ? (facultatif)</div>' +
         '<textarea class="chat-resa-textarea" id="resaSouhait" rows="1" placeholder="allergies, anniversaire, accès fauteuil…" oninput="resaState.souhait=this.value">' + (resaState.souhait||'') + '</textarea>' +
       '</div>' +
-      '<div class="chat-resa-actions">' +
-        '<button type="button" class="chat-resa-btn" onclick="cancelResa()">Annuler</button>' +
-        '<button type="button" class="chat-resa-btn" onclick="focusResaSouhait()">Préciser</button>' +
-        '<button type="button" class="chat-resa-btn primary" onclick="showResaRecap()">Confirmer</button>' +
+      '<div class="chat-resa-actions single">' +
+        '<button type="button" class="chat-resa-btn primary" onclick="showResaRecap()">Vérifier les disponibilités</button>' +
       '</div>'
       ) : '');
   }
@@ -914,6 +919,25 @@ html, body {
       if (s) { resaState.service = s; resaState.heure = s.booking.firstSlot; }
       renderReservationForm(all);
     });
+  }
+  function openResaTimePicker() {
+    var el = document.getElementById('resaTimeHidden');
+    if (!el) return;
+    if (typeof el.showPicker === 'function') { try { el.showPicker(); return; } catch(e){} }
+    el.focus(); el.click();
+  }
+  function onResaTimeChange(v) {
+    if (!v || !resaState.service) return;
+    var firstMin = timeToMin(resaState.service.booking.firstSlot);
+    var lastMin = timeToMin(resaState.service.booking.lastSlot);
+    var cur = timeToMin(v);
+    // Arrondi au pas de 10 min
+    cur = Math.round(cur / 10) * 10;
+    if (cur < firstMin) cur = firstMin;
+    if (cur > lastMin) cur = lastMin;
+    resaState.heure = minToTime(cur);
+    var ta = document.getElementById('resaSouhait'); if (ta) resaState.souhait = ta.value;
+    loadAgenda().then(function(a){ renderReservationForm(getBookingServices(a)); });
   }
   function stepResaHeure(delta) {
     var firstMin = timeToMin(resaState.service.booking.firstSlot);
