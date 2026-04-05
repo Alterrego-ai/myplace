@@ -63,16 +63,20 @@ html, body {
   display: flex; flex-direction: column;
   flex: 1; min-height: 0; position: relative;
 }
-/* Header en flux */
+/* Header en flux : masqué avant conversation, affiché après */
 .chat-header {
-  display: flex; align-items: center; justify-content: space-between;
-  gap: 10px; padding: 10px 14px;
-  padding-top: calc(10px + env(safe-area-inset-top, 0px));
+  display: none; align-items: center; gap: 10px; padding: 8px 10px 8px 14px;
+  padding-top: calc(8px + env(safe-area-inset-top, 0px));
   background: var(--bg-card); border-bottom: 1px solid var(--border);
   flex-shrink: 0; z-index: 10;
 }
+.chat-page.has-started .chat-header { display: flex; }
+.chat-header-avatar {
+  width: 36px; height: 36px; border-radius: 50%; object-fit: cover;
+  background: #fff; border: 2px solid var(--primary); flex-shrink: 0;
+}
 .chat-header-title {
-  flex: 1; min-width: 0; text-align: center;
+  flex: 1; min-width: 0; text-align: left;
   font-family: var(--font); font-size: 15px; font-weight: 700; color: var(--text);
   white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
 }
@@ -83,8 +87,23 @@ html, body {
   font-size: 20px; border: none; cursor: pointer; flex-shrink: 0;
 }
 .chat-header-close:active { opacity: 0.7; }
-.chat-page.has-started .chat-login-pill,
-.chat-page.has-started #chatLangBtnSolo { display: none !important; }
+/* Boutons flottants pré-conversation */
+.chat-floaters {
+  position: absolute; top: calc(12px + env(safe-area-inset-top, 0px));
+  left: 0; right: 0; z-index: 10;
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 0 14px; pointer-events: none;
+}
+.chat-floaters > * { pointer-events: auto; }
+.chat-page.has-started .chat-floaters { display: none; }
+.chat-float-close {
+  width: 40px; height: 40px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  background: var(--bg-subtle); color: var(--text); text-decoration: none;
+  font-size: 20px; border: none; cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+.chat-float-close:active { opacity: 0.7; }
 /* Pill login + langue */
 .chat-login-pill {
   display: flex; align-items: center; flex-shrink: 0;
@@ -295,8 +314,8 @@ html, body {
 
 <div class="chat-page">
   <!-- Boutons flottants -->
-  <!-- Header -->
-  <div class="chat-header">
+  <!-- Floaters pré-conversation -->
+  <div class="chat-floaters" id="chatFloaters">
     <div class="chat-login-pill" id="chatLoginPill">
       <button id="chatLoginBtn" class="chat-login-user" onclick="chatHandleLogin()" type="button" aria-label="Compte">
         <svg id="chatUserIcon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
@@ -309,7 +328,13 @@ html, body {
     <button id="chatLangBtnSolo" class="chat-login-flag" onclick="event.stopPropagation();toggleChatLang()" type="button" aria-label="Langue" style="display:none;background:var(--bg-subtle);height:40px;border-radius:20px;padding:0 14px;margin-left:0;">
       <span id="chatLangCodeSolo">🇫🇷</span>
     </button>
-    <div class="chat-header-title">Discussion avec Maïa</div>
+    <a href="/" class="chat-float-close" onclick="return closeChat()" aria-label="Fermer">✕</a>
+  </div>
+
+  <!-- Header post-conversation -->
+  <div class="chat-header" id="chatHeader">
+    <img src="/img/maia.png?v=3" alt="Maïa" class="chat-header-avatar">
+    <div class="chat-header-title" id="chatHeaderTitle">Discuter avec Maïa</div>
     <a href="/" class="chat-header-close" onclick="return closeChat()" aria-label="Fermer">✕</a>
   </div>
 
@@ -573,8 +598,15 @@ html, body {
   })();
 
   // ── Quick actions (disparaissent au 1er échange) ──
+  function setChatSubject(subject) {
+    var el = document.getElementById('chatHeaderTitle');
+    if (el) el.textContent = subject;
+  }
   function quickAction(type) {
-    var msg = type === 'reserve' ? 'Je souhaite réserver une table' : 'Je souhaite laisser un message';
+    var msg, subject;
+    if (type === 'reserve') { msg = 'Je souhaite réserver une table'; subject = 'Réservation'; }
+    else { msg = 'Je souhaite laisser un message'; subject = 'Laisser un message'; }
+    setChatSubject(subject);
     chatInput.value = msg;
     sendMessage();
   }
