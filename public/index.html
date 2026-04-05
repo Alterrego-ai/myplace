@@ -5184,14 +5184,15 @@ margin: 20px 20px 0;
   var _shareInspireIdx = 0;
 
   function getShareUrl() {
+    var baseUrl = 'https://www.myplace.coach';
     var SSO_KEY = 'sauf_imprevu_user';
     var u = null;
     try { u = JSON.parse(localStorage.getItem(SSO_KEY)); } catch(e) {}
     if (u && u.name) {
       var fn = u.name.split(' ')[0];
-      return window.location.origin + '?ref=' + encodeURIComponent(fn.toLowerCase().replace(/\s+/g, '-'));
+      return baseUrl + '?ref=' + encodeURIComponent(fn.toLowerCase().replace(/\s+/g, '-'));
     }
-    return window.location.origin;
+    return baseUrl;
   }
   function getShareText() {
     var el = document.getElementById('shareMsgInput');
@@ -5732,11 +5733,13 @@ margin: 20px 20px 0;
   var isDesktop = window.matchMedia('(min-width: 769px)').matches;
 
   function getSSOLoginUrl() {
-    return SSO_SERVER + '/auth/login?returnTo=' + encodeURIComponent(window.location.origin + window.location.pathname);
+    var base = 'https://www.myplace.coach';
+    return SSO_SERVER + '/auth/login?returnTo=' + encodeURIComponent(base + window.location.pathname);
   }
 
   function getSSOLogoutUrl() {
-    return SSO_SERVER + '/auth/logout?returnTo=' + encodeURIComponent(window.location.origin + window.location.pathname);
+    var base = 'https://www.myplace.coach';
+    return SSO_SERVER + '/auth/logout?returnTo=' + encodeURIComponent(base + window.location.pathname);
   }
 
   // ── Popup SSO (desktop) : ouvre la mire dans une fenêtre dimensionnée mobile ──
@@ -5754,7 +5757,7 @@ margin: 20px 20px 0;
   // ── Écouter le token renvoyé par le popup via postMessage ──
   window.addEventListener('message', function(event) {
     // Accepter les messages de notre propre origine (le popup redirige ici)
-    if (event.origin !== window.location.origin) return;
+    if (event.origin !== window.location.origin && event.origin !== 'https://www.myplace.coach') return;
     if (event.data && event.data.type === 'sso_token' && event.data.token) {
       var token = event.data.token;
       try {
