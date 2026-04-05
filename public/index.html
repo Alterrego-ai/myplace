@@ -683,16 +683,17 @@ cursor: pointer; display: flex; align-items: center; justify-content: center;
 
 /* Transport buttons */
 .loc-transport-grid {
-display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-bottom: 12px;
+display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 12px;
 }
 .loc-transport-btn {
-display: flex; flex-direction: column; align-items: center; gap: 4px;
-padding: 12px 4px; background: var(--bg-card);
+display: flex; flex-direction: row; align-items: center; justify-content: center; gap: 6px;
+padding: 10px 8px; background: var(--bg-card);
 border: 1px solid var(--border); border-radius: var(--radius-sm);
 color: var(--text-secondary); font-family: var(--font);
-font-size: 10px; font-weight: 600; cursor: pointer;
+font-size: 12px; font-weight: 600; cursor: pointer;
 transition: all 0.15s;
 }
+.loc-transport-btn svg { flex-shrink: 0; }
 .loc-transport-btn:active { background: var(--bg-subtle); }
 .loc-transport-btn.active {
 border-color: var(--primary); color: var(--primary);
@@ -3102,6 +3103,22 @@ margin: 20px 20px 0;
   <!-- Content scrollable -->
   <div class="loc-scroll">
 
+    <!-- Transports -->
+    <div class="loc-transport-grid">
+      <button class="loc-transport-btn" id="locTransWalk" onclick="setLocTransport('walk')">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="5" r="2"/><path d="M10 22l2-7 3 3v6"/><path d="M14 13l-2-2-4 4"/><path d="M10 9l-2 8"/></svg>
+        <span>À pied</span>
+      </button>
+      <button class="loc-transport-btn" id="locTransBike" onclick="setLocTransport('bike')">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="5.5" cy="17.5" r="3.5"/><circle cx="18.5" cy="17.5" r="3.5"/><path d="M15 6a1 1 0 100-2 1 1 0 000 2zm-3 11.5V14l-3-3 4-3 2 3h3"/></svg>
+        <span>Vélo</span>
+      </button>
+      <button class="loc-transport-btn" id="locTransPublic" onclick="setLocTransport('public')">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="14" rx="2"/><path d="M3 10h18"/><path d="M7 21l2-4"/><path d="M17 21l-2-4"/><circle cx="7.5" cy="14" r="1"/><circle cx="16.5" cy="14" r="1"/></svg>
+        <span>Transports</span>
+      </button>
+    </div>
+
     <!-- Navigation buttons -->
     <div class="loc-nav-grid">
       <!-- Apple Maps -->
@@ -3197,22 +3214,6 @@ margin: 20px 20px 0;
         <div class="loc-compass-label" id="locDistLabel">Localisation…</div>
         <div class="loc-compass-time" id="locTravelTime"></div>
       </div>
-    </div>
-
-    <!-- Transports -->
-    <div class="loc-transport-grid">
-      <button class="loc-transport-btn" id="locTransWalk" onclick="setLocTransport('walk')">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="5" r="2"/><path d="M10 22l2-7 3 3v6"/><path d="M14 13l-2-2-4 4"/><path d="M10 9l-2 8"/></svg>
-        <span>À pied</span>
-      </button>
-      <button class="loc-transport-btn" id="locTransBike" onclick="setLocTransport('bike')">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="5.5" cy="17.5" r="3.5"/><circle cx="18.5" cy="17.5" r="3.5"/><path d="M15 6a1 1 0 100-2 1 1 0 000 2zm-3 11.5V14l-3-3 4-3 2 3h3"/></svg>
-        <span>Vélo</span>
-      </button>
-      <button class="loc-transport-btn" id="locTransPublic" onclick="setLocTransport('public')">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="14" rx="2"/><path d="M3 10h18"/><path d="M7 21l2-4"/><path d="M17 21l-2-4"/><circle cx="7.5" cy="14" r="1"/><circle cx="16.5" cy="14" r="1"/></svg>
-        <span>Transports</span>
-      </button>
     </div>
 
     <!-- Bouton AR -->
