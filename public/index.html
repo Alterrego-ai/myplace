@@ -468,6 +468,15 @@ background: var(--bg-card); border: 1px solid var(--border);
 display: flex; align-items: center; justify-content: center;
 cursor: pointer; box-shadow: 0 2px 8px rgba(0,0,0,0.15);
 }
+.loc-route-back {
+position: absolute; top: 10px; left: 10px; z-index: 11;
+height: 34px; border-radius: 8px;
+background: var(--bg-card); border: 1px solid var(--border);
+display: flex; align-items: center; justify-content: center; gap: 6px;
+cursor: pointer; box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+padding: 0 12px 0 8px; color: var(--text);
+font-size: 13px; font-weight: 600;
+}
 
 /* Scrollable content */
 .loc-scroll {
@@ -3083,6 +3092,11 @@ margin: 20px 20px 0;
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--text)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" id="locMapIcon"><polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/><line x1="21" y1="3" x2="14" y2="10"/><line x1="3" y1="21" x2="10" y2="14"/></svg>
     </button>
     <div id="locMapFrame" style="width:100%;height:100%;"></div>
+    <iframe id="locRouteFrame" style="display:none;width:100%;height:100%;border:0;" referrerpolicy="no-referrer-when-downgrade"></iframe>
+    <button class="loc-route-back" id="locRouteBack" onclick="closeRouteIframe()" style="display:none;">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+      <span>Retour</span>
+    </button>
   </div>
 
   <!-- Content scrollable -->
@@ -3198,10 +3212,6 @@ margin: 20px 20px 0;
       <button class="loc-transport-btn" id="locTransPublic" onclick="setLocTransport('public')">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="14" rx="2"/><path d="M3 10h18"/><path d="M7 21l2-4"/><path d="M17 21l-2-4"/><circle cx="7.5" cy="14" r="1"/><circle cx="16.5" cy="14" r="1"/></svg>
         <span>Transports</span>
-      </button>
-      <button class="loc-transport-btn" id="locTransTaxi" onclick="openLocTaxi()">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 17h14v-5H5z"/><path d="M6 12V7h12v5"/><path d="M9 7V5h6v2"/><circle cx="7.5" cy="15" r="1"/><circle cx="16.5" cy="15" r="1"/><path d="M5 17l-1 2h2"/><path d="M19 17l1 2h-2"/></svg>
-        <span>Taxi</span>
       </button>
     </div>
 
@@ -5688,15 +5698,34 @@ margin: 20px 20px 0;
     var btn = document.getElementById('locTrans' + mode.charAt(0).toUpperCase() + mode.slice(1));
     if (btn) btn.classList.add('active');
 
-    // Ouvrir l'app de transport correspondante
-    var addr = '15+Rue+Vauban,+69006+Lyon';
-    if (mode === 'walk') {
-      window.open('https://maps.google.com/maps?daddr=' + addr + '&dirflg=w', '_blank');
-    } else if (mode === 'bike') {
-      window.open('https://maps.google.com/maps?daddr=' + addr + '&dirflg=b', '_blank');
-    } else if (mode === 'public') {
-      window.open('https://maps.google.com/maps?daddr=' + addr + '&dirflg=r', '_blank');
-    }
+    // Afficher l'itinéraire Google Maps dans une iframe (in-app)
+    var dirflg = mode === 'walk' ? 'w' : (mode === 'bike' ? 'b' : 'r');
+    var saddr = (_locUserLat != null && _locUserLng != null) ? (_locUserLat + ',' + _locUserLng) : '';
+    var gUrl = 'https://maps.google.com/maps?saddr=' + encodeURIComponent(saddr) +
+               '&daddr=' + LOC_LAT + ',' + LOC_LNG +
+               '&dirflg=' + dirflg + '&output=embed';
+    var mapFrame = document.getElementById('locMapFrame');
+    var routeFrame = document.getElementById('locRouteFrame');
+    var backBtn = document.getElementById('locRouteBack');
+    var toggleBtn = document.getElementById('locMapToggle');
+    if (routeFrame) { routeFrame.src = gUrl; routeFrame.style.display = 'block'; }
+    if (mapFrame) mapFrame.style.display = 'none';
+    if (backBtn) backBtn.style.display = 'flex';
+    if (toggleBtn) toggleBtn.style.display = 'none';
+  }
+
+  function closeRouteIframe() {
+    var mapFrame = document.getElementById('locMapFrame');
+    var routeFrame = document.getElementById('locRouteFrame');
+    var backBtn = document.getElementById('locRouteBack');
+    var toggleBtn = document.getElementById('locMapToggle');
+    if (routeFrame) { routeFrame.style.display = 'none'; routeFrame.src = 'about:blank'; }
+    if (mapFrame) mapFrame.style.display = 'block';
+    if (backBtn) backBtn.style.display = 'none';
+    if (toggleBtn) toggleBtn.style.display = 'flex';
+    document.querySelectorAll('.loc-transport-btn').forEach(function(b) { b.classList.remove('active'); });
+    _locTransport = null;
+    if (window._locLeafletMap) { setTimeout(function(){ window._locLeafletMap.invalidateSize(); }, 50); }
   }
 
   function openLocTaxi() {
