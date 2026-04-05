@@ -54,8 +54,14 @@ html, body {
 /* ── Layout: header fixe en haut, input fixe en bas, messages entre les deux ── */
 .chat-page {
   display: flex; flex-direction: column;
-  height: 100dvh; height: 100vh;
+  height: 100vh; /* fallback */
+  height: 100dvh;
   max-width: 600px; margin: 0 auto;
+  position: relative; overflow: hidden;
+}
+.chat-body {
+  display: flex; flex-direction: column;
+  flex: 1; min-height: 0; position: relative;
 }
 /* Header */
 .chat-header {
@@ -83,8 +89,22 @@ html, body {
   display: flex; flex-direction: column; gap: 10px;
   background: var(--bg);
   -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
 }
 .chat-messages::-webkit-scrollbar { display: none; }
+/* Bouton "Nouveau message" */
+.chat-new-btn {
+  position: absolute; left: 50%; transform: translateX(-50%) translateY(10px);
+  bottom: 12px; z-index: 2;
+  background: var(--primary); color: #fff; border: none; border-radius: 20px;
+  padding: 7px 14px; font-size: 12px; font-weight: 700; cursor: pointer;
+  box-shadow: 0 4px 14px rgba(0,0,0,0.2);
+  display: flex; align-items: center; gap: 6px;
+  opacity: 0; pointer-events: none;
+  transition: opacity 0.2s, transform 0.2s;
+  font-family: var(--font);
+}
+.chat-page.has-new .chat-new-btn { opacity: 1; pointer-events: auto; transform: translateX(-50%) translateY(0); }
 .chat-bubble {
   max-width: 85%; padding: 10px 14px; border-radius: 16px;
   font-size: 14px; line-height: 1.5; word-wrap: break-word;
@@ -115,6 +135,7 @@ html, body {
   padding-bottom: calc(10px + env(safe-area-inset-bottom, 0px));
   border-top: 1px solid var(--border); background: var(--bg-card); flex-shrink: 0;
 }
+.chat-page.keyboard-open .chat-input-bar { padding-bottom: 10px; }
 .chat-input {
   flex: 1; border: 1px solid var(--border); border-radius: 20px;
   padding: 10px 16px; font-size: 16px; font-family: var(--font);
@@ -226,9 +247,15 @@ html, body {
     <a href="/" class="chat-header-close" onclick="return closeChat()">✕</a>
   </div>
 
-  <!-- Messages -->
-  <div class="chat-messages" id="chatMessages">
-    <!-- Welcome injecté par JS -->
+  <!-- Body (messages + bouton nouveau) -->
+  <div class="chat-body">
+    <div class="chat-messages" id="chatMessages">
+      <!-- Welcome injecté par JS -->
+    </div>
+    <button class="chat-new-btn" onclick="scrollChatToBottom()" type="button">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+      Nouveau message
+    </button>
   </div>
 
   <!-- Input -->
@@ -356,6 +383,74 @@ html, body {
   var inputBar = document.getElementById('chatInputBar');
   var chatInput = document.getElementById('chatInput');
   var chatSend = document.getElementById('chatSend');
+  var chatPage = document.querySelector('.chat-page');
+
+  // ── Gestion clavier mobile ──
+  // Priorité 1 : @capacitor/keyboard (natif, hauteur exacte, timing avant animation)
+  // Priorité 2 : visualViewport API (fallback web / iOS WKWebView sans plugin)
+  (function() {
+    function setKeyboardHeight(kb) {
+      chatPage.style.paddingBottom = kb > 0 ? kb + 'px' : '';
+      if (kb > 0) chatPage.classList.add('keyboard-open');
+      else chatPage.classList.remove('keyboard-open');
+      if (messages._wasAtBottom !== false) {
+        messages.scrollTop = messages.scrollHeight;
+      }
+    }
+
+    // Plugin Capacitor Keyboard si dispo
+    var isCapacitor = !!(window.Capacitor && window.Capacitor.isNativePlatform && window.Capacitor.isNativePlatform());
+    var Keyboard = window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.Keyboard;
+    if (isCapacitor && Keyboard) {
+      // Désactiver le resize auto pour garder la main
+      try { Keyboard.setResizeMode({ mode: 'none' }); } catch(e) {}
+      try { Keyboard.setAccessoryBarVisible({ isVisible: false }); } catch(e) {}
+      Keyboard.addListener('keyboardWillShow', function(info) {
+        setKeyboardHeight(info.keyboardHeight || 0);
+      });
+      Keyboard.addListener('keyboardWillHide', function() {
+        setKeyboardHeight(0);
+      });
+      return;
+    }
+
+    // Fallback visualViewport
+    if (!window.visualViewport) return;
+    var _kbHeight = 0;
+    var _rafId = null;
+    function apply() {
+      _rafId = null;
+      var vv = window.visualViewport;
+      var kb = Math.max(0, window.innerHeight - vv.height - vv.offsetTop);
+      if (Math.abs(kb - _kbHeight) < 2) return;
+      _kbHeight = kb;
+      setKeyboardHeight(kb);
+    }
+    function onChange() {
+      if (_rafId) return;
+      _rafId = requestAnimationFrame(apply);
+    }
+    window.visualViewport.addEventListener('resize', onChange);
+    window.visualViewport.addEventListener('scroll', onChange);
+  })();
+
+  // ── Scroll intelligent ──
+  function isAtBottom(el, threshold) {
+    threshold = threshold || 80;
+    return (el.scrollHeight - el.scrollTop - el.clientHeight) <= threshold;
+  }
+  messages._wasAtBottom = true;
+  messages.addEventListener('scroll', function() {
+    messages._wasAtBottom = isAtBottom(messages);
+    if (messages._wasAtBottom && chatPage) chatPage.classList.remove('has-new');
+  }, { passive: true });
+
+  function scrollChatToBottom() {
+    messages.scrollTo({ top: messages.scrollHeight, behavior: 'smooth' });
+    messages._wasAtBottom = true;
+    if (chatPage) chatPage.classList.remove('has-new');
+  }
+  window.scrollChatToBottom = scrollChatToBottom;
 
   // Auto-resize textarea
   function autoResizeInput() {
@@ -397,6 +492,8 @@ html, body {
   function appendBubble(text, role) {
     var welcome = messages.querySelector('.chat-welcome');
     if (welcome) welcome.remove();
+    var wasAtBottom = isAtBottom(messages);
+    messages._wasAtBottom = wasAtBottom;
 
     if (role === 'assistant' || role === 'typing') {
       var row = document.createElement('div');
@@ -415,14 +512,21 @@ html, body {
       row.appendChild(avatar);
       row.appendChild(bubble);
       messages.appendChild(row);
-      messages.scrollTop = messages.scrollHeight;
+      if (wasAtBottom || role === 'typing') {
+        messages.scrollTop = messages.scrollHeight;
+      } else if (chatPage) {
+        chatPage.classList.add('has-new');
+      }
       return row;
     } else {
+      // User : force scroll
       var bubble = document.createElement('div');
       bubble.className = 'chat-bubble ' + role;
       bubble.innerHTML = text.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br>');
       messages.appendChild(bubble);
       messages.scrollTop = messages.scrollHeight;
+      messages._wasAtBottom = true;
+      if (chatPage) chatPage.classList.remove('has-new');
       return bubble;
     }
   }
@@ -479,7 +583,7 @@ html, body {
             actionsDiv.appendChild(btn);
           });
           messages.appendChild(actionsDiv);
-          messages.scrollTop = messages.scrollHeight;
+          if (messages._wasAtBottom !== false) { messages.scrollTop = messages.scrollHeight; }
         }
       }
     })

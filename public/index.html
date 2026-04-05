@@ -1545,13 +1545,13 @@ color: var(--text-secondary);
 /* ── CHAT ── */
 #chatSheet {
 position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+height: 100dvh;
 z-index: 1000; background: var(--bg-card);
 display: none; flex-direction: column;
 transform: none; max-width: none; border-radius: 0;
-overscroll-behavior: contain; touch-action: none;
-min-height: 100vh; min-height: 100dvh;
+overscroll-behavior: contain;
 }
-#chatSheet .chat-container { touch-action: auto; }
+#chatSheet .chat-container { touch-action: auto; display: flex; flex-direction: column; flex: 1; min-height: 0; position: relative; }
 #chatSheet .chat-messages { touch-action: pan-y; }
 #chatSheet.visible { display: flex; }
 #chatSheet .sheet-handle { display: none; }
@@ -1609,10 +1609,22 @@ align-self: flex-start; background: var(--bg-subtle); color: var(--text-tertiary
 }
 .chat-input-bar {
 display: flex; gap: 8px; padding: 10px 16px;
-padding-bottom: 10px;
 padding-bottom: calc(10px + env(safe-area-inset-bottom, 0px));
 border-top: 1px solid var(--border); background: var(--bg-card); flex-shrink: 0;
+transform: translateY(0); transition: transform 0.2s ease;
 }
+#chatSheet.keyboard-open .chat-input-bar { padding-bottom: 10px; }
+.chat-new-btn {
+position: absolute; left: 50%; transform: translateX(-50%) translateY(10px);
+bottom: 72px; z-index: 2;
+background: var(--primary); color: #fff; border: none; border-radius: 20px;
+padding: 7px 14px; font-size: 12px; font-weight: 700; cursor: pointer;
+box-shadow: 0 4px 14px rgba(0,0,0,0.2);
+display: flex; align-items: center; gap: 6px;
+opacity: 0; pointer-events: none; transition: opacity 0.2s, transform 0.2s;
+font-family: var(--font);
+}
+#chatSheet.has-new .chat-new-btn { opacity: 1; pointer-events: auto; transform: translateX(-50%) translateY(0); }
 .chat-input {
 flex: 1; border: 1px solid var(--border); border-radius: 20px; padding: 8px 16px; font-size: 16px;
 font-family: var(--font); background: var(--bg); color: var(--text); outline: none; resize: none;
@@ -3629,6 +3641,10 @@ margin: 20px 20px 0;
         </div>
       </div>
     </div>
+    <button class="chat-new-btn" onclick="scrollChatToBottom()" type="button">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+      Nouveau message
+    </button>
     <div class="chat-input-bar" id="chatInputBar">
       <input type="text" class="chat-input" id="chatInput" placeholder="Votre message..." maxlength="2000" autocomplete="off">
       <button class="chat-send" id="chatSend" onclick="sendChatMessage()">
@@ -7267,34 +7283,51 @@ margin: 20px 20px 0;
     }
   }
 
-  // Gestion du clavier mobile — ajuste le chat quand le clavier apparaît
-  if (window.visualViewport) {
-    function adjustChatForKeyboard() {
+  // Gestion du clavier mobile — pousse l'input au-dessus du clavier sans casser le layout
+  // Approche : on écoute visualViewport, on calcule la hauteur du clavier,
+  // et on applique un padding-bottom sur le container .chat-container.
+  // Le sheet reste en position fixed 100dvh stable, seul le contenu s'ajuste.
+  (function() {
+    if (!window.visualViewport) return;
+    var _kbHeight = 0;
+    var _rafId = null;
+
+    function computeKeyboardHeight() {
+      var vv = window.visualViewport;
+      // Diff entre layout viewport (window.innerHeight) et visual viewport (vv.height)
+      // = hauteur du clavier (approx)
+      var kb = Math.max(0, window.innerHeight - vv.height - vv.offsetTop);
+      return kb;
+    }
+
+    function applyKeyboard() {
+      _rafId = null;
       var chatSheet = document.getElementById('chatSheet');
       if (!chatSheet || !chatSheet.classList.contains('visible')) return;
-      var vv = window.visualViewport;
-      chatSheet.style.height = vv.height + 'px';
-      chatSheet.style.top = vv.offsetTop + 'px';
-      // Garder l'input visible et scroller les messages
+      var kb = computeKeyboardHeight();
+      if (Math.abs(kb - _kbHeight) < 2) return;
+      _kbHeight = kb;
+      var container = chatSheet.querySelector('.chat-container');
+      if (container) {
+        container.style.paddingBottom = kb > 0 ? kb + 'px' : '';
+      }
+      if (kb > 0) chatSheet.classList.add('keyboard-open');
+      else chatSheet.classList.remove('keyboard-open');
+      // Si on était en bas, on y reste
       var messages = document.getElementById('chatMessages');
-      if (messages) {
-        setTimeout(function() { messages.scrollTop = messages.scrollHeight; }, 100);
+      if (messages && messages._wasAtBottom !== false) {
+        messages.scrollTop = messages.scrollHeight;
       }
     }
-    window.visualViewport.addEventListener('resize', adjustChatForKeyboard);
-    window.visualViewport.addEventListener('scroll', adjustChatForKeyboard);
-  }
 
-  // Reset la taille du chat quand on blur l'input
-  document.addEventListener('focusout', function(e) {
-    if (e.target && e.target.id === 'chatInput') {
-      var chatSheet = document.getElementById('chatSheet');
-      if (chatSheet) {
-        chatSheet.style.height = '';
-        chatSheet.style.top = '';
-      }
+    function onViewportChange() {
+      if (_rafId) return;
+      _rafId = requestAnimationFrame(applyKeyboard);
     }
-  });
+
+    window.visualViewport.addEventListener('resize', onViewportChange);
+    window.visualViewport.addEventListener('scroll', onViewportChange);
+  })();
 
   // Clic sur l'input désactivé → proposer la connexion
   document.getElementById('chatInputBar').addEventListener('click', function(e) {
@@ -7312,11 +7345,52 @@ margin: 20px 20px 0;
     }
   });
 
+  // Scroll explicite depuis le bouton "Nouveau message"
+  function scrollChatToBottom() {
+    var messages = document.getElementById('chatMessages');
+    if (!messages) return;
+    messages.scrollTo({ top: messages.scrollHeight, behavior: 'smooth' });
+    messages._wasAtBottom = true;
+    var sheet = document.getElementById('chatSheet');
+    if (sheet) sheet.classList.remove('has-new');
+  }
+
+  // Scroll intelligent : on scrolle en bas uniquement si l'utilisateur y était déjà
+  function isAtBottom(el, threshold) {
+    threshold = threshold || 80;
+    return (el.scrollHeight - el.scrollTop - el.clientHeight) <= threshold;
+  }
+  function smartScrollToBottom(force) {
+    var messages = document.getElementById('chatMessages');
+    if (!messages) return;
+    var wasAtBottom = messages._wasAtBottom !== false;
+    if (force || wasAtBottom) {
+      messages.scrollTop = messages.scrollHeight;
+    }
+  }
+  // Track position avant ajout
+  (function() {
+    var messages = document.getElementById('chatMessages');
+    if (!messages) return;
+    messages._wasAtBottom = true;
+    messages.addEventListener('scroll', function() {
+      messages._wasAtBottom = isAtBottom(messages);
+      var sheet = document.getElementById('chatSheet');
+      if (sheet) {
+        if (messages._wasAtBottom) sheet.classList.remove('has-new');
+      }
+    }, { passive: true });
+  })();
+
   function appendChatBubble(text, role) {
     var messages = document.getElementById('chatMessages');
     // Supprimer le welcome au premier message
     var welcome = messages.querySelector('.chat-welcome');
     if (welcome) welcome.remove();
+
+    // Avant d'append : noter si on était en bas
+    var wasAtBottom = isAtBottom(messages);
+    messages._wasAtBottom = wasAtBottom;
 
     if (role === 'assistant' || role === 'typing') {
       // Bulle assistant avec avatar Maïa
@@ -7337,14 +7411,18 @@ margin: 20px 20px 0;
       row.appendChild(avatar);
       row.appendChild(bubble);
       messages.appendChild(row);
-      messages.scrollTop = messages.scrollHeight;
+      // Si user pas en bas, indiquer "nouveau message" sinon scroller
+      if (wasAtBottom) { messages.scrollTop = messages.scrollHeight; }
+      else { var sheet = document.getElementById('chatSheet'); if (sheet) sheet.classList.add('has-new'); }
       return row;
     } else {
+      // Message user : on force toujours le scroll en bas
       var bubble = document.createElement('div');
       bubble.className = 'chat-bubble ' + role;
       bubble.innerHTML = text.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br>');
       messages.appendChild(bubble);
       messages.scrollTop = messages.scrollHeight;
+      messages._wasAtBottom = true;
       return bubble;
     }
   }
