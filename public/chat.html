@@ -303,8 +303,9 @@ html, body {
 .chat-resa-textarea:focus { border-color: var(--primary); }
 .chat-resa-text-input {
   border: 1px solid var(--border); border-radius: 10px; padding: 10px 12px;
-  background: var(--bg-card); color: var(--text); font-family: var(--font); font-size: 14px;
-  outline: none; width: 100%;
+  background: var(--bg-card); color: var(--text); font-family: var(--font); font-size: 16px;
+  outline: none; width: 100%; -webkit-user-select: text; user-select: text;
+  touch-action: manipulation; -webkit-appearance: none; appearance: none;
 }
 .chat-resa-text-input:focus { border-color: var(--primary); }
 .chat-resa-text-input.invalid { border-color: #dc2626; }
@@ -981,7 +982,7 @@ html, body {
     return '<div class="chat-resa-field"><div class="chat-resa-label">Contact</div>' +
       '<div class="chat-resa-identity-grid">' +
         '<input type="text" class="chat-resa-text-input" id="resaNom" placeholder="Nom" value="' + escapeHtml(resaState.nom||'') + '" oninput="resaState.nom=this.value" autocomplete="name">' +
-        '<input type="tel" class="chat-resa-text-input' + (telInvalid?' invalid':'') + '" id="resaTel" placeholder="06 __ __ __ __" value="' + escapeHtml(telVal) + '" oninput="onResaTelInput(this)" autocomplete="tel">' +
+        '<input type="tel" inputmode="numeric" class="chat-resa-text-input' + (telInvalid?' invalid':'') + '" id="resaTel" placeholder="06 12 34 56 78" value="' + escapeHtml(telVal) + '" oninput="onResaTelInput(this)" autocomplete="tel-national">' +
       '</div>' +
       saveCheck +
     '</div>';
