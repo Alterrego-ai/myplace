@@ -173,6 +173,19 @@ html, body {
 .chat-bubble.user {
   align-self: flex-end; background: var(--primary); color: #fff; border-bottom-right-radius: 4px;
 }
+.chat-user-row { display: flex; align-items: flex-end; gap: 8px; align-self: flex-end; max-width: 90%; justify-content: flex-end; }
+.chat-user-row .chat-bubble { align-self: auto; }
+.chat-user-avatar {
+  width: 28px; height: 28px; border-radius: 50%; flex-shrink: 0;
+  background: var(--bg-subtle); color: var(--text-tertiary); border: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: center; overflow: hidden;
+  font-size: 11px; font-weight: 700; padding: 0; cursor: default;
+  visibility: hidden;
+}
+.chat-user-row.show-avatar .chat-user-avatar { visibility: visible; }
+.chat-user-avatar.guest { cursor: pointer; background: var(--bg-card); }
+.chat-user-avatar img { width: 100%; height: 100%; object-fit: cover; }
+.chat-user-avatar svg { width: 14px; height: 14px; }
 .chat-bubble.assistant {
   align-self: flex-start; background: var(--bg-subtle); color: var(--text); border-bottom-left-radius: 4px;
 }
@@ -274,6 +287,27 @@ html, body {
   outline: none; resize: none; min-height: 36px; max-height: 80px; line-height: 1.3;
 }
 .chat-resa-textarea:focus { border-color: var(--primary); }
+.chat-resa-text-input {
+  border: 1px solid var(--border); border-radius: 10px; padding: 10px 12px;
+  background: var(--bg-card); color: var(--text); font-family: var(--font); font-size: 14px;
+  outline: none; width: 100%;
+}
+.chat-resa-text-input:focus { border-color: var(--primary); }
+.chat-resa-text-input.invalid { border-color: #dc2626; }
+.chat-resa-identity-compact {
+  display: flex; align-items: center; gap: 8px; background: var(--bg-card);
+  border: 1px solid var(--border); border-radius: 10px; padding: 8px 10px; font-size: 13px;
+}
+.chat-resa-identity-compact .info { flex: 1; min-width: 0; color: var(--text); }
+.chat-resa-identity-compact .info .name { font-weight: 600; }
+.chat-resa-identity-compact .info .tel { color: var(--text-tertiary); font-size: 12px; }
+.chat-resa-identity-compact .edit-link {
+  background: none; border: 0; color: var(--primary); font-family: var(--font);
+  font-size: 12px; font-weight: 600; cursor: pointer; padding: 4px 6px;
+}
+.chat-resa-identity-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+@media (max-width: 360px) { .chat-resa-identity-grid { grid-template-columns: 1fr; } }
+.chat-resa-save-check { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--text-tertiary); margin-top: 2px; }
 .chat-resa-recap {
   background: var(--bg-card); border: 1px solid var(--border); border-radius: 10px;
   padding: 10px 12px; display: flex; flex-direction: column; gap: 4px;
@@ -754,8 +788,40 @@ html, body {
 
   // État du formulaire
   var resaState = {
-    date: null, service: null, heure: null, personnes: 2, souhait: '', mode: 'edit' // 'edit' | 'recap'
+    date: null, service: null, heure: null, personnes: 2, souhait: '',
+    nom: '', telephone: '', identityEdit: false, // edition du bloc identité
+    mode: 'edit' // 'edit' | 'recap'
   };
+
+  // Charge nom/tel depuis user ou localStorage
+  function preloadResaIdentity() {
+    try {
+      if (isLogged && user) {
+        resaState.nom = user.name || resaState.nom || '';
+        resaState.telephone = user.phone || resaState.telephone || '';
+      } else {
+        var cached = localStorage.getItem('resaIdentity');
+        if (cached) {
+          var o = JSON.parse(cached);
+          resaState.nom = resaState.nom || o.nom || '';
+          resaState.telephone = resaState.telephone || o.telephone || '';
+        }
+      }
+    } catch(e){}
+    // Si connecté avec profil complet → mode compact par défaut
+    resaState.identityEdit = !(resaState.nom && resaState.telephone);
+  }
+
+  // Validation / format téléphone FR
+  function formatPhoneFR(v) {
+    var d = (v||'').replace(/\D/g,'');
+    if (d.indexOf('33') === 0 && d.length > 10) d = '0' + d.slice(2);
+    d = d.slice(0,10);
+    return d.replace(/(\d{2})(?=\d)/g,'$1 ').trim();
+  }
+  function isValidPhoneFR(v) {
+    return /^0[1-9](?:[\s.-]?\d{2}){4}$/.test((v||'').trim());
+  }
 
   function showReservationForm() {
     var welcome = messages.querySelector('.chat-welcome');
@@ -763,6 +829,7 @@ html, body {
     chatPage.classList.add('has-started');
     // Retirer un ancien form éventuel
     var old = document.getElementById('chatResaRow'); if (old) old.remove();
+    preloadResaIdentity();
 
     loadAgenda().then(function(agenda) {
       var bookingServices = getBookingServices(agenda);
@@ -872,10 +939,61 @@ html, body {
       '<div class="chat-resa-field"><div class="chat-resa-label">Un souhait particulier ? (facultatif)</div>' +
         '<textarea class="chat-resa-textarea" id="resaSouhait" rows="1" placeholder="allergies, anniversaire, accès fauteuil…" oninput="resaState.souhait=this.value">' + (resaState.souhait||'') + '</textarea>' +
       '</div>' +
+      buildIdentityHTML() +
       '<div class="chat-resa-actions single">' +
         '<button type="button" class="chat-resa-btn primary" onclick="showResaRecap()">Vérifier les disponibilités</button>' +
       '</div>'
       ) : '');
+  }
+
+  function buildIdentityHTML() {
+    // Mode compact si nom+tel déjà présents et pas en édition
+    var hasBoth = resaState.nom && resaState.telephone;
+    if (hasBoth && !resaState.identityEdit) {
+      return '<div class="chat-resa-field"><div class="chat-resa-label">Contact</div>' +
+        '<div class="chat-resa-identity-compact">' +
+          '<div class="info">' +
+            '<div class="name">' + escapeHtml(resaState.nom) + '</div>' +
+            '<div class="tel">' + escapeHtml(formatPhoneFR(resaState.telephone)) + '</div>' +
+          '</div>' +
+          '<button type="button" class="edit-link" onclick="editResaIdentity()">Modifier</button>' +
+        '</div>' +
+      '</div>';
+    }
+    var telVal = resaState.telephone ? formatPhoneFR(resaState.telephone) : '';
+    var telInvalid = resaState.telephone && !isValidPhoneFR(resaState.telephone);
+    var saveCheck = !isLogged ? '' :
+      '<label class="chat-resa-save-check"><input type="checkbox" id="resaSaveProfile" checked> Mémoriser dans mon profil</label>';
+    return '<div class="chat-resa-field"><div class="chat-resa-label">Contact</div>' +
+      '<div class="chat-resa-identity-grid">' +
+        '<input type="text" class="chat-resa-text-input" id="resaNom" placeholder="Nom" value="' + escapeHtml(resaState.nom||'') + '" oninput="resaState.nom=this.value" autocomplete="name">' +
+        '<input type="tel" class="chat-resa-text-input' + (telInvalid?' invalid':'') + '" id="resaTel" placeholder="06 __ __ __ __" value="' + escapeHtml(telVal) + '" oninput="onResaTelInput(this)" autocomplete="tel">' +
+      '</div>' +
+      saveCheck +
+    '</div>';
+  }
+
+  function escapeHtml(s) {
+    return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+
+  function onResaTelInput(el) {
+    var f = formatPhoneFR(el.value);
+    el.value = f;
+    resaState.telephone = f;
+    el.classList.toggle('invalid', f.length > 0 && !isValidPhoneFR(f));
+  }
+
+  function editResaIdentity() {
+    syncResaDomToState();
+    resaState.identityEdit = true;
+    loadAgenda().then(function(a){ renderReservationForm(getBookingServices(a)); });
+  }
+
+  function syncResaDomToState() {
+    var ta = document.getElementById('resaSouhait'); if (ta) resaState.souhait = ta.value;
+    var n = document.getElementById('resaNom'); if (n) resaState.nom = n.value;
+    var t = document.getElementById('resaTel'); if (t) resaState.telephone = t.value;
   }
 
   function buildRecapHTML() {
@@ -887,6 +1005,7 @@ html, body {
         '<div class="chat-resa-recap-line">📅 <b>' + dateLabel + '</b></div>' +
         '<div class="chat-resa-recap-line">🕒 <b>' + resaState.heure + '</b> · ' + (resaState.service ? resaState.service.label : '') + '</div>' +
         '<div class="chat-resa-recap-line">👥 <b>' + resaState.personnes + (resaState.personnes===1?' personne':' personnes') + '</b></div>' +
+        '<div class="chat-resa-recap-line">👤 <b>' + escapeHtml(resaState.nom) + '</b> · ' + escapeHtml(formatPhoneFR(resaState.telephone)) + '</div>' +
         souhaitLine +
       '</div>' +
       '<div class="chat-resa-actions">' +
@@ -964,16 +1083,44 @@ html, body {
     setChatSubject('Discuter avec Maïa');
   }
   function showResaRecap() {
-    var ta = document.getElementById('resaSouhait'); if (ta) resaState.souhait = ta.value;
+    syncResaDomToState();
+    // Validation nom + tel
+    if (!resaState.nom || resaState.nom.trim().length < 2) {
+      var n = document.getElementById('resaNom'); if (n) { n.classList.add('invalid'); n.focus(); }
+      return;
+    }
+    if (!isValidPhoneFR(resaState.telephone)) {
+      var t = document.getElementById('resaTel'); if (t) { t.classList.add('invalid'); t.focus(); }
+      return;
+    }
+    // Persistance
+    persistResaIdentity();
     if (resaState.personnes >= 10) {
       cancelResa();
       setChatSubject('Privatisation');
-      chatInput.value = 'Je souhaite privatiser l\'espace pour un groupe de ' + resaState.personnes + ' personnes le ' + resaState.date + '. Pouvez-vous me contacter pour les détails ?';
+      chatInput.value = 'Je souhaite privatiser l\'espace pour un groupe de ' + resaState.personnes + ' personnes le ' + resaState.date + '. Contact : ' + resaState.nom + ' · ' + formatPhoneFR(resaState.telephone) + '. Pouvez-vous me recontacter pour les détails ?';
       sendMessage();
       return;
     }
     resaState.mode = 'recap';
     loadAgenda().then(function(a){ renderReservationForm(getBookingServices(a)); });
+  }
+
+  function persistResaIdentity() {
+    try {
+      localStorage.setItem('resaIdentity', JSON.stringify({ nom: resaState.nom, telephone: resaState.telephone }));
+    } catch(e){}
+    var saveChk = document.getElementById('resaSaveProfile');
+    if (isLogged && user && saveChk && saveChk.checked) {
+      // Best-effort PATCH profil — ignore l'erreur si endpoint absent
+      try {
+        fetch('/api/users/me', {
+          method: 'PATCH',
+          headers: { 'Content-Type':'application/json', 'Authorization': 'Bearer ' + (user._token||'') },
+          body: JSON.stringify({ name: resaState.nom, phone: resaState.telephone })
+        }).catch(function(){});
+      } catch(e){}
+    }
   }
   function backToResaEdit() {
     resaState.mode = 'edit';
@@ -983,9 +1130,10 @@ html, body {
     var dateObj = new Date(resaState.date + 'T00:00:00');
     var dateLabel = dateObj.toLocaleDateString('fr-FR', { weekday:'long', day:'numeric', month:'long' });
     var souhaitPart = resaState.souhait ? ' · ' + resaState.souhait : '';
+    var contactPart = ' · Contact : ' + resaState.nom + ' (' + formatPhoneFR(resaState.telephone) + ')';
     var msg = 'Demande de réservation : ' + dateLabel + ' à ' + resaState.heure +
               ' pour ' + resaState.personnes + (resaState.personnes===1?' personne':' personnes') +
-              souhaitPart + '. Merci de vérifier la disponibilité.';
+              souhaitPart + contactPart + '. Merci de confirmer la disponibilité.';
     // Remove the form
     var row = document.getElementById('chatResaRow'); if (row) row.remove();
     // Send to Maia
@@ -1002,6 +1150,32 @@ html, body {
     chatInput.placeholder = I18N.t('chat_resa_placeholder');
     chatInput.value = I18N.t('chat_resa_auto');
     sendMessage();
+  }
+
+  function buildUserAvatarEl() {
+    var el = document.createElement('div');
+    el.className = 'chat-user-avatar';
+    if (isLogged && user) {
+      var hardcoded = { 'rriquoir@me.com': '/img/avatar_RR.jpg' };
+      var pic = user.picture || (user.email && hardcoded[user.email]) || null;
+      var name = user.name || '';
+      var initials = name.trim().split(/\s+/).slice(0,2).map(function(w){return w.charAt(0).toUpperCase();}).join('') || '?';
+      if (pic) {
+        el.innerHTML = '<img src="' + pic + '" alt="" onerror="this.parentNode.textContent=\'' + initials + '\'">';
+      } else {
+        el.textContent = initials;
+        el.style.background = 'var(--primary)';
+        el.style.color = '#fff';
+        el.style.borderColor = 'var(--primary)';
+      }
+    } else {
+      el.className += ' guest';
+      el.setAttribute('role', 'button');
+      el.setAttribute('aria-label', 'Se connecter');
+      el.onclick = function(){ if (typeof chatHandleLogin === 'function') chatHandleLogin(); };
+      el.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>';
+    }
+    return el;
   }
 
   function appendBubble(text, role) {
@@ -1035,11 +1209,18 @@ html, body {
       }
       return row;
     } else {
-      // User : force scroll
+      // User : force scroll + avatar à droite (pattern WhatsApp : visible sur la dernière bulle du groupe)
+      // Masque les avatars des rangées user précédentes
+      var prev = messages.querySelectorAll('.chat-user-row.show-avatar');
+      for (var i = 0; i < prev.length; i++) prev[i].classList.remove('show-avatar');
+      var row = document.createElement('div');
+      row.className = 'chat-user-row show-avatar';
       var bubble = document.createElement('div');
       bubble.className = 'chat-bubble ' + role;
       bubble.innerHTML = text.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br>');
-      messages.appendChild(bubble);
+      row.appendChild(bubble);
+      row.appendChild(buildUserAvatarEl());
+      messages.appendChild(row);
       messages.scrollTop = messages.scrollHeight;
       messages._wasAtBottom = true;
       if (chatPage) chatPage.classList.remove('has-new');
