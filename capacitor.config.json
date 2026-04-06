@@ -1,6 +1,6 @@
 {
   "appId": "fr.saufimprevu.app",
-  "appName": "myPlace",
+  "appName": "Sauf Imprévu",
   "webDir": "public",
   "server": {
     "url": "https://www.myplace.coach",
