@@ -530,22 +530,21 @@ overflow: hidden;
 
 /* Compass card — premium */
 .loc-compass-card {
-display: flex; align-items: stretch; gap: 14px; width: 100%;
-padding: 0 16px 0 0; background: var(--bg-card);
+display: flex; align-items: center; gap: 14px; width: 100%;
+padding: 14px 16px; background: var(--bg-card);
 border: 1px solid var(--border); border-radius: var(--radius);
 cursor: pointer; font-family: var(--font); text-align: left;
-color: var(--text); margin-bottom: 12px; overflow: hidden;
-min-height: 72px;
+color: var(--text); margin-bottom: 12px;
 }
 .loc-compass-card:active { background: var(--bg-subtle); }
 .loc-compass-ring {
-width: 72px; flex-shrink: 0; align-self: stretch;
-border-radius: 0;
+width: 42px; height: 42px; flex-shrink: 0;
+border-radius: 11px;
 background: linear-gradient(135deg, var(--primary), rgba(61,107,140,0.75));
 display: flex; align-items: center; justify-content: center;
 color: #fff;
 }
-.loc-compass-ring svg { width: 56px; height: 56px; }
+.loc-compass-ring svg { width: 24px; height: 24px; }
 .loc-compass-svg { width: 100%; height: 100%; }
 .loc-compass-info { flex: 1; min-width: 0; padding: 12px 0; display: flex; flex-direction: column; justify-content: center; }
 .loc-compass-label {
@@ -3211,7 +3210,7 @@ margin: 20px 20px 0;
     <div class="loc-actions-row">
       <button class="loc-action-btn" onclick="copyAddress()">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
-        <span id="locCopyLabel">Copier</span>
+        <span id="locCopyLabel">Copier l'adresse</span>
       </button>
       <button class="loc-action-btn" onclick="shareLocation()">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12v8a2 2 0 002 2h12a2 2 0 002-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg>
@@ -5494,22 +5493,23 @@ margin: 20px 20px 0;
     var addr = '15+Rue+Vauban,+69006+Lyon';
     var lat = 45.7649859, lng = 4.8434166;
     var name = 'Sauf Imprévu';
-    var schemes = {
-      apple:      { native: 'maps://?q=' + name + '&ll=' + lat + ',' + lng, web: 'https://maps.apple.com/?address=' + addr + '&ll=' + lat + ',' + lng },
-      google:     { native: 'comgooglemaps://?q=' + name + ',' + addr + '&center=' + lat + ',' + lng, web: 'https://maps.google.com/?q=' + name + ',+' + addr },
-      waze:       { native: 'waze://?ll=' + lat + ',' + lng + '&navigate=yes', web: 'https://waze.com/ul?q=' + addr + '&navigate=yes' },
-      citymapper: { native: 'citymapper://directions?endcoord=' + lat + ',' + lng + '&endname=' + encodeURIComponent(name), web: 'https://citymapper.com/directions?endcoord=' + lat + ',' + lng + '&endname=' + encodeURIComponent(name) },
-      uber:       { native: 'uber://?action=setPickup&dropoff[latitude]=' + lat + '&dropoff[longitude]=' + lng + '&dropoff[nickname]=' + encodeURIComponent(name), web: 'https://m.uber.com/ul/?drop[0]=%7B%22latitude%22:' + lat + ',%22longitude%22:' + lng + '%7D' }
+    // URLs HTTPS uniquement — fonctionnent dans WKWebView/Capacitor
+    // iOS ouvre automatiquement l'app native si installée
+    var urls = {
+      apple:      'https://maps.apple.com/?daddr=' + lat + ',' + lng + '&saddr=Current+Location',
+      google:     'https://maps.google.com/maps?daddr=' + lat + ',' + lng,
+      waze:       'https://waze.com/ul?ll=' + lat + ',' + lng + '&navigate=yes',
+      citymapper: 'https://citymapper.com/directions?endcoord=' + lat + ',' + lng + '&endname=' + encodeURIComponent(name),
+      uber:       'https://m.uber.com/ul/?drop[0]=%7B%22latitude%22:' + lat + ',%22longitude%22:' + lng + ',%22nickname%22:%22' + encodeURIComponent(name) + '%22%7D'
     };
-    var s = schemes[app];
-    if (!s) return;
-    // Sur iOS natif, essaie le scheme natif d'abord
-    if (window.Capacitor || /iPhone|iPad/.test(navigator.userAgent)) {
-      var w = window.open(s.native, '_system');
-      setTimeout(function() { if (!document.hidden) window.open(s.web, '_blank'); }, 600);
-    } else {
-      window.open(s.web, '_blank');
-    }
+    var url = urls[app];
+    if (!url) return;
+    // Créer un <a> temporaire (méthode fiable dans WKWebView)
+    var a = document.createElement('a');
+    a.href = url; a.target = '_blank'; a.rel = 'noopener';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
   }
 
   function openAddressSheet() {
@@ -5532,10 +5532,17 @@ margin: 20px 20px 0;
     } else if (_locMapLoaded && window._locLeafletMap) {
       setTimeout(function() { window._locLeafletMap.invalidateSize(); }, 300);
     }
-    // Lancer la géoloc + boussole
-    if (navigator.geolocation && !_locGeoWatchId) {
-      navigator.geolocation.getCurrentPosition(updateLocDistance, locGeoError, { enableHighAccuracy: true, timeout: 8000 });
-      _locGeoWatchId = navigator.geolocation.watchPosition(updateLocDistance, function(){}, { enableHighAccuracy: true, maximumAge: 5000 });
+    // Lancer la géoloc + boussole (plugin Capacitor natif si dispo)
+    if (!_locGeoWatchId) {
+      var Cap = window.Capacitor;
+      if (Cap && Cap.Plugins && Cap.Plugins.Geolocation) {
+        var Geo = Cap.Plugins.Geolocation;
+        Geo.getCurrentPosition({ enableHighAccuracy: true, timeout: 8000 }).then(updateLocDistance).catch(locGeoError);
+        Geo.watchPosition({ enableHighAccuracy: true }, function(pos, err) { if (pos) updateLocDistance(pos); }).then(function(id) { _locGeoWatchId = id; });
+      } else if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(updateLocDistance, locGeoError, { enableHighAccuracy: true, timeout: 8000 });
+        _locGeoWatchId = navigator.geolocation.watchPosition(updateLocDistance, function(){}, { enableHighAccuracy: true, maximumAge: 5000 });
+      }
     }
     initLocCompass();
   }
@@ -5702,20 +5709,14 @@ margin: 20px 20px 0;
     var btn = document.getElementById('locTrans' + mode.charAt(0).toUpperCase() + mode.slice(1));
     if (btn) btn.classList.add('active');
 
-    // Afficher l'itinéraire Google Maps dans une iframe (in-app)
-    var dirflg = mode === 'walk' ? 'w' : (mode === 'bike' ? 'b' : (mode === 'car' ? 'd' : 'r'));
-    var saddr = (_locUserLat != null && _locUserLng != null) ? (_locUserLat + ',' + _locUserLng) : '';
-    var gUrl = 'https://maps.google.com/maps?saddr=' + encodeURIComponent(saddr) +
-               '&daddr=' + LOC_LAT + ',' + LOC_LNG +
-               '&dirflg=' + dirflg + '&output=embed';
-    var mapFrame = document.getElementById('locMapFrame');
-    var routeFrame = document.getElementById('locRouteFrame');
-    var backBtn = document.getElementById('locRouteBack');
-    var toggleBtn = document.getElementById('locMapToggle');
-    if (routeFrame) { routeFrame.src = gUrl; routeFrame.style.display = 'block'; }
-    if (mapFrame) mapFrame.style.display = 'none';
-    if (backBtn) backBtn.style.display = 'flex';
-    if (toggleBtn) toggleBtn.style.display = 'none';
+    // Ouvrir Plans directement avec le bon mode de transport
+    var dirflg = mode === 'walk' ? 'w' : (mode === 'bike' ? 'w' : (mode === 'car' ? 'd' : 'r'));
+    var url = 'https://maps.apple.com/?daddr=' + LOC_LAT + ',' + LOC_LNG + '&dirflg=' + dirflg;
+    var a = document.createElement('a');
+    a.href = url; a.target = '_blank'; a.rel = 'noopener';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
   }
 
   function closeRouteIframe() {
