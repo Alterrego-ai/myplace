@@ -54,8 +54,7 @@ html, body {
 /* ── Layout: header fixe en haut, input fixe en bas, messages entre les deux ── */
 .chat-page {
   display: flex; flex-direction: column;
-  height: 100vh; /* fallback */
-  height: 100dvh;
+  height: 100vh;
   max-width: 600px; margin: 0 auto;
   position: relative; overflow: hidden;
 }
@@ -1492,6 +1491,17 @@ html, body {
       theme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
     }
     document.documentElement.setAttribute('data-theme', theme);
+  })();
+
+  // ── Stabilise viewport height on iOS (avoid dvh jank) ──
+  (function() {
+    var page = document.querySelector('.chat-page');
+    if (!page || !window.visualViewport) return;
+    function setHeight() {
+      page.style.height = window.visualViewport.height + 'px';
+    }
+    window.visualViewport.addEventListener('resize', setHeight);
+    setHeight();
   })();
 </script>
 </body>
