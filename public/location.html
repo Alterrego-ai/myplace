@@ -246,22 +246,22 @@ html, body {
 
     <!-- Transport modes — ouvre Plans dans le bon mode -->
     <div class="loc-transport-tabs">
-      <div class="loc-transport-tab" onclick="openExternal('maps://?daddr=45.7649859,4.8434166&dirflg=w')" id="tabWalk">
+      <div class="loc-transport-tab" onclick="openExternal('https://maps.apple.com/?daddr=45.7649859,4.8434166&dirflg=w')" id="tabWalk">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 4v16"/><path d="M17 4v4"/><path d="M7 4v4"/><circle cx="13" cy="4" r="2"/><path d="M9 8h8"/><path d="M9 20l4-16 4 16"/></svg>
         À pied
         <span class="eta loading" id="etaWalk">—</span>
       </div>
-      <div class="loc-transport-tab" onclick="openExternal('maps://?daddr=45.7649859,4.8434166&dirflg=w')" id="tabBike">
+      <div class="loc-transport-tab" onclick="openExternal('https://maps.apple.com/?daddr=45.7649859,4.8434166&dirflg=w')" id="tabBike">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18.5" cy="17.5" r="3.5"/><circle cx="5.5" cy="17.5" r="3.5"/><circle cx="15" cy="5" r="1"/><path d="M12 17.5V14l-3-3 4-3 2 3h2"/></svg>
         Vélo
         <span class="eta loading" id="etaBike">—</span>
       </div>
-      <div class="loc-transport-tab" onclick="openExternal('maps://?daddr=45.7649859,4.8434166&dirflg=d')" id="tabCar">
+      <div class="loc-transport-tab" onclick="openExternal('https://maps.apple.com/?daddr=45.7649859,4.8434166&dirflg=d')" id="tabCar">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 17h14v-5H5z"/><path d="M19 12l-1.5-6H6.5L5 12"/><circle cx="7.5" cy="17" r="1"/><circle cx="16.5" cy="17" r="1"/><path d="M5 12V8"/><path d="M19 12V8"/></svg>
         Voiture
         <span class="eta loading" id="etaCar">—</span>
       </div>
-      <div class="loc-transport-tab" onclick="openExternal('maps://?daddr=45.7649859,4.8434166&dirflg=r')" id="tabTransit">
+      <div class="loc-transport-tab" onclick="openExternal('https://maps.apple.com/?daddr=45.7649859,4.8434166&dirflg=r')" id="tabTransit">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="7" width="18" height="10" rx="2"/><path d="M3 10h18"/><path d="M8 7v10"/><path d="M16 7v10"/></svg>
         Transports
         <span class="eta loading" id="etaTransit">—</span>
@@ -271,7 +271,7 @@ html, body {
     <!-- Navigation buttons -->
     <div class="loc-nav-grid">
       <!-- Plans (Apple Maps) — ouvre l'app native directement -->
-      <div class="loc-nav-btn" onclick="openExternal('maps://?daddr=45.7649859,4.8434166&saddr=Current+Location')">
+      <div class="loc-nav-btn" onclick="openExternal('https://maps.apple.com/?daddr=45.7649859,4.8434166&saddr=Current+Location')">
         <div class="loc-nav-icon" style="background:#000;border-radius:10px;">
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polygon points="3 11 22 2 13 21 11 13 3 11"/></svg>
         </div>
@@ -281,7 +281,7 @@ html, body {
         </div>
       </div>
       <!-- Google Maps — deep link app si installée, sinon web -->
-      <div class="loc-nav-btn" onclick="openExternal('comgooglemaps://?daddr=45.7649859,4.8434166&directionsmode=driving', 'https://maps.google.com/maps?daddr=45.7649859,4.8434166')">
+      <div class="loc-nav-btn" onclick="openExternal('https://maps.google.com/maps?daddr=45.7649859,4.8434166&directionsmode=driving')">
         <div class="loc-nav-icon" style="background:#fff;border:1px solid var(--border);border-radius:10px;">
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z" fill="#EA4335"/><circle cx="12" cy="9" r="2.5" fill="#fff"/></svg>
         </div>
@@ -301,7 +301,7 @@ html, body {
         </div>
       </div>
       <!-- Uber -->
-      <div class="loc-nav-btn" onclick="openExternal('uber://?action=setPickup&dropoff[latitude]=45.7649859&dropoff[longitude]=4.8434166&dropoff[nickname]=Sauf%20Impr%C3%A9vu', 'https://m.uber.com/ul/?drop[0]=%7B%22latitude%22:45.7649859,%22longitude%22:4.8434166%7D')">
+      <div class="loc-nav-btn" onclick="openExternal('https://m.uber.com/ul/?drop[0]=%7B%22latitude%22:45.7649859,%22longitude%22:4.8434166,%22nickname%22:%22Sauf%20Impr%C3%A9vu%22%7D')">
         <div class="loc-nav-icon" style="background:#000;border-radius:10px;">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="#fff"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c0 2.73-2.22 4.95-4.95 4.95H9.5v3.75H7.25V8.8h4.44c2.73 0 4.95 2.22 4.95 4.95v-4.95z"/></svg>
         </div>
