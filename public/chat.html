@@ -81,10 +81,9 @@ html, body {
   white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
 }
 .chat-header-close {
-  width: 40px; height: 40px; border-radius: 50%;
-  display: flex; align-items: center; justify-content: center;
-  background: var(--bg-subtle); color: var(--text); text-decoration: none;
-  font-size: 20px; border: none; cursor: pointer; flex-shrink: 0;
+  background: none; border: none; padding: 4px 0 4px 8px; cursor: pointer;
+  font-size: 15px; font-weight: 500; color: var(--primary);
+  flex-shrink: 0; text-decoration: none;
 }
 .chat-header-close:active { opacity: 0.7; }
 /* Boutons flottants pré-conversation */
@@ -97,11 +96,9 @@ html, body {
 .chat-floaters > * { pointer-events: auto; }
 .chat-page.has-started .chat-floaters { display: none; }
 .chat-float-close {
-  width: 40px; height: 40px; border-radius: 50%;
-  display: flex; align-items: center; justify-content: center;
-  background: var(--bg-subtle); color: var(--text); text-decoration: none;
-  font-size: 20px; border: none; cursor: pointer;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  background: none; border: none; padding: 4px 8px; cursor: pointer;
+  font-size: 15px; font-weight: 500; color: var(--primary);
+  text-decoration: none; flex-shrink: 0;
 }
 .chat-float-close:active { opacity: 0.7; }
 /* Pill login + langue */
@@ -473,14 +470,14 @@ html, body {
     <button id="chatLangBtnSolo" class="chat-login-flag" onclick="event.stopPropagation();toggleChatLang()" type="button" aria-label="Langue" style="display:none;background:var(--bg-subtle);height:40px;border-radius:20px;padding:0 14px;margin-left:0;">
       <span id="chatLangCodeSolo">🇫🇷</span>
     </button>
-    <a href="/" class="chat-float-close" onclick="return closeChat()" aria-label="Fermer">✕</a>
+    <a href="/" class="chat-float-close" onclick="return closeChat()">Fermer</a>
   </div>
 
   <!-- Header post-conversation -->
   <div class="chat-header" id="chatHeader">
     <img src="/img/maia.png?v=3" alt="Maïa" class="chat-header-avatar">
     <div class="chat-header-title" id="chatHeaderTitle">Discuter avec Maïa</div>
-    <a href="/" class="chat-header-close" onclick="return closeChat()" aria-label="Fermer">✕</a>
+    <a href="/" class="chat-header-close" onclick="return closeChat()">Fermer</a>
   </div>
 
   <!-- Body (messages + bouton nouveau) -->
@@ -561,7 +558,7 @@ html, body {
   }
 
   // ── SSO ──
-  var SSO_KEY = 'myplace_user';
+  var SSO_KEY = 'sauf_imprevu_user';
   function getStoredUser() {
     try { return JSON.parse(localStorage.getItem(SSO_KEY)); } catch(e) { return null; }
   }
@@ -726,7 +723,7 @@ html, body {
     var el = document.getElementById('chatChipAvatar');
     if (!el) return;
     if (isLogged && user) {
-      var hardcoded = { 'rriquoir@me.com': '/img/avatar_RR.jpg' };
+      var hardcoded = { 'rriquoir@me.com': '/img/avatar_RR.jpg', 'romaric.riquoir@ciss.fr': '/img/avatar_RR.jpg' };
       var pic = user.picture || (user.email && hardcoded[user.email]) || null;
       var name = user.name || '';
       var initials = name.trim().split(/\s+/).slice(0,2).map(function(w){return w.charAt(0).toUpperCase();}).join('') || '?';
@@ -741,7 +738,7 @@ html, body {
     var btn = document.getElementById('chatLoginBtn');
     if (!btn) return;
     if (isLogged && user) {
-      var hardcoded = { 'rriquoir@me.com': '/img/avatar_RR.jpg' };
+      var hardcoded = { 'rriquoir@me.com': '/img/avatar_RR.jpg', 'romaric.riquoir@ciss.fr': '/img/avatar_RR.jpg' };
       var pic = user.picture || (user.email && hardcoded[user.email]) || null;
       var name = user.name || '';
       var initials = name.trim().split(/\s+/).slice(0,2).map(function(w){return w.charAt(0).toUpperCase();}).join('') || '?';
@@ -1236,7 +1233,7 @@ html, body {
     var el = document.createElement('div');
     el.className = 'chat-user-avatar';
     if (isLogged && user) {
-      var hardcoded = { 'rriquoir@me.com': '/img/avatar_RR.jpg' };
+      var hardcoded = { 'rriquoir@me.com': '/img/avatar_RR.jpg', 'romaric.riquoir@ciss.fr': '/img/avatar_RR.jpg' };
       var pic = user.picture || (user.email && hardcoded[user.email]) || null;
       var name = user.name || '';
       var initials = name.trim().split(/\s+/).slice(0,2).map(function(w){return w.charAt(0).toUpperCase();}).join('') || '?';
