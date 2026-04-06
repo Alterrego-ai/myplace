@@ -3,12 +3,12 @@
   "appName": "Sauf Imprévu",
   "webDir": "public",
   "server": {
+    "url": "https://www.myplace.coach",
     "cleartext": false,
     "allowNavigation": [
       "openid.mysafe.services",
       "*.mysafe.services",
-      "mysafe.services",
-      "www.myplace.coach"
+      "mysafe.services"
     ]
   },
   "ios": {
