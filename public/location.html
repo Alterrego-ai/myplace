@@ -153,14 +153,16 @@ html, body {
   display: flex; gap: 8px; margin-bottom: 14px;
 }
 .loc-transport-tab {
-  flex: 1; display: flex; flex-direction: column; align-items: center; gap: 6px;
-  padding: 12px 6px; background: var(--bg-card);
+  flex: 1; display: flex; flex-direction: column; align-items: center; gap: 4px;
+  padding: 10px 4px; background: var(--bg-card);
   border: 1px solid var(--border); border-radius: var(--radius);
-  color: var(--text); font-size: 12px; font-weight: 500;
+  color: var(--text); font-size: 11px; font-weight: 500;
   cursor: pointer; transition: background 0.12s, border-color 0.12s;
 }
 .loc-transport-tab:active { background: var(--bg-subtle); border-color: var(--primary); }
 .loc-transport-tab svg { color: var(--primary); }
+.loc-transport-tab .eta { font-size: 13px; font-weight: 700; color: var(--primary); min-height: 16px; }
+.loc-transport-tab .eta.loading { font-size: 10px; color: var(--text-tertiary); font-weight: 400; }
 /* Nav buttons grid */
 .loc-nav-grid {
   display: grid; grid-template-columns: 1fr 1fr; gap: 10px;
@@ -259,21 +261,25 @@ html, body {
 
     <!-- Transport modes — ouvre Plans dans le bon mode -->
     <div class="loc-transport-tabs">
-      <div class="loc-transport-tab" onclick="openExternal('maps://?daddr=45.7649859,4.8434166&dirflg=w')">
+      <div class="loc-transport-tab" onclick="openExternal('maps://?daddr=45.7649859,4.8434166&dirflg=w')" id="tabWalk">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 4v16"/><path d="M17 4v4"/><path d="M7 4v4"/><circle cx="13" cy="4" r="2"/><path d="M9 8h8"/><path d="M9 20l4-16 4 16"/></svg>
         À pied
+        <span class="eta loading" id="etaWalk">—</span>
       </div>
-      <div class="loc-transport-tab" onclick="openExternal('maps://?daddr=45.7649859,4.8434166&dirflg=w')">
+      <div class="loc-transport-tab" onclick="openExternal('maps://?daddr=45.7649859,4.8434166&dirflg=w')" id="tabBike">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18.5" cy="17.5" r="3.5"/><circle cx="5.5" cy="17.5" r="3.5"/><circle cx="15" cy="5" r="1"/><path d="M12 17.5V14l-3-3 4-3 2 3h2"/></svg>
         Vélo
+        <span class="eta loading" id="etaBike">—</span>
       </div>
-      <div class="loc-transport-tab" onclick="openExternal('maps://?daddr=45.7649859,4.8434166&dirflg=d')">
+      <div class="loc-transport-tab" onclick="openExternal('maps://?daddr=45.7649859,4.8434166&dirflg=d')" id="tabCar">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 17h14v-5H5z"/><path d="M19 12l-1.5-6H6.5L5 12"/><circle cx="7.5" cy="17" r="1"/><circle cx="16.5" cy="17" r="1"/><path d="M5 12V8"/><path d="M19 12V8"/></svg>
         Voiture
+        <span class="eta loading" id="etaCar">—</span>
       </div>
-      <div class="loc-transport-tab" onclick="openExternal('maps://?daddr=45.7649859,4.8434166&dirflg=r')">
+      <div class="loc-transport-tab" onclick="openExternal('maps://?daddr=45.7649859,4.8434166&dirflg=r')" id="tabTransit">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="7" width="18" height="10" rx="2"/><path d="M3 10h18"/><path d="M8 7v10"/><path d="M16 7v10"/></svg>
         Transports
+        <span class="eta loading" id="etaTransit">—</span>
       </div>
     </div>
 
@@ -413,11 +419,36 @@ html, body {
     return (meters / 1000).toFixed(1).replace('.0', '') + ' km';
   }
 
+  // Estimation temps trajet (vitesses moyennes ville Lyon)
+  function formatEta(minutes) {
+    if (minutes < 1) return '< 1 min';
+    if (minutes < 60) return Math.round(minutes) + ' min';
+    var h = Math.floor(minutes / 60);
+    var m = Math.round(minutes % 60);
+    return h + 'h' + (m > 0 ? m.toString().padStart(2, '0') : '');
+  }
+
+  function updateEtas(distMeters) {
+    // Facteur 1.3 pour route réelle vs vol d'oiseau
+    var road = distMeters * 1.3;
+    var speeds = { Walk: 4.5, Bike: 14, Car: 25, Transit: 18 }; // km/h en ville
+    ['Walk', 'Bike', 'Car', 'Transit'].forEach(function(mode) {
+      var el = document.getElementById('eta' + mode);
+      if (!el) return;
+      var min = (road / 1000) / speeds[mode] * 60;
+      el.textContent = formatEta(min);
+      el.classList.remove('loading');
+    });
+  }
+
   function updateDistance(pos) {
     var dist = haversineDistance(pos.coords.latitude, pos.coords.longitude, LAT, LNG);
     var badge = document.getElementById('distanceBadge');
     var label = document.getElementById('distanceLabel');
     var sub = document.getElementById('distanceText');
+
+    // Mettre à jour les ETAs
+    updateEtas(dist);
 
     if (dist < 10) {
       badge.classList.add('arrived');
