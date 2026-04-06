@@ -184,29 +184,14 @@ html, body {
 .loc-nav-text { flex: 1; }
 .loc-nav-text .label { font-size: 14px; font-weight: 600; }
 .loc-nav-text .sub { font-size: 11px; color: var(--text-tertiary); margin-top: 1px; }
-/* Distance card — même style que nav buttons */
-.loc-distance {
-  display: flex; align-items: center; gap: 12px;
-  padding: 14px 16px; background: var(--bg-card);
-  border: 1px solid var(--border); border-radius: var(--radius);
-  transition: all 0.3s ease;
-}
-.loc-distance-icon {
-  width: 40px; height: 40px; border-radius: 10px;
-  background: linear-gradient(135deg, var(--primary), var(--primary-light));
-  display: flex; align-items: center; justify-content: center;
-  flex-shrink: 0;
-}
-.loc-distance-text { flex: 1; }
-.loc-distance-text .label { font-size: 14px; font-weight: 600; color: var(--text); }
-.loc-distance-text .sub { font-size: 11px; color: var(--text-tertiary); margin-top: 1px; }
-.loc-distance.arrived {
+/* Distance / Boussole — arrived state */
+.loc-nav-btn.arrived {
   background: linear-gradient(135deg, #10b981, #059669);
   border-color: #059669;
 }
-.loc-distance.arrived .loc-distance-icon { background: rgba(255,255,255,0.2); }
-.loc-distance.arrived .loc-distance-text .label { color: #fff; font-size: 16px; font-weight: 700; }
-.loc-distance.arrived .loc-distance-text .sub { color: rgba(255,255,255,0.7); }
+.loc-nav-btn.arrived .loc-nav-icon { background: rgba(255,255,255,0.2) !important; }
+.loc-nav-btn.arrived .loc-nav-text .label { color: #fff; }
+.loc-nav-btn.arrived .loc-nav-text .sub { color: rgba(255,255,255,0.7); }
 </style>
 </head>
 <body>
@@ -327,12 +312,12 @@ html, body {
       </div>
     </div>
 
-    <!-- Distance / Boussole -->
-    <div class="loc-distance" id="distanceBadge">
-      <div class="loc-distance-icon">
+    <!-- Distance / Boussole — même composant que les nav buttons -->
+    <div class="loc-nav-btn" id="distanceBadge" style="grid-column:1/-1;">
+      <div class="loc-nav-icon" style="background:linear-gradient(135deg, var(--primary), var(--primary-light));">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></svg>
       </div>
-      <div class="loc-distance-text">
+      <div class="loc-nav-text">
         <div class="label" id="distanceLabel">Boussole</div>
         <div class="sub" id="distanceText">Localisation en cours…</div>
       </div>
@@ -452,7 +437,7 @@ html, body {
 
     if (dist < 10) {
       badge.classList.add('arrived');
-      label.textContent = 'Vous y êtes !!';
+      label.textContent = 'Vous y êtes !';
       sub.textContent = 'Bienvenue chez Sauf Imprévu';
     } else {
       badge.classList.remove('arrived');
