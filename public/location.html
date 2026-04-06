@@ -268,58 +268,53 @@ html, body {
       </div>
     </div>
 
-    <!-- Navigation buttons -->
+    <!-- Navigation buttons (grille 2x2) + Boussole en 5e item pleine largeur -->
     <div class="loc-nav-grid">
-      <!-- Plans (Apple Maps) — ouvre l'app native directement -->
-      <div class="loc-nav-btn" onclick="openExternal('https://maps.apple.com/?daddr=45.7649859,4.8434166&saddr=Current+Location')">
-        <div class="loc-nav-icon" style="background:#000;border-radius:10px;">
+      <div class="loc-nav-btn" onclick="openNav('https://maps.apple.com/?daddr=45.7649859,4.8434166&saddr=Current+Location')">
+        <div class="loc-nav-icon" style="background:#000;">
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polygon points="3 11 22 2 13 21 11 13 3 11"/></svg>
         </div>
         <div class="loc-nav-text">
           <div class="label">Plans</div>
-          <div class="sub">Itinéraire via Apple Maps</div>
+          <div class="sub">Apple Maps</div>
         </div>
       </div>
-      <!-- Google Maps — deep link app si installée, sinon web -->
-      <div class="loc-nav-btn" onclick="openExternal('https://maps.google.com/maps?daddr=45.7649859,4.8434166&directionsmode=driving')">
-        <div class="loc-nav-icon" style="background:#fff;border:1px solid var(--border);border-radius:10px;">
+      <div class="loc-nav-btn" onclick="openNav('https://maps.google.com/maps?daddr=45.7649859,4.8434166')">
+        <div class="loc-nav-icon" style="background:#fff;border:1px solid var(--border);">
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z" fill="#EA4335"/><circle cx="12" cy="9" r="2.5" fill="#fff"/></svg>
         </div>
         <div class="loc-nav-text">
           <div class="label">Google Maps</div>
-          <div class="sub">Itinéraire via Google</div>
+          <div class="sub">Itinéraire</div>
         </div>
       </div>
-      <!-- Waze -->
-      <div class="loc-nav-btn" onclick="openExternal('https://waze.com/ul?ll=45.7649859,4.8434166&navigate=yes')">
-        <div class="loc-nav-icon" style="background:#33ccff;border-radius:10px;">
+      <div class="loc-nav-btn" onclick="openNav('https://waze.com/ul?ll=45.7649859,4.8434166&navigate=yes')">
+        <div class="loc-nav-icon" style="background:#33ccff;">
           <svg width="22" height="22" viewBox="0 0 24 24" fill="#fff"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14.5c-.55 0-1-.45-1-1s.45-1 1-1 1 .45 1 1-.45 1-1 1zm4 0c-.55 0-1-.45-1-1s.45-1 1-1 1 .45 1 1-.45 1-1 1zM12 6c2.76 0 5 2.24 5 5h-2c0-1.66-1.34-3-3-3S9 9.34 9 11H7c0-2.76 2.24-5 5-5z"/></svg>
         </div>
         <div class="loc-nav-text">
           <div class="label">Waze</div>
-          <div class="sub">Navigation temps réel</div>
+          <div class="sub">Navigation</div>
         </div>
       </div>
-      <!-- Uber -->
-      <div class="loc-nav-btn" onclick="openExternal('https://m.uber.com/ul/?drop[0]=%7B%22latitude%22:45.7649859,%22longitude%22:4.8434166,%22nickname%22:%22Sauf%20Impr%C3%A9vu%22%7D')">
-        <div class="loc-nav-icon" style="background:#000;border-radius:10px;">
+      <div class="loc-nav-btn" onclick="openNav('https://m.uber.com/ul/?drop[0]=%7B%22latitude%22:45.7649859,%22longitude%22:4.8434166%7D')">
+        <div class="loc-nav-icon" style="background:#000;">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="#fff"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c0 2.73-2.22 4.95-4.95 4.95H9.5v3.75H7.25V8.8h4.44c2.73 0 4.95 2.22 4.95 4.95v-4.95z"/></svg>
         </div>
         <div class="loc-nav-text">
           <div class="label">Uber</div>
-          <div class="sub">Commander un VTC</div>
+          <div class="sub">VTC</div>
         </div>
       </div>
-    </div>
-
-    <!-- Distance / Boussole — même composant que les nav buttons -->
-    <div class="loc-nav-btn" id="distanceBadge" style="grid-column:1/-1;">
-      <div class="loc-nav-icon" style="background:linear-gradient(135deg, var(--primary), var(--primary-light));">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></svg>
-      </div>
-      <div class="loc-nav-text">
-        <div class="label" id="distanceLabel">Boussole</div>
-        <div class="sub" id="distanceText">Localisation en cours…</div>
+      <!-- Boussole — DANS la grille, pleine largeur -->
+      <div class="loc-nav-btn" id="distanceBadge" style="grid-column:1/-1;">
+        <div class="loc-nav-icon" style="background:linear-gradient(135deg, var(--primary), var(--primary-light));">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></svg>
+        </div>
+        <div class="loc-nav-text">
+          <div class="label" id="distanceLabel">Boussole</div>
+          <div class="sub" id="distanceText">Localisation en cours…</div>
+        </div>
       </div>
     </div>
 
@@ -404,35 +399,39 @@ html, body {
     return (meters / 1000).toFixed(1).replace('.0', '') + ' km';
   }
 
-  // Estimation temps trajet (vitesses moyennes ville Lyon)
+  // ── ETA : estimation temps trajet ──
   function formatEta(minutes) {
     if (minutes < 1) return '< 1 min';
     if (minutes < 60) return Math.round(minutes) + ' min';
     var h = Math.floor(minutes / 60);
     var m = Math.round(minutes % 60);
-    return h + 'h' + (m > 0 ? m.toString().padStart(2, '0') : '');
+    if (h >= 24) return Math.round(h / 24) + ' j';
+    return h + 'h' + (m > 0 ? (m < 10 ? '0' : '') + m : '');
   }
 
   function updateEtas(distMeters) {
-    // Facteur 1.3 pour route réelle vs vol d'oiseau
     var road = distMeters * 1.3;
-    var speeds = { Walk: 4.5, Bike: 14, Car: 25, Transit: 18 }; // km/h en ville
+    var speeds = { Walk: 4.5, Bike: 14, Car: 25, Transit: 18 };
     ['Walk', 'Bike', 'Car', 'Transit'].forEach(function(mode) {
       var el = document.getElementById('eta' + mode);
       if (!el) return;
-      var min = (road / 1000) / speeds[mode] * 60;
-      el.textContent = formatEta(min);
+      if (distMeters < 10) {
+        el.textContent = '0 min';
+      } else {
+        var min = (road / 1000) / speeds[mode] * 60;
+        el.textContent = formatEta(min);
+      }
       el.classList.remove('loading');
     });
   }
 
+  // ── Distance / Boussole ──
   function updateDistance(pos) {
     var dist = haversineDistance(pos.coords.latitude, pos.coords.longitude, LAT, LNG);
     var badge = document.getElementById('distanceBadge');
     var label = document.getElementById('distanceLabel');
     var sub = document.getElementById('distanceText');
 
-    // Mettre à jour les ETAs
     updateEtas(dist);
 
     if (dist < 10) {
@@ -442,43 +441,30 @@ html, body {
     } else {
       badge.classList.remove('arrived');
       label.textContent = 'À ' + formatDistance(dist);
-      sub.textContent = dist < 500 ? 'À pied depuis votre position' : dist < 5000 ? 'En voiture depuis votre position' : 'Depuis votre position';
+      sub.textContent = 'de Sauf Imprévu';
     }
   }
 
   function geoError() {
-    var label = document.getElementById('distanceLabel');
-    var sub = document.getElementById('distanceText');
-    label.textContent = 'Boussole';
-    sub.textContent = 'Activez la localisation';
+    document.getElementById('distanceLabel').textContent = 'Distance';
+    document.getElementById('distanceText').textContent = 'Activez la localisation';
   }
 
-  // ── Ouvrir un lien externe (fonctionne dans Capacitor) ──
-  // url = lien principal (deep link app), fallbackUrl = site web si app pas installée
-  function openExternal(url, fallbackUrl) {
-    // Capacitor Browser plugin pour les URLs http(s)
-    var isHttp = url.indexOf('http') === 0;
-    if (isHttp && window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.Browser) {
-      window.Capacitor.Plugins.Browser.open({ url: url });
-      return;
-    }
-    // Deep link app scheme (maps://, comgooglemaps://, uber://)
-    if (!isHttp) {
-      var opened = Date.now();
-      window.location.href = url;
-      // Si on revient vite → l'app n'est pas installée → fallback
-      if (fallbackUrl) {
-        setTimeout(function() {
-          if (Date.now() - opened < 2000) openExternal(fallbackUrl);
-        }, 800);
-      }
-      return;
-    }
-    window.open(url, '_system');
+  // ── Ouvrir lien externe — méthode simple et fiable ──
+  function openNav(url) {
+    // Méthode 1 : <a> temporaire (fonctionne dans WKWebView / Capacitor)
+    var a = document.createElement('a');
+    a.href = url;
+    a.target = '_blank';
+    a.rel = 'noopener';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
   }
+  // Alias pour les transport tabs
+  var openExternal = openNav;
 
-  // Lancer la géoloc — plugin natif Capacitor (affiche "Sauf Imprévu" dans la popup iOS)
-  // Fallback sur navigator.geolocation si pas dans Capacitor
+  // ── Géoloc : plugin natif Capacitor > navigator.geolocation ──
   (function() {
     var Cap = window.Capacitor;
     if (Cap && Cap.Plugins && Cap.Plugins.Geolocation) {
