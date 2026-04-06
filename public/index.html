@@ -544,7 +544,9 @@ background: linear-gradient(135deg, var(--primary), rgba(61,107,140,0.75));
 display: flex; align-items: center; justify-content: center;
 color: #fff;
 }
-.loc-compass-ring svg { width: 24px; height: 24px; }
+.loc-compass-ring svg { width: 34px; height: 34px; transition: transform 0.3s ease; }
+.loc-compass-card.loc-active .loc-compass-ring svg { animation: compassPulse 2s ease-in-out infinite; }
+@keyframes compassPulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.08); } }
 .loc-compass-svg { width: 100%; height: 100%; }
 .loc-compass-info { flex: 1; min-width: 0; padding: 12px 0; display: flex; flex-direction: column; justify-content: center; }
 .loc-compass-label {
