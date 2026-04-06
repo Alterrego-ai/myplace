@@ -148,6 +148,19 @@ html, body {
   font-size: 11px; color: var(--text-tertiary); flex-shrink: 0;
   display: flex; align-items: center; gap: 4px;
 }
+/* Transport mode tabs */
+.loc-transport-tabs {
+  display: flex; gap: 8px; margin-bottom: 14px;
+}
+.loc-transport-tab {
+  flex: 1; display: flex; flex-direction: column; align-items: center; gap: 6px;
+  padding: 12px 6px; background: var(--bg-card);
+  border: 1px solid var(--border); border-radius: var(--radius);
+  color: var(--text); font-size: 12px; font-weight: 500;
+  cursor: pointer; transition: background 0.12s, border-color 0.12s;
+}
+.loc-transport-tab:active { background: var(--bg-subtle); border-color: var(--primary); }
+.loc-transport-tab svg { color: var(--primary); }
 /* Nav buttons grid */
 .loc-nav-grid {
   display: grid; grid-template-columns: 1fr 1fr; gap: 10px;
@@ -160,7 +173,7 @@ html, body {
   text-decoration: none; color: var(--text); transition: background 0.12s;
 }
 .loc-nav-btn:active { background: var(--bg-subtle); }
-.loc-nav-btn.full { grid-column: 1 / -1; }
+/* .loc-nav-btn.full { grid-column: 1 / -1; } */
 .loc-nav-icon {
   width: 40px; height: 40px; border-radius: 10px;
   display: flex; align-items: center; justify-content: center;
@@ -169,26 +182,29 @@ html, body {
 .loc-nav-text { flex: 1; }
 .loc-nav-text .label { font-size: 14px; font-weight: 600; }
 .loc-nav-text .sub { font-size: 11px; color: var(--text-tertiary); margin-top: 1px; }
-/* Distance badge */
+/* Distance card — même style que nav buttons */
 .loc-distance {
-  display: flex; align-items: center; justify-content: center; gap: 10px;
+  display: flex; align-items: center; gap: 12px;
   padding: 14px 16px; background: var(--bg-card);
   border: 1px solid var(--border); border-radius: var(--radius);
-  font-size: 14px; font-weight: 600; color: var(--text-secondary);
   transition: all 0.3s ease;
 }
+.loc-distance-icon {
+  width: 40px; height: 40px; border-radius: 10px;
+  background: linear-gradient(135deg, var(--primary), var(--primary-light));
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+.loc-distance-text { flex: 1; }
+.loc-distance-text .label { font-size: 14px; font-weight: 600; color: var(--text); }
+.loc-distance-text .sub { font-size: 11px; color: var(--text-tertiary); margin-top: 1px; }
 .loc-distance.arrived {
   background: linear-gradient(135deg, #10b981, #059669);
-  color: #fff; border-color: #059669;
-  font-size: 16px; font-weight: 700;
-  animation: pulse-arrived 1.5s ease-in-out infinite;
+  border-color: #059669;
 }
-@keyframes pulse-arrived {
-  0%, 100% { transform: scale(1); }
-  50% { transform: scale(1.02); }
-}
-.loc-distance svg { flex-shrink: 0; }
-.loc-distance .dist-loading { color: var(--text-tertiary); font-weight: 400; font-size: 13px; }
+.loc-distance.arrived .loc-distance-icon { background: rgba(255,255,255,0.2); }
+.loc-distance.arrived .loc-distance-text .label { color: #fff; font-size: 16px; font-weight: 700; }
+.loc-distance.arrived .loc-distance-text .sub { color: rgba(255,255,255,0.7); }
 </style>
 </head>
 <body>
@@ -237,34 +253,54 @@ html, body {
       </div>
       <div class="loc-address-copy" id="copyLabel">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
-        Copier
+        Copier l'adresse
+      </div>
+    </div>
+
+    <!-- Transport modes — ouvre Plans dans le bon mode -->
+    <div class="loc-transport-tabs">
+      <div class="loc-transport-tab" onclick="openExternal('maps://?daddr=45.7649859,4.8434166&dirflg=w')">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 4v16"/><path d="M17 4v4"/><path d="M7 4v4"/><circle cx="13" cy="4" r="2"/><path d="M9 8h8"/><path d="M9 20l4-16 4 16"/></svg>
+        À pied
+      </div>
+      <div class="loc-transport-tab" onclick="openExternal('maps://?daddr=45.7649859,4.8434166&dirflg=w')">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18.5" cy="17.5" r="3.5"/><circle cx="5.5" cy="17.5" r="3.5"/><circle cx="15" cy="5" r="1"/><path d="M12 17.5V14l-3-3 4-3 2 3h2"/></svg>
+        Vélo
+      </div>
+      <div class="loc-transport-tab" onclick="openExternal('maps://?daddr=45.7649859,4.8434166&dirflg=d')">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 17h14v-5H5z"/><path d="M19 12l-1.5-6H6.5L5 12"/><circle cx="7.5" cy="17" r="1"/><circle cx="16.5" cy="17" r="1"/><path d="M5 12V8"/><path d="M19 12V8"/></svg>
+        Voiture
+      </div>
+      <div class="loc-transport-tab" onclick="openExternal('maps://?daddr=45.7649859,4.8434166&dirflg=r')">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="7" width="18" height="10" rx="2"/><path d="M3 10h18"/><path d="M8 7v10"/><path d="M16 7v10"/></svg>
+        Transports
       </div>
     </div>
 
     <!-- Navigation buttons -->
     <div class="loc-nav-grid">
-      <!-- Plans (Apple Maps) -->
-      <a class="loc-nav-btn" href="https://maps.apple.com/?address=15+Rue+Vauban,+69006+Lyon&ll=45.7649859,4.8434166" target="_blank">
+      <!-- Plans (Apple Maps) — ouvre l'app native directement -->
+      <div class="loc-nav-btn" onclick="openExternal('maps://?daddr=45.7649859,4.8434166&saddr=Current+Location')">
         <div class="loc-nav-icon" style="background:#000;border-radius:10px;">
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polygon points="3 11 22 2 13 21 11 13 3 11"/></svg>
         </div>
         <div class="loc-nav-text">
           <div class="label">Plans</div>
-          <div class="sub">Apple Maps</div>
+          <div class="sub">Itinéraire via Apple Maps</div>
         </div>
-      </a>
-      <!-- Google Maps -->
-      <a class="loc-nav-btn" href="https://maps.google.com/?q=Sauf+Imprévu,+15+Rue+Vauban,+69006+Lyon" target="_blank">
+      </div>
+      <!-- Google Maps — deep link app si installée, sinon web -->
+      <div class="loc-nav-btn" onclick="openExternal('comgooglemaps://?daddr=45.7649859,4.8434166&directionsmode=driving', 'https://maps.google.com/maps?daddr=45.7649859,4.8434166')">
         <div class="loc-nav-icon" style="background:#fff;border:1px solid var(--border);border-radius:10px;">
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z" fill="#EA4335"/><circle cx="12" cy="9" r="2.5" fill="#fff"/></svg>
         </div>
         <div class="loc-nav-text">
           <div class="label">Google Maps</div>
-          <div class="sub">Carte & itinéraire</div>
+          <div class="sub">Itinéraire via Google</div>
         </div>
-      </a>
+      </div>
       <!-- Waze -->
-      <a class="loc-nav-btn full" href="https://waze.com/ul?q=15+Rue+Vauban,+69006+Lyon&navigate=yes" target="_blank">
+      <div class="loc-nav-btn" onclick="openExternal('https://waze.com/ul?ll=45.7649859,4.8434166&navigate=yes')">
         <div class="loc-nav-icon" style="background:#33ccff;border-radius:10px;">
           <svg width="22" height="22" viewBox="0 0 24 24" fill="#fff"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14.5c-.55 0-1-.45-1-1s.45-1 1-1 1 .45 1 1-.45 1-1 1zm4 0c-.55 0-1-.45-1-1s.45-1 1-1 1 .45 1 1-.45 1-1 1zM12 6c2.76 0 5 2.24 5 5h-2c0-1.66-1.34-3-3-3S9 9.34 9 11H7c0-2.76 2.24-5 5-5z"/></svg>
         </div>
@@ -272,13 +308,28 @@ html, body {
           <div class="label">Waze</div>
           <div class="sub">Navigation temps réel</div>
         </div>
-      </a>
+      </div>
+      <!-- Uber -->
+      <div class="loc-nav-btn" onclick="openExternal('uber://?action=setPickup&dropoff[latitude]=45.7649859&dropoff[longitude]=4.8434166&dropoff[nickname]=Sauf%20Impr%C3%A9vu', 'https://m.uber.com/ul/?drop[0]=%7B%22latitude%22:45.7649859,%22longitude%22:4.8434166%7D')">
+        <div class="loc-nav-icon" style="background:#000;border-radius:10px;">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="#fff"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c0 2.73-2.22 4.95-4.95 4.95H9.5v3.75H7.25V8.8h4.44c2.73 0 4.95 2.22 4.95 4.95v-4.95z"/></svg>
+        </div>
+        <div class="loc-nav-text">
+          <div class="label">Uber</div>
+          <div class="sub">Commander un VTC</div>
+        </div>
+      </div>
     </div>
 
-    <!-- Distance -->
+    <!-- Distance / Boussole -->
     <div class="loc-distance" id="distanceBadge">
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></svg>
-      <span id="distanceText" class="dist-loading">Localisation en cours…</span>
+      <div class="loc-distance-icon">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></svg>
+      </div>
+      <div class="loc-distance-text">
+        <div class="label" id="distanceLabel">Boussole</div>
+        <div class="sub" id="distanceText">Localisation en cours…</div>
+      </div>
     </div>
 
   </div>
@@ -338,9 +389,9 @@ html, body {
   function copyAddress() {
     navigator.clipboard.writeText(ADDR).then(function() {
       var el = document.getElementById('copyLabel');
-      el.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Copié !';
+      el.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Adresse copiée !';
       setTimeout(function() {
-        el.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg> Copier';
+        el.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg> Copier l\'adresse';
       }, 2000);
     });
   }
@@ -365,23 +416,49 @@ html, body {
   function updateDistance(pos) {
     var dist = haversineDistance(pos.coords.latitude, pos.coords.longitude, LAT, LNG);
     var badge = document.getElementById('distanceBadge');
-    var text = document.getElementById('distanceText');
+    var label = document.getElementById('distanceLabel');
+    var sub = document.getElementById('distanceText');
 
     if (dist < 10) {
       badge.classList.add('arrived');
-      text.textContent = '🎉 Vous y êtes !!';
+      label.textContent = 'Vous y êtes !!';
+      sub.textContent = 'Bienvenue chez Sauf Imprévu';
     } else {
       badge.classList.remove('arrived');
-      var icon = dist < 500 ? '🚶' : dist < 5000 ? '🚗' : '📍';
-      text.textContent = icon + ' À ' + formatDistance(dist) + ' de Sauf Imprévu';
-      text.classList.remove('dist-loading');
+      label.textContent = 'À ' + formatDistance(dist);
+      sub.textContent = dist < 500 ? 'À pied depuis votre position' : dist < 5000 ? 'En voiture depuis votre position' : 'Depuis votre position';
     }
   }
 
   function geoError() {
-    var text = document.getElementById('distanceText');
-    text.textContent = '📍 Activez la localisation pour voir la distance';
-    text.classList.remove('dist-loading');
+    var label = document.getElementById('distanceLabel');
+    var sub = document.getElementById('distanceText');
+    label.textContent = 'Boussole';
+    sub.textContent = 'Activez la localisation';
+  }
+
+  // ── Ouvrir un lien externe (fonctionne dans Capacitor) ──
+  // url = lien principal (deep link app), fallbackUrl = site web si app pas installée
+  function openExternal(url, fallbackUrl) {
+    // Capacitor Browser plugin pour les URLs http(s)
+    var isHttp = url.indexOf('http') === 0;
+    if (isHttp && window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.Browser) {
+      window.Capacitor.Plugins.Browser.open({ url: url });
+      return;
+    }
+    // Deep link app scheme (maps://, comgooglemaps://, uber://)
+    if (!isHttp) {
+      var opened = Date.now();
+      window.location.href = url;
+      // Si on revient vite → l'app n'est pas installée → fallback
+      if (fallbackUrl) {
+        setTimeout(function() {
+          if (Date.now() - opened < 2000) openExternal(fallbackUrl);
+        }, 800);
+      }
+      return;
+    }
+    window.open(url, '_system');
   }
 
   // Lancer la géoloc avec suivi continu
