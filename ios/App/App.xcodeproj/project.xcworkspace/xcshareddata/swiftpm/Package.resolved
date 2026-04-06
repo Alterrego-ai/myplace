@@ -1,5 +1,5 @@
 {
-  "originHash" : "01c7462bf8127601efe46ecdf525d07100bfd161112996c89b0f96fe2a12d8cc",
+  "originHash" : "791adb1a50be70e8082e2d632b237030c659007532311a0974e83a2663376e76",
   "pins" : [
     {
       "identity" : "capacitor-swift-pm",
@@ -8,6 +8,15 @@
       "state" : {
         "revision" : "6a2a3feb25fda8df2a284d0818bc9c83e57a7d56",
         "version" : "8.3.0"
+      }
+    },
+    {
+      "identity" : "ion-ios-geolocation",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/ionic-team/ion-ios-geolocation.git",
+      "state" : {
+        "revision" : "db363927d3a954e3ea24d2e72b6e9814769a84be",
+        "version" : "2.1.1"
       }
     }
   ],

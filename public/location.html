@@ -461,13 +461,25 @@ html, body {
     window.open(url, '_system');
   }
 
-  // Lancer la géoloc avec suivi continu
-  if (navigator.geolocation) {
-    navigator.geolocation.getCurrentPosition(updateDistance, geoError, { enableHighAccuracy: true, timeout: 8000 });
-    navigator.geolocation.watchPosition(updateDistance, function(){}, { enableHighAccuracy: true, maximumAge: 5000 });
-  } else {
-    geoError();
-  }
+  // Lancer la géoloc — plugin natif Capacitor (affiche "Sauf Imprévu" dans la popup iOS)
+  // Fallback sur navigator.geolocation si pas dans Capacitor
+  (function() {
+    var Cap = window.Capacitor;
+    if (Cap && Cap.Plugins && Cap.Plugins.Geolocation) {
+      var Geo = Cap.Plugins.Geolocation;
+      Geo.getCurrentPosition({ enableHighAccuracy: true, timeout: 8000 }).then(function(pos) {
+        updateDistance(pos);
+      }).catch(geoError);
+      Geo.watchPosition({ enableHighAccuracy: true }, function(pos, err) {
+        if (pos) updateDistance(pos);
+      });
+    } else if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(updateDistance, geoError, { enableHighAccuracy: true, timeout: 8000 });
+      navigator.geolocation.watchPosition(updateDistance, function(){}, { enableHighAccuracy: true, maximumAge: 5000 });
+    } else {
+      geoError();
+    }
+  })();
 </script>
 </body>
 </html>
