@@ -5786,14 +5786,20 @@ margin: 20px 20px 0;
         if (v) v.style.background = '#111';
       });
 
-    // Mettre à jour la flèche avec l'orientation
+    // Mettre à jour la flèche avec l'orientation (permission requise iOS 13+)
     window._locArOrientHandler = function(e) {
       var heading = e.webkitCompassHeading !== undefined ? e.webkitCompassHeading : (e.alpha ? 360 - e.alpha : 0);
       var rel = bearing - heading;
       var el = document.getElementById('locArArrow');
       if (el) el.style.transform = 'rotate(' + rel + 'deg)';
     };
-    window.addEventListener('deviceorientation', window._locArOrientHandler, true);
+    if (typeof DeviceOrientationEvent !== 'undefined' && typeof DeviceOrientationEvent.requestPermission === 'function') {
+      DeviceOrientationEvent.requestPermission().then(function(state) {
+        if (state === 'granted') window.addEventListener('deviceorientation', window._locArOrientHandler, true);
+      }).catch(function(){});
+    } else {
+      window.addEventListener('deviceorientation', window._locArOrientHandler, true);
+    }
   }
 
   function closeLocAR() {

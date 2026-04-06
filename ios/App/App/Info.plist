@@ -40,6 +40,8 @@
 	</array>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>Pour calculer votre distance et vous guider jusqu'à Sauf Imprévu</string>
+	<key>NSCameraUsageDescription</key>
+	<string>Pour vous guider visuellement jusqu'à Sauf Imprévu avec la réalité augmentée</string>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<true/>
 </dict>
