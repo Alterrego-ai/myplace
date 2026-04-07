@@ -14,7 +14,8 @@
   "ios": {
     "contentInset": "always",
     "allowsLinkPreview": false,
-    "backgroundColor": "#1a2636"
+    "backgroundColor": "#1a2636",
+    "scrollEnabled": false
   },
   "plugins": {
     "SocialLogin": {
