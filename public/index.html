@@ -5959,7 +5959,7 @@ margin: 20px 20px 0;
       var data = await resp.json();
       if (!data.ok) throw new Error(data.error || 'Auth Apple refusée');
 
-      var payload = Object.assign({}, data.user, { _provider: 'apple' });
+      var payload = Object.assign({}, data.user, { _provider: 'apple', _token: r.identityToken });
       ssoSave(SSO_KEY, payload);
       updateAuthUI(payload);
     } catch (err) {
