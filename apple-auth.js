@@ -12,6 +12,7 @@
 
 const crypto = require('crypto');
 const https = require('https');
+const { createUserToken } = require('./auth');
 
 const APPLE_ISSUER = 'https://appleid.apple.com';
 const APPLE_JWKS_URL = 'https://appleid.apple.com/auth/keys';
@@ -172,7 +173,10 @@ function appleAuthRoutes(router, db) {
         is_private_email: payload.is_private_email === 'true' || payload.is_private_email === true,
       };
 
-      res.json({ ok: true, user: req.session.user });
+      // Créer un token interne HMAC (compatible avec verifyUserToken du chat)
+      const token = createUserToken(req.session.user);
+
+      res.json({ ok: true, user: req.session.user, token: token });
     } catch (err) {
       console.error('❌ Apple auth error:', err.message);
       res.status(401).json({ error: 'Authentification Apple échouée', detail: err.message });

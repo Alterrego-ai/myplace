@@ -759,13 +759,13 @@ html, body {
     }
   }
 
-  // ── Pill login : masquer si loggué, montrer langue seule ──
+  // ── Pill login : tout masquer si loggué (langue dispo sur espace perso) ──
   (function() {
     if (isLogged && user) {
       var pill = document.getElementById('chatLoginPill');
       if (pill) pill.style.display = 'none';
       var solo = document.getElementById('chatLangBtnSolo');
-      if (solo) solo.style.display = '';
+      if (solo) solo.style.display = 'none';
     }
   })();
 

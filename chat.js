@@ -304,7 +304,9 @@ function requireChatAuth(req, res, next) {
   const token = authHeader.substring(7);
   const user = verifyUserToken(token);
   if (!user) {
-    return res.status(401).json({ error: 'Session expirée, veuillez vous reconnecter' });
+    // Token invalide/expiré → fallback anonyme (ne pas bloquer le chat)
+    req.chatUser = { sub: 'anon_' + (req.ip || 'unknown'), name: 'Visiteur', anonymous: true };
+    return next();
   }
   req.chatUser = user;
   next();
