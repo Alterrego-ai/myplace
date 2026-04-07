@@ -469,7 +469,21 @@ input,textarea,button{font-family:inherit;outline:none}
     <div class="gc-step-title fade-up fade-up-2">Combien souhaitez-vous offrir&nbsp;?</div>
     <div class="gc-step-sub fade-up fade-up-3">Quel que soit le montant, c'est le geste qui compte...</div>
 
-    <div class="gc-field fade-up fade-up-2">
+    <div class="gc-amount-presets fade-up fade-up-2">
+      <div class="gc-amount-btn" data-amount="50" onclick="selectAmount(50,this)">50€</div>
+      <div class="gc-amount-btn selected" data-amount="100" onclick="selectAmount(100,this)">100€</div>
+      <div class="gc-amount-btn" data-amount="150" onclick="selectAmount(150,this)">150€</div>
+      <div class="gc-amount-btn" data-amount="250" onclick="selectAmount(250,this)">250€</div>
+    </div>
+
+    <div class="gc-amount-slider-wrap fade-up fade-up-3">
+      <div class="gc-amount-display" id="amountDisplay">100 €</div>
+      <div class="gc-amount-feeling" id="amountFeeling">Généreux</div>
+      <input type="range" id="amountSlider" class="gc-amount-slider" min="50" max="250" step="5" value="100" oninput="slideAmount(this)">
+      <div class="gc-amount-range"><span>50 €</span><span>250 €</span></div>
+    </div>
+
+    <div class="gc-field fade-up fade-up-4">
       <label>Pour quelle occasion&nbsp;?</label>
       <div class="gc-occasion-grid">
         <div class="gc-occasion-btn gc-occasion-small selected" data-occasion="none" onclick="pickQuickOccasion(this)">Juste pour offrir</div>
@@ -477,20 +491,6 @@ input,textarea,button{font-family:inherit;outline:none}
         <div class="gc-occasion-btn gc-occasion-combo" data-occasion="special" onclick="openOccasionPicker()">🎉 Occasion spéciale <span class="gc-occasion-arrow">&#9662;</span></div>
         <div class="gc-occasion-btn gc-occasion-story-btn" data-occasion="story" onclick="pickQuickOccasion(this)">💝 J'ai une histoire à raconter...</div>
       </div>
-    </div>
-
-    <div class="gc-amount-presets fade-up fade-up-3">
-      <div class="gc-amount-btn" data-amount="50" onclick="selectAmount(50,this)">50€</div>
-      <div class="gc-amount-btn selected" data-amount="100" onclick="selectAmount(100,this)">100€</div>
-      <div class="gc-amount-btn" data-amount="150" onclick="selectAmount(150,this)">150€</div>
-      <div class="gc-amount-btn" data-amount="250" onclick="selectAmount(250,this)">250€</div>
-    </div>
-
-    <div class="gc-amount-slider-wrap fade-up fade-up-4">
-      <div class="gc-amount-display" id="amountDisplay">100 €</div>
-      <div class="gc-amount-feeling" id="amountFeeling">Généreux</div>
-      <input type="range" id="amountSlider" class="gc-amount-slider" min="50" max="250" step="5" value="100" oninput="slideAmount(this)">
-      <div class="gc-amount-range"><span>50 €</span><span>250 €</span></div>
     </div>
 
     <div class="gc-btn-row">
