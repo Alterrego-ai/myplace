@@ -659,6 +659,16 @@ html, body {
     }
   });
 
+  // ── Anti-bounce iOS : bloquer le scroll du document, autoriser seulement .chat-messages ──
+  document.addEventListener('touchmove', function(e) {
+    var el = e.target;
+    while (el && el !== document.body) {
+      if (el === messages) return; // scroll autorisé dans les messages
+      el = el.parentNode;
+    }
+    e.preventDefault();
+  }, { passive: false });
+
   // ── Gestion clavier mobile ──
   // Priorité 1 : @capacitor/keyboard (natif, hauteur exacte, timing avant animation)
   // Priorité 2 : visualViewport API (fallback web / iOS WKWebView sans plugin)
