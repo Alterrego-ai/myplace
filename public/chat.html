@@ -649,6 +649,16 @@ html, body {
   var chatSend = document.getElementById('chatSend');
   var chatPage = document.querySelector('.chat-page');
 
+  // ── Focus sur input → passer en mode conversation (header visible) ──
+  chatInput.addEventListener('focus', function() {
+    if (!chatPage.classList.contains('has-started')) {
+      chatPage.classList.add('has-started');
+      if (messages._wasAtBottom !== false) {
+        setTimeout(function() { messages.scrollTop = messages.scrollHeight; }, 50);
+      }
+    }
+  });
+
   // ── Gestion clavier mobile ──
   // Priorité 1 : @capacitor/keyboard (natif, hauteur exacte, timing avant animation)
   // Priorité 2 : visualViewport API (fallback web / iOS WKWebView sans plugin)
