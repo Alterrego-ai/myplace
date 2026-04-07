@@ -3708,7 +3708,14 @@ margin: 20px 20px 0;
         splash.classList.add('hidden');
         document.documentElement.style.background = '';
         document.body.classList.add('ready');
-        setTimeout(function() { splash.remove(); }, 600);
+        setTimeout(function() {
+          splash.remove();
+          // Ouvrir le profil si demandé depuis le chat
+          if (window.location.search.indexOf('action=profile') !== -1) {
+            history.replaceState(null, '', '/');
+            if (typeof openProfileSheet === 'function') openProfileSheet();
+          }
+        }, 600);
       }, 3000);
     });
   })();
@@ -5959,7 +5966,7 @@ margin: 20px 20px 0;
       var data = await resp.json();
       if (!data.ok) throw new Error(data.error || 'Auth Apple refusée');
 
-      var payload = Object.assign({}, data.user, { _provider: 'apple', _token: r.identityToken });
+      var payload = Object.assign({}, data.user, { _provider: 'apple', _token: data.token });
       ssoSave(SSO_KEY, payload);
       updateAuthUI(payload);
     } catch (err) {

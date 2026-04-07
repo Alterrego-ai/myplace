@@ -55,11 +55,13 @@ html, body {
   -webkit-font-smoothing: antialiased;
 }
 /* ── Layout: header fixe en haut, input fixe en bas, messages entre les deux ── */
+html, body { position: fixed; width: 100%; height: 100%; overflow: hidden; overscroll-behavior: none; }
 .chat-page {
   display: flex; flex-direction: column;
   height: 100vh;
   max-width: 600px; margin: 0 auto;
   position: relative; overflow: hidden;
+  overscroll-behavior: none; touch-action: none;
 }
 .chat-body {
   display: flex; flex-direction: column;
@@ -148,6 +150,7 @@ html, body {
   background: var(--bg);
   -webkit-overflow-scrolling: touch;
   overscroll-behavior: contain;
+  touch-action: pan-y;
 }
 .chat-messages::-webkit-scrollbar { display: none; }
 /* Bouton "Nouveau message" */
@@ -1266,7 +1269,7 @@ html, body {
       var initials = name.trim().split(/\s+/).slice(0,2).map(function(w){return w.charAt(0).toUpperCase();}).join('') || '?';
       el.setAttribute('role', 'button');
       el.style.cursor = 'pointer';
-      el.onclick = function(){ window.location.href = '/'; };
+      el.onclick = function(){ window.location.href = '/?action=profile'; };
       if (pic) {
         el.innerHTML = '<img src="' + pic + '" alt="" onerror="this.parentNode.textContent=\'' + initials + '\'">';
       } else {
