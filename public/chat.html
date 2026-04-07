@@ -647,11 +647,11 @@ html, body {
   // Priorité 2 : visualViewport API (fallback web / iOS WKWebView sans plugin)
   (function() {
     function setKeyboardHeight(kb) {
-      chatPage.style.paddingBottom = kb > 0 ? kb + 'px' : '';
+      inputBar.style.paddingBottom = kb > 0 ? (kb + 6) + 'px' : '';
       if (kb > 0) chatPage.classList.add('keyboard-open');
       else chatPage.classList.remove('keyboard-open');
       if (messages._wasAtBottom !== false) {
-        messages.scrollTop = messages.scrollHeight;
+        setTimeout(function() { messages.scrollTop = messages.scrollHeight; }, 50);
       }
     }
 
@@ -1513,16 +1513,6 @@ html, body {
     document.documentElement.setAttribute('data-theme', theme);
   })();
 
-  // ── Stabilise viewport height on iOS (avoid dvh jank) ──
-  (function() {
-    var page = document.querySelector('.chat-page');
-    if (!page || !window.visualViewport) return;
-    function setHeight() {
-      page.style.height = window.visualViewport.height + 'px';
-    }
-    window.visualViewport.addEventListener('resize', setHeight);
-    setHeight();
-  })();
 </script>
 </body>
 </html>
