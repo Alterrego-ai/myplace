@@ -131,6 +131,10 @@ CREATE TABLE IF NOT EXISTS wine_scans (
   matched_wine_id INTEGER,             -- NULL si pas confirmé
   user_sub       TEXT,
   duration_ms    INTEGER,
+  model          TEXT,                 -- modèle Claude utilisé
+  input_tokens   INTEGER,
+  output_tokens  INTEGER,
+  cost_usd       REAL,                 -- coût calculé côté serveur (source de vérité)
   created_at     INTEGER NOT NULL,
   FOREIGN KEY (photo_id) REFERENCES wine_photos(id) ON DELETE SET NULL,
   FOREIGN KEY (matched_wine_id) REFERENCES wines(id) ON DELETE SET NULL
@@ -138,3 +142,24 @@ CREATE TABLE IF NOT EXISTS wine_scans (
 
 CREATE INDEX IF NOT EXISTS idx_wine_scans_wine ON wine_scans(matched_wine_id);
 CREATE INDEX IF NOT EXISTS idx_wine_scans_user ON wine_scans(user_sub);
+CREATE INDEX IF NOT EXISTS idx_wine_scans_created ON wine_scans(created_at);
+
+-- Historique des enrichissements producteurs (appels Claude hors scan)
+CREATE TABLE IF NOT EXISTS producer_enrichments (
+  id            INTEGER PRIMARY KEY AUTOINCREMENT,
+  producer_id   INTEGER NOT NULL,
+  status        TEXT,                 -- 'identified' | 'partial' | 'unknown' | 'error'
+  ai_raw        TEXT,
+  fields_updated TEXT,                -- JSON array des champs patchés
+  model         TEXT,
+  input_tokens  INTEGER,
+  output_tokens INTEGER,
+  cost_usd      REAL,
+  duration_ms   INTEGER,
+  user_sub      TEXT,
+  created_at    INTEGER NOT NULL,
+  FOREIGN KEY (producer_id) REFERENCES producers(id) ON DELETE CASCADE
+);
+
+CREATE INDEX IF NOT EXISTS idx_producer_enrich_prod ON producer_enrichments(producer_id);
+CREATE INDEX IF NOT EXISTS idx_producer_enrich_created ON producer_enrichments(created_at);

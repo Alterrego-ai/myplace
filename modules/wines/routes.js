@@ -18,6 +18,7 @@ const fs = require('fs');
 const storage = require('./storage');
 const producers = require('./producers');
 const { identifyWine, MODEL } = require('./claude');
+const { computeCost } = require('./pricing');
 
 module.exports = function createWinesRouter() {
   const router = express.Router();
@@ -61,7 +62,12 @@ module.exports = function createWinesRouter() {
       error = e.message || 'identification_failed';
     }
 
-    // 3) Log du scan
+    // 3) Calcul du coût
+    const cost = identification?.usage
+      ? computeCost(identification.usage, MODEL)
+      : null;
+
+    // 4) Log du scan
     const aiStatus = identification?.result?.status
       || (error ? 'error' : 'unknown');
     storage.logScan({
@@ -71,6 +77,10 @@ module.exports = function createWinesRouter() {
       matchedWineId: null,
       userSub,
       durationMs: identification?.durationMs || null,
+      model: MODEL,
+      inputTokens: cost?.inputTokens || null,
+      outputTokens: cost?.outputTokens || null,
+      costUsd: cost?.costUsd || null,
     });
 
     if (error) {
@@ -88,7 +98,16 @@ module.exports = function createWinesRouter() {
       parseError: identification.parseError || null,
       model: MODEL,
       durationMs: identification.durationMs,
+      cost, // { inputTokens, outputTokens, totalTokens, costUsd, costEur, model }
     });
+  });
+
+  // ─── GET /stats ───────────────────────────────────────────────────────────
+  router.get('/stats', (req, res) => {
+    const since = req.query.since ? parseInt(req.query.since, 10) : null;
+    const stats = storage.getScanStats({ since });
+    const recent = storage.listRecentScans(parseInt(req.query.limit, 10) || 20);
+    res.json({ stats, recent, model: MODEL });
   });
 
   // ─── POST /confirm ────────────────────────────────────────────────────────

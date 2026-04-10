@@ -30,6 +30,22 @@ function init({ dbDir, publicDir }) {
     console.log('🔧 migration wines: producer_id ajouté');
   }
 
+  // Ajout des colonnes token/cost sur wine_scans si absentes
+  const scanCols = db.prepare(`PRAGMA table_info(wine_scans)`).all().map((c) => c.name);
+  const scanMigrations = [
+    ['model',         `ALTER TABLE wine_scans ADD COLUMN model TEXT`],
+    ['input_tokens',  `ALTER TABLE wine_scans ADD COLUMN input_tokens INTEGER`],
+    ['output_tokens', `ALTER TABLE wine_scans ADD COLUMN output_tokens INTEGER`],
+    ['cost_usd',      `ALTER TABLE wine_scans ADD COLUMN cost_usd REAL`],
+  ];
+  for (const [col, sql] of scanMigrations) {
+    if (!scanCols.includes(col)) {
+      db.exec(sql);
+      console.log(`🔧 migration wine_scans: ${col} ajouté`);
+    }
+  }
+  db.exec(`CREATE INDEX IF NOT EXISTS idx_wine_scans_created ON wine_scans(created_at)`);
+
   // Dossier photos sous /public/uploads/wines/ (servi par express.static)
   photosDir = path.join(publicDir, 'uploads', 'wines');
   if (!fs.existsSync(photosDir)) fs.mkdirSync(photosDir, { recursive: true });
@@ -168,10 +184,24 @@ function searchWines(query, limit = 20) {
 
 // ─── Scans ───────────────────────────────────────────────────────────────────
 
-function logScan({ photoId, aiRaw, aiStatus, matchedWineId, userSub, durationMs }) {
+function logScan({
+  photoId,
+  aiRaw,
+  aiStatus,
+  matchedWineId,
+  userSub,
+  durationMs,
+  model,
+  inputTokens,
+  outputTokens,
+  costUsd,
+}) {
   const stmt = getDb().prepare(`
-    INSERT INTO wine_scans (photo_id, ai_raw, ai_status, matched_wine_id, user_sub, duration_ms, created_at)
-    VALUES (?, ?, ?, ?, ?, ?, ?)
+    INSERT INTO wine_scans (
+      photo_id, ai_raw, ai_status, matched_wine_id, user_sub, duration_ms,
+      model, input_tokens, output_tokens, cost_usd, created_at
+    )
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
   `);
   const r = stmt.run(
     photoId || null,
@@ -180,9 +210,44 @@ function logScan({ photoId, aiRaw, aiStatus, matchedWineId, userSub, durationMs 
     matchedWineId || null,
     userSub || null,
     durationMs || null,
+    model || null,
+    inputTokens || null,
+    outputTokens || null,
+    costUsd != null ? costUsd : null,
     Date.now()
   );
   return r.lastInsertRowid;
+}
+
+// ─── Stats (agrégats tokens/coût) ───────────────────────────────────────────
+
+function getScanStats({ since } = {}) {
+  const where = since ? `WHERE created_at >= ?` : '';
+  const params = since ? [since] : [];
+  const row = getDb()
+    .prepare(`
+      SELECT
+        COUNT(*)                       AS scans,
+        COALESCE(SUM(input_tokens), 0)  AS input_tokens,
+        COALESCE(SUM(output_tokens), 0) AS output_tokens,
+        COALESCE(SUM(cost_usd), 0)      AS cost_usd,
+        COALESCE(AVG(duration_ms), 0)   AS avg_duration_ms
+      FROM wine_scans ${where}
+    `)
+    .get(...params);
+  return row;
+}
+
+function listRecentScans(limit = 20) {
+  return getDb()
+    .prepare(`
+      SELECT id, photo_id, ai_status, model, input_tokens, output_tokens,
+             cost_usd, duration_ms, matched_wine_id, created_at
+      FROM wine_scans
+      ORDER BY created_at DESC
+      LIMIT ?
+    `)
+    .all(limit);
 }
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
@@ -218,4 +283,6 @@ module.exports = {
   getWinePhotos,
   searchWines,
   logScan,
+  getScanStats,
+  listRecentScans,
 };

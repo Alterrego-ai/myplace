@@ -13,7 +13,8 @@
  */
 const express = require('express');
 const producers = require('./producers');
-const { enrichProducer } = require('./claude');
+const { enrichProducer, MODEL } = require('./claude');
+const { computeCost } = require('./pricing');
 
 module.exports = function createProducersRouter() {
   const router = express.Router();
@@ -24,6 +25,12 @@ module.exports = function createProducersRouter() {
     const limit = Math.min(parseInt(req.query.limit, 10) || 20, 100);
     const results = producers.search(q, limit);
     res.json({ query: q, count: results.length, results });
+  });
+
+  // ─── GET /stats ───────────────────────────────────────────────────────────
+  router.get('/stats', (req, res) => {
+    const since = req.query.since ? parseInt(req.query.since, 10) : null;
+    res.json({ stats: producers.getEnrichmentStats({ since }), model: MODEL });
   });
 
   // ─── GET / (liste) ────────────────────────────────────────────────────────
@@ -85,21 +92,37 @@ module.exports = function createProducersRouter() {
     }
 
     producers.markEnrichmentStatus(id, 'enriching');
+    const userSub = req.user?.sub || null;
     try {
-      const { result, rawText, parseError, durationMs } = await enrichProducer({
+      const { result, rawText, parseError, durationMs, usage } = await enrichProducer({
         name: existing.name,
         region: existing.region,
         country: existing.country,
         appellation_main: existing.appellation_main,
       });
 
+      const cost = usage ? computeCost(usage, MODEL) : null;
+
       if (!result || result.status === 'unknown' || parseError) {
         producers.markEnrichmentStatus(id, 'failed');
+        producers.logEnrichment({
+          producerId: id,
+          status: parseError ? 'error' : (result?.status || 'unknown'),
+          aiRaw: { result, rawText, parseError, usage },
+          fieldsUpdated: [],
+          model: MODEL,
+          inputTokens: cost?.inputTokens || null,
+          outputTokens: cost?.outputTokens || null,
+          costUsd: cost?.costUsd || null,
+          durationMs,
+          userSub,
+        });
         return res.status(200).json({
           producer: producers.getById(id),
           enriched: false,
           reason: parseError || result?.reason || 'unknown',
           durationMs,
+          cost,
         });
       }
 
@@ -119,17 +142,47 @@ module.exports = function createProducersRouter() {
       producers.update(id, patch);
       producers.markEnrichmentStatus(id, 'enriched');
 
+      producers.logEnrichment({
+        producerId: id,
+        status: result.status || 'identified',
+        aiRaw: { result, usage },
+        fieldsUpdated: Object.keys(patch),
+        model: MODEL,
+        inputTokens: cost?.inputTokens || null,
+        outputTokens: cost?.outputTokens || null,
+        costUsd: cost?.costUsd || null,
+        durationMs,
+        userSub,
+      });
+
       res.json({
         producer: producers.getById(id),
         enriched: true,
         fieldsUpdated: Object.keys(patch),
         durationMs,
+        cost,
       });
     } catch (e) {
       console.error('[producers] enrich failed', e);
       producers.markEnrichmentStatus(id, 'failed');
+      producers.logEnrichment({
+        producerId: id,
+        status: 'error',
+        aiRaw: { error: e.message },
+        fieldsUpdated: [],
+        model: MODEL,
+        durationMs: null,
+        userSub,
+      });
       res.status(500).json({ error: 'enrich_failed', message: e.message });
     }
+  });
+
+  // ─── GET /:id/history ─────────────────────────────────────────────────────
+  router.get('/:id(\\d+)/history', (req, res) => {
+    const id = parseInt(req.params.id, 10);
+    const history = producers.getEnrichmentHistory(id, parseInt(req.query.limit, 10) || 20);
+    res.json({ history });
   });
 
   return router;

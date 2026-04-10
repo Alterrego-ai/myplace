@@ -204,6 +204,73 @@ function listWinesByProducer(producerId, limit = 50) {
     .all(producerId, limit);
 }
 
+// ─── Historique des enrichissements (tokens + coût) ────────────────────────
+
+function logEnrichment({
+  producerId,
+  status,
+  aiRaw,
+  fieldsUpdated,
+  model,
+  inputTokens,
+  outputTokens,
+  costUsd,
+  durationMs,
+  userSub,
+}) {
+  const stmt = getDb().prepare(`
+    INSERT INTO producer_enrichments (
+      producer_id, status, ai_raw, fields_updated, model,
+      input_tokens, output_tokens, cost_usd, duration_ms, user_sub, created_at
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+  `);
+  const r = stmt.run(
+    producerId,
+    status || null,
+    aiRaw ? JSON.stringify(aiRaw) : null,
+    fieldsUpdated ? JSON.stringify(fieldsUpdated) : null,
+    model || null,
+    inputTokens || null,
+    outputTokens || null,
+    costUsd != null ? costUsd : null,
+    durationMs || null,
+    userSub || null,
+    Date.now()
+  );
+  return r.lastInsertRowid;
+}
+
+function getEnrichmentHistory(producerId, limit = 20) {
+  return getDb()
+    .prepare(`
+      SELECT * FROM producer_enrichments
+      WHERE producer_id = ?
+      ORDER BY created_at DESC
+      LIMIT ?
+    `)
+    .all(producerId, limit)
+    .map((r) => ({
+      ...r,
+      fields_updated: r.fields_updated ? JSON.parse(r.fields_updated) : [],
+    }));
+}
+
+function getEnrichmentStats({ since } = {}) {
+  const where = since ? `WHERE created_at >= ?` : '';
+  const params = since ? [since] : [];
+  return getDb()
+    .prepare(`
+      SELECT
+        COUNT(*)                        AS enrichments,
+        COALESCE(SUM(input_tokens), 0)  AS input_tokens,
+        COALESCE(SUM(output_tokens), 0) AS output_tokens,
+        COALESCE(SUM(cost_usd), 0)      AS cost_usd,
+        COALESCE(AVG(duration_ms), 0)   AS avg_duration_ms
+      FROM producer_enrichments ${where}
+    `)
+    .get(...params);
+}
+
 module.exports = {
   slugify,
   getById,
@@ -214,4 +281,7 @@ module.exports = {
   markEnrichmentStatus,
   search,
   listWinesByProducer,
+  logEnrichment,
+  getEnrichmentHistory,
+  getEnrichmentStats,
 };
