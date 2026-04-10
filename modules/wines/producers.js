@@ -193,6 +193,31 @@ function search(query, limit = 20) {
   }
 }
 
+function listPending(limit = 50) {
+  return getDb()
+    .prepare(`
+      SELECT * FROM producers
+      WHERE enrichment_status = 'pending' OR enrichment_status IS NULL
+      ORDER BY created_at ASC
+      LIMIT ?
+    `)
+    .all(limit)
+    .map(hydrate);
+}
+
+function countByStatus() {
+  const rows = getDb()
+    .prepare(`SELECT enrichment_status AS status, COUNT(*) AS n FROM producers GROUP BY enrichment_status`)
+    .all();
+  const out = { pending: 0, enriching: 0, enriched: 0, failed: 0, total: 0 };
+  for (const r of rows) {
+    const key = r.status || 'pending';
+    out[key] = (out[key] || 0) + r.n;
+    out.total += r.n;
+  }
+  return out;
+}
+
 function listWinesByProducer(producerId, limit = 50) {
   return getDb()
     .prepare(`
@@ -280,6 +305,8 @@ module.exports = {
   update,
   markEnrichmentStatus,
   search,
+  listPending,
+  countByStatus,
   listWinesByProducer,
   logEnrichment,
   getEnrichmentHistory,
