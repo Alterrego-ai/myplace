@@ -412,15 +412,18 @@ if (process.env.ANTHROPIC_API_KEY) {
 
 // ── Module wines (scanner bouteilles + base collaborative vins) ─────────────
 try {
-  const winesStorage = require('./modules/wines/storage');
-  const winesRouter  = require('./modules/wines/routes');
+  const winesStorage   = require('./modules/wines/storage');
+  const winesRouter    = require('./modules/wines/routes');
+  const producersRouter = require('./modules/wines/producer-routes');
   winesStorage.init({
     dbDir: DB_DIR,
     publicDir: path.join(__dirname, 'public'),
   });
   app.use('/api/wine', winesRouter());
+  app.use('/api/producer', producersRouter());
   if (process.env.ANTHROPIC_API_KEY) {
     console.log('✓ Module wines activé (Claude Vision) — POST /api/wine/scan');
+    console.log('✓ Module producers activé — GET /api/producer, POST /api/producer/:id/enrich');
   } else {
     console.warn('⚠ Module wines monté mais ANTHROPIC_API_KEY absente → /scan renverra une erreur');
   }

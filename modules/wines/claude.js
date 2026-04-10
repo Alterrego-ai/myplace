@@ -4,6 +4,7 @@
 const Anthropic = require('@anthropic-ai/sdk');
 const fs = require('fs');
 const { buildSystemPrompt, USER_INSTRUCTION } = require('./prompts');
+const { buildEnrichSystemPrompt, buildEnrichUserMessage } = require('./producer-prompts');
 
 const MODEL = process.env.WINES_MODEL || 'claude-sonnet-4-6';
 const MAX_TOKENS = 1500;
@@ -82,4 +83,37 @@ function extractJson(text) {
   return trimmed;
 }
 
-module.exports = { identifyWine, MODEL };
+/**
+ * Enrichit une fiche producteur à partir de son nom.
+ * @param {object} producer - au minimum { name }, idéalement { name, region, country }
+ * @returns {Promise<{ result: object|null, rawText: string, parseError: string|null, durationMs: number, usage: any }>}
+ */
+async function enrichProducer(producer) {
+  if (!producer || !producer.name) {
+    throw new Error('producer.name required');
+  }
+  const t0 = Date.now();
+  const response = await getClient().messages.create({
+    model: MODEL,
+    max_tokens: 1200,
+    system: buildEnrichSystemPrompt(),
+    messages: [
+      { role: 'user', content: buildEnrichUserMessage(producer) },
+    ],
+  });
+
+  const durationMs = Date.now() - t0;
+  const textBlock = (response.content || []).find((b) => b.type === 'text');
+  const rawText = textBlock ? textBlock.text : '';
+  let parsed = null;
+  let parseError = null;
+  try {
+    parsed = JSON.parse(extractJson(rawText));
+  } catch (e) {
+    parseError = e.message;
+  }
+
+  return { result: parsed, rawText, parseError, durationMs, usage: response.usage };
+}
+
+module.exports = { identifyWine, enrichProducer, MODEL };

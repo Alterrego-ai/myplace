@@ -2,6 +2,60 @@
 -- Module wines — Base collaborative vins & univers du vin
 -- ═══════════════════════════════════════════════════════════════════════════
 
+-- ─── Producteurs (domaines, maisons, caves) ─────────────────────────────────
+CREATE TABLE IF NOT EXISTS producers (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  slug            TEXT NOT NULL UNIQUE,  -- clé de matching ("maison-chandesais")
+  name            TEXT NOT NULL,
+  legal_name      TEXT,
+  country         TEXT,
+  region          TEXT,
+  appellation_main TEXT,
+  address         TEXT,
+  latitude        REAL,
+  longitude       REAL,
+  website         TEXT,
+  phone           TEXT,
+  email           TEXT,
+  owner           TEXT,
+  founded_year    INTEGER,
+  area_ha         REAL,
+  farming         TEXT,                  -- conventional / organic / biodynamic / natural
+  description     TEXT,
+  wikipedia_url   TEXT,
+  enrichment_status TEXT DEFAULT 'pending', -- pending / enriching / enriched / failed
+  enriched_at     INTEGER,
+  source          TEXT DEFAULT 'scan',   -- scan / manual / import / enrichment
+  created_by      TEXT,
+  created_at      INTEGER NOT NULL,
+  updated_at      INTEGER NOT NULL
+);
+
+CREATE INDEX IF NOT EXISTS idx_producers_name   ON producers(name);
+CREATE INDEX IF NOT EXISTS idx_producers_region ON producers(region);
+CREATE INDEX IF NOT EXISTS idx_producers_enrich ON producers(enrichment_status);
+
+-- FTS producteurs
+CREATE VIRTUAL TABLE IF NOT EXISTS producers_fts USING fts5(
+  name, legal_name, region, appellation_main, description,
+  content='producers', content_rowid='id'
+);
+
+CREATE TRIGGER IF NOT EXISTS producers_ai AFTER INSERT ON producers BEGIN
+  INSERT INTO producers_fts(rowid, name, legal_name, region, appellation_main, description)
+  VALUES (new.id, new.name, new.legal_name, new.region, new.appellation_main, new.description);
+END;
+CREATE TRIGGER IF NOT EXISTS producers_ad AFTER DELETE ON producers BEGIN
+  INSERT INTO producers_fts(producers_fts, rowid, name, legal_name, region, appellation_main, description)
+  VALUES ('delete', old.id, old.name, old.legal_name, old.region, old.appellation_main, old.description);
+END;
+CREATE TRIGGER IF NOT EXISTS producers_au AFTER UPDATE ON producers BEGIN
+  INSERT INTO producers_fts(producers_fts, rowid, name, legal_name, region, appellation_main, description)
+  VALUES ('delete', old.id, old.name, old.legal_name, old.region, old.appellation_main, old.description);
+  INSERT INTO producers_fts(rowid, name, legal_name, region, appellation_main, description)
+  VALUES (new.id, new.name, new.legal_name, new.region, new.appellation_main, new.description);
+END;
+
 CREATE TABLE IF NOT EXISTS wines (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   name           TEXT NOT NULL,

@@ -21,6 +21,15 @@ function init({ dbDir, publicDir }) {
   const schema = fs.readFileSync(path.join(__dirname, 'schema.sql'), 'utf8');
   db.exec(schema);
 
+  // ─── Migrations incrémentales (idempotentes) ──────────────────────────────
+  // Ajout de producer_id sur wines si absent
+  const wineCols = db.prepare(`PRAGMA table_info(wines)`).all().map((c) => c.name);
+  if (!wineCols.includes('producer_id')) {
+    db.exec(`ALTER TABLE wines ADD COLUMN producer_id INTEGER REFERENCES producers(id) ON DELETE SET NULL`);
+    db.exec(`CREATE INDEX IF NOT EXISTS idx_wines_producer_id ON wines(producer_id)`);
+    console.log('🔧 migration wines: producer_id ajouté');
+  }
+
   // Dossier photos sous /public/uploads/wines/ (servi par express.static)
   photosDir = path.join(publicDir, 'uploads', 'wines');
   if (!fs.existsSync(photosDir)) fs.mkdirSync(photosDir, { recursive: true });
@@ -65,12 +74,12 @@ function insertWine(data, createdBy = null) {
   const now = Date.now();
   const stmt = getDb().prepare(`
     INSERT INTO wines (
-      name, producer, appellation, region, country, vintage, type, color,
+      name, producer, producer_id, appellation, region, country, vintage, type, color,
       grapes, alcohol, volume_ml, tasting_notes, food_pairings,
       aging_potential, service_temp, avg_price_eur, confidence, source,
       created_by, created_at, updated_at
     ) VALUES (
-      @name, @producer, @appellation, @region, @country, @vintage, @type, @color,
+      @name, @producer, @producer_id, @appellation, @region, @country, @vintage, @type, @color,
       @grapes, @alcohol, @volume_ml, @tasting_notes, @food_pairings,
       @aging_potential, @service_temp, @avg_price_eur, @confidence, @source,
       @created_by, @created_at, @updated_at
@@ -79,6 +88,7 @@ function insertWine(data, createdBy = null) {
   const payload = {
     name: data.name || 'Vin inconnu',
     producer: data.producer || null,
+    producer_id: data.producer_id || null,
     appellation: data.appellation || null,
     region: data.region || null,
     country: data.country || null,

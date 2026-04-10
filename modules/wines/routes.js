@@ -16,6 +16,7 @@ const path = require('path');
 const fs = require('fs');
 
 const storage = require('./storage');
+const producers = require('./producers');
 const { identifyWine, MODEL } = require('./claude');
 
 module.exports = function createWinesRouter() {
@@ -99,11 +100,41 @@ module.exports = function createWinesRouter() {
     }
     try {
       const userSub = req.user?.sub || null;
-      const inserted = storage.insertWine({ ...wine, source: wine.source || 'scan' }, userSub);
+
+      // 1) Auto-création / récupération du producteur (si Claude l'a identifié)
+      let producerRow = null;
+      if (wine.producer) {
+        producerRow = producers.findOrCreate(
+          {
+            name: wine.producer,
+            country: wine.country || null,
+            region: wine.region || null,
+            appellation_main: wine.appellation || null,
+            source: 'scan',
+          },
+          userSub
+        );
+      }
+
+      // 2) Insert du vin avec producer_id
+      const inserted = storage.insertWine(
+        {
+          ...wine,
+          producer_id: producerRow?.id || null,
+          source: wine.source || 'scan',
+        },
+        userSub
+      );
+
       if (photoId) {
         storage.linkPhotoToWine(photoId, inserted.id, primary ? 1 : 1);
       }
-      return res.json({ wine: storage.getWineById(inserted.id), photos: storage.getWinePhotos(inserted.id) });
+
+      return res.json({
+        wine: storage.getWineById(inserted.id),
+        photos: storage.getWinePhotos(inserted.id),
+        producer: producerRow || null,
+      });
     } catch (e) {
       console.error('[wines] confirm failed', e);
       return res.status(500).json({ error: 'insert_failed', message: e.message });
@@ -131,7 +162,8 @@ module.exports = function createWinesRouter() {
     const wine = storage.getWineById(id);
     if (!wine) return res.status(404).json({ error: 'not_found' });
     const photos = storage.getWinePhotos(id);
-    res.json({ wine, photos });
+    const producer = wine.producer_id ? producers.getById(wine.producer_id) : null;
+    res.json({ wine, photos, producer });
   });
 
   return router;
