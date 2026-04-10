@@ -139,7 +139,11 @@ module.exports = function createProducersRouter() {
   // ─── GET /stats ───────────────────────────────────────────────────────────
   router.get('/stats', (req, res) => {
     const since = req.query.since ? parseInt(req.query.since, 10) : null;
-    res.json({ stats: producers.getEnrichmentStats({ since }), model: MODEL });
+    res.json({
+      counts: producers.countByStatus(),
+      enrichment: producers.getEnrichmentStats({ since }),
+      model: MODEL,
+    });
   });
 
   // ─── GET / (liste) ────────────────────────────────────────────────────────
