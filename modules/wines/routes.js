@@ -19,6 +19,7 @@ const storage = require('./storage');
 const producers = require('./producers');
 const { identifyWine, MODEL } = require('./claude');
 const { computeCost } = require('./pricing');
+const openfoodfacts = require('../../services/openfoodfacts');
 
 module.exports = function createWinesRouter() {
   const router = express.Router();
@@ -205,27 +206,54 @@ module.exports = function createWinesRouter() {
   });
 
   // ─── GET /by-barcode/:ean ────────────────────────────────────────────────
-  // Cache gratuit : si on connaît l'EAN → retourne la fiche vin sans appel IA.
-  router.get('/by-barcode/:ean', (req, res) => {
+  // Cascade 3 tiers :
+  //   1) Cache local wine_barcodes → fiche complète (source='cache', gratuit)
+  //   2) Open Food Facts → suggestion à confirmer (source='openfoodfacts', gratuit)
+  //   3) Miss → le front propose photo étiquette (Claude Vision, payant)
+  router.get('/by-barcode/:ean', async (req, res) => {
     const ean = (req.params.ean || '').toString().trim();
     if (!ean || !/^[0-9]{6,14}$/.test(ean)) {
       return res.status(400).json({ error: 'invalid_ean' });
     }
+
+    // Tier 1 : cache local
     const hit = storage.findWineByBarcode(ean);
-    if (!hit) {
-      return res.json({ hit: false, ean });
+    if (hit) {
+      const producer = hit.wine.producer_id
+        ? producers.getById(hit.wine.producer_id)
+        : null;
+      return res.json({
+        hit: true,
+        source: 'cache',
+        ean,
+        wine: hit.wine,
+        photos: hit.photos,
+        producer,
+        barcode: hit.barcode,
+      });
     }
-    const producer = hit.wine.producer_id
-      ? producers.getById(hit.wine.producer_id)
-      : null;
-    return res.json({
-      hit: true,
-      ean,
-      wine: hit.wine,
-      photos: hit.photos,
-      producer,
-      barcode: hit.barcode,
-    });
+
+    // Tier 2 : Open Food Facts (désactivable via ?off=0)
+    if (req.query.off !== '0') {
+      try {
+        const product = await openfoodfacts.fetchProduct(ean);
+        const suggestion = openfoodfacts.mapToWineSuggestion(product);
+        if (suggestion) {
+          return res.json({
+            hit: true,
+            source: 'openfoodfacts',
+            ean,
+            suggestion,
+            attribution: '© Open Food Facts contributors (ODbL)',
+          });
+        }
+      } catch (e) {
+        console.warn('[wines] OFF lookup failed, fallthrough:', e.message);
+      }
+    }
+
+    // Tier 3 : miss complet
+    return res.json({ hit: false, ean });
   });
 
   // ─── GET /search ──────────────────────────────────────────────────────────

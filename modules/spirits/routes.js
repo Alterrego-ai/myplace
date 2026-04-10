@@ -20,6 +20,7 @@ const storage = require('./storage');
 const distilleries = require('./distilleries');
 const { identifySpirit, MODEL } = require('./claude');
 const { computeCost } = require('../wines/pricing'); // réutilise le helper tokens/coût
+const openfoodfacts = require('../../services/openfoodfacts');
 
 module.exports = function createSpiritsRouter() {
   const router = express.Router();
@@ -192,26 +193,54 @@ module.exports = function createSpiritsRouter() {
   });
 
   // ─── GET /by-barcode/:ean ────────────────────────────────────────────────
-  router.get('/by-barcode/:ean', (req, res) => {
+  // Cascade 3 tiers :
+  //   1) Cache local spirit_barcodes → fiche complète (source='cache', gratuit)
+  //   2) Open Food Facts → suggestion à confirmer (source='openfoodfacts', gratuit)
+  //   3) Miss → le front propose photo étiquette (Claude Vision, payant)
+  router.get('/by-barcode/:ean', async (req, res) => {
     const ean = (req.params.ean || '').toString().trim();
     if (!ean || !/^[0-9]{6,14}$/.test(ean)) {
       return res.status(400).json({ error: 'invalid_ean' });
     }
+
+    // Tier 1 : cache local
     const hit = storage.findSpiritByBarcode(ean);
-    if (!hit) {
-      return res.json({ hit: false, ean });
+    if (hit) {
+      const distillery = hit.spirit.distillery_id
+        ? distilleries.getById(hit.spirit.distillery_id)
+        : null;
+      return res.json({
+        hit: true,
+        source: 'cache',
+        ean,
+        spirit: hit.spirit,
+        photos: hit.photos,
+        distillery,
+        barcode: hit.barcode,
+      });
     }
-    const distillery = hit.spirit.distillery_id
-      ? distilleries.getById(hit.spirit.distillery_id)
-      : null;
-    return res.json({
-      hit: true,
-      ean,
-      spirit: hit.spirit,
-      photos: hit.photos,
-      distillery,
-      barcode: hit.barcode,
-    });
+
+    // Tier 2 : Open Food Facts (désactivable via ?off=0)
+    if (req.query.off !== '0') {
+      try {
+        const product = await openfoodfacts.fetchProduct(ean);
+        const suggestion = openfoodfacts.mapToSpiritSuggestion(product);
+        if (suggestion) {
+          return res.json({
+            hit: true,
+            source: 'openfoodfacts',
+            ean,
+            suggestion,
+            attribution: '© Open Food Facts contributors (ODbL)',
+          });
+        }
+      } catch (e) {
+        console.warn('[spirits] OFF lookup failed, fallthrough:', e.message);
+      }
+    }
+
+    // Tier 3 : miss complet
+    return res.json({ hit: false, ean });
   });
 
   // ─── GET /search ──────────────────────────────────────────────────────────
