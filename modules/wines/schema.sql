@@ -135,9 +135,19 @@ CREATE TABLE IF NOT EXISTS wine_scans (
   input_tokens   INTEGER,
   output_tokens  INTEGER,
   cost_usd       REAL,                 -- coût calculé côté serveur (source de vérité)
+  -- Géolocalisation du scan (où la photo a été prise)
+  lat                 REAL,
+  lon                 REAL,
+  location_source     TEXT,            -- 'gps' | 'exif' | null
+  location_accuracy_m REAL,            -- précision GPS en mètres
+  location_at         INTEGER,         -- timestamp de la capture de position
+  place_name          TEXT,            -- reverse geocode (ex: "Cave Les Halles, Beaune")
+  place_type          TEXT,            -- 'vigneron'|'commerce'|'restaurant'|'particulier'|'inconnu'
+  matched_producer_id INTEGER,         -- producteur détecté par match spatial
   created_at     INTEGER NOT NULL,
   FOREIGN KEY (photo_id) REFERENCES wine_photos(id) ON DELETE SET NULL,
-  FOREIGN KEY (matched_wine_id) REFERENCES wines(id) ON DELETE SET NULL
+  FOREIGN KEY (matched_wine_id) REFERENCES wines(id) ON DELETE SET NULL,
+  FOREIGN KEY (matched_producer_id) REFERENCES producers(id) ON DELETE SET NULL
 );
 
 CREATE INDEX IF NOT EXISTS idx_wine_scans_wine ON wine_scans(matched_wine_id);
@@ -163,3 +173,65 @@ CREATE TABLE IF NOT EXISTS producer_enrichments (
 
 CREATE INDEX IF NOT EXISTS idx_producer_enrich_prod ON producer_enrichments(producer_id);
 CREATE INDEX IF NOT EXISTS idx_producer_enrich_created ON producer_enrichments(created_at);
+
+-- ─── Code-barres EAN → wine_id (cache d'identification gratuit) ──────────────
+-- Permet de sauter l'appel Claude Vision pour les cuvées déjà connues.
+CREATE TABLE IF NOT EXISTS wine_barcodes (
+  ean         TEXT PRIMARY KEY,
+  wine_id     INTEGER NOT NULL,
+  format      TEXT,                    -- 'ean13'|'ean8'|'upc_a'|'upc_e'|'qr'
+  scan_count  INTEGER NOT NULL DEFAULT 1,
+  first_seen  INTEGER NOT NULL,
+  last_seen   INTEGER NOT NULL,
+  created_by  TEXT,
+  FOREIGN KEY (wine_id) REFERENCES wines(id) ON DELETE CASCADE
+);
+CREATE INDEX IF NOT EXISTS idx_wine_barcodes_wine ON wine_barcodes(wine_id);
+
+-- ─── Référentiel millésimes (RUF — prêt pour enrichissement futur) ──────────
+-- Qualité et contexte d'un millésime pour (pays, région, [appellation]).
+-- Réutilisé pour tous les vins de ce triplet. Une seule recherche Claude
+-- enrichit toute une cohorte de vins.
+CREATE TABLE IF NOT EXISTS vintages (
+  id                INTEGER PRIMARY KEY AUTOINCREMENT,
+  country           TEXT,
+  region            TEXT,
+  appellation       TEXT,              -- NULL = note régionale globale
+  vintage           INTEGER NOT NULL,
+  score             INTEGER,           -- /100
+  rating_label      TEXT,              -- 'exceptionnel'|'excellent'|'bon'|'moyen'|'faible'
+  summary           TEXT,              -- résumé qualité
+  weather_summary   TEXT,              -- conditions météo
+  harvest_notes     TEXT,              -- vendanges
+  aging_potential   TEXT,              -- potentiel de garde global
+  sources           TEXT,              -- JSON array
+  enrichment_status TEXT DEFAULT 'pending',
+  enriched_at       INTEGER,
+  created_at        INTEGER NOT NULL,
+  updated_at        INTEGER NOT NULL
+);
+CREATE UNIQUE INDEX IF NOT EXISTS idx_vintages_unique
+  ON vintages(IFNULL(country,''), IFNULL(region,''), IFNULL(appellation,''), vintage);
+CREATE INDEX IF NOT EXISTS idx_vintages_status ON vintages(enrichment_status);
+
+-- ─── Référentiel appellations (RUF) ─────────────────────────────────────────
+-- Terroir, cépages autorisés, style. Enrichi à la demande par Claude.
+CREATE TABLE IF NOT EXISTS appellations (
+  id                INTEGER PRIMARY KEY AUTOINCREMENT,
+  slug              TEXT UNIQUE NOT NULL,
+  name              TEXT NOT NULL,
+  country           TEXT,
+  region            TEXT,
+  aoc_level         TEXT,              -- 'AOC'|'IGP'|'DOCG'|'DOC'|'Vin de France'...
+  allowed_grapes    TEXT,              -- JSON array
+  typical_style     TEXT,              -- 'rouge puissant', 'blanc sec minéral'...
+  terroir           TEXT,
+  area_ha           REAL,
+  description       TEXT,
+  enrichment_status TEXT DEFAULT 'pending',
+  enriched_at       INTEGER,
+  created_at        INTEGER NOT NULL,
+  updated_at        INTEGER NOT NULL
+);
+CREATE INDEX IF NOT EXISTS idx_appellations_region ON appellations(region);
+CREATE INDEX IF NOT EXISTS idx_appellations_status ON appellations(enrichment_status);

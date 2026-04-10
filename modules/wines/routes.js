@@ -82,7 +82,21 @@ module.exports = function createWinesRouter() {
       ? computeCost(identification.usage, MODEL)
       : null;
 
-    // 4) Log du scan
+    // 4) Géolocalisation (optionnelle, multipart form fields)
+    const parseNum = (v) => {
+      if (v == null || v === '') return null;
+      const n = parseFloat(v);
+      return Number.isFinite(n) ? n : null;
+    };
+    const geo = {
+      lat: parseNum(req.body?.lat),
+      lon: parseNum(req.body?.lon),
+      locationSource: req.body?.locationSource || null, // 'gps' | 'exif'
+      locationAccuracyM: parseNum(req.body?.locationAccuracyM),
+      locationAt: req.body?.locationAt ? parseInt(req.body.locationAt, 10) || null : null,
+    };
+
+    // 5) Log du scan
     const aiStatus = identification?.result?.status
       || (error ? 'error' : 'unknown');
     storage.logScan({
@@ -96,6 +110,7 @@ module.exports = function createWinesRouter() {
       inputTokens: cost?.inputTokens || null,
       outputTokens: cost?.outputTokens || null,
       costUsd: cost?.costUsd || null,
+      ...geo,
     });
 
     if (error) {
@@ -114,6 +129,7 @@ module.exports = function createWinesRouter() {
       model: MODEL,
       durationMs: identification.durationMs,
       cost, // { inputTokens, outputTokens, totalTokens, costUsd, costEur, model }
+      location: geo.lat != null && geo.lon != null ? geo : null,
     });
   });
 
@@ -126,9 +142,9 @@ module.exports = function createWinesRouter() {
   });
 
   // ─── POST /confirm ────────────────────────────────────────────────────────
-  // Body : { wine: {...}, photoId?: number, primary?: boolean }
+  // Body : { wine: {...}, photoId?: number, primary?: boolean, ean?: string, barcodeFormat?: string }
   router.post('/confirm', express.json({ limit: '1mb' }), (req, res) => {
-    const { wine, photoId, primary } = req.body || {};
+    const { wine, photoId, primary, ean, barcodeFormat } = req.body || {};
     if (!wine || typeof wine !== 'object') {
       return res.status(400).json({ error: 'missing_wine' });
     }
@@ -164,15 +180,52 @@ module.exports = function createWinesRouter() {
         storage.linkPhotoToWine(photoId, inserted.id, primary ? 1 : 1);
       }
 
+      // 3) Si un EAN est fourni à la confirmation, on l'associe au vin
+      //    (alimente le cache "code-barres → vin" pour les scans suivants)
+      let barcodeResult = null;
+      if (ean) {
+        barcodeResult = storage.upsertBarcode({
+          ean,
+          wineId: inserted.id,
+          format: barcodeFormat || null,
+          userSub,
+        });
+      }
+
       return res.json({
         wine: storage.getWineById(inserted.id),
         photos: storage.getWinePhotos(inserted.id),
         producer: producerRow || null,
+        barcode: barcodeResult,
       });
     } catch (e) {
       console.error('[wines] confirm failed', e);
       return res.status(500).json({ error: 'insert_failed', message: e.message });
     }
+  });
+
+  // ─── GET /by-barcode/:ean ────────────────────────────────────────────────
+  // Cache gratuit : si on connaît l'EAN → retourne la fiche vin sans appel IA.
+  router.get('/by-barcode/:ean', (req, res) => {
+    const ean = (req.params.ean || '').toString().trim();
+    if (!ean || !/^[0-9]{6,14}$/.test(ean)) {
+      return res.status(400).json({ error: 'invalid_ean' });
+    }
+    const hit = storage.findWineByBarcode(ean);
+    if (!hit) {
+      return res.json({ hit: false, ean });
+    }
+    const producer = hit.wine.producer_id
+      ? producers.getById(hit.wine.producer_id)
+      : null;
+    return res.json({
+      hit: true,
+      ean,
+      wine: hit.wine,
+      photos: hit.photos,
+      producer,
+      barcode: hit.barcode,
+    });
   });
 
   // ─── GET /search ──────────────────────────────────────────────────────────

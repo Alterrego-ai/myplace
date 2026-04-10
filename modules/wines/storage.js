@@ -33,10 +33,19 @@ function init({ dbDir, publicDir }) {
   // Ajout des colonnes token/cost sur wine_scans si absentes
   const scanCols = db.prepare(`PRAGMA table_info(wine_scans)`).all().map((c) => c.name);
   const scanMigrations = [
-    ['model',         `ALTER TABLE wine_scans ADD COLUMN model TEXT`],
-    ['input_tokens',  `ALTER TABLE wine_scans ADD COLUMN input_tokens INTEGER`],
-    ['output_tokens', `ALTER TABLE wine_scans ADD COLUMN output_tokens INTEGER`],
-    ['cost_usd',      `ALTER TABLE wine_scans ADD COLUMN cost_usd REAL`],
+    ['model',              `ALTER TABLE wine_scans ADD COLUMN model TEXT`],
+    ['input_tokens',       `ALTER TABLE wine_scans ADD COLUMN input_tokens INTEGER`],
+    ['output_tokens',      `ALTER TABLE wine_scans ADD COLUMN output_tokens INTEGER`],
+    ['cost_usd',           `ALTER TABLE wine_scans ADD COLUMN cost_usd REAL`],
+    // Géolocalisation
+    ['lat',                `ALTER TABLE wine_scans ADD COLUMN lat REAL`],
+    ['lon',                `ALTER TABLE wine_scans ADD COLUMN lon REAL`],
+    ['location_source',    `ALTER TABLE wine_scans ADD COLUMN location_source TEXT`],     // 'gps' | 'exif' | null
+    ['location_accuracy_m',`ALTER TABLE wine_scans ADD COLUMN location_accuracy_m REAL`],
+    ['location_at',        `ALTER TABLE wine_scans ADD COLUMN location_at INTEGER`],       // timestamp de la capture
+    ['place_name',         `ALTER TABLE wine_scans ADD COLUMN place_name TEXT`],           // reverse geocode
+    ['place_type',         `ALTER TABLE wine_scans ADD COLUMN place_type TEXT`],           // 'vigneron'|'commerce'|'restaurant'|'particulier'|'inconnu'
+    ['matched_producer_id',`ALTER TABLE wine_scans ADD COLUMN matched_producer_id INTEGER REFERENCES producers(id) ON DELETE SET NULL`],
   ];
   for (const [col, sql] of scanMigrations) {
     if (!scanCols.includes(col)) {
@@ -195,13 +204,25 @@ function logScan({
   inputTokens,
   outputTokens,
   costUsd,
+  // Géoloc (tous optionnels)
+  lat,
+  lon,
+  locationSource,
+  locationAccuracyM,
+  locationAt,
+  placeName,
+  placeType,
+  matchedProducerId,
 }) {
   const stmt = getDb().prepare(`
     INSERT INTO wine_scans (
       photo_id, ai_raw, ai_status, matched_wine_id, user_sub, duration_ms,
-      model, input_tokens, output_tokens, cost_usd, created_at
+      model, input_tokens, output_tokens, cost_usd,
+      lat, lon, location_source, location_accuracy_m, location_at,
+      place_name, place_type, matched_producer_id,
+      created_at
     )
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
   `);
   const r = stmt.run(
     photoId || null,
@@ -214,9 +235,78 @@ function logScan({
     inputTokens || null,
     outputTokens || null,
     costUsd != null ? costUsd : null,
+    lat != null ? lat : null,
+    lon != null ? lon : null,
+    locationSource || null,
+    locationAccuracyM != null ? locationAccuracyM : null,
+    locationAt || null,
+    placeName || null,
+    placeType || null,
+    matchedProducerId || null,
     Date.now()
   );
   return r.lastInsertRowid;
+}
+
+// ─── Code-barres EAN ─────────────────────────────────────────────────────────
+
+/**
+ * Cherche un vin par code-barres. Si trouvé, incrémente scan_count & last_seen
+ * et retourne la fiche vin complète + photos. Sinon retourne null.
+ */
+function findWineByBarcode(ean) {
+  if (!ean) return null;
+  const now = Date.now();
+  const db = getDb();
+  const row = db
+    .prepare(`SELECT * FROM wine_barcodes WHERE ean = ?`)
+    .get(ean);
+  if (!row) return null;
+
+  db.prepare(
+    `UPDATE wine_barcodes SET scan_count = scan_count + 1, last_seen = ? WHERE ean = ?`
+  ).run(now, ean);
+
+  const wine = getWineById(row.wine_id);
+  if (!wine) return null;
+  const photos = getWinePhotos(row.wine_id);
+  return { wine, photos, barcode: { ...row, scan_count: row.scan_count + 1, last_seen: now } };
+}
+
+/**
+ * Upsert d'un mapping EAN → wine_id. Incrémente scan_count si existe déjà
+ * pour le même vin, crée sinon. Si l'EAN existe déjà pour un AUTRE vin,
+ * on ne l'écrase pas (on retourne un conflit silencieux).
+ */
+function upsertBarcode({ ean, wineId, format, userSub }) {
+  if (!ean || !wineId) return null;
+  const now = Date.now();
+  const db = getDb();
+  const existing = db.prepare(`SELECT * FROM wine_barcodes WHERE ean = ?`).get(ean);
+
+  if (existing) {
+    if (existing.wine_id !== wineId) {
+      // Conflit : même EAN déjà mappé à un autre vin → on ignore mais on log
+      console.warn(`[barcodes] conflit EAN=${ean} déjà sur wine#${existing.wine_id}, refusé pour wine#${wineId}`);
+      return { status: 'conflict', existing };
+    }
+    db.prepare(
+      `UPDATE wine_barcodes SET scan_count = scan_count + 1, last_seen = ? WHERE ean = ?`
+    ).run(now, ean);
+    return { status: 'updated', ean, wine_id: wineId };
+  }
+
+  db.prepare(
+    `INSERT INTO wine_barcodes (ean, wine_id, format, first_seen, last_seen, created_by)
+     VALUES (?, ?, ?, ?, ?, ?)`
+  ).run(ean, wineId, format || null, now, now, userSub || null);
+  return { status: 'created', ean, wine_id: wineId };
+}
+
+function listBarcodesForWine(wineId) {
+  return getDb()
+    .prepare(`SELECT ean, format, scan_count, first_seen, last_seen FROM wine_barcodes WHERE wine_id = ? ORDER BY scan_count DESC`)
+    .all(wineId);
 }
 
 // ─── Stats (agrégats tokens/coût) ───────────────────────────────────────────
@@ -242,7 +332,9 @@ function listRecentScans(limit = 20) {
   return getDb()
     .prepare(`
       SELECT id, photo_id, ai_status, model, input_tokens, output_tokens,
-             cost_usd, duration_ms, matched_wine_id, created_at
+             cost_usd, duration_ms, matched_wine_id, matched_producer_id,
+             lat, lon, location_source, place_name, place_type, location_at,
+             created_at
       FROM wine_scans
       ORDER BY created_at DESC
       LIMIT ?
@@ -285,4 +377,7 @@ module.exports = {
   logScan,
   getScanStats,
   listRecentScans,
+  findWineByBarcode,
+  upsertBarcode,
+  listBarcodesForWine,
 };
