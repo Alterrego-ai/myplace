@@ -410,6 +410,24 @@ if (process.env.ANTHROPIC_API_KEY) {
   console.warn('⚠ Chat IA désactivé (ANTHROPIC_API_KEY non définie)');
 }
 
+// ── Module wines (scanner bouteilles + base collaborative vins) ─────────────
+try {
+  const winesStorage = require('./modules/wines/storage');
+  const winesRouter  = require('./modules/wines/routes');
+  winesStorage.init({
+    dbDir: DB_DIR,
+    publicDir: path.join(__dirname, 'public'),
+  });
+  app.use('/api/wine', winesRouter());
+  if (process.env.ANTHROPIC_API_KEY) {
+    console.log('✓ Module wines activé (Claude Vision) — POST /api/wine/scan');
+  } else {
+    console.warn('⚠ Module wines monté mais ANTHROPIC_API_KEY absente → /scan renverra une erreur');
+  }
+} catch (e) {
+  console.error('✗ Module wines non chargé :', e.message);
+}
+
 const CAPACITE_TOTALE = 42;
 
 function getService(heure) {
