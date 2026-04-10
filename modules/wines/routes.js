@@ -24,6 +24,9 @@ module.exports = function createWinesRouter() {
   const router = express.Router();
 
   // ─── Upload config (photos bouteilles) ────────────────────────────────────
+  // Claude Vision accepte max ~5 Mo base64 → on limite le upload raw à 4.5 Mo
+  // pour rester safe (base64 = +33%).
+  const MAX_CLAUDE_IMAGE_BYTES = 4.5 * 1024 * 1024;
   const diskStorage = multer.diskStorage({
     destination: (_req, _file, cb) => cb(null, storage.getPhotosDir()),
     filename: (_req, file, cb) => {
@@ -33,7 +36,7 @@ module.exports = function createWinesRouter() {
   });
   const upload = multer({
     storage: diskStorage,
-    limits: { fileSize: 8 * 1024 * 1024 }, // 8 Mo
+    limits: { fileSize: 8 * 1024 * 1024 }, // 8 Mo (raw, avant refus applicatif)
     fileFilter: (_req, file, cb) => {
       if (/^image\//.test(file.mimetype)) return cb(null, true);
       cb(new Error('Only image files allowed'));
@@ -52,7 +55,19 @@ module.exports = function createWinesRouter() {
     // 1) Persist la photo en base (pas encore liée à un vin)
     const photo = storage.savePhoto({ filename, uploadedBy: userSub });
 
-    // 2) Appel Claude Vision
+    // 2) Vérification de taille avant Claude (5 Mo base64 max côté API)
+    if (req.file.size > MAX_CLAUDE_IMAGE_BYTES) {
+      console.warn(`[wines] image trop grande : ${req.file.size} bytes`);
+      return res.status(413).json({
+        error: 'image_too_large',
+        message: `Image trop volumineuse pour Claude Vision (${(req.file.size / 1024 / 1024).toFixed(1)} Mo). Maximum : ${(MAX_CLAUDE_IMAGE_BYTES / 1024 / 1024).toFixed(1)} Mo. Retente avec une photo plus petite.`,
+        photo,
+        sizeBytes: req.file.size,
+        maxBytes: MAX_CLAUDE_IMAGE_BYTES,
+      });
+    }
+
+    // 3) Appel Claude Vision
     let identification = null;
     let error = null;
     try {
