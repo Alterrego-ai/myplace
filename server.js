@@ -431,6 +431,27 @@ try {
   console.error('✗ Module wines non chargé :', e.message);
 }
 
+// ── Module spirits (scanner bouteilles + base collaborative spiritueux) ─────
+try {
+  const spiritsStorage     = require('./modules/spirits/storage');
+  const spiritsRouter      = require('./modules/spirits/routes');
+  const distilleriesRouter = require('./modules/spirits/distillery-routes');
+  spiritsStorage.init({
+    dbDir: DB_DIR,
+    publicDir: path.join(__dirname, 'public'),
+  });
+  app.use('/api/spirit', spiritsRouter());
+  app.use('/api/distillery', distilleriesRouter());
+  if (process.env.ANTHROPIC_API_KEY) {
+    console.log('✓ Module spirits activé (Claude Vision) — POST /api/spirit/scan');
+    console.log('✓ Module distilleries activé — GET /api/distillery, POST /api/distillery/:id/enrich');
+  } else {
+    console.warn('⚠ Module spirits monté mais ANTHROPIC_API_KEY absente → /scan renverra une erreur');
+  }
+} catch (e) {
+  console.error('✗ Module spirits non chargé :', e.message);
+}
+
 const CAPACITE_TOTALE = 42;
 
 function getService(heure) {
