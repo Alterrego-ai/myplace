@@ -410,6 +410,19 @@ if (process.env.ANTHROPIC_API_KEY) {
   console.warn('⚠ Chat IA désactivé (ANTHROPIC_API_KEY non définie)');
 }
 
+// ── Module products (catalogue universel EAN → fiche POS/scan) ─────────────
+// DOIT être initialisé AVANT wines/spirits car leurs routes OFF l'utilisent
+// pour auto-ingérer chaque produit scanné dans la table pivot.
+try {
+  const productsStorage = require('./modules/products/storage');
+  const productsRouter  = require('./modules/products/routes');
+  productsStorage.init({ dbDir: DB_DIR });
+  app.use('/api/product', productsRouter());
+  console.log('✓ Module products activé — GET /api/product/by-barcode/:ean');
+} catch (e) {
+  console.error('✗ Module products non chargé :', e.message);
+}
+
 // ── Module wines (scanner bouteilles + base collaborative vins) ─────────────
 try {
   const winesStorage   = require('./modules/wines/storage');

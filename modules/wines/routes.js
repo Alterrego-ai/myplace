@@ -17,6 +17,7 @@ const fs = require('fs');
 
 const storage = require('./storage');
 const producers = require('./producers');
+const productsStorage = require('../products/storage');
 const { identifyWine, MODEL } = require('./claude');
 const { computeCost } = require('./pricing');
 const openfoodfacts = require('../../services/openfoodfacts');
@@ -237,15 +238,31 @@ module.exports = function createWinesRouter() {
     if (req.query.off !== '0') {
       try {
         const product = await openfoodfacts.fetchProduct(ean);
-        const suggestion = openfoodfacts.mapToWineSuggestion(product);
-        if (suggestion) {
-          return res.json({
-            hit: true,
-            source: 'openfoodfacts',
-            ean,
-            suggestion,
-            attribution: '© Open Food Facts contributors (ODbL)',
-          });
+        if (product) {
+          // Auto-ingest dans la table pivot products (catalogue universel POS)
+          // — on stocke TOUJOURS, même si ce n'est pas un vin.
+          try {
+            const mapped = openfoodfacts.mapToGenericProduct(product, ean);
+            if (mapped) {
+              productsStorage.upsertFromOff(mapped, {
+                userSub: req.user?.sub || null,
+                offRaw: product,
+              });
+            }
+          } catch (e) {
+            console.warn('[wines] products auto-ingest failed:', e.message);
+          }
+
+          const suggestion = openfoodfacts.mapToWineSuggestion(product);
+          if (suggestion) {
+            return res.json({
+              hit: true,
+              source: 'openfoodfacts',
+              ean,
+              suggestion,
+              attribution: '© Open Food Facts contributors (ODbL)',
+            });
+          }
         }
       } catch (e) {
         console.warn('[wines] OFF lookup failed, fallthrough:', e.message);

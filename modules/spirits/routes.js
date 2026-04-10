@@ -18,6 +18,7 @@ const path = require('path');
 
 const storage = require('./storage');
 const distilleries = require('./distilleries');
+const productsStorage = require('../products/storage');
 const { identifySpirit, MODEL } = require('./claude');
 const { computeCost } = require('../wines/pricing'); // réutilise le helper tokens/coût
 const openfoodfacts = require('../../services/openfoodfacts');
@@ -224,15 +225,31 @@ module.exports = function createSpiritsRouter() {
     if (req.query.off !== '0') {
       try {
         const product = await openfoodfacts.fetchProduct(ean);
-        const suggestion = openfoodfacts.mapToSpiritSuggestion(product);
-        if (suggestion) {
-          return res.json({
-            hit: true,
-            source: 'openfoodfacts',
-            ean,
-            suggestion,
-            attribution: '© Open Food Facts contributors (ODbL)',
-          });
+        if (product) {
+          // Auto-ingest dans la table pivot products (catalogue universel POS)
+          // — on stocke TOUJOURS, même si ce n'est pas un spiritueux.
+          try {
+            const mapped = openfoodfacts.mapToGenericProduct(product, ean);
+            if (mapped) {
+              productsStorage.upsertFromOff(mapped, {
+                userSub: req.user?.sub || null,
+                offRaw: product,
+              });
+            }
+          } catch (e) {
+            console.warn('[spirits] products auto-ingest failed:', e.message);
+          }
+
+          const suggestion = openfoodfacts.mapToSpiritSuggestion(product);
+          if (suggestion) {
+            return res.json({
+              hit: true,
+              source: 'openfoodfacts',
+              ean,
+              suggestion,
+              attribution: '© Open Food Facts contributors (ODbL)',
+            });
+          }
         }
       } catch (e) {
         console.warn('[spirits] OFF lookup failed, fallthrough:', e.message);
