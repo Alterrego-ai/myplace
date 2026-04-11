@@ -559,8 +559,8 @@ module.exports = function createSpiritsRouter() {
   // GET  /api/spirit/bar   → liste les bouteilles au bar du user
   // DELETE /api/spirit/bar/:id → marque comme consommée
   router.post('/bar', express.json({ limit: '256kb' }), (req, res) => {
-    const userSub = req.user?.sub || req.body?.user || null;
-    if (!userSub) return res.status(401).json({ error: 'unauthenticated' });
+    // POC : fallback sur un user 'anonymous' si non authentifié.
+    const userSub = req.user?.sub || req.body?.user || 'anonymous';
     const {
       spirit_id, quantity, acquired_at, acquired_price_eur,
       location, notes, photo_id, force_new,
@@ -586,8 +586,7 @@ module.exports = function createSpiritsRouter() {
   });
 
   router.get('/bar', (req, res) => {
-    const userSub = req.user?.sub || req.query?.user || null;
-    if (!userSub) return res.status(401).json({ error: 'unauthenticated' });
+    const userSub = req.user?.sub || req.query?.user || 'anonymous';
     const status = (req.query.status || 'stock').toString();
     const limit = Math.min(parseInt(req.query.limit, 10) || 200, 500);
     const items = storage.listUserBar(userSub, { status, limit });
@@ -596,8 +595,7 @@ module.exports = function createSpiritsRouter() {
   });
 
   router.delete('/bar/:id(\\d+)', (req, res) => {
-    const userSub = req.user?.sub || req.query?.user || null;
-    if (!userSub) return res.status(401).json({ error: 'unauthenticated' });
+    const userSub = req.user?.sub || req.query?.user || 'anonymous';
     const barId = parseInt(req.params.id, 10);
     const result = storage.removeFromBar(barId, userSub);
     if (!result?.updated) return res.status(404).json({ error: 'not_found' });

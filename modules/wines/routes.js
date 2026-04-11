@@ -642,8 +642,10 @@ module.exports = function createWinesRouter() {
   // GET  /api/wine/cellar   → liste les bouteilles en cave du user
   // DELETE /api/wine/cellar/:id → marque comme consommée
   router.post('/cellar', express.json({ limit: '256kb' }), (req, res) => {
-    const userSub = req.user?.sub || req.body?.user || null;
-    if (!userSub) return res.status(401).json({ error: 'unauthenticated' });
+    // POC : fallback sur un user 'anonymous' si non authentifié.
+    // L'app Expo n'est pas encore câblée sur l'auth, donc on accepte
+    // les scans anonymes qui alimentent un bucket partagé.
+    const userSub = req.user?.sub || req.body?.user || 'anonymous';
     const {
       wine_id, quantity, acquired_at, acquired_price_eur,
       location, notes, photo_id, force_new,
@@ -669,8 +671,7 @@ module.exports = function createWinesRouter() {
   });
 
   router.get('/cellar', (req, res) => {
-    const userSub = req.user?.sub || req.query?.user || null;
-    if (!userSub) return res.status(401).json({ error: 'unauthenticated' });
+    const userSub = req.user?.sub || req.query?.user || 'anonymous';
     const status = (req.query.status || 'stock').toString();
     const limit = Math.min(parseInt(req.query.limit, 10) || 200, 500);
     const items = storage.listUserCellar(userSub, { status, limit });
@@ -679,8 +680,7 @@ module.exports = function createWinesRouter() {
   });
 
   router.delete('/cellar/:id(\\d+)', (req, res) => {
-    const userSub = req.user?.sub || req.query?.user || null;
-    if (!userSub) return res.status(401).json({ error: 'unauthenticated' });
+    const userSub = req.user?.sub || req.query?.user || 'anonymous';
     const cellarId = parseInt(req.params.id, 10);
     const result = storage.removeFromCellar(cellarId, userSub);
     if (!result?.updated) return res.status(404).json({ error: 'not_found' });
