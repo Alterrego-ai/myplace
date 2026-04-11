@@ -15,6 +15,7 @@
 const express = require('express');
 const multer = require('multer');
 const path = require('path');
+const fs = require('fs');
 
 const storage = require('./storage');
 const distilleries = require('./distilleries');
@@ -22,6 +23,13 @@ const productsStorage = require('../products/storage');
 const { identifySpirit, MODEL } = require('./claude');
 const { computeCost } = require('../wines/pricing'); // réutilise le helper tokens/coût
 const openfoodfacts = require('../../services/openfoodfacts');
+
+// Cross-routing scan photo : si Claude Vision détecte que c'est en réalité
+// un vin, on appelle le module wines pour relancer l'identification
+// sur la même photo et insérer dans wines.db.
+const winesStorage = require('../wines/storage');
+const winesProducers = require('../wines/producers');
+const { identifyWine, MODEL: WINE_MODEL } = require('../wines/claude');
 
 module.exports = function createSpiritsRouter() {
   const router = express.Router();
@@ -113,11 +121,127 @@ module.exports = function createSpiritsRouter() {
       return res.status(500).json({ error: 'ai_error', message: error, photo });
     }
 
+    // ── Cross-routing selon detected_category ─────────────────────────────
+    const result = identification.result || {};
+    const detectedCategory = result.detected_category || 'spirit';
+    const observed = result.observed || null;
+    const ean = (req.body?.ean || '').toString().trim() || null;
+
+    // CAS 1 : Claude voit un vin → relance identifyWine sur la même photo
+    // et insère silencieusement dans wines.db
+    if (detectedCategory === 'wine') {
+      try {
+        const wineId = await identifyWine(absPath, req.file.mimetype);
+        const wineCost = wineId?.usage ? computeCost(wineId.usage, WINE_MODEL) : null;
+        const wineResult = wineId?.result || {};
+        const wineStatus = wineResult.status || 'unknown';
+
+        if ((wineStatus === 'identified' || wineStatus === 'partial') && wineResult.name) {
+          // Auto-insert dans wines.db
+          let producerRow = null;
+          if (wineResult.producer) {
+            producerRow = winesProducers.findOrCreate(
+              {
+                name: wineResult.producer,
+                country: wineResult.country || null,
+                region: wineResult.region || null,
+                appellation_main: wineResult.appellation || null,
+                source: 'scan-cross-spirit',
+              },
+              userSub
+            );
+          }
+          const inserted = winesStorage.insertWine(
+            {
+              ...wineResult,
+              producer_id: producerRow?.id || null,
+              source: 'scan-cross-spirit',
+            },
+            userSub
+          );
+
+          // Copie la photo vers wines/uploads et la lie au vin
+          try {
+            const winesPhotosDir = winesStorage.getPhotosDir();
+            const destPath = path.join(winesPhotosDir, filename);
+            fs.copyFileSync(absPath, destPath);
+            const winePhoto = winesStorage.savePhoto({ filename, uploadedBy: userSub });
+            winesStorage.linkPhotoToWine(winePhoto.id, inserted.id, 1);
+          } catch (e) {
+            console.warn('[spirit→wine] photo copy/link failed:', e.message);
+          }
+
+          if (ean) {
+            try {
+              winesStorage.upsertBarcode({
+                ean,
+                wineId: inserted.id,
+                format: req.body?.barcodeFormat || null,
+                userSub,
+              });
+              productsStorage.linkToWine(ean, inserted.id);
+            } catch (e) {
+              console.warn('[spirit→wine] barcode link failed:', e.message);
+            }
+          }
+
+          return res.json({
+            redirectedTo: 'wine',
+            status: wineStatus,
+            suggestion: wineResult,
+            wine: winesStorage.getWineById(inserted.id),
+            photo,
+            model: MODEL,
+            durationMs: identification.durationMs,
+            cost: wineCost, // coût de l'identification qui a réussi
+            costBreakdown: { spiritDetect: cost, wineIdentify: wineCost },
+            observed,
+            location: geo.lat != null && geo.lon != null ? geo : null,
+          });
+        }
+        console.warn('[spirit→wine] identifyWine status:', wineStatus);
+      } catch (e) {
+        console.warn('[spirit→wine] cross-retry failed:', e.message);
+      }
+    }
+
+    // CAS 2 : spiritueux → flow normal
+    if (detectedCategory === 'spirit') {
+      return res.json({
+        status: result.status || 'unknown',
+        suggestion: result || null,
+        photo,
+        parseError: identification.parseError || null,
+        model: MODEL,
+        durationMs: identification.durationMs,
+        cost,
+        observed,
+        location: geo.lat != null && geo.lon != null ? geo : null,
+      });
+    }
+
+    // CAS 3 : ni vin ni spiritueux → trace EAN seul, écran neutre
+    if (ean) {
+      try {
+        productsStorage.upsertFromOff(
+          {
+            ean,
+            category_main: detectedCategory || 'other',
+            source: 'scan-interest-spirit',
+          },
+          { userSub }
+        );
+      } catch (e) {
+        console.warn('[spirits] products interest log failed:', e.message);
+      }
+    }
+
     return res.json({
-      status: identification.result?.status || 'unknown',
-      suggestion: identification.result || null,
+      status: 'observed',
+      detected_category: detectedCategory,
+      observed,
+      reason: result.reason || null,
       photo,
-      parseError: identification.parseError || null,
       model: MODEL,
       durationMs: identification.durationMs,
       cost,

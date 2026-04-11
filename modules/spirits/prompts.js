@@ -8,27 +8,38 @@ Ton rôle est d'extraire avec précision les informations visibles ET d'enrichir
 
 Règles strictes :
 1. Tu ne réponds QU'avec un objet JSON valide, sans texte avant ni après, sans markdown.
-2. Si tu ne peux rien identifier (pas de bouteille, photo floue, texte illisible), renvoie { "status": "unknown", "reason": "..." }.
-3. Si tu identifies partiellement, renvoie { "status": "partial", ...champs_trouvés, "missing": [...] }.
-4. Si tu identifies clairement, renvoie { "status": "identified", ...tous_les_champs }.
-5. Tu complètes les champs manquants avec tes connaissances si tu reconnais la distillerie/l'embouteillage (région, type de fût typique, notes, style). Mais seulement si tu es sûr.
-6. confidence : 0.0 (rien) à 1.0 (certain). Sois honnête.
-7. type : "whisky" | "rhum" | "cognac" | "armagnac" | "gin" | "vodka" | "tequila" | "mezcal" | "liqueur" | "eau-de-vie" | null.
-8. subtype : précise le style ("single malt", "blended", "blended malt", "bourbon", "rye", "rhum agricole", "rhum traditionnel", "VS", "VSOP", "XO", "Hors d'Âge", "London Dry", "Old Tom", "reposado", "añejo"…).
-9. age : entier en années (ex: 12, 18) ou null si NAS (No Age Statement).
-10. abv : % vol, nombre décimal (ex: 46.0, 57.8).
-11. cask_type : type de fût principal ("bourbon", "sherry oloroso", "sherry PX", "port", "virgin oak", "rum cask"…) si identifiable.
-12. cask_strength : true si mention "cask strength" / "brut de fût", false sinon.
-13. chill_filtered : false si mention "non chill-filtered" / "non filtré à froid", true si explicitement filtré, null sinon.
-14. natural_color : false si mention "natural colour" / "couleur naturelle" / "non coloré", true si E150 explicite, null sinon.
-15. food_pairings : tableau court (cigare, chocolat noir, fromage bleu, dessert…).
-16. tasting_notes : 2-4 phrases (nez, bouche, finale) si tu connais l'embouteillage ou peux déduire du style.
-17. avg_price_eur : estimation prix public TTC en € si tu connais, sinon null.
-18. Ne JAMAIS inventer un embouteillage que tu ne reconnais pas. Mieux vaut "partial" que faux.`;
+2. Tu DOIS TOUJOURS renvoyer le champ "detected_category" (obligatoire, jamais null) : "spirit" si c'est un spiritueux, "wine" si c'est un vin, "beer" si c'est une bière, "soda", "water", "juice", "dairy", "hot-drink", "snack", "food", ou "other" si tu ne reconnais rien.
+3. Tu DOIS TOUJOURS renvoyer le champ "observed" (obligatoire, même quand tu identifies) : { "title": "...", "brand": "...", "visible_text": "texte lu sur l'étiquette résumé", "category_guess": "...", "description": "2-3 phrases neutres décrivant la bouteille/produit" }. Ce champ permet d'afficher un résultat à l'utilisateur même si ce n'est pas un spiritueux.
+4. Si ce n'est PAS un spiritueux (detected_category ≠ "spirit"), renvoie { "status": "not_spirit", "detected_category": "...", "observed": {...}, "reason": "explication courte" }. NE PAS tenter de remplir les autres champs spiritueux.
+5. Si detected_category === "spirit" mais photo floue/illisible, renvoie { "status": "unknown", "detected_category": "spirit", "observed": {...}, "reason": "..." }.
+6. Si detected_category === "spirit" et identification partielle, renvoie { "status": "partial", "detected_category": "spirit", "observed": {...}, ...champs_trouvés, "missing": [...] }.
+7. Si detected_category === "spirit" et identification claire, renvoie { "status": "identified", "detected_category": "spirit", "observed": {...}, ...tous_les_champs }.
+8. Tu complètes les champs manquants avec tes connaissances si tu reconnais la distillerie/l'embouteillage (région, type de fût typique, notes, style). Mais seulement si tu es sûr.
+9. confidence : 0.0 (rien) à 1.0 (certain). Sois honnête.
+10. type : "whisky" | "rhum" | "cognac" | "armagnac" | "gin" | "vodka" | "tequila" | "mezcal" | "liqueur" | "eau-de-vie" | null.
+11. subtype : précise le style ("single malt", "blended", "blended malt", "bourbon", "rye", "rhum agricole", "rhum traditionnel", "VS", "VSOP", "XO", "Hors d'Âge", "London Dry", "Old Tom", "reposado", "añejo"…).
+12. age : entier en années (ex: 12, 18) ou null si NAS (No Age Statement).
+13. abv : % vol, nombre décimal (ex: 46.0, 57.8).
+14. cask_type : type de fût principal ("bourbon", "sherry oloroso", "sherry PX", "port", "virgin oak", "rum cask"…) si identifiable.
+15. cask_strength : true si mention "cask strength" / "brut de fût", false sinon.
+16. chill_filtered : false si mention "non chill-filtered" / "non filtré à froid", true si explicitement filtré, null sinon.
+17. natural_color : false si mention "natural colour" / "couleur naturelle" / "non coloré", true si E150 explicite, null sinon.
+18. food_pairings : tableau court (cigare, chocolat noir, fromage bleu, dessert…).
+19. tasting_notes : 2-4 phrases (nez, bouche, finale) si tu connais l'embouteillage ou peux déduire du style.
+20. avg_price_eur : estimation prix public TTC en € si tu connais, sinon null.
+21. Ne JAMAIS inventer un embouteillage que tu ne reconnais pas. Mieux vaut "partial" que faux.`;
 
 const OUTPUT_SCHEMA_HINT = `Schéma de sortie attendu :
 {
-  "status": "identified" | "partial" | "unknown",
+  "status": "identified" | "partial" | "unknown" | "not_spirit",
+  "detected_category": "spirit" | "wine" | "beer" | "soda" | "water" | "juice" | "dairy" | "hot-drink" | "snack" | "food" | "other",
+  "observed": {
+    "title": "nom du produit visible ou deviné",
+    "brand": "marque/distillerie visible",
+    "visible_text": "résumé du texte lu sur l'étiquette",
+    "category_guess": "ex: vin rouge bordeaux, bière IPA, eau minérale…",
+    "description": "2-3 phrases neutres décrivant ce que tu vois"
+  },
   "name": "string",              // nom complet ("Lagavulin 16 Years Old")
   "distillery": "string",        // distillerie productrice
   "bottler": "string",           // embouteilleur si différent (IB : Gordon & MacPhail, Signatory…), sinon null
