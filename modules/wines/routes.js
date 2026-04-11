@@ -443,6 +443,118 @@ module.exports = function createWinesRouter() {
     }
   });
 
+  // ─── POST /bulk-import ────────────────────────────────────────────────────
+  // Import idempotent d'un lot de vins dans la base de connaissance.
+  // Body : { wines: [{name, producer, appellation, region, country, vintage,
+  //                   color, type, grapes, avg_price_eur, source?}, ...],
+  //          dryRun?: bool, source?: string }
+  // Dedup via findWineByIdentity(name, producer, vintage). Auto-création du
+  // producer via producers.findOrCreate. Retourne un rapport détaillé.
+  router.post('/bulk-import', express.json({ limit: '4mb' }), (req, res) => {
+    const { wines, dryRun = false, source = 'bulk-import' } = req.body || {};
+    if (!Array.isArray(wines) || wines.length === 0) {
+      return res.status(400).json({ error: 'missing_wines_array' });
+    }
+    if (wines.length > 2000) {
+      return res.status(400).json({ error: 'batch_too_large', max: 2000 });
+    }
+    const userSub = req.user?.sub || null;
+
+    const report = {
+      total: wines.length,
+      inserted: 0,
+      skipped: 0,
+      failed: 0,
+      dryRun: !!dryRun,
+      details: [],
+    };
+
+    const runOne = (raw, idx) => {
+      if (!raw || !raw.name) {
+        report.failed += 1;
+        report.details.push({ idx, status: 'failed', reason: 'missing_name' });
+        return;
+      }
+      try {
+        const existing = storage.findWineByIdentity({
+          name: raw.name,
+          producer: raw.producer,
+          vintage: raw.vintage,
+        });
+        if (existing) {
+          report.skipped += 1;
+          report.details.push({
+            idx,
+            status: 'skipped',
+            wine_id: existing.id,
+            name: existing.name,
+            producer: existing.producer,
+            vintage: existing.vintage,
+          });
+          return;
+        }
+        if (dryRun) {
+          report.inserted += 1;
+          report.details.push({
+            idx,
+            status: 'would_insert',
+            name: raw.name,
+            producer: raw.producer || null,
+            vintage: raw.vintage || null,
+          });
+          return;
+        }
+        let producerRow = null;
+        if (raw.producer) {
+          producerRow = producers.findOrCreate(
+            {
+              name: raw.producer,
+              country: raw.country || null,
+              region: raw.region || null,
+              appellation_main: raw.appellation || null,
+              source,
+            },
+            userSub
+          );
+        }
+        const inserted = storage.insertWine(
+          { ...raw, producer_id: producerRow?.id || null, source: raw.source || source },
+          userSub
+        );
+        report.inserted += 1;
+        report.details.push({
+          idx,
+          status: 'inserted',
+          wine_id: inserted.id,
+          name: inserted.name,
+          producer: inserted.producer,
+          vintage: inserted.vintage,
+          producer_id: producerRow?.id || null,
+        });
+      } catch (e) {
+        report.failed += 1;
+        report.details.push({ idx, status: 'failed', reason: e.message, name: raw.name });
+        console.error('[wines] bulk-import row failed', idx, e.message);
+      }
+    };
+
+    try {
+      if (dryRun) {
+        wines.forEach(runOne);
+      } else {
+        // Transaction pour atomicité et perf
+        const tx = storage.getDb().transaction((list) => {
+          list.forEach(runOne);
+        });
+        tx(wines);
+      }
+      return res.json(report);
+    } catch (e) {
+      console.error('[wines] bulk-import failed', e);
+      return res.status(500).json({ error: 'bulk_import_failed', message: e.message, report });
+    }
+  });
+
   // ─── GET /by-barcode/:ean ────────────────────────────────────────────────
   // Cascade 3 tiers :
   //   1) Cache local wine_barcodes → fiche complète (source='cache', gratuit)
