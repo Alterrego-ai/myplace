@@ -174,6 +174,34 @@ CREATE TABLE IF NOT EXISTS producer_enrichments (
 CREATE INDEX IF NOT EXISTS idx_producer_enrich_prod ON producer_enrichments(producer_id);
 CREATE INDEX IF NOT EXISTS idx_producer_enrich_created ON producer_enrichments(created_at);
 
+-- ─── Cave de l'utilisateur (inventaire perso) ───────────────────────────────
+-- wines = base de connaissance (toujours alimentée par les scans).
+-- user_cellar = inventaire perso d'un user donné : ce qu'il POSSÈDE.
+-- Un même wine_id peut apparaître plusieurs fois pour un même user si
+-- il a plusieurs bouteilles achetées à des dates/prix différents, mais
+-- le front peut aussi choisir d'agréger en incrémentant quantity.
+CREATE TABLE IF NOT EXISTS user_cellar (
+  id              INTEGER PRIMARY KEY AUTOINCREMENT,
+  user_sub        TEXT NOT NULL,           -- identifiant user (sub OIDC ou email)
+  wine_id         INTEGER NOT NULL,        -- soft FK vers wines.id (base de connaissance)
+  quantity        INTEGER NOT NULL DEFAULT 1,
+  acquired_at     INTEGER,                 -- date d'achat (epoch ms)
+  acquired_price_eur REAL,                 -- prix d'achat réel (si connu)
+  location        TEXT,                    -- "Cave rack B · rang 4" / "Frigo" / ...
+  notes           TEXT,                    -- notes perso sur cette bouteille
+  photo_id        INTEGER,                 -- photo perso (optionnel, sinon photo de la fiche)
+  status          TEXT DEFAULT 'stock',    -- 'stock' | 'consumed' | 'gifted' | 'lost'
+  consumed_at     INTEGER,                 -- si status='consumed'
+  created_at      INTEGER NOT NULL,
+  updated_at      INTEGER NOT NULL,
+  FOREIGN KEY (wine_id) REFERENCES wines(id) ON DELETE CASCADE,
+  FOREIGN KEY (photo_id) REFERENCES wine_photos(id) ON DELETE SET NULL
+);
+
+CREATE INDEX IF NOT EXISTS idx_user_cellar_user ON user_cellar(user_sub);
+CREATE INDEX IF NOT EXISTS idx_user_cellar_wine ON user_cellar(wine_id);
+CREATE INDEX IF NOT EXISTS idx_user_cellar_status ON user_cellar(status);
+
 -- ─── Code-barres EAN → wine_id (cache d'identification gratuit) ──────────────
 -- Permet de sauter l'appel Claude Vision pour les cuvées déjà connues.
 CREATE TABLE IF NOT EXISTS wine_barcodes (

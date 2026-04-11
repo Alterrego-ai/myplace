@@ -25,13 +25,101 @@ const { computeCost } = require('../wines/pricing'); // réutilise le helper tok
 const openfoodfacts = require('../../services/openfoodfacts');
 
 // Cross-routing scan photo : si Claude Vision détecte que c'est en réalité
-// un vin, on relance identifyWine sur la même photo, on copie la photo
-// dans wines/uploads, et on renvoie une réponse compatible ScanResponse
-// (status, suggestion, photo) pour que le frontend bascule sur l'onglet
-// Vin et affiche la fiche "Métier" riche avec bouton "Ajouter à ma cave"
-// (confirmWine).
+// un vin, on relance identifyWine sur la même photo, on auto-insert dans
+// wines.db (base de connaissance), et on renvoie une réponse compatible
+// ScanResponse pour que le frontend bascule sur l'onglet Vin et affiche
+// la fiche "Métier" riche avec bouton "Ajouter à ma cave" (user_cellar).
 const winesStorage = require('../wines/storage');
+const winesProducers = require('../wines/producers');
 const { identifyWine, MODEL: WINE_MODEL } = require('../wines/claude');
+
+// Helper : auto-insert d'un spiritueux dans spirits.db (base de connaissance)
+// à partir du résultat Claude, avec dedup (findSpiritByIdentity). Crée /
+// récupère aussi la distillerie. Lie la photo si photoId fourni. Retourne
+// la fiche spirit complète (hydratée).
+function autoInsertSpiritFromScan({ result, photoId, userSub, source = 'scan' }) {
+  if (!result || !result.name) return null;
+  try {
+    const existing = storage.findSpiritByIdentity({
+      name: result.name,
+      distillery: result.distillery,
+      age: result.age,
+    });
+    if (existing) {
+      if (photoId) {
+        try { storage.linkPhotoToSpirit(photoId, existing.id, 0); } catch {}
+      }
+      return { spirit: existing, created: false };
+    }
+    let distilleryRow = null;
+    if (result.distillery) {
+      distilleryRow = distilleries.findOrCreate(
+        {
+          name: result.distillery,
+          country: result.country || null,
+          region: result.region || null,
+          category: result.type || null,
+          source,
+        },
+        userSub
+      );
+    }
+    const inserted = storage.insertSpirit(
+      { ...result, distillery_id: distilleryRow?.id || null, source },
+      userSub
+    );
+    if (photoId) {
+      try { storage.linkPhotoToSpirit(photoId, inserted.id, 1); } catch {}
+    }
+    return { spirit: storage.getSpiritById(inserted.id), created: true };
+  } catch (e) {
+    console.error('[spirits] autoInsertSpiritFromScan failed:', e.message);
+    return null;
+  }
+}
+
+// Helper : auto-insert d'un vin depuis le module spirits (cross-routing).
+// Dedup, création producer, insert dans wines.db, liaison photo.
+function autoInsertWineFromScan({ result, photoId, userSub, source = 'scan-cross-spirit' }) {
+  if (!result || !result.name) return null;
+  try {
+    const existing = winesStorage.findWineByIdentity({
+      name: result.name,
+      producer: result.producer,
+      vintage: result.vintage,
+    });
+    if (existing) {
+      if (photoId) {
+        try { winesStorage.linkPhotoToWine(photoId, existing.id, 0); } catch {}
+      }
+      return { wine: existing, created: false };
+    }
+    let producerRow = null;
+    if (result.producer) {
+      producerRow = winesProducers.findOrCreate(
+        {
+          name: result.producer,
+          country: result.country || null,
+          region: result.region || null,
+          appellation_main: result.appellation || null,
+          source,
+        },
+        userSub
+      );
+    }
+    const inserted = winesStorage.insertWine(
+      { ...result, producer_id: producerRow?.id || null, source },
+      userSub
+    );
+    if (photoId) {
+      try { winesStorage.linkPhotoToWine(photoId, inserted.id, 1); } catch {}
+    }
+    return { wine: winesStorage.getWineById(inserted.id), created: true };
+  } catch (e) {
+    console.error('[spirits→wine] autoInsertWineFromScan failed:', e.message);
+    return null;
+  }
+}
 
 module.exports = function createSpiritsRouter() {
   const router = express.Router();
@@ -129,10 +217,10 @@ module.exports = function createSpiritsRouter() {
     const observed = result.observed || null;
     const ean = (req.body?.ean || '').toString().trim() || null;
 
-    // CAS 1 : Claude voit un vin → relance identifyWine sur la même photo
-    // et renvoie une ScanResponse pour que le front affiche la fiche "Métier"
-    // riche sur l'onglet Vin (confirmation explicite via confirmWine lors du
-    // tap "Ajouter à ma cave").
+    // CAS 1 : Claude voit un vin → relance identifyWine sur la même photo,
+    // auto-insert dans wines.db (base de connaissance) et renvoie une
+    // ScanResponse pour que le front bascule sur l'onglet Vin et affiche la
+    // fiche "Métier" riche (bouton "Ajouter à ma cave" → user_cellar).
     if (detectedCategory === 'wine') {
       try {
         const wineId = await identifyWine(absPath, req.file.mimetype);
@@ -142,7 +230,6 @@ module.exports = function createSpiritsRouter() {
 
         if ((wineStatus === 'identified' || wineStatus === 'partial') && wineResult.name) {
           // Copie la photo vers wines/uploads et la persiste dans wines DB
-          // pour que confirmWine puisse la lier à la fiche créée.
           let winePhoto = null;
           try {
             const winesPhotosDir = winesStorage.getPhotosDir();
@@ -153,10 +240,35 @@ module.exports = function createSpiritsRouter() {
             console.warn('[spirit→wine] photo copy failed:', e.message);
           }
 
+          // Auto-insert dans wines.db (base de connaissance)
+          const autoWine = autoInsertWineFromScan({
+            result: wineResult,
+            photoId: winePhoto?.id || null,
+            userSub,
+            source: 'scan-cross-spirit',
+          });
+
+          // EAN : associe au vin créé
+          if (ean && autoWine?.wine) {
+            try {
+              winesStorage.upsertBarcode({
+                ean,
+                wineId: autoWine.wine.id,
+                format: req.body?.barcodeFormat || null,
+                userSub,
+              });
+              productsStorage.linkToWine(ean, autoWine.wine.id);
+            } catch (e) {
+              console.warn('[spirit→wine] barcode link failed:', e.message);
+            }
+          }
+
           return res.json({
             redirectedTo: 'wine',
             status: wineStatus,
             suggestion: wineResult,
+            wine: autoWine?.wine || null,
+            autoCreated: autoWine?.created || false,
             photo: winePhoto,
             model: WINE_MODEL,
             durationMs: wineId.durationMs,
@@ -172,11 +284,40 @@ module.exports = function createSpiritsRouter() {
       }
     }
 
-    // CAS 2 : spiritueux → flow normal
+    // CAS 2 : spiritueux → auto-insert dans spirits.db (base de connaissance)
+    // et renvoie la fiche créée. Le front affiche la fiche "Métier" riche et
+    // le bouton "Ajouter à mon bar" crée une entrée user_bar.
     if (detectedCategory === 'spirit') {
+      let autoSpirit = null;
+      if ((result.status === 'identified' || result.status === 'partial') && result.name) {
+        autoSpirit = autoInsertSpiritFromScan({
+          result,
+          photoId: photo?.id || null,
+          userSub,
+          source: 'scan',
+        });
+
+        // EAN : associe au spiritueux créé
+        if (ean && autoSpirit?.spirit) {
+          try {
+            storage.upsertBarcode({
+              ean,
+              spiritId: autoSpirit.spirit.id,
+              format: req.body?.barcodeFormat || null,
+              userSub,
+            });
+            productsStorage.linkToSpirit(ean, autoSpirit.spirit.id);
+          } catch (e) {
+            console.warn('[spirits] barcode link failed:', e.message);
+          }
+        }
+      }
+
       return res.json({
         status: result.status || 'unknown',
         suggestion: result || null,
+        spirit: autoSpirit?.spirit || null,
+        autoCreated: autoSpirit?.created || false,
         photo,
         parseError: identification.parseError || null,
         model: MODEL,
@@ -411,6 +552,56 @@ module.exports = function createSpiritsRouter() {
     const limit = Math.min(parseInt(req.query.limit, 10) || 20, 100);
     const results = storage.searchSpirits('', limit);
     res.json({ count: results.length, results });
+  });
+
+  // ─── Mon Bar (user_bar) ────────────────────────────────────────────────────
+  // POST /api/spirit/bar   → ajoute (ou incrémente) une entrée
+  // GET  /api/spirit/bar   → liste les bouteilles au bar du user
+  // DELETE /api/spirit/bar/:id → marque comme consommée
+  router.post('/bar', express.json({ limit: '256kb' }), (req, res) => {
+    const userSub = req.user?.sub || req.body?.user || null;
+    if (!userSub) return res.status(401).json({ error: 'unauthenticated' });
+    const {
+      spirit_id, quantity, acquired_at, acquired_price_eur,
+      location, notes, photo_id, force_new,
+    } = req.body || {};
+    if (!spirit_id) return res.status(400).json({ error: 'missing_spirit_id' });
+    try {
+      const result = storage.addToBar({
+        userSub,
+        spiritId: parseInt(spirit_id, 10),
+        quantity: parseInt(quantity, 10) || 1,
+        acquiredAt: acquired_at || null,
+        acquiredPriceEur: acquired_price_eur != null ? parseFloat(acquired_price_eur) : null,
+        location: location || null,
+        notes: notes || null,
+        photoId: photo_id || null,
+        forceNew: !!force_new,
+      });
+      return res.json({ ok: true, ...result });
+    } catch (e) {
+      console.error('[spirits] addToBar failed', e);
+      return res.status(500).json({ error: 'insert_failed', message: e.message });
+    }
+  });
+
+  router.get('/bar', (req, res) => {
+    const userSub = req.user?.sub || req.query?.user || null;
+    if (!userSub) return res.status(401).json({ error: 'unauthenticated' });
+    const status = (req.query.status || 'stock').toString();
+    const limit = Math.min(parseInt(req.query.limit, 10) || 200, 500);
+    const items = storage.listUserBar(userSub, { status, limit });
+    const count = storage.countUserBar(userSub);
+    res.json({ items, count });
+  });
+
+  router.delete('/bar/:id(\\d+)', (req, res) => {
+    const userSub = req.user?.sub || req.query?.user || null;
+    if (!userSub) return res.status(401).json({ error: 'unauthenticated' });
+    const barId = parseInt(req.params.id, 10);
+    const result = storage.removeFromBar(barId, userSub);
+    if (!result?.updated) return res.status(404).json({ error: 'not_found' });
+    res.json({ ok: true });
   });
 
   // ─── GET /:id ─────────────────────────────────────────────────────────────

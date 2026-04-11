@@ -182,6 +182,34 @@ CREATE TABLE IF NOT EXISTS distillery_enrichments (
 CREATE INDEX IF NOT EXISTS idx_distillery_enrich_dist    ON distillery_enrichments(distillery_id);
 CREATE INDEX IF NOT EXISTS idx_distillery_enrich_created ON distillery_enrichments(created_at);
 
+-- ─── Bar de l'utilisateur (inventaire perso) ──────────────────────────────
+-- spirits = base de connaissance (toujours alimentée par les scans).
+-- user_bar = inventaire perso : ce que l'user POSSÈDE dans son bar.
+-- Un même spirit_id peut apparaître plusieurs fois (plusieurs bouteilles
+-- achetées à des dates/prix différents), ou agrégé via quantity.
+CREATE TABLE IF NOT EXISTS user_bar (
+  id              INTEGER PRIMARY KEY AUTOINCREMENT,
+  user_sub        TEXT NOT NULL,
+  spirit_id       INTEGER NOT NULL,
+  quantity        INTEGER NOT NULL DEFAULT 1,
+  acquired_at     INTEGER,
+  acquired_price_eur REAL,
+  location        TEXT,                      -- "Bar salon", "Cellier"...
+  notes           TEXT,
+  photo_id        INTEGER,
+  status          TEXT DEFAULT 'stock',      -- 'stock' | 'opened' | 'consumed' | 'gifted'
+  opened_at       INTEGER,                   -- première ouverture (pour suivi oxydation)
+  consumed_at     INTEGER,
+  created_at      INTEGER NOT NULL,
+  updated_at      INTEGER NOT NULL,
+  FOREIGN KEY (spirit_id) REFERENCES spirits(id) ON DELETE CASCADE,
+  FOREIGN KEY (photo_id) REFERENCES spirit_photos(id) ON DELETE SET NULL
+);
+
+CREATE INDEX IF NOT EXISTS idx_user_bar_user ON user_bar(user_sub);
+CREATE INDEX IF NOT EXISTS idx_user_bar_spirit ON user_bar(spirit_id);
+CREATE INDEX IF NOT EXISTS idx_user_bar_status ON user_bar(status);
+
 -- ─── Code-barres EAN → spirit_id (cache gratuit) ──────────────────────────
 CREATE TABLE IF NOT EXISTS spirit_barcodes (
   ean         TEXT PRIMARY KEY,

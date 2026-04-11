@@ -138,6 +138,45 @@ function insertWine(data, createdBy = null) {
   return { id: result.lastInsertRowid, ...payload };
 }
 
+/**
+ * Cherche un vin par identité approximative (name + producer + vintage).
+ * Utilisé pour déduper la base de connaissance lors d'un auto-insert scan.
+ * Retourne le premier match (hydraté) ou null.
+ */
+function findWineByIdentity({ name, producer, vintage }) {
+  if (!name) return null;
+  const db = getDb();
+  const normName = String(name).trim().toLowerCase();
+  // On accepte les matches même sans producer/vintage pour éviter les doublons
+  // sur des cuvées où Claude ne détecte pas toujours tous les champs.
+  let row;
+  if (producer && vintage) {
+    row = db
+      .prepare(
+        `SELECT * FROM wines
+         WHERE lower(name) = ? AND lower(COALESCE(producer, '')) = ? AND COALESCE(vintage, -1) = ?
+         ORDER BY updated_at DESC LIMIT 1`
+      )
+      .get(normName, String(producer).trim().toLowerCase(), vintage);
+  } else if (producer) {
+    row = db
+      .prepare(
+        `SELECT * FROM wines
+         WHERE lower(name) = ? AND lower(COALESCE(producer, '')) = ?
+         ORDER BY updated_at DESC LIMIT 1`
+      )
+      .get(normName, String(producer).trim().toLowerCase());
+  } else {
+    row = db
+      .prepare(
+        `SELECT * FROM wines WHERE lower(name) = ?
+         ORDER BY updated_at DESC LIMIT 1`
+      )
+      .get(normName);
+  }
+  return row ? hydrateWine(row) : null;
+}
+
 function getWineById(id) {
   const row = getDb().prepare(`SELECT * FROM wines WHERE id = ?`).get(id);
   if (!row) return null;
@@ -303,6 +342,126 @@ function upsertBarcode({ ean, wineId, format, userSub }) {
   return { status: 'created', ean, wine_id: wineId };
 }
 
+// ─── User cellar (inventaire perso) ──────────────────────────────────────────
+
+/**
+ * Ajoute une bouteille à la cave de l'utilisateur. Si l'utilisateur possède
+ * déjà ce wine_id (même user_sub), on incrémente la quantité au lieu de créer
+ * une nouvelle entrée — sauf si `forceNew:true` (pour distinguer deux achats
+ * de la même cuvée à des prix/dates différents).
+ */
+function addToCellar({
+  userSub,
+  wineId,
+  quantity = 1,
+  acquiredAt = null,
+  acquiredPriceEur = null,
+  location = null,
+  notes = null,
+  photoId = null,
+  forceNew = false,
+}) {
+  if (!userSub) throw new Error('userSub required');
+  if (!wineId) throw new Error('wineId required');
+  const now = Date.now();
+  const db = getDb();
+
+  if (!forceNew) {
+    const existing = db
+      .prepare(
+        `SELECT * FROM user_cellar
+         WHERE user_sub = ? AND wine_id = ? AND status = 'stock'
+         ORDER BY created_at DESC LIMIT 1`
+      )
+      .get(userSub, wineId);
+    if (existing) {
+      db.prepare(
+        `UPDATE user_cellar SET quantity = quantity + ?, updated_at = ? WHERE id = ?`
+      ).run(quantity, now, existing.id);
+      return { id: existing.id, status: 'incremented', quantity: existing.quantity + quantity };
+    }
+  }
+
+  const r = db
+    .prepare(
+      `INSERT INTO user_cellar (
+         user_sub, wine_id, quantity, acquired_at, acquired_price_eur,
+         location, notes, photo_id, status, created_at, updated_at
+       ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, 'stock', ?, ?)`
+    )
+    .run(
+      userSub,
+      wineId,
+      quantity,
+      acquiredAt,
+      acquiredPriceEur,
+      location,
+      notes,
+      photoId,
+      now,
+      now
+    );
+  return { id: r.lastInsertRowid, status: 'created', quantity };
+}
+
+/** Liste la cave d'un user (join avec wines pour la fiche complète). */
+function listUserCellar(userSub, { status = 'stock', limit = 200 } = {}) {
+  if (!userSub) return [];
+  const rows = getDb()
+    .prepare(
+      `SELECT
+         uc.id          AS cellar_id,
+         uc.quantity,
+         uc.acquired_at,
+         uc.acquired_price_eur,
+         uc.location,
+         uc.notes,
+         uc.status      AS cellar_status,
+         uc.created_at  AS cellar_created_at,
+         w.*
+       FROM user_cellar uc
+       JOIN wines w ON w.id = uc.wine_id
+       WHERE uc.user_sub = ? AND uc.status = ?
+       ORDER BY uc.created_at DESC
+       LIMIT ?`
+    )
+    .all(userSub, status, limit);
+  return rows.map((row) => ({
+    cellarId: row.cellar_id,
+    quantity: row.quantity,
+    acquiredAt: row.acquired_at,
+    acquiredPriceEur: row.acquired_price_eur,
+    location: row.location,
+    notes: row.notes,
+    status: row.cellar_status,
+    wine: hydrateWine(row),
+  }));
+}
+
+/** Compte le nombre total de bouteilles en cave pour un user. */
+function countUserCellar(userSub) {
+  if (!userSub) return 0;
+  const row = getDb()
+    .prepare(
+      `SELECT COALESCE(SUM(quantity), 0) AS total, COUNT(*) AS entries
+       FROM user_cellar WHERE user_sub = ? AND status = 'stock'`
+    )
+    .get(userSub);
+  return { total: row.total, entries: row.entries };
+}
+
+function removeFromCellar(cellarId, userSub) {
+  if (!userSub || !cellarId) return null;
+  const now = Date.now();
+  const r = getDb()
+    .prepare(
+      `UPDATE user_cellar SET status = 'consumed', consumed_at = ?, updated_at = ?
+       WHERE id = ? AND user_sub = ?`
+    )
+    .run(now, now, cellarId, userSub);
+  return { updated: r.changes };
+}
+
 function listBarcodesForWine(wineId) {
   return getDb()
     .prepare(`SELECT ean, format, scan_count, first_seen, last_seen FROM wine_barcodes WHERE wine_id = ? ORDER BY scan_count DESC`)
@@ -371,6 +530,7 @@ module.exports = {
   savePhoto,
   linkPhotoToWine,
   insertWine,
+  findWineByIdentity,
   getWineById,
   getWinePhotos,
   searchWines,
@@ -380,4 +540,9 @@ module.exports = {
   findWineByBarcode,
   upsertBarcode,
   listBarcodesForWine,
+  // User cellar
+  addToCellar,
+  listUserCellar,
+  countUserCellar,
+  removeFromCellar,
 };

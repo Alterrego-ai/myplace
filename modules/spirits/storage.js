@@ -133,6 +133,42 @@ function insertSpirit(data, createdBy = null) {
   return { id: result.lastInsertRowid, ...payload };
 }
 
+/**
+ * Cherche un spiritueux par identité approximative (name + distillery + age).
+ * Utilisé pour déduper la base de connaissance lors d'un auto-insert scan.
+ */
+function findSpiritByIdentity({ name, distillery, age }) {
+  if (!name) return null;
+  const db = getDb();
+  const normName = String(name).trim().toLowerCase();
+  let row;
+  if (distillery && age != null) {
+    row = db
+      .prepare(
+        `SELECT * FROM spirits
+         WHERE lower(name) = ? AND lower(COALESCE(distillery, '')) = ? AND COALESCE(age, -1) = ?
+         ORDER BY updated_at DESC LIMIT 1`
+      )
+      .get(normName, String(distillery).trim().toLowerCase(), age);
+  } else if (distillery) {
+    row = db
+      .prepare(
+        `SELECT * FROM spirits
+         WHERE lower(name) = ? AND lower(COALESCE(distillery, '')) = ?
+         ORDER BY updated_at DESC LIMIT 1`
+      )
+      .get(normName, String(distillery).trim().toLowerCase());
+  } else {
+    row = db
+      .prepare(
+        `SELECT * FROM spirits WHERE lower(name) = ?
+         ORDER BY updated_at DESC LIMIT 1`
+      )
+      .get(normName);
+  }
+  return row ? hydrateSpirit(row) : null;
+}
+
 function getSpiritById(id) {
   const row = getDb().prepare(`SELECT * FROM spirits WHERE id = ?`).get(id);
   if (!row) return null;
@@ -284,6 +320,120 @@ function upsertBarcode({ ean, spiritId, format, userSub }) {
   return { status: 'created', ean, spirit_id: spiritId };
 }
 
+// ─── User bar (inventaire perso) ─────────────────────────────────────────────
+
+function addToBar({
+  userSub,
+  spiritId,
+  quantity = 1,
+  acquiredAt = null,
+  acquiredPriceEur = null,
+  location = null,
+  notes = null,
+  photoId = null,
+  forceNew = false,
+}) {
+  if (!userSub) throw new Error('userSub required');
+  if (!spiritId) throw new Error('spiritId required');
+  const now = Date.now();
+  const db = getDb();
+
+  if (!forceNew) {
+    const existing = db
+      .prepare(
+        `SELECT * FROM user_bar
+         WHERE user_sub = ? AND spirit_id = ? AND status = 'stock'
+         ORDER BY created_at DESC LIMIT 1`
+      )
+      .get(userSub, spiritId);
+    if (existing) {
+      db.prepare(
+        `UPDATE user_bar SET quantity = quantity + ?, updated_at = ? WHERE id = ?`
+      ).run(quantity, now, existing.id);
+      return { id: existing.id, status: 'incremented', quantity: existing.quantity + quantity };
+    }
+  }
+
+  const r = db
+    .prepare(
+      `INSERT INTO user_bar (
+         user_sub, spirit_id, quantity, acquired_at, acquired_price_eur,
+         location, notes, photo_id, status, created_at, updated_at
+       ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, 'stock', ?, ?)`
+    )
+    .run(
+      userSub,
+      spiritId,
+      quantity,
+      acquiredAt,
+      acquiredPriceEur,
+      location,
+      notes,
+      photoId,
+      now,
+      now
+    );
+  return { id: r.lastInsertRowid, status: 'created', quantity };
+}
+
+function listUserBar(userSub, { status = 'stock', limit = 200 } = {}) {
+  if (!userSub) return [];
+  const rows = getDb()
+    .prepare(
+      `SELECT
+         ub.id          AS bar_id,
+         ub.quantity,
+         ub.acquired_at,
+         ub.acquired_price_eur,
+         ub.location,
+         ub.notes,
+         ub.status      AS bar_status,
+         ub.opened_at,
+         ub.created_at  AS bar_created_at,
+         s.*
+       FROM user_bar ub
+       JOIN spirits s ON s.id = ub.spirit_id
+       WHERE ub.user_sub = ? AND ub.status = ?
+       ORDER BY ub.created_at DESC
+       LIMIT ?`
+    )
+    .all(userSub, status, limit);
+  return rows.map((row) => ({
+    barId: row.bar_id,
+    quantity: row.quantity,
+    acquiredAt: row.acquired_at,
+    acquiredPriceEur: row.acquired_price_eur,
+    location: row.location,
+    notes: row.notes,
+    status: row.bar_status,
+    openedAt: row.opened_at,
+    spirit: hydrateSpirit(row),
+  }));
+}
+
+function countUserBar(userSub) {
+  if (!userSub) return { total: 0, entries: 0 };
+  const row = getDb()
+    .prepare(
+      `SELECT COALESCE(SUM(quantity), 0) AS total, COUNT(*) AS entries
+       FROM user_bar WHERE user_sub = ? AND status = 'stock'`
+    )
+    .get(userSub);
+  return { total: row.total, entries: row.entries };
+}
+
+function removeFromBar(barId, userSub) {
+  if (!userSub || !barId) return null;
+  const now = Date.now();
+  const r = getDb()
+    .prepare(
+      `UPDATE user_bar SET status = 'consumed', consumed_at = ?, updated_at = ?
+       WHERE id = ? AND user_sub = ?`
+    )
+    .run(now, now, barId, userSub);
+  return { updated: r.changes };
+}
+
 function listBarcodesForSpirit(spiritId) {
   return getDb()
     .prepare(`SELECT ean, format, scan_count, first_seen, last_seen FROM spirit_barcodes WHERE spirit_id = ? ORDER BY scan_count DESC`)
@@ -352,6 +502,7 @@ module.exports = {
   savePhoto,
   linkPhotoToSpirit,
   insertSpirit,
+  findSpiritByIdentity,
   getSpiritById,
   getSpiritPhotos,
   searchSpirits,
@@ -361,4 +512,9 @@ module.exports = {
   findSpiritByBarcode,
   upsertBarcode,
   listBarcodesForSpirit,
+  // User bar
+  addToBar,
+  listUserBar,
+  countUserBar,
+  removeFromBar,
 };
