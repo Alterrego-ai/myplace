@@ -242,13 +242,60 @@ module.exports = function createSpiritsRouter() {
 
           const suggestion = openfoodfacts.mapToSpiritSuggestion(product);
           if (suggestion) {
-            return res.json({
-              hit: true,
-              source: 'openfoodfacts',
-              ean,
-              suggestion,
-              attribution: '© Open Food Facts contributors (ODbL)',
-            });
+            // Auto-promotion silencieuse : OFF nous a donné un spiritueux
+            // reconnu, on l'insère direct comme si l'utilisateur avait
+            // confirmé la fiche. Prochain scan = cache hit natif.
+            try {
+              let distilleryRow = null;
+              if (suggestion.distillery) {
+                distilleryRow = distilleries.findOrCreate(
+                  {
+                    name: suggestion.distillery,
+                    country: suggestion.country || null,
+                    region: suggestion.region || null,
+                    category: suggestion.type || null,
+                    source: 'openfoodfacts',
+                  },
+                  req.user?.sub || null
+                );
+              }
+              const inserted = storage.insertSpirit(
+                {
+                  ...suggestion,
+                  distillery_id: distilleryRow?.id || null,
+                  source: 'openfoodfacts',
+                },
+                req.user?.sub || null
+              );
+              const barcode = storage.upsertBarcode({
+                ean,
+                spiritId: inserted.id,
+                format: null,
+                userSub: req.user?.sub || null,
+              });
+              // Lien croisé products.spirit_id pour le back-office
+              try { productsStorage.linkToSpirit(ean, inserted.id); } catch {}
+              return res.json({
+                hit: true,
+                source: 'cache',
+                ean,
+                spirit: storage.getSpiritById(inserted.id),
+                photos: storage.getSpiritPhotos(inserted.id),
+                distillery: distilleryRow || null,
+                barcode,
+                attribution: '© Open Food Facts contributors (ODbL)',
+                autoPromoted: true,
+              });
+            } catch (e) {
+              console.warn('[spirits] auto-promotion OFF failed, fallback suggestion:', e.message);
+              return res.json({
+                hit: true,
+                source: 'openfoodfacts',
+                ean,
+                suggestion,
+                attribution: '© Open Food Facts contributors (ODbL)',
+              });
+            }
           }
         }
       } catch (e) {
