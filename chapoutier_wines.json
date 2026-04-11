@@ -1,0 +1,7320 @@
+[
+  {
+    "section": "FAC&SPERA",
+    "producer": "M. Chapoutier",
+    "appellation": "CHÂTEAUNEUF-DU-PAPE",
+    "cuvee": "Barbe Rac",
+    "color": "rouge",
+    "vintages": [
+      2008,
+      2019,
+      2022
+    ],
+    "prices": {
+      "2008": [
+        "44",
+        "91",
+        "206",
+        "417"
+      ],
+      "2019": [
+        "67",
+        "137",
+        "298",
+        "601"
+      ],
+      "2022": [
+        "68",
+        "139",
+        "302",
+        "609"
+      ]
+    },
+    "page": 3,
+    "ref_price_eur_ht": 68.0
+  },
+  {
+    "section": "FAC&SPERA",
+    "producer": "M. Chapoutier",
+    "appellation": "CHÂTEAUNEUF-DU-PAPE",
+    "cuvee": "Croix de Bois",
+    "color": "rouge",
+    "vintages": [
+      2006,
+      2019,
+      2020
+    ],
+    "prices": {
+      "2006": [
+        "41",
+        "85",
+        "194",
+        "393"
+      ],
+      "2019": [
+        "45",
+        "93",
+        "210",
+        "425"
+      ],
+      "2020": [
+        "49",
+        "101",
+        "226",
+        "457"
+      ]
+    },
+    "page": 3,
+    "ref_price_eur_ht": 49.0
+  },
+  {
+    "section": "FAC&SPERA",
+    "producer": "M. Chapoutier",
+    "appellation": "CORNAS",
+    "cuvee": "Lieu dit Saint Pierre",
+    "color": "rouge",
+    "vintages": [
+      2021,
+      2022
+    ],
+    "prices": {
+      "2021": [
+        "56",
+        "115",
+        "254",
+        "513"
+      ],
+      "2022": [
+        "51",
+        "105",
+        "234",
+        "473"
+      ]
+    },
+    "page": 3,
+    "ref_price_eur_ht": 51.0
+  },
+  {
+    "section": "FAC&SPERA",
+    "producer": "M. Chapoutier",
+    "appellation": "CROZES-ERMITAGE",
+    "cuvee": "Les Varonniers",
+    "color": "rouge",
+    "vintages": [
+      2022
+    ],
+    "prices": {
+      "2022": [
+        "42",
+        "87",
+        "198",
+        "401"
+      ]
+    },
+    "page": 3,
+    "ref_price_eur_ht": 42.0
+  },
+  {
+    "section": "FAC&SPERA",
+    "producer": "M. Chapoutier",
+    "appellation": "CÔTE-RÔTIE",
+    "cuvee": "La Mordorée",
+    "color": "rouge",
+    "vintages": [
+      2001,
+      2022
+    ],
+    "prices": {
+      "2001": [
+        "114",
+        "231",
+        "486",
+        "977"
+      ],
+      "2022": [
+        "111",
+        "225",
+        "474",
+        "953"
+      ]
+    },
+    "page": 3,
+    "ref_price_eur_ht": 111.0
+  },
+  {
+    "section": "FAC&SPERA",
+    "producer": "M. Chapoutier",
+    "appellation": "CÔTE-RÔTIE",
+    "cuvee": "Neve",
+    "color": "rouge",
+    "vintages": [
+      2021,
+      2022
+    ],
+    "prices": {
+      "2021": [
+        "91",
+        "185",
+        "394",
+        "793"
+      ],
+      "2022": [
+        "90",
+        "183",
+        "390",
+        "785"
+      ]
+    },
+    "page": 3,
+    "ref_price_eur_ht": 90.0
+  },
+  {
+    "section": "FAC&SPERA",
+    "producer": "M. Chapoutier",
+    "appellation": "ERMITAGE",
+    "cuvee": "L'Ermite",
+    "color": "rouge",
+    "vintages": [
+      2006,
+      2008,
+      2014
+    ],
+    "prices": {
+      "2006": [
+        "201",
+        "405",
+        "834",
+        "1673"
+      ],
+      "2008": [
+        "152",
+        "307",
+        "638",
+        "1281"
+      ],
+      "2014": [
+        "268",
+        "539",
+        "1102",
+        "2209"
+      ]
+    },
+    "page": 3,
+    "ref_price_eur_ht": 268.0
+  },
+  {
+    "section": "FAC&SPERA",
+    "producer": "M. Chapoutier",
+    "appellation": "ERMITAGE",
+    "cuvee": "Le Méal",
+    "color": "rouge",
+    "vintages": [
+      2008,
+      2011
+    ],
+    "prices": {
+      "2008": [
+        "96",
+        "195",
+        "414",
+        "833"
+      ],
+      "2011": [
+        "145",
+        "371",
+        "766",
+        "1537"
+      ]
+    },
+    "page": 3,
+    "ref_price_eur_ht": 145.0
+  },
+  {
+    "section": "FAC&SPERA",
+    "producer": "M. Chapoutier",
+    "appellation": "ERMITAGE",
+    "cuvee": "Le Pavillon",
+    "color": "rouge",
+    "vintages": [
+      2009,
+      2014,
+      2015
+    ],
+    "prices": {
+      "2009": [
+        "268",
+        "539",
+        "Epuisé",
+        "2209"
+      ],
+      "2014": [
+        "256",
+        "515",
+        "1054",
+        "2113"
+      ],
+      "2015": [
+        "259",
+        "521",
+        "1066",
+        "2137"
+      ]
+    },
+    "page": 3,
+    "ref_price_eur_ht": 259.0
+  },
+  {
+    "section": "FAC&SPERA",
+    "producer": "M. Chapoutier",
+    "appellation": "ERMITAGE",
+    "cuvee": "Les Greffieux",
+    "color": "rouge",
+    "vintages": [
+      2007,
+      2015
+    ],
+    "prices": {
+      "2007": [
+        "102",
+        "Epuisé",
+        "438",
+        "881"
+      ],
+      "2015": [
+        "102",
+        "207",
+        "438",
+        "881"
+      ]
+    },
+    "page": 3,
+    "ref_price_eur_ht": 102.0
+  },
+  {
+    "section": "FAC&SPERA",
+    "producer": "M. Chapoutier",
+    "appellation": "SAINT-JOSEPH",
+    "cuvee": "Le Clos",
+    "color": "rouge",
+    "vintages": [
+      2019,
+      2021
+    ],
+    "prices": {
+      "2019": [
+        "84",
+        "171",
+        "366",
+        "737"
+      ],
+      "2021": [
+        "84",
+        "171",
+        "366",
+        "737"
+      ]
+    },
+    "page": 3,
+    "ref_price_eur_ht": 84.0
+  },
+  {
+    "section": "FAC&SPERA",
+    "producer": "M. Chapoutier",
+    "appellation": "SAINT-JOSEPH",
+    "cuvee": "Les Granits",
+    "color": "rouge",
+    "vintages": [
+      2021,
+      2022
+    ],
+    "prices": {
+      "2021": [
+        "44",
+        "91",
+        "206",
+        "417"
+      ],
+      "2022": [
+        "44",
+        "91",
+        "206",
+        "Epuisé"
+      ]
+    },
+    "page": 3,
+    "ref_price_eur_ht": 44.0
+  },
+  {
+    "section": "FAC&SPERA",
+    "producer": "M. Chapoutier",
+    "appellation": "CONDRIEU",
+    "cuvee": "Coteau de Chery",
+    "color": "blanc",
+    "vintages": [
+      2020,
+      2022
+    ],
+    "prices": {
+      "2020": [
+        "109",
+        "221",
+        "-",
+        "-"
+      ],
+      "2022": [
+        "108",
+        "219",
+        "-",
+        "-"
+      ]
+    },
+    "page": 4,
+    "ref_price_eur_ht": 108.0
+  },
+  {
+    "section": "FAC&SPERA",
+    "producer": "M. Chapoutier",
+    "appellation": "ERMITAGE",
+    "cuvee": "De l'Orée",
+    "color": "blanc",
+    "vintages": [
+      2011,
+      2015,
+      2017
+    ],
+    "prices": {
+      "2011": [
+        "132",
+        "267",
+        "558",
+        "1121"
+      ],
+      "2015": [
+        "143",
+        "289",
+        "602",
+        "1209"
+      ],
+      "2017": [
+        "132",
+        "267",
+        "558",
+        "1121"
+      ]
+    },
+    "page": 4,
+    "ref_price_eur_ht": 132.0
+  },
+  {
+    "section": "FAC&SPERA",
+    "producer": "M. Chapoutier",
+    "appellation": "ERMITAGE",
+    "cuvee": "L'Ermite",
+    "color": "blanc",
+    "vintages": [
+      2017,
+      2018
+    ],
+    "prices": {
+      "2017": [
+        "443",
+        "889",
+        "1802",
+        "3609"
+      ],
+      "2018": [
+        "448",
+        "899",
+        "1822",
+        "3649"
+      ]
+    },
+    "page": 4,
+    "ref_price_eur_ht": 448.0
+  },
+  {
+    "section": "FAC&SPERA",
+    "producer": "M. Chapoutier",
+    "appellation": "ERMITAGE",
+    "cuvee": "Le Méal",
+    "color": "blanc",
+    "vintages": [
+      2001,
+      2012,
+      2018
+    ],
+    "prices": {
+      "2001": [
+        "121",
+        "245",
+        "514",
+        "1033"
+      ],
+      "2012": [
+        "120",
+        "243",
+        "510",
+        "1025"
+      ],
+      "2018": [
+        "131",
+        "265",
+        "554",
+        "1113"
+      ]
+    },
+    "page": 4,
+    "ref_price_eur_ht": 131.0
+  },
+  {
+    "section": "FAC&SPERA",
+    "producer": "M. Chapoutier",
+    "appellation": "ERMITAGE",
+    "cuvee": "Vin de Paille",
+    "color": "blanc",
+    "vintages": [
+      1999,
+      2001,
+      2007
+    ],
+    "prices": {
+      "1999": [
+        "55",
+        "221",
+        "466",
+        "937"
+      ],
+      "2001": [
+        "55",
+        "219",
+        "Epuisé",
+        "Epuisé"
+      ],
+      "2007": [
+        "58",
+        "233",
+        "490",
+        "985"
+      ]
+    },
+    "page": 4,
+    "ref_price_eur_ht": 58.0
+  },
+  {
+    "section": "FAC&SPERA",
+    "producer": "M. Chapoutier",
+    "appellation": "SAINT-JOSEPH",
+    "cuvee": "Les Granits",
+    "color": "blanc",
+    "vintages": [
+      2021,
+      2022
+    ],
+    "prices": {
+      "2021": [
+        "42",
+        "87",
+        "198",
+        "401"
+      ],
+      "2022": [
+        "42",
+        "87",
+        "198",
+        "401"
+      ]
+    },
+    "page": 4,
+    "ref_price_eur_ht": 42.0
+  },
+  {
+    "section": "EXCELLENCE",
+    "producer": "M. Chapoutier",
+    "appellation": "CHÂTEAUNEUF-DU-PAPE",
+    "cuvee": "NOUVEAU !",
+    "color": "rouge",
+    "vintages": [
+      2024
+    ],
+    "prices": {
+      "2024": [
+        "25,55",
+        "-",
+        "24,60",
+        "-",
+        "24,05",
+        "-"
+      ]
+    },
+    "page": 5,
+    "ref_price_eur_ht": 25.55
+  },
+  {
+    "section": "EXCELLENCE",
+    "producer": "M. Chapoutier",
+    "appellation": "CHÂTEAUNEUF-DU-PAPE",
+    "cuvee": "Pie VI",
+    "color": "rouge",
+    "vintages": [
+      2021,
+      2022,
+      2023,
+      2024
+    ],
+    "prices": {
+      "2021": [
+        "Epuisé",
+        "52,50",
+        "Epuisé",
+        "50,70",
+        "Epuisé",
+        "49,55"
+      ],
+      "2022": [
+        "Epuisé",
+        "52,50",
+        "Epuisé",
+        "50,70",
+        "Epuisé",
+        "49,55"
+      ],
+      "2023": [
+        "25,55",
+        "52,50",
+        "24,60",
+        "50,70",
+        "24,05",
+        "49,55"
+      ],
+      "2024": [
+        "25,55",
+        "52,50",
+        "24,60",
+        "50,70",
+        "24,05",
+        "49,55"
+      ]
+    },
+    "page": 5,
+    "ref_price_eur_ht": 25.55
+  },
+  {
+    "section": "EXCELLENCE",
+    "producer": "M. Chapoutier",
+    "appellation": "CHÂTEAUNEUF-DU-PAPE",
+    "cuvee": "Serus Syrah",
+    "color": "rouge",
+    "vintages": [
+      2022,
+      2023
+    ],
+    "prices": {
+      "2022": [
+        "25,55",
+        "-",
+        "24,60",
+        "-",
+        "24,05",
+        "-"
+      ],
+      "2023": [
+        "25,55",
+        "-",
+        "24,60",
+        "-",
+        "24,05",
+        "-"
+      ]
+    },
+    "page": 5,
+    "ref_price_eur_ht": 25.55
+  },
+  {
+    "section": "EXCELLENCE",
+    "producer": "M. Chapoutier",
+    "appellation": "CORNAS",
+    "cuvee": "Temenos",
+    "color": "rouge",
+    "vintages": [
+      2021,
+      2022,
+      2023
+    ],
+    "prices": {
+      "2021": [
+        "Epuisé",
+        "55,15",
+        "Epuisé",
+        "53,25",
+        "Epuisé",
+        "52,00"
+      ],
+      "2022": [
+        "26,85",
+        "55,15",
+        "25,90",
+        "53,25",
+        "25,25",
+        "52,00"
+      ],
+      "2023": [
+        "26,85",
+        "55,15",
+        "25,90",
+        "53,25",
+        "25,25",
+        "52,00"
+      ]
+    },
+    "page": 5,
+    "ref_price_eur_ht": 26.85
+  },
+  {
+    "section": "EXCELLENCE",
+    "producer": "M. Chapoutier",
+    "appellation": "CROZES-HERMITAGE",
+    "cuvee": "NOUVEAU !",
+    "color": "blanc",
+    "vintages": [
+      2025
+    ],
+    "prices": {
+      "2025": [
+        "17,10",
+        "-",
+        "16,50",
+        "-",
+        "16,10",
+        "-"
+      ]
+    },
+    "page": 5,
+    "ref_price_eur_ht": 17.1
+  },
+  {
+    "section": "EXCELLENCE",
+    "producer": "M. Chapoutier",
+    "appellation": "CROZES-HERMITAGE",
+    "cuvee": "Sicamor",
+    "color": "rouge",
+    "vintages": [
+      2021,
+      2023,
+      2024
+    ],
+    "prices": {
+      "2021": [
+        "17,10",
+        "-",
+        "16,50",
+        "-",
+        "16,10",
+        "-"
+      ],
+      "2023": [
+        "17,10",
+        "-",
+        "16,50",
+        "-",
+        "16,10",
+        "-"
+      ],
+      "2024": [
+        "17,10",
+        "-",
+        "16,50",
+        "-",
+        "16,10",
+        "-"
+      ]
+    },
+    "page": 5,
+    "ref_price_eur_ht": 17.1
+  },
+  {
+    "section": "EXCELLENCE",
+    "producer": "M. Chapoutier",
+    "appellation": "CROZES-HERMITAGE",
+    "cuvee": "Sicamor",
+    "color": "blanc",
+    "vintages": [
+      2024
+    ],
+    "prices": {
+      "2024": [
+        "17,10",
+        "-",
+        "16,50",
+        "-",
+        "16,10",
+        "-"
+      ]
+    },
+    "page": 5,
+    "ref_price_eur_ht": 17.1
+  },
+  {
+    "section": "EXCELLENCE",
+    "producer": "M. Chapoutier",
+    "appellation": "CÔTE-RÔTIE",
+    "cuvee": "Quatuor",
+    "color": "rouge",
+    "vintages": [
+      2022,
+      2023
+    ],
+    "prices": {
+      "2022": [
+        "47,50",
+        "96,50",
+        "45,85",
+        "93,15",
+        "44,70",
+        "90,90"
+      ],
+      "2023": [
+        "47,50",
+        "96,50",
+        "45,85",
+        "93,15",
+        "44,70",
+        "90,90"
+      ]
+    },
+    "page": 5,
+    "ref_price_eur_ht": 47.5
+  },
+  {
+    "section": "EXCELLENCE",
+    "producer": "M. Chapoutier",
+    "appellation": "HERMITAGE",
+    "cuvee": "Chante Alouette",
+    "color": "blanc",
+    "vintages": [
+      2019,
+      2021,
+      2022
+    ],
+    "prices": {
+      "2019": [
+        "Epuisé",
+        "72,60",
+        "Epuisé",
+        "70,10",
+        "Epuisé",
+        "68,40"
+      ],
+      "2021": [
+        "35,55",
+        "72,60",
+        "34,30",
+        "70,10",
+        "33,45",
+        "68,40"
+      ],
+      "2022": [
+        "35,55",
+        "72,60",
+        "34,30",
+        "70,10",
+        "33,45",
+        "68,40"
+      ]
+    },
+    "page": 5,
+    "ref_price_eur_ht": 35.55
+  },
+  {
+    "section": "EXCELLENCE",
+    "producer": "M. Chapoutier",
+    "appellation": "HERMITAGE",
+    "cuvee": "EN CAISSE BOIS",
+    "color": "rouge",
+    "vintages": [
+      2022
+    ],
+    "prices": {
+      "2022": [
+        "41,30",
+        "-",
+        "39,90",
+        "-",
+        "38,95",
+        "-"
+      ]
+    },
+    "page": 5,
+    "ref_price_eur_ht": 41.3
+  },
+  {
+    "section": "EXCELLENCE",
+    "producer": "M. Chapoutier",
+    "appellation": "HERMITAGE",
+    "cuvee": "EN CAISSE BOIS",
+    "color": "blanc",
+    "vintages": [
+      2022
+    ],
+    "prices": {
+      "2022": [
+        "36,95",
+        "-",
+        "35,70",
+        "-",
+        "34,85",
+        "-"
+      ]
+    },
+    "page": 5,
+    "ref_price_eur_ht": 36.95
+  },
+  {
+    "section": "EXCELLENCE",
+    "producer": "M. Chapoutier",
+    "appellation": "HERMITAGE",
+    "cuvee": "Monier de la Sizeranne",
+    "color": "rouge",
+    "vintages": [
+      2014,
+      2015,
+      2017,
+      2018,
+      2019,
+      2020,
+      2021,
+      2022
+    ],
+    "prices": {
+      "2014": [
+        "Epuisé",
+        "81,30",
+        "Epuisé",
+        "78,50",
+        "Epuisé",
+        "76,60"
+      ],
+      "2015": [
+        "Epuisé",
+        "81,30",
+        "Epuisé",
+        "78,50",
+        "Epuisé",
+        "76,60"
+      ],
+      "2017": [
+        "Epuisé",
+        "81,30",
+        "Epuisé",
+        "78,50",
+        "Epuisé",
+        "76,60"
+      ],
+      "2018": [
+        "Epuisé",
+        "81,30",
+        "Epuisé",
+        "78,50",
+        "Epuisé",
+        "76,60"
+      ],
+      "2019": [
+        "Epuisé",
+        "81,30",
+        "Epuisé",
+        "78,50",
+        "Epuisé",
+        "76,60"
+      ],
+      "2020": [
+        "Epuisé",
+        "81,30",
+        "Epuisé",
+        "78,50",
+        "Epuisé",
+        "76,60"
+      ],
+      "2021": [
+        "39,90",
+        "81,30",
+        "38,50",
+        "78,50",
+        "37,55",
+        "76,60"
+      ],
+      "2022": [
+        "39,90",
+        "81,30",
+        "38,50",
+        "78,50",
+        "37,55",
+        "76,60"
+      ]
+    },
+    "page": 5,
+    "ref_price_eur_ht": 39.9
+  },
+  {
+    "section": "EXCELLENCE",
+    "producer": "M. Chapoutier",
+    "appellation": "SAINT-PÉRAY",
+    "cuvee": "Lieu Dit Hongrie",
+    "color": "blanc",
+    "vintages": [
+      2020,
+      2021
+    ],
+    "prices": {
+      "2020": [
+        "24,75",
+        "-",
+        "23,85",
+        "-",
+        "23,30",
+        "-"
+      ],
+      "2021": [
+        "24,75",
+        "-",
+        "23,85",
+        "-",
+        "23,30",
+        "-"
+      ]
+    },
+    "page": 5,
+    "ref_price_eur_ht": 24.75
+  },
+  {
+    "section": "PRESTIGE",
+    "producer": "M. Chapoutier",
+    "appellation": "CHÂTEAUNEUF-DU-PAPE",
+    "cuvee": "La Bernardine",
+    "color": "rouge",
+    "vintages": [
+      2022,
+      2023,
+      2024
+    ],
+    "prices": {
+      "2022": [
+        "-",
+        "Epuisé",
+        "43,80",
+        "-",
+        "Epuisé",
+        "42,30",
+        "-",
+        "Epuisé",
+        "41,30"
+      ],
+      "2023": [
+        "-",
+        "21,15",
+        "43,80",
+        "-",
+        "20,40",
+        "42,30",
+        "-",
+        "19,90",
+        "41,30"
+      ],
+      "2024": [
+        "-",
+        "21,15",
+        "43,80",
+        "-",
+        "20,40",
+        "42,30",
+        "-",
+        "19,90",
+        "41,30"
+      ]
+    },
+    "page": 6,
+    "ref_price_eur_ht": 21.15
+  },
+  {
+    "section": "PRESTIGE",
+    "producer": "M. Chapoutier",
+    "appellation": "CHÂTEAUNEUF-DU-PAPE",
+    "cuvee": "La Bernardine",
+    "color": "blanc",
+    "vintages": [
+      2024,
+      2025
+    ],
+    "prices": {
+      "2024": [
+        "-",
+        "25,25",
+        "-",
+        "-",
+        "24,35",
+        "-",
+        "-",
+        "23,75",
+        "-"
+      ],
+      "2025": [
+        "-",
+        "25,25",
+        "-",
+        "-",
+        "24,35",
+        "-",
+        "-",
+        "23,75",
+        "-"
+      ]
+    },
+    "page": 6,
+    "ref_price_eur_ht": 25.25
+  },
+  {
+    "section": "PRESTIGE",
+    "producer": "M. Chapoutier",
+    "appellation": "CONDRIEU",
+    "cuvee": "Invitare",
+    "color": "blanc",
+    "vintages": [
+      2023,
+      2024
+    ],
+    "prices": {
+      "2023": [
+        "-",
+        "25,15",
+        "Epuisé",
+        "-",
+        "24,25",
+        "Epuisé",
+        "-",
+        "23,65",
+        "Epuisé"
+      ],
+      "2024": [
+        "-",
+        "25,15",
+        "51,75",
+        "-",
+        "24,25",
+        "49,95",
+        "-",
+        "23,65",
+        "48,80"
+      ]
+    },
+    "page": 6,
+    "ref_price_eur_ht": 25.15
+  },
+  {
+    "section": "PRESTIGE",
+    "producer": "M. Chapoutier",
+    "appellation": "CORNAS",
+    "cuvee": "Les Arènes",
+    "color": "rouge",
+    "vintages": [
+      2022,
+      2023
+    ],
+    "prices": {
+      "2022": [
+        "-",
+        "24,60",
+        "50,70",
+        "-",
+        "23,75",
+        "49,00",
+        "-",
+        "23,15",
+        "47,80"
+      ],
+      "2023": [
+        "-",
+        "24,60",
+        "50,70",
+        "-",
+        "23,75",
+        "49,00",
+        "-",
+        "23,15",
+        "47,80"
+      ]
+    },
+    "page": 6,
+    "ref_price_eur_ht": 24.6
+  },
+  {
+    "section": "PRESTIGE",
+    "producer": "M. Chapoutier",
+    "appellation": "CROZES-HERMITAGE",
+    "cuvee": "Les Meysonniers",
+    "color": "rouge",
+    "vintages": [
+      2023,
+      2024
+    ],
+    "prices": {
+      "2023": [
+        "6,10",
+        "11,20",
+        "23,85",
+        "5,90",
+        "10,80",
+        "23,05",
+        "5,80",
+        "10,55",
+        "22,55"
+      ],
+      "2024": [
+        "6,10",
+        "11,20",
+        "23,85",
+        "5,90",
+        "10,80",
+        "23,05",
+        "5,80",
+        "10,55",
+        "22,55"
+      ]
+    },
+    "page": 6,
+    "ref_price_eur_ht": 6.1
+  },
+  {
+    "section": "PRESTIGE",
+    "producer": "M. Chapoutier",
+    "appellation": "CROZES-HERMITAGE",
+    "cuvee": "Les Meysonniers",
+    "color": "blanc",
+    "vintages": [
+      2023,
+      2024,
+      2025
+    ],
+    "prices": {
+      "2023": [
+        "-",
+        "Epuisé",
+        "27,15",
+        "-",
+        "Epuisé",
+        "26,25",
+        "-",
+        "Epuisé",
+        "25,65"
+      ],
+      "2024": [
+        "-",
+        "12,85",
+        "27,15",
+        "-",
+        "12,40",
+        "26,25",
+        "-",
+        "12,10",
+        "25,65"
+      ],
+      "2025": [
+        "-",
+        "12,85",
+        "27,15",
+        "-",
+        "12,40",
+        "26,25",
+        "-",
+        "12,10",
+        "25,65"
+      ]
+    },
+    "page": 6,
+    "ref_price_eur_ht": 12.85
+  },
+  {
+    "section": "PRESTIGE",
+    "producer": "M. Chapoutier",
+    "appellation": "CÔTE-RÔTIE",
+    "cuvee": "Les Bécasses",
+    "color": "rouge",
+    "vintages": [
+      2022,
+      2023
+    ],
+    "prices": {
+      "2022": [
+        "-",
+        "40,20",
+        "81,90",
+        "-",
+        "38,80",
+        "79,05",
+        "-",
+        "37,85",
+        "77,15"
+      ],
+      "2023": [
+        "-",
+        "40,20",
+        "81,90",
+        "-",
+        "38,80",
+        "79,05",
+        "-",
+        "37,85",
+        "77,15"
+      ]
+    },
+    "page": 6,
+    "ref_price_eur_ht": 40.2
+  },
+  {
+    "section": "PRESTIGE",
+    "producer": "M. Chapoutier",
+    "appellation": "SAINT-JOSEPH",
+    "cuvee": "Les Granilites",
+    "color": "rouge",
+    "vintages": [
+      2022,
+      2023,
+      2024
+    ],
+    "prices": {
+      "2022": [
+        "-",
+        "Epuisé",
+        "37,55",
+        "-",
+        "Epuisé",
+        "36,30",
+        "-",
+        "Epuisé",
+        "35,45"
+      ],
+      "2023": [
+        "-",
+        "18,05",
+        "37,55",
+        "-",
+        "17,40",
+        "36,30",
+        "-",
+        "17,00",
+        "35,45"
+      ],
+      "2024": [
+        "-",
+        "18,05",
+        "37,55",
+        "-",
+        "17,40",
+        "36,30",
+        "-",
+        "17,00",
+        "35,45"
+      ]
+    },
+    "page": 6,
+    "ref_price_eur_ht": 18.05
+  },
+  {
+    "section": "PRESTIGE",
+    "producer": "M. Chapoutier",
+    "appellation": "SAINT-JOSEPH",
+    "cuvee": "Les Granilites",
+    "color": "blanc",
+    "vintages": [
+      2022,
+      2023,
+      2024
+    ],
+    "prices": {
+      "2022": [
+        "-",
+        "20,65",
+        "-",
+        "-",
+        "19,90",
+        "-",
+        "-",
+        "19,45",
+        "-"
+      ],
+      "2023": [
+        "-",
+        "20,65",
+        "-",
+        "-",
+        "19,90",
+        "-",
+        "-",
+        "19,45",
+        "-"
+      ],
+      "2024": [
+        "-",
+        "20,65",
+        "42,80",
+        "-",
+        "19,90",
+        "41,30",
+        "-",
+        "19,45",
+        "40,35"
+      ]
+    },
+    "page": 6,
+    "ref_price_eur_ht": 20.65
+  },
+  {
+    "section": "PRESTIGE",
+    "producer": "M. Chapoutier",
+    "appellation": "SAINT-PERAY",
+    "cuvee": "Haut Chamblard",
+    "color": "blanc",
+    "vintages": [
+      2023,
+      2024
+    ],
+    "prices": {
+      "2023": [
+        "-",
+        "20,30",
+        "-",
+        "-",
+        "19,60",
+        "-",
+        "-",
+        "19,10",
+        "-"
+      ],
+      "2024": [
+        "-",
+        "20,30",
+        "-",
+        "-",
+        "19,60",
+        "-",
+        "-",
+        "19,10",
+        "-"
+      ]
+    },
+    "page": 6,
+    "ref_price_eur_ht": 20.3
+  },
+  {
+    "section": "TRADITION",
+    "producer": "M. Chapoutier",
+    "appellation": "COSTIÈRES DE NÎMES",
+    "cuvee": "La Ciboise",
+    "color": "rouge",
+    "vintages": [
+      2024,
+      2025
+    ],
+    "prices": {
+      "2024": [
+        "-",
+        "3,90",
+        "-",
+        "-",
+        "3,75",
+        "-",
+        "-",
+        "3,65",
+        "-"
+      ],
+      "2025": [
+        "-",
+        "3,90",
+        "-",
+        "-",
+        "3,75",
+        "-",
+        "-",
+        "3,65",
+        "-"
+      ]
+    },
+    "page": 7,
+    "ref_price_eur_ht": 3.9
+  },
+  {
+    "section": "TRADITION",
+    "producer": "M. Chapoutier",
+    "appellation": "CROZES-HERMITAGE",
+    "cuvee": "Petite Ruche",
+    "color": "rouge",
+    "vintages": [
+      2023,
+      2024
+    ],
+    "prices": {
+      "2023": [
+        "5,55",
+        "10,10",
+        "21,70",
+        "5,40",
+        "9,75",
+        "21,00",
+        "5,25",
+        "9,50",
+        "20,50"
+      ],
+      "2024": [
+        "5,55",
+        "10,10",
+        "21,70",
+        "5,40",
+        "9,75",
+        "21,00",
+        "5,25",
+        "9,50",
+        "20,50"
+      ]
+    },
+    "page": 7,
+    "ref_price_eur_ht": 5.55
+  },
+  {
+    "section": "TRADITION",
+    "producer": "M. Chapoutier",
+    "appellation": "CÔTES-DU-RHÔNE",
+    "cuvee": "Belleruche",
+    "color": "rouge",
+    "vintages": [
+      2024,
+      2025
+    ],
+    "prices": {
+      "2024": [
+        "3,15",
+        "5,30",
+        "12,05",
+        "3,05",
+        "5,10",
+        "11,70",
+        "3,00",
+        "5,00",
+        "11,45"
+      ],
+      "2025": [
+        "3,15",
+        "5,30",
+        "12,05",
+        "3,05",
+        "5,10",
+        "11,70",
+        "3,00",
+        "5,00",
+        "11,45"
+      ]
+    },
+    "page": 7,
+    "ref_price_eur_ht": 3.15
+  },
+  {
+    "section": "TRADITION",
+    "producer": "M. Chapoutier",
+    "appellation": "CÔTES-DU-RHÔNE VILLAGES",
+    "cuvee": "SIGNARGUES",
+    "color": "rouge",
+    "vintages": [
+      2023,
+      2024
+    ],
+    "prices": {
+      "2023": [
+        "-",
+        "6,20",
+        "-",
+        "-",
+        "6,00",
+        "-",
+        "-",
+        "5,85",
+        "-"
+      ],
+      "2024": [
+        "-",
+        "6,20",
+        "-",
+        "-",
+        "6,00",
+        "-",
+        "-",
+        "5,85",
+        "-"
+      ]
+    },
+    "page": 7,
+    "ref_price_eur_ht": 6.2
+  },
+  {
+    "section": "TRADITION",
+    "producer": "M. Chapoutier",
+    "appellation": "GIGONDAS",
+    "cuvee": "Les Jocasses",
+    "color": "rouge",
+    "vintages": [
+      2024,
+      2025
+    ],
+    "prices": {
+      "2024": [
+        "-",
+        "14,25",
+        "-",
+        "-",
+        "13,75",
+        "-",
+        "-",
+        "13,40",
+        "-"
+      ],
+      "2025": [
+        "-",
+        "14,25",
+        "-",
+        "-",
+        "13,75",
+        "-",
+        "-",
+        "13,40",
+        "-"
+      ]
+    },
+    "page": 7,
+    "ref_price_eur_ht": 14.25
+  },
+  {
+    "section": "TRADITION",
+    "producer": "M. Chapoutier",
+    "appellation": "LUBERON",
+    "cuvee": "La Ciboise",
+    "color": "rouge",
+    "vintages": [
+      2024,
+      2025
+    ],
+    "prices": {
+      "2024": [
+        "-",
+        "4,00",
+        "-",
+        "-",
+        "3,85",
+        "-",
+        "-",
+        "3,75",
+        "-"
+      ],
+      "2025": [
+        "-",
+        "4,00",
+        "-",
+        "-",
+        "3,85",
+        "-",
+        "-",
+        "3,75",
+        "-"
+      ]
+    },
+    "page": 7,
+    "ref_price_eur_ht": 4.0
+  },
+  {
+    "section": "TRADITION",
+    "producer": "M. Chapoutier",
+    "appellation": "RASTEAU",
+    "cuvee": "Les Gadilles",
+    "color": "rouge",
+    "vintages": [
+      2024,
+      2025
+    ],
+    "prices": {
+      "2024": [
+        "-",
+        "7,70",
+        "-",
+        "-",
+        "7,40",
+        "-",
+        "-",
+        "7,25",
+        "-"
+      ],
+      "2025": [
+        "-",
+        "7,70",
+        "-",
+        "-",
+        "7,40",
+        "-",
+        "-",
+        "7,25",
+        "-"
+      ]
+    },
+    "page": 7,
+    "ref_price_eur_ht": 7.7
+  },
+  {
+    "section": "TRADITION",
+    "producer": "M. Chapoutier",
+    "appellation": "SAINT-JOSEPH",
+    "cuvee": "Deschants",
+    "color": "rouge",
+    "vintages": [
+      2023,
+      2024
+    ],
+    "prices": {
+      "2023": [
+        "7,40",
+        "13,75",
+        "28,95",
+        "7,15",
+        "13,25",
+        "28,00",
+        "7,00",
+        "12,95",
+        "27,35"
+      ],
+      "2024": [
+        "7,40",
+        "13,75",
+        "28,95",
+        "7,15",
+        "13,25",
+        "28,00",
+        "7,00",
+        "12,95",
+        "27,35"
+      ]
+    },
+    "page": 7,
+    "ref_price_eur_ht": 7.4
+  },
+  {
+    "section": "TRADITION",
+    "producer": "M. Chapoutier",
+    "appellation": "VACQUEYRAS",
+    "cuvee": "Avarum",
+    "color": "rouge",
+    "vintages": [
+      2024,
+      2025
+    ],
+    "prices": {
+      "2024": [
+        "-",
+        "10,60",
+        "-",
+        "-",
+        "10,25",
+        "-",
+        "-",
+        "10,00",
+        "-"
+      ],
+      "2025": [
+        "-",
+        "10,60",
+        "-",
+        "-",
+        "10,25",
+        "-",
+        "-",
+        "10,00",
+        "-"
+      ]
+    },
+    "page": 7,
+    "ref_price_eur_ht": 10.6
+  },
+  {
+    "section": "TRADITION",
+    "producer": "M. Chapoutier",
+    "appellation": "CHÂTEAUNEUF-DU-PAPE",
+    "cuvee": "Collection Bio Facélie",
+    "color": "rouge",
+    "vintages": [
+      2020,
+      2021
+    ],
+    "prices": {
+      "2020": [
+        "-",
+        "21,90",
+        "-",
+        "-",
+        "21,15",
+        "-",
+        "-",
+        "20,60",
+        "-"
+      ],
+      "2021": [
+        "-",
+        "21,90",
+        "-",
+        "-",
+        "21,15",
+        "-",
+        "-",
+        "20,60",
+        "-"
+      ]
+    },
+    "page": 8,
+    "ref_price_eur_ht": 21.9
+  },
+  {
+    "section": "TRADITION",
+    "producer": "M. Chapoutier",
+    "appellation": "CORNAS",
+    "cuvee": "Collection Bio - Cerasinus",
+    "color": "rouge",
+    "vintages": [
+      2023
+    ],
+    "prices": {
+      "2023": [
+        "-",
+        "26,05",
+        "-",
+        "-",
+        "25,10",
+        "-",
+        "-",
+        "24,50",
+        "-"
+      ]
+    },
+    "page": 8,
+    "ref_price_eur_ht": 26.05
+  },
+  {
+    "section": "TRADITION",
+    "producer": "M. Chapoutier",
+    "appellation": "COSTIERES-DE-NIMES",
+    "cuvee": "Collection Bio Areca",
+    "color": "rouge",
+    "vintages": [
+      2024,
+      2025
+    ],
+    "prices": {
+      "2024": [
+        "-",
+        "4,60",
+        "-",
+        "-",
+        "4,45",
+        "-",
+        "-",
+        "4,35",
+        "-"
+      ],
+      "2025": [
+        "-",
+        "4,60",
+        "-",
+        "-",
+        "4,45",
+        "-",
+        "-",
+        "4,35",
+        "-"
+      ]
+    },
+    "page": 8,
+    "ref_price_eur_ht": 4.6
+  },
+  {
+    "section": "TRADITION",
+    "producer": "M. Chapoutier",
+    "appellation": "CROZES-HERMITAGE",
+    "cuvee": "Petite Ruche",
+    "color": "blanc",
+    "vintages": [
+      2023,
+      2024
+    ],
+    "prices": {
+      "2023": [
+        "-",
+        "10,95",
+        "-",
+        "-",
+        "10,60",
+        "-",
+        "-",
+        "10,30",
+        "-"
+      ],
+      "2024": [
+        "-",
+        "10,95",
+        "-",
+        "-",
+        "10,60",
+        "-",
+        "-",
+        "10,30",
+        "-"
+      ]
+    },
+    "page": 8,
+    "ref_price_eur_ht": 10.95
+  },
+  {
+    "section": "TRADITION",
+    "producer": "M. Chapoutier",
+    "appellation": "CÔTES-DU-RHÔNE",
+    "cuvee": "Belleruche",
+    "color": "blanc",
+    "vintages": [
+      2023,
+      2024,
+      2025
+    ],
+    "prices": {
+      "2023": [
+        "Epuisé",
+        "Epuisé",
+        "12,40",
+        "Epuisé",
+        "Epuisé",
+        "12,00",
+        "Epuisé",
+        "Epuisé",
+        "11,75"
+      ],
+      "2024": [
+        "3,25",
+        "Epuisé",
+        "12,40",
+        "3,15",
+        "Epuisé",
+        "12,00",
+        "3,10",
+        "Epuisé",
+        "11,75"
+      ],
+      "2025": [
+        "3,25",
+        "5,45",
+        "12,40",
+        "3,15",
+        "5,25",
+        "12,00",
+        "3,10",
+        "5,15",
+        "11,75"
+      ]
+    },
+    "page": 8,
+    "ref_price_eur_ht": 3.25
+  },
+  {
+    "section": "TRADITION",
+    "producer": "M. Chapoutier",
+    "appellation": "CÔTES-DU-RHÔNE",
+    "cuvee": "Belleruche",
+    "color": "rosé",
+    "vintages": [
+      2024,
+      2025
+    ],
+    "prices": {
+      "2024": [
+        "-",
+        "5,20",
+        "-",
+        "-",
+        "5,00",
+        "-",
+        "-",
+        "4,90",
+        "-"
+      ],
+      "2025": [
+        "-",
+        "5,20",
+        "-",
+        "-",
+        "5,00",
+        "-",
+        "-",
+        "4,90",
+        "-"
+      ]
+    },
+    "page": 8,
+    "ref_price_eur_ht": 5.2
+  },
+  {
+    "section": "TRADITION",
+    "producer": "M. Chapoutier",
+    "appellation": "CÔTES-DU-RHÔNE",
+    "cuvee": "Collection Bio Adunatio",
+    "color": "rouge",
+    "vintages": [
+      2024
+    ],
+    "prices": {
+      "2024": [
+        "-",
+        "5,65",
+        "-",
+        "-",
+        "5,45",
+        "-",
+        "-",
+        "5,30",
+        "-"
+      ]
+    },
+    "page": 8,
+    "ref_price_eur_ht": 5.65
+  },
+  {
+    "section": "TRADITION",
+    "producer": "M. Chapoutier",
+    "appellation": "CÔTES-DU-RHÔNE",
+    "cuvee": "Collection Bio Adunatio",
+    "color": "blanc",
+    "vintages": [
+      2024
+    ],
+    "prices": {
+      "2024": [
+        "-",
+        "5,65",
+        "-",
+        "-",
+        "5,45",
+        "-",
+        "-",
+        "5,30",
+        "-"
+      ]
+    },
+    "page": 8,
+    "ref_price_eur_ht": 5.65
+  },
+  {
+    "section": "TRADITION",
+    "producer": "M. Chapoutier",
+    "appellation": "LUBERON",
+    "cuvee": "La Ciboise",
+    "color": "blanc",
+    "vintages": [
+      2025
+    ],
+    "prices": {
+      "2025": [
+        "-",
+        "4,00",
+        "-",
+        "-",
+        "3,85",
+        "-",
+        "-",
+        "3,75",
+        "-"
+      ]
+    },
+    "page": 8,
+    "ref_price_eur_ht": 4.0
+  },
+  {
+    "section": "TRADITION",
+    "producer": "M. Chapoutier",
+    "appellation": "SAINT-JOSEPH",
+    "cuvee": "Deschants",
+    "color": "blanc",
+    "vintages": [
+      2025
+    ],
+    "prices": {
+      "2025": [
+        "-",
+        "13,95",
+        "-",
+        "-",
+        "13,45",
+        "-",
+        "-",
+        "13,15",
+        "-"
+      ]
+    },
+    "page": 8,
+    "ref_price_eur_ht": 13.95
+  },
+  {
+    "section": "TRADITION",
+    "producer": "M. Chapoutier",
+    "appellation": "SAINT-JOSEPH",
+    "cuvee": "Saint-Joseph",
+    "color": "blanc",
+    "vintages": [
+      2024
+    ],
+    "prices": {
+      "2024": [
+        "-",
+        "13,95",
+        "-",
+        "-",
+        "13,45",
+        "-",
+        "-",
+        "13,15",
+        "-"
+      ]
+    },
+    "page": 8,
+    "ref_price_eur_ht": 13.95
+  },
+  {
+    "section": "TRADITION",
+    "producer": "M. Chapoutier",
+    "appellation": "SAINT-PERAY",
+    "cuvee": "Les Tanneurs",
+    "color": "blanc",
+    "vintages": [
+      2024,
+      2025
+    ],
+    "prices": {
+      "2024": [
+        "-",
+        "13,00",
+        "-",
+        "-",
+        "12,55",
+        "-",
+        "-",
+        "12,25",
+        "-"
+      ],
+      "2025": [
+        "-",
+        "13,00",
+        "-",
+        "-",
+        "12,55",
+        "-",
+        "-",
+        "12,25",
+        "-"
+      ]
+    },
+    "page": 8,
+    "ref_price_eur_ht": 13.0
+  },
+  {
+    "section": "TRADITION",
+    "producer": "M. Chapoutier",
+    "appellation": "TAVEL",
+    "cuvee": "Beaurevoir",
+    "color": "rosé",
+    "vintages": [
+      2024,
+      2025
+    ],
+    "prices": {
+      "2024": [
+        "-",
+        "7,10",
+        "-",
+        "-",
+        "6,85",
+        "-",
+        "-",
+        "6,70",
+        "-"
+      ],
+      "2025": [
+        "-",
+        "7,10",
+        "-",
+        "-",
+        "6,85",
+        "-",
+        "-",
+        "6,70",
+        "-"
+      ]
+    },
+    "page": 8,
+    "ref_price_eur_ht": 7.1
+  },
+  {
+    "section": "ALCHIMIE",
+    "producer": "M. Chapoutier",
+    "appellation": "CLAIRETTE DE DIE",
+    "cuvee": "Souffle de Solaure",
+    "color": null,
+    "vintages": [
+      2023
+    ],
+    "prices": {
+      "2023": [
+        "-",
+        "8,00",
+        "-",
+        "-",
+        "7,75",
+        "-",
+        "-",
+        "7,55",
+        "-"
+      ]
+    },
+    "page": 9,
+    "ref_price_eur_ht": 8.0
+  },
+  {
+    "section": "ALCHIMIE",
+    "producer": "M. Chapoutier",
+    "appellation": "CLAIRETTE DE DIE",
+    "cuvee": "Souffle de Solaure",
+    "color": "effervescent",
+    "vintages": [
+      2024
+    ],
+    "prices": {
+      "2024": [
+        "-",
+        "8,00",
+        "-",
+        "-",
+        "7,75",
+        "-",
+        "-",
+        "7,55",
+        "-"
+      ]
+    },
+    "page": 9,
+    "ref_price_eur_ht": 8.0
+  },
+  {
+    "section": "ALCHIMIE",
+    "producer": "M. Chapoutier",
+    "appellation": "COTEAUX DE DIE",
+    "cuvee": "Coteaux De Die",
+    "color": null,
+    "vintages": [
+      2022
+    ],
+    "prices": {
+      "2022": [
+        "-",
+        "9,05",
+        "-",
+        "-",
+        "8,70",
+        "-",
+        "-",
+        "8,50",
+        "-"
+      ]
+    },
+    "page": 9,
+    "ref_price_eur_ht": 9.05
+  },
+  {
+    "section": "ALCHIMIE",
+    "producer": "M. Chapoutier",
+    "appellation": "COTEAUX DE DIE",
+    "cuvee": "Souffle de Solaure",
+    "color": null,
+    "vintages": [
+      2023
+    ],
+    "prices": {
+      "2023": [
+        "-",
+        "9,05",
+        "-",
+        "-",
+        "8,70",
+        "-",
+        "-",
+        "8,50",
+        "-"
+      ]
+    },
+    "page": 9,
+    "ref_price_eur_ht": 9.05
+  },
+  {
+    "section": "ALCHIMIE",
+    "producer": "M. Chapoutier",
+    "appellation": "IGP COLLINES RHODANIENNES",
+    "cuvee": "\"Les Lognards\" Combe Pilate",
+    "color": "doux",
+    "vintages": [
+      2022,
+      2023
+    ],
+    "prices": {
+      "2022": [
+        "-",
+        "9,25",
+        "-",
+        "-",
+        "8,95",
+        "-",
+        "-",
+        "8,70",
+        "-"
+      ],
+      "2023": [
+        "-",
+        "9,25",
+        "-",
+        "-",
+        "8,95",
+        "-",
+        "-",
+        "8,70",
+        "-"
+      ]
+    },
+    "page": 9,
+    "ref_price_eur_ht": 9.25
+  },
+  {
+    "section": "ALCHIMIE",
+    "producer": "M. Chapoutier",
+    "appellation": "IGP COLLINES RHODANIENNES",
+    "cuvee": "Combe Pilate",
+    "color": "doux",
+    "vintages": [
+      2022,
+      2023,
+      2024,
+      2025
+    ],
+    "prices": {
+      "2024": [
+        "-",
+        "9,05",
+        "-",
+        "-",
+        "8,70",
+        "-",
+        "-",
+        "8,50",
+        "-"
+      ],
+      "2025": [
+        "-",
+        "9,05",
+        "-",
+        "-",
+        "8,70",
+        "-",
+        "-",
+        "8,50",
+        "-"
+      ],
+      "2022": [
+        "9,05",
+        "-",
+        "-",
+        "8,70",
+        "-",
+        "-",
+        "8,50",
+        "-"
+      ],
+      "2023": [
+        "-",
+        "9,05",
+        "-",
+        "-",
+        "8,70",
+        "-",
+        "-",
+        "8,50",
+        "-"
+      ]
+    },
+    "page": 9,
+    "ref_price_eur_ht": 9.05
+  },
+  {
+    "section": "ALCHIMIE",
+    "producer": "M. Chapoutier",
+    "appellation": "VIN DE FRANCE",
+    "cuvee": "\"Esteban\" Combe Pilate",
+    "color": "doux",
+    "vintages": [
+      2017
+    ],
+    "prices": {
+      "2017": [
+        "-",
+        "Epuisé",
+        "21,45",
+        "-",
+        "Epuisé",
+        "20,75",
+        "-",
+        "Epuisé",
+        "20,30"
+      ]
+    },
+    "page": 9,
+    "ref_price_eur_ht": 21.45
+  },
+  {
+    "section": "ALCHIMIE",
+    "producer": "M. Chapoutier",
+    "appellation": "VIN DE FRANCE",
+    "cuvee": "\"Esteban\" Combe Pilate",
+    "color": "effervescent",
+    "vintages": [
+      2022,
+      2023,
+      2024
+    ],
+    "prices": {
+      "2022": [
+        "-",
+        "Epuisé",
+        "21,45",
+        "-",
+        "Epuisé",
+        "20,75",
+        "-",
+        "Epuisé",
+        "20,30"
+      ],
+      "2023": [
+        "-",
+        "10,00",
+        "-",
+        "-",
+        "9,65",
+        "-",
+        "-",
+        "9,40",
+        "-"
+      ],
+      "2024": [
+        "-",
+        "10,00",
+        "-",
+        "-",
+        "9,65",
+        "-",
+        "-",
+        "9,40",
+        "-"
+      ]
+    },
+    "page": 9,
+    "ref_price_eur_ht": 10.0
+  },
+  {
+    "section": "ALCHIMIE",
+    "producer": "M. Chapoutier",
+    "appellation": "VIN DE FRANCE",
+    "cuvee": "Muscat Petits Grains Passerillés",
+    "color": "effervescent",
+    "vintages": [
+      2023
+    ],
+    "prices": {
+      "2023": [
+        "8,90",
+        "-",
+        "-",
+        "8,60",
+        "-",
+        "-",
+        "8,40",
+        "-",
+        "-"
+      ]
+    },
+    "page": 9,
+    "ref_price_eur_ht": 8.9
+  },
+  {
+    "section": "ALCHIMIE",
+    "producer": "M. Chapoutier",
+    "appellation": "VIN DE FRANCE",
+    "cuvee": "Muscat Petits Grains Passerillés",
+    "color": "doux",
+    "vintages": [
+      2024
+    ],
+    "prices": {
+      "2024": [
+        "8,90",
+        "-",
+        "-",
+        "8,60",
+        "-",
+        "-",
+        "8,40",
+        "-",
+        "-"
+      ]
+    },
+    "page": 9,
+    "ref_price_eur_ht": 8.9
+  },
+  {
+    "section": "SPÉCIALITÉS",
+    "producer": "M. Chapoutier",
+    "appellation": "BANYULS Rouge - 50 cl",
+    "cuvee": "\"Terra Vinya\"",
+    "color": "doux",
+    "vintages": [
+      1995,
+      1997,
+      1998,
+      1999,
+      2001
+    ],
+    "prices": {
+      "1995": [
+        "19,30",
+        "18,60",
+        "18,15"
+      ],
+      "1997": [
+        "19,30",
+        "18,60",
+        "18,15"
+      ],
+      "1998": [
+        "19,30",
+        "18,60",
+        "18,15"
+      ],
+      "1999": [
+        "23,55",
+        "22,70",
+        "22,15"
+      ],
+      "2001": [
+        "18,50",
+        "17,85",
+        "17,40"
+      ]
+    },
+    "page": 11,
+    "ref_price_eur_ht": 18.5
+  },
+  {
+    "section": "SPÉCIALITÉS",
+    "producer": "M. Chapoutier",
+    "appellation": "BANYULS TRADITION Rouge - 50 cl",
+    "cuvee": "Banyuls Tradition Rouge - 50 Cl",
+    "color": "doux",
+    "vintages": [
+      2012
+    ],
+    "prices": {
+      "2012": [
+        "8,90",
+        "8,60",
+        "8,40"
+      ]
+    },
+    "page": 11,
+    "ref_price_eur_ht": 8.9
+  },
+  {
+    "section": "SPÉCIALITÉS",
+    "producer": "M. Chapoutier",
+    "appellation": "BANYULS TRADITION Rouge - 50 cl",
+    "cuvee": "RIVESALTES Rouge - 50 cl",
+    "color": "doux",
+    "vintages": [
+      1995
+    ],
+    "prices": {
+      "1995": [
+        "10,55",
+        "10,20",
+        "9,95"
+      ]
+    },
+    "page": 11,
+    "ref_price_eur_ht": 10.55
+  },
+  {
+    "section": "SPÉCIALITÉS",
+    "producer": "M. Chapoutier",
+    "appellation": "SAINT-PERAY EFFERVESCENT",
+    "cuvee": "La Muse de RW",
+    "color": "effervescent",
+    "vintages": [
+      2014,
+      2015,
+      2016,
+      2017,
+      2018,
+      2019
+    ],
+    "prices": {
+      "2014": [
+        "-",
+        "Epuisé",
+        "27,35",
+        "-",
+        "Epuisé",
+        "26,45",
+        "-",
+        "Epuisé",
+        "25,85"
+      ],
+      "2015": [
+        "-",
+        "Epuisé",
+        "27,35",
+        "-",
+        "Epuisé",
+        "26,45",
+        "-",
+        "Epuisé",
+        "25,85"
+      ],
+      "2016": [
+        "-",
+        "Epuisé",
+        "28,85",
+        "-",
+        "Epuisé",
+        "27,85",
+        "-",
+        "Epuisé",
+        "27,25"
+      ],
+      "2017": [
+        "-",
+        "Epuisé",
+        "28,85",
+        "-",
+        "Epuisé",
+        "27,85",
+        "-",
+        "Epuisé",
+        "27,25"
+      ],
+      "2018": [
+        "-",
+        "13,70",
+        "28,85",
+        "-",
+        "13,20",
+        "27,85",
+        "-",
+        "12,90",
+        "27,25"
+      ],
+      "2019": [
+        "-",
+        "13,70",
+        "28,85",
+        "-",
+        "13,20",
+        "27,85",
+        "-",
+        "12,90",
+        "27,25"
+      ]
+    },
+    "page": 11,
+    "ref_price_eur_ht": 13.7
+  },
+  {
+    "section": "SPÉCIALITÉS",
+    "producer": "M. Chapoutier",
+    "appellation": "SAINT-PERAY EFFERVESCENT",
+    "cuvee": "Saint-Peray Effervescent",
+    "color": "effervescent",
+    "vintages": [
+      2013
+    ],
+    "prices": {
+      "2013": [
+        "-",
+        "Epuisé",
+        "27,35",
+        "-",
+        "Epuisé",
+        "26,45",
+        "-",
+        "Epuisé",
+        "25,85"
+      ]
+    },
+    "page": 11,
+    "ref_price_eur_ht": 27.35
+  },
+  {
+    "section": "MATHILDE SÉLECTION",
+    "producer": "Mathilde Chapoutier",
+    "appellation": "CÔTES DE PROVENCE",
+    "cuvee": "Orsuro",
+    "color": null,
+    "vintages": [
+      2024,
+      2025
+    ],
+    "prices": {
+      "2024": [
+        "-",
+        "Epuisé",
+        "14,65",
+        "-",
+        "Epuisé",
+        "14,20",
+        "-",
+        "Epuisé",
+        "13,90"
+      ],
+      "2025": [
+        "-",
+        "6,60",
+        "-",
+        "-",
+        "6,35",
+        "-",
+        "-",
+        "6,20",
+        "-"
+      ]
+    },
+    "page": 12,
+    "ref_price_eur_ht": 6.6
+  },
+  {
+    "section": "MATHILDE SÉLECTION",
+    "producer": "Mathilde Chapoutier",
+    "appellation": "CÔTES DE PROVENCE SAINTE VICTOIRE",
+    "cuvee": "Côtes De Provence Sainte Victoire",
+    "color": null,
+    "vintages": [
+      2024
+    ],
+    "prices": {
+      "2024": [
+        "-",
+        "8,70",
+        "-",
+        "-",
+        "8,40",
+        "-",
+        "-",
+        "8,20",
+        "-"
+      ]
+    },
+    "page": 12,
+    "ref_price_eur_ht": 8.7
+  },
+  {
+    "section": "MATHILDE SÉLECTION",
+    "producer": "Mathilde Chapoutier",
+    "appellation": "CÔTES DE PROVENCE SAINTE VICTOIRE",
+    "cuvee": "Grenache noir Cinsault Syrah",
+    "color": null,
+    "vintages": [
+      2025
+    ],
+    "prices": {
+      "2025": [
+        "-",
+        "8,70",
+        "-",
+        "-",
+        "8,40",
+        "-",
+        "-",
+        "8,20",
+        "-"
+      ]
+    },
+    "page": 12,
+    "ref_price_eur_ht": 8.7
+  },
+  {
+    "section": "MATHILDE SÉLECTION",
+    "producer": "Mathilde Chapoutier",
+    "appellation": "CÔTES-DU-RHÔNE \"Sans sulfites ajoutés\"",
+    "cuvee": "Aurado",
+    "color": null,
+    "vintages": [
+      2023,
+      2024,
+      2025
+    ],
+    "prices": {
+      "2025": [
+        "-",
+        "5,65",
+        "-",
+        "-",
+        "5,45",
+        "-",
+        "-",
+        "5,30",
+        "-"
+      ],
+      "2023": [
+        "-",
+        "4,55",
+        "-",
+        "-",
+        "4,40",
+        "-",
+        "-",
+        "4,30",
+        "-"
+      ],
+      "2024": [
+        "-",
+        "4,55",
+        "-",
+        "-",
+        "4,40",
+        "-",
+        "-",
+        "4,30",
+        "-"
+      ]
+    },
+    "page": 12,
+    "ref_price_eur_ht": 5.65
+  },
+  {
+    "section": "MATHILDE SÉLECTION",
+    "producer": "Mathilde Chapoutier",
+    "appellation": "CÔTES-DU-RHÔNE \"Sans sulfites ajoutés\"",
+    "cuvee": "Côtes-Du-Rhône \"Sans Sulfites Ajoutés\"",
+    "color": null,
+    "vintages": [
+      2024
+    ],
+    "prices": {
+      "2024": [
+        "-",
+        "5,65",
+        "-",
+        "-",
+        "5,45",
+        "-",
+        "-",
+        "5,30",
+        "-"
+      ]
+    },
+    "page": 12,
+    "ref_price_eur_ht": 5.65
+  },
+  {
+    "section": "MATHILDE SÉLECTION",
+    "producer": "Mathilde Chapoutier",
+    "appellation": "RIBERA DEL DUERO",
+    "cuvee": "IRIFI",
+    "color": null,
+    "vintages": [
+      2018,
+      2023
+    ],
+    "prices": {
+      "2018": [
+        "-",
+        "6,60",
+        "-",
+        "-",
+        "6,35",
+        "-",
+        "-",
+        "6,20",
+        "-"
+      ],
+      "2023": [
+        "-",
+        "6,60",
+        "-",
+        "-",
+        "6,35",
+        "-",
+        "-",
+        "6,20",
+        "-"
+      ]
+    },
+    "page": 12,
+    "ref_price_eur_ht": 6.6
+  },
+  {
+    "section": "MATHILDE SÉLECTION",
+    "producer": "Mathilde Chapoutier",
+    "appellation": "RIBERA DEL DUERO",
+    "cuvee": "Melidao",
+    "color": null,
+    "vintages": [
+      2022,
+      2023
+    ],
+    "prices": {
+      "2022": [
+        "-",
+        "9,35",
+        "-",
+        "-",
+        "9,05",
+        "-",
+        "-",
+        "8,80",
+        "-"
+      ],
+      "2023": [
+        "-",
+        "9,35",
+        "-",
+        "-",
+        "9,05",
+        "-",
+        "-",
+        "8,80",
+        "-"
+      ]
+    },
+    "page": 12,
+    "ref_price_eur_ht": 9.35
+  },
+  {
+    "section": "BY MICHEL CHAPOUTIER",
+    "producer": "M. Chapoutier",
+    "appellation": "Vin de France",
+    "cuvee": "Rouge Clair",
+    "color": "rouge",
+    "vintages": [
+      2024,
+      2025
+    ],
+    "prices": {
+      "2024": [
+        "5,75",
+        "5,55",
+        "5,40"
+      ],
+      "2025": [
+        "5,75",
+        "5,55",
+        "5,40"
+      ]
+    },
+    "page": 13,
+    "ref_price_eur_ht": 5.75
+  },
+  {
+    "section": "MARIUS",
+    "producer": "M. Chapoutier",
+    "appellation": "IGP COLLINES RHODANIENNES",
+    "cuvee": "Avenue de la Gare blanc",
+    "color": null,
+    "vintages": [
+      2023,
+      2024
+    ],
+    "prices": {
+      "2023": [
+        "-",
+        "5,65",
+        "-",
+        "-",
+        "5,45",
+        "-",
+        "-",
+        "5,30",
+        "-"
+      ],
+      "2024": [
+        "-",
+        "5,65",
+        "-",
+        "-",
+        "5,45",
+        "-",
+        "-",
+        "5,30",
+        "-"
+      ]
+    },
+    "page": 14,
+    "ref_price_eur_ht": 5.65
+  },
+  {
+    "section": "MARIUS",
+    "producer": "M. Chapoutier",
+    "appellation": "IGP COLLINES RHODANIENNES",
+    "cuvee": "Avenue de la Gare rouge",
+    "color": null,
+    "vintages": [
+      2024,
+      2025
+    ],
+    "prices": {
+      "2024": [
+        "-",
+        "5,65",
+        "-",
+        "-",
+        "5,45",
+        "-",
+        "-",
+        "5,30",
+        "-"
+      ],
+      "2025": [
+        "-",
+        "5,65",
+        "-",
+        "-",
+        "5,45",
+        "-",
+        "-",
+        "5,30",
+        "-"
+      ]
+    },
+    "page": 14,
+    "ref_price_eur_ht": 5.65
+  },
+  {
+    "section": "MARIUS",
+    "producer": "M. Chapoutier",
+    "appellation": "IGP PAYS D'OC",
+    "cuvee": "A préciser lors de la commande.",
+    "color": null,
+    "vintages": [
+      2025
+    ],
+    "prices": {
+      "2025": [
+        "-",
+        "3,65",
+        "-",
+        "-",
+        "3,50",
+        "-",
+        "-",
+        "3,45",
+        "-"
+      ]
+    },
+    "page": 14,
+    "ref_price_eur_ht": 3.65
+  },
+  {
+    "section": "MARIUS",
+    "producer": "M. Chapoutier",
+    "appellation": "IGP PAYS D'OC",
+    "cuvee": "IGP Pays d'Oc",
+    "color": null,
+    "vintages": [
+      2024,
+      2025
+    ],
+    "prices": {
+      "2024": [
+        "16,55",
+        "16,00",
+        "15,60"
+      ],
+      "2025": [
+        "16,55",
+        "16,00",
+        "15,60"
+      ]
+    },
+    "page": 14,
+    "ref_price_eur_ht": 16.55
+  },
+  {
+    "section": "MARIUS",
+    "producer": "M. Chapoutier",
+    "appellation": "IGP PAYS D'OC",
+    "cuvee": "Marius blanc",
+    "color": null,
+    "vintages": [
+      2024
+    ],
+    "prices": {
+      "2024": [
+        "-",
+        "3,65",
+        "-",
+        "-",
+        "3,50",
+        "-",
+        "-",
+        "3,45",
+        "-"
+      ]
+    },
+    "page": 14,
+    "ref_price_eur_ht": 3.65
+  },
+  {
+    "section": "MARIUS",
+    "producer": "M. Chapoutier",
+    "appellation": "IGP PAYS D'OC",
+    "cuvee": "Marius carte postale",
+    "color": null,
+    "vintages": [
+      2024,
+      2025
+    ],
+    "prices": {
+      "2024": [
+        "-",
+        "4,15",
+        "-",
+        "-",
+        "4,00",
+        "-",
+        "-",
+        "3,90",
+        "-"
+      ],
+      "2025": [
+        "-",
+        "4,15",
+        "-",
+        "-",
+        "4,00",
+        "-",
+        "-",
+        "3,90",
+        "-"
+      ]
+    },
+    "page": 14,
+    "ref_price_eur_ht": 4.15
+  },
+  {
+    "section": "MARIUS",
+    "producer": "M. Chapoutier",
+    "appellation": "IGP PAYS D'OC",
+    "cuvee": "Marius rosé",
+    "color": null,
+    "vintages": [
+      2024
+    ],
+    "prices": {
+      "2024": [
+        "-",
+        "3,65",
+        "-",
+        "-",
+        "3,50",
+        "-",
+        "-",
+        "3,45",
+        "-"
+      ]
+    },
+    "page": 14,
+    "ref_price_eur_ht": 3.65
+  },
+  {
+    "section": "MARIUS",
+    "producer": "M. Chapoutier",
+    "appellation": "IGP PAYS D'OC",
+    "cuvee": "Marius rouge",
+    "color": null,
+    "vintages": [
+      2024
+    ],
+    "prices": {
+      "2024": [
+        "-",
+        "3,65",
+        "-",
+        "-",
+        "3,50",
+        "-",
+        "-",
+        "3,45",
+        "-"
+      ]
+    },
+    "page": 14,
+    "ref_price_eur_ht": 3.65
+  },
+  {
+    "section": "BILA-HAUT",
+    "producer": "Domaine de Bila-Haut",
+    "appellation": "BANYULS Blanc",
+    "cuvee": "Traditionnel",
+    "color": "doux",
+    "vintages": [
+      1999
+    ],
+    "prices": {
+      "1999": [
+        "-",
+        "23,55",
+        "-",
+        "-",
+        "22,70",
+        "-",
+        "-",
+        "22,15",
+        "-"
+      ]
+    },
+    "page": 15,
+    "ref_price_eur_ht": 23.55
+  },
+  {
+    "section": "BILA-HAUT",
+    "producer": "Domaine de Bila-Haut",
+    "appellation": "BANYULS Rouge",
+    "cuvee": "Rimage",
+    "color": "doux",
+    "vintages": [
+      2014
+    ],
+    "prices": {
+      "2014": [
+        "-",
+        "8,90",
+        "-",
+        "-",
+        "8,60",
+        "-",
+        "-",
+        "8,40",
+        "-"
+      ]
+    },
+    "page": 15,
+    "ref_price_eur_ht": 8.9
+  },
+  {
+    "section": "BILA-HAUT",
+    "producer": "Domaine de Bila-Haut",
+    "appellation": "BANYULS Rouge",
+    "cuvee": "Terra Vinya",
+    "color": "doux",
+    "vintages": [
+      2020
+    ],
+    "prices": {
+      "2020": [
+        "-",
+        "19,30",
+        "-",
+        "-",
+        "18,60",
+        "-",
+        "-",
+        "18,15",
+        "-"
+      ]
+    },
+    "page": 15,
+    "ref_price_eur_ht": 19.3
+  },
+  {
+    "section": "BILA-HAUT",
+    "producer": "Domaine de Bila-Haut",
+    "appellation": "COLLIOURE",
+    "cuvee": "Collioure",
+    "color": null,
+    "vintages": [
+      2018
+    ],
+    "prices": {
+      "2018": [
+        "-",
+        "26",
+        "55",
+        "-",
+        "26",
+        "55",
+        "-",
+        "26",
+        "55"
+      ]
+    },
+    "page": 15,
+    "ref_price_eur_ht": 26.0
+  },
+  {
+    "section": "BILA-HAUT",
+    "producer": "Domaine de Bila-Haut",
+    "appellation": "COLLIOURE",
+    "cuvee": "Domaine de Bila-Haut",
+    "color": null,
+    "vintages": [
+      2019,
+      2020,
+      2021,
+      2022
+    ],
+    "prices": {
+      "2019": [
+        "-",
+        "28",
+        "59",
+        "-",
+        "28",
+        "59",
+        "-",
+        "28",
+        "59"
+      ],
+      "2020": [
+        "-",
+        "28",
+        "59",
+        "-",
+        "28",
+        "59",
+        "-",
+        "28",
+        "59"
+      ],
+      "2021": [
+        "-",
+        "29",
+        "61",
+        "-",
+        "29",
+        "61",
+        "-",
+        "29",
+        "61"
+      ],
+      "2022": [
+        "-",
+        "34",
+        "71",
+        "-",
+        "34",
+        "71",
+        "-",
+        "34",
+        "71"
+      ]
+    },
+    "page": 15,
+    "ref_price_eur_ht": 34.0
+  },
+  {
+    "section": "BILA-HAUT",
+    "producer": "Domaine de Bila-Haut",
+    "appellation": "CÔTES DU ROUSSILLON",
+    "cuvee": "Bila Haut",
+    "color": "blanc",
+    "vintages": [
+      2019,
+      2024,
+      2025
+    ],
+    "prices": {
+      "2024": [
+        "-",
+        "4,80",
+        "-",
+        "-",
+        "4,60",
+        "-",
+        "-",
+        "4,50",
+        "-"
+      ],
+      "2025": [
+        "-",
+        "4,80",
+        "-",
+        "-",
+        "4,60",
+        "-",
+        "-",
+        "4,50",
+        "-"
+      ],
+      "2019": [
+        "-",
+        "14,55",
+        "-",
+        "-",
+        "14,00",
+        "-",
+        "-",
+        "13,70",
+        "-"
+      ]
+    },
+    "page": 15,
+    "ref_price_eur_ht": 4.8
+  },
+  {
+    "section": "BILA-HAUT",
+    "producer": "Domaine de Bila-Haut",
+    "appellation": "CÔTES DU ROUSSILLON",
+    "cuvee": "Côtes Du Roussillon",
+    "color": "rouge",
+    "vintages": [
+      2020,
+      2022
+    ],
+    "prices": {
+      "2020": [
+        "-",
+        "Epuisé",
+        "20,35",
+        "-",
+        "Epuisé",
+        "19,65",
+        "-",
+        "Epuisé",
+        "19,25"
+      ],
+      "2022": [
+        "-",
+        "Epuisé",
+        "11,05",
+        "-",
+        "Epuisé",
+        "10,70",
+        "-",
+        "Epuisé",
+        "10,50"
+      ]
+    },
+    "page": 15,
+    "ref_price_eur_ht": 11.05
+  },
+  {
+    "section": "BILA-HAUT",
+    "producer": "Domaine de Bila-Haut",
+    "appellation": "CÔTES DU ROUSSILLON",
+    "cuvee": "Domaine de Bila Haut",
+    "color": "blanc",
+    "vintages": [
+      2021,
+      2022
+    ],
+    "prices": {
+      "2021": [
+        "-",
+        "8,85",
+        "-",
+        "-",
+        "8,55",
+        "-",
+        "-",
+        "8,35",
+        "-"
+      ],
+      "2022": [
+        "-",
+        "8,85",
+        "-",
+        "-",
+        "8,55",
+        "-",
+        "-",
+        "8,35",
+        "-"
+      ]
+    },
+    "page": 15,
+    "ref_price_eur_ht": 8.85
+  },
+  {
+    "section": "BILA-HAUT",
+    "producer": "Domaine de Bila-Haut",
+    "appellation": "CÔTES DU ROUSSILLON",
+    "cuvee": "VILLAGES",
+    "color": "rouge",
+    "vintages": [
+      2024,
+      2025
+    ],
+    "prices": {
+      "2024": [
+        "-",
+        "4,80",
+        "11,05",
+        "-",
+        "4,60",
+        "10,70",
+        "-",
+        "4,50",
+        "10,50"
+      ],
+      "2025": [
+        "-",
+        "4,80",
+        "11,05",
+        "-",
+        "4,60",
+        "10,70",
+        "-",
+        "4,50",
+        "10,50"
+      ]
+    },
+    "page": 15,
+    "ref_price_eur_ht": 4.8
+  },
+  {
+    "section": "BILA-HAUT",
+    "producer": "Domaine de Bila-Haut",
+    "appellation": "CÔTES DU ROUSSILLON",
+    "cuvee": "VILLAGES LESQUERDE",
+    "color": "rouge",
+    "vintages": [
+      2021,
+      2022
+    ],
+    "prices": {
+      "2021": [
+        "-",
+        "9,45",
+        "-",
+        "-",
+        "9,10",
+        "-",
+        "-",
+        "8,90",
+        "-"
+      ],
+      "2022": [
+        "-",
+        "9,45",
+        "-",
+        "-",
+        "9,10",
+        "-",
+        "-",
+        "8,90",
+        "-"
+      ]
+    },
+    "page": 15,
+    "ref_price_eur_ht": 9.45
+  },
+  {
+    "section": "BILA-HAUT",
+    "producer": "Domaine de Bila-Haut",
+    "appellation": "CÔTES DU ROUSSILLON VILLAGES",
+    "cuvee": "LATOUR DE FRANCE",
+    "color": "rouge",
+    "vintages": [
+      2020
+    ],
+    "prices": {
+      "2020": [
+        "-",
+        "8,85",
+        "19,20",
+        "-",
+        "8,55",
+        "18,60",
+        "-",
+        "8,35",
+        "18,15"
+      ]
+    },
+    "page": 15,
+    "ref_price_eur_ht": 8.85
+  },
+  {
+    "section": "BILA-HAUT",
+    "producer": "Domaine de Bila-Haut",
+    "appellation": "CÔTES DU ROUSSILLON VILLAGES",
+    "cuvee": "Occultum Lapidem",
+    "color": "rouge",
+    "vintages": [
+      2021
+    ],
+    "prices": {
+      "2021": [
+        "-",
+        "8,85",
+        "19,20",
+        "-",
+        "8,55",
+        "18,60",
+        "-",
+        "8,35",
+        "18,15"
+      ]
+    },
+    "page": 15,
+    "ref_price_eur_ht": 8.85
+  },
+  {
+    "section": "SCHIEFERKOPF",
+    "producer": "Schieferkopf",
+    "appellation": "ALSACE",
+    "cuvee": "Gewürztraminer",
+    "color": "blanc",
+    "vintages": [
+      2023,
+      2024
+    ],
+    "prices": {
+      "2023": [
+        "-",
+        "9,00",
+        "-",
+        "-",
+        "8,65",
+        "-",
+        "-",
+        "8,45",
+        "-"
+      ],
+      "2024": [
+        "-",
+        "9,00",
+        "-",
+        "-",
+        "8,65",
+        "-",
+        "-",
+        "8,45",
+        "-"
+      ]
+    },
+    "page": 16,
+    "ref_price_eur_ht": 9.0
+  },
+  {
+    "section": "SCHIEFERKOPF",
+    "producer": "Schieferkopf",
+    "appellation": "ALSACE",
+    "cuvee": "Pinot Noir",
+    "color": "rouge",
+    "vintages": [
+      2022,
+      2023
+    ],
+    "prices": {
+      "2022": [
+        "-",
+        "9,35",
+        "-",
+        "-",
+        "9,05",
+        "-",
+        "-",
+        "8,80",
+        "-"
+      ],
+      "2023": [
+        "-",
+        "9,35",
+        "-",
+        "-",
+        "9,05",
+        "-",
+        "-",
+        "8,80",
+        "-"
+      ]
+    },
+    "page": 16,
+    "ref_price_eur_ht": 9.35
+  },
+  {
+    "section": "SCHIEFERKOPF",
+    "producer": "Schieferkopf",
+    "appellation": "ALSACE",
+    "cuvee": "Riesling Baden",
+    "color": "blanc",
+    "vintages": [
+      2024,
+      2025
+    ],
+    "prices": {
+      "2024": [
+        "-",
+        "5,80",
+        "-",
+        "-",
+        "5,60",
+        "-",
+        "-",
+        "5,45",
+        "-"
+      ],
+      "2025": [
+        "-",
+        "5,80",
+        "-",
+        "-",
+        "5,60",
+        "-",
+        "-",
+        "5,45",
+        "-"
+      ]
+    },
+    "page": 16,
+    "ref_price_eur_ht": 5.8
+  },
+  {
+    "section": "SCHIEFERKOPF",
+    "producer": "Schieferkopf",
+    "appellation": "ALSACE",
+    "cuvee": "Via Saint Jacques Riesling",
+    "color": "blanc",
+    "vintages": [
+      2019,
+      2020,
+      2021
+    ],
+    "prices": {
+      "2019": [
+        "-",
+        "9,20",
+        "Epuisé",
+        "-",
+        "8,90",
+        "Epuisé",
+        "-",
+        "8,65",
+        "Epuisé"
+      ],
+      "2020": [
+        "-",
+        "9,20",
+        "Epuisé",
+        "-",
+        "8,90",
+        "Epuisé",
+        "-",
+        "8,65",
+        "Epuisé"
+      ],
+      "2021": [
+        "-",
+        "9,20",
+        "21,40",
+        "-",
+        "8,90",
+        "20,75",
+        "-",
+        "8,65",
+        "20,30"
+      ]
+    },
+    "page": 16,
+    "ref_price_eur_ht": 9.2
+  },
+  {
+    "section": "SCHIEFERKOPF",
+    "producer": "Schieferkopf",
+    "appellation": "ALSACE RIESLING",
+    "cuvee": "Lieu Dit Berg",
+    "color": null,
+    "vintages": [
+      2013
+    ],
+    "prices": {
+      "2013": [
+        "-",
+        "15",
+        "Epuisé",
+        "-",
+        "15",
+        "Epuisé",
+        "-",
+        "15",
+        "Epuisé"
+      ]
+    },
+    "page": 16,
+    "ref_price_eur_ht": 15.0
+  },
+  {
+    "section": "SCHIEFERKOPF",
+    "producer": "Schieferkopf",
+    "appellation": "ALSACE RIESLING",
+    "cuvee": "Lieu Dit Buehl",
+    "color": null,
+    "vintages": [
+      2012
+    ],
+    "prices": {
+      "2012": [
+        "-",
+        "15",
+        "Epuisé",
+        "-",
+        "15",
+        "Epuisé",
+        "-",
+        "15",
+        "Epuisé"
+      ]
+    },
+    "page": 16,
+    "ref_price_eur_ht": 15.0
+  },
+  {
+    "section": "SCHIEFERKOPF",
+    "producer": "Schieferkopf",
+    "appellation": "ALSACE RIESLING",
+    "cuvee": "Lieu Dit Fels",
+    "color": null,
+    "vintages": [
+      2013
+    ],
+    "prices": {
+      "2013": [
+        "-",
+        "16",
+        "Epuisé",
+        "-",
+        "16",
+        "Epuisé",
+        "-",
+        "16",
+        "Epuisé"
+      ]
+    },
+    "page": 16,
+    "ref_price_eur_ht": 16.0
+  },
+  {
+    "section": "SCHIEFERKOPF",
+    "producer": "Schieferkopf",
+    "appellation": "ALSACE RIESLING",
+    "cuvee": "Sélection Parcellaire",
+    "color": null,
+    "vintages": [
+      2014,
+      2015,
+      2016
+    ],
+    "prices": {
+      "2014": [
+        "-",
+        "16",
+        "35",
+        "-",
+        "16",
+        "35",
+        "-",
+        "16",
+        "35"
+      ],
+      "2015": [
+        "-",
+        "19",
+        "41",
+        "-",
+        "19",
+        "41",
+        "-",
+        "19",
+        "41"
+      ],
+      "2016": [
+        "-",
+        "21",
+        "45",
+        "-",
+        "21",
+        "45",
+        "-",
+        "21",
+        "45"
+      ]
+    },
+    "page": 16,
+    "ref_price_eur_ht": 21.0
+  },
+  {
+    "section": "CHÂTEAU DES FERRAGES",
+    "producer": "Château des Ferrages",
+    "appellation": "Côtes de Provence",
+    "cuvee": "Côtes De Provence",
+    "color": null,
+    "vintages": [
+      2020,
+      2023
+    ],
+    "prices": {
+      "2020": [
+        "20",
+        "-",
+        "20",
+        "-",
+        "20",
+        "-"
+      ],
+      "2023": [
+        "7,15",
+        "-",
+        "6,90",
+        "-",
+        "6,75",
+        "-"
+      ]
+    },
+    "page": 17,
+    "ref_price_eur_ht": 7.15
+  },
+  {
+    "section": "CHÂTEAU DES FERRAGES",
+    "producer": "Château des Ferrages",
+    "appellation": "Côtes de Provence",
+    "cuvee": "Les Infirmières",
+    "color": null,
+    "vintages": [
+      2021
+    ],
+    "prices": {
+      "2021": [
+        "20",
+        "-",
+        "20",
+        "-",
+        "20",
+        "-"
+      ]
+    },
+    "page": 17,
+    "ref_price_eur_ht": 20.0
+  },
+  {
+    "section": "CHÂTEAU DES FERRAGES",
+    "producer": "Château des Ferrages",
+    "appellation": "Côtes de Provence",
+    "cuvee": "Mon Plaisir Blanc",
+    "color": null,
+    "vintages": [
+      2024
+    ],
+    "prices": {
+      "2024": [
+        "7,15",
+        "-",
+        "6,90",
+        "-",
+        "6,75",
+        "-"
+      ]
+    },
+    "page": 17,
+    "ref_price_eur_ht": 7.15
+  },
+  {
+    "section": "CHÂTEAU DES FERRAGES",
+    "producer": "Château des Ferrages",
+    "appellation": "Côtes de Provence",
+    "cuvee": "Roumery Rosé",
+    "color": null,
+    "vintages": [
+      2025
+    ],
+    "prices": {
+      "2025": [
+        "7,00",
+        "16,95",
+        "6,75",
+        "16,45",
+        "6,60",
+        "16,15"
+      ]
+    },
+    "page": 17,
+    "ref_price_eur_ht": 7.0
+  },
+  {
+    "section": "CHÂTEAU DES FERRAGES",
+    "producer": "Château des Ferrages",
+    "appellation": "Côtes de Provence Sainte-Victoire",
+    "cuvee": "Côtes De Provence Sainte-Victoire",
+    "color": null,
+    "vintages": [
+      2024
+    ],
+    "prices": {
+      "2024": [
+        "7,15",
+        "-",
+        "6,90",
+        "-",
+        "6,75",
+        "-"
+      ]
+    },
+    "page": 17,
+    "ref_price_eur_ht": 7.15
+  },
+  {
+    "section": "CHÂTEAU DES FERRAGES",
+    "producer": "Château des Ferrages",
+    "appellation": "Côtes de Provence Sainte-Victoire",
+    "cuvee": "Esquirol",
+    "color": null,
+    "vintages": [
+      2018
+    ],
+    "prices": {
+      "2018": [
+        "16,50",
+        "-",
+        "16,50",
+        "-",
+        "16,50",
+        "-"
+      ]
+    },
+    "page": 17,
+    "ref_price_eur_ht": 16.5
+  },
+  {
+    "section": "CHÂTEAU DES FERRAGES",
+    "producer": "Château des Ferrages",
+    "appellation": "Côtes de Provence Sainte-Victoire",
+    "cuvee": "Mon Plaisir Rosé",
+    "color": null,
+    "vintages": [
+      2025
+    ],
+    "prices": {
+      "2025": [
+        "9,10",
+        "21,15",
+        "8,75",
+        "20,50",
+        "8,55",
+        "20,10"
+      ]
+    },
+    "page": 17,
+    "ref_price_eur_ht": 9.1
+  },
+  {
+    "section": "CHÂTEAU DES FERRAGES",
+    "producer": "Château des Ferrages",
+    "appellation": "Côtes de Provence Sainte-Victoire",
+    "cuvee": "Mon Plaisir Rouge",
+    "color": null,
+    "vintages": [
+      2025
+    ],
+    "prices": {
+      "2025": [
+        "7,15",
+        "-",
+        "6,90",
+        "-",
+        "6,75",
+        "-"
+      ]
+    },
+    "page": 17,
+    "ref_price_eur_ht": 7.15
+  },
+  {
+    "section": "SAINT-ÉTIENNE",
+    "producer": "Domaine Saint-Étienne",
+    "appellation": "CÔTES-DU-RHÔNE",
+    "cuvee": "Les Abelhas",
+    "color": "blanc",
+    "vintages": [
+      2024,
+      2025
+    ],
+    "prices": {
+      "2024": [
+        "-",
+        "6,25",
+        "-",
+        "-",
+        "6,05",
+        "-",
+        "-",
+        "5,90",
+        "-"
+      ],
+      "2025": [
+        "-",
+        "6,25",
+        "-",
+        "-",
+        "6,05",
+        "-",
+        "-",
+        "5,90",
+        "-"
+      ]
+    },
+    "page": 18,
+    "ref_price_eur_ht": 6.25
+  },
+  {
+    "section": "SAINT-ÉTIENNE",
+    "producer": "Domaine Saint-Étienne",
+    "appellation": "CÔTES-DU-RHÔNE",
+    "cuvee": "Les Albizzias",
+    "color": "rouge",
+    "vintages": [
+      2018,
+      2024,
+      2025
+    ],
+    "prices": {
+      "2024": [
+        "-",
+        "5,90",
+        "-",
+        "-",
+        "5,70",
+        "-",
+        "-",
+        "5,55",
+        "-"
+      ],
+      "2025": [
+        "-",
+        "5,90",
+        "-",
+        "-",
+        "5,70",
+        "-",
+        "-",
+        "5,55",
+        "-"
+      ],
+      "2018": [
+        "-",
+        "5,85",
+        "-",
+        "-",
+        "5,65",
+        "-",
+        "-",
+        "5,50",
+        "-"
+      ]
+    },
+    "page": 18,
+    "ref_price_eur_ht": 5.9
+  },
+  {
+    "section": "SAINT-ÉTIENNE",
+    "producer": "Domaine Saint-Étienne",
+    "appellation": "CÔTES-DU-RHÔNE VILLAGES",
+    "cuvee": "La Garrigue",
+    "color": "rouge",
+    "vintages": [
+      2024,
+      2025
+    ],
+    "prices": {
+      "2024": [
+        "-",
+        "7,85",
+        "-",
+        "-",
+        "7,55",
+        "-",
+        "-",
+        "7,40",
+        "-"
+      ],
+      "2025": [
+        "-",
+        "7,85",
+        "-",
+        "-",
+        "7,55",
+        "-",
+        "-",
+        "7,40",
+        "-"
+      ]
+    },
+    "page": 18,
+    "ref_price_eur_ht": 7.85
+  },
+  {
+    "section": "TOURNON",
+    "producer": "Domaine Tournon",
+    "appellation": "AUSTRALIE, Victoria, HEATHCOTE",
+    "cuvee": "Australie, Victoria, Heathcote",
+    "color": "rouge",
+    "vintages": [
+      2013
+    ],
+    "prices": {
+      "2013": [
+        "-",
+        "17",
+        "Epuisé",
+        "-",
+        "17",
+        "Epuisé",
+        "-",
+        "17",
+        "Epuisé"
+      ]
+    },
+    "page": 19,
+    "ref_price_eur_ht": 17.0
+  },
+  {
+    "section": "TOURNON",
+    "producer": "Domaine Tournon",
+    "appellation": "AUSTRALIE, Victoria, HEATHCOTE",
+    "cuvee": "Shiraz",
+    "color": "rouge",
+    "vintages": [
+      2015,
+      2016,
+      2020,
+      2022
+    ],
+    "prices": {
+      "2015": [
+        "-",
+        "17",
+        "37",
+        "-",
+        "17",
+        "37",
+        "-",
+        "17",
+        "37"
+      ],
+      "2016": [
+        "-",
+        "Epuisé",
+        "39",
+        "-",
+        "Epuisé",
+        "39",
+        "-",
+        "Epuisé",
+        "39"
+      ],
+      "2020": [
+        "-",
+        "18",
+        "Epuisé",
+        "-",
+        "18",
+        "Epuisé",
+        "-",
+        "18",
+        "Epuisé"
+      ],
+      "2022": [
+        "-",
+        "18",
+        "39",
+        "-",
+        "18",
+        "39",
+        "-",
+        "18",
+        "39"
+      ]
+    },
+    "page": 19,
+    "ref_price_eur_ht": 18.0
+  },
+  {
+    "section": "TOURNON",
+    "producer": "Domaine Tournon",
+    "appellation": "AUSTRALIE, Victoria, PYRENEES",
+    "cuvee": "DOMAINE TOURNON",
+    "color": "rouge",
+    "vintages": [
+      2016,
+      2017,
+      2018,
+      2019
+    ],
+    "prices": {
+      "2016": [
+        "-",
+        "10,30",
+        "-",
+        "-",
+        "9,90",
+        "-",
+        "-",
+        "9,70",
+        "-"
+      ],
+      "2017": [
+        "-",
+        "10,30",
+        "-",
+        "-",
+        "9,90",
+        "-",
+        "-",
+        "9,70",
+        "-"
+      ],
+      "2018": [
+        "-",
+        "10,30",
+        "9,90",
+        "9,70",
+        "-"
+      ],
+      "2019": [
+        "-",
+        "10,30",
+        "-",
+        "-",
+        "9,90",
+        "-",
+        "-",
+        "9,70",
+        "-"
+      ]
+    },
+    "page": 19,
+    "ref_price_eur_ht": 10.3
+  },
+  {
+    "section": "TOURNON",
+    "producer": "Domaine Tournon",
+    "appellation": "AUSTRALIE, Victoria, PYRENEES",
+    "cuvee": "DOMAINE TOURNON",
+    "color": "blanc",
+    "vintages": [
+      2018,
+      2019,
+      2021,
+      2024
+    ],
+    "prices": {
+      "2021": [
+        "-",
+        "11,55",
+        "-",
+        "-",
+        "11,10",
+        "-",
+        "-",
+        "10,85",
+        "-"
+      ],
+      "2024": [
+        "-",
+        "11,55",
+        "-",
+        "-",
+        "11,10",
+        "-",
+        "-",
+        "10,85",
+        "-"
+      ],
+      "2018": [
+        "-",
+        "10,30",
+        "-",
+        "-",
+        "9,90",
+        "-",
+        "-",
+        "9,70",
+        "-"
+      ],
+      "2019": [
+        "-",
+        "10,30",
+        "-",
+        "-",
+        "9,90",
+        "-",
+        "-",
+        "9,70",
+        "-"
+      ]
+    },
+    "page": 19,
+    "ref_price_eur_ht": 11.55
+  },
+  {
+    "section": "TOURNON",
+    "producer": "Domaine Tournon",
+    "appellation": "AUSTRALIE, Victoria, PYRENEES",
+    "cuvee": "Grenache Shiraz Touriga",
+    "color": "rouge",
+    "vintages": [
+      2017
+    ],
+    "prices": {
+      "2017": [
+        "-",
+        "10,30",
+        "-",
+        "-",
+        "9,90",
+        "-",
+        "-",
+        "9,70",
+        "-"
+      ]
+    },
+    "page": 19,
+    "ref_price_eur_ht": 10.3
+  },
+  {
+    "section": "TOURNON",
+    "producer": "Domaine Tournon",
+    "appellation": "AUSTRALIE, Victoria, PYRENEES",
+    "cuvee": "TOURNON",
+    "color": "rouge",
+    "vintages": [
+      2022,
+      2023,
+      2024
+    ],
+    "prices": {
+      "2022": [
+        "-",
+        "6,15",
+        "-",
+        "-",
+        "5,95",
+        "-",
+        "-",
+        "5,80",
+        "-"
+      ],
+      "2023": [
+        "-",
+        "6,15",
+        "-",
+        "-",
+        "5,95",
+        "-",
+        "-",
+        "5,80",
+        "-"
+      ],
+      "2024": [
+        "-",
+        "6,15",
+        "-",
+        "-",
+        "5,95",
+        "-",
+        "-",
+        "5,80",
+        "-"
+      ]
+    },
+    "page": 19,
+    "ref_price_eur_ht": 6.15
+  },
+  {
+    "section": "TOURNON",
+    "producer": "Domaine Tournon",
+    "appellation": "AUSTRALIE, Victoria, PYRENEES",
+    "cuvee": "TOURNON",
+    "color": "blanc",
+    "vintages": [
+      2023,
+      2024
+    ],
+    "prices": {
+      "2023": [
+        "-",
+        "6,15",
+        "-",
+        "-",
+        "5,95",
+        "-",
+        "-",
+        "5,80",
+        "-"
+      ],
+      "2024": [
+        "-",
+        "6,15",
+        "-",
+        "-",
+        "5,95",
+        "-",
+        "-",
+        "5,80",
+        "-"
+      ]
+    },
+    "page": 19,
+    "ref_price_eur_ht": 6.15
+  },
+  {
+    "section": "DOS LUSIADAS",
+    "producer": "Dos Lusiadas",
+    "appellation": "Portugal, Vallée du Douro",
+    "cuvee": "Bouteille Bourguignonne",
+    "color": "rouge",
+    "vintages": [
+      2024
+    ],
+    "prices": {
+      "2024": [
+        "-",
+        "5,50",
+        "-",
+        "-",
+        "5,35",
+        "-",
+        "-",
+        "5,20",
+        "-"
+      ]
+    },
+    "page": 20,
+    "ref_price_eur_ht": 5.5
+  },
+  {
+    "section": "DOS LUSIADAS",
+    "producer": "Dos Lusiadas",
+    "appellation": "Portugal, Vallée du Douro",
+    "cuvee": "Eleivera",
+    "color": "rouge",
+    "vintages": [
+      2023
+    ],
+    "prices": {
+      "2023": [
+        "-",
+        "5,50",
+        "-",
+        "-",
+        "5,35",
+        "-",
+        "-",
+        "5,20",
+        "-"
+      ]
+    },
+    "page": 20,
+    "ref_price_eur_ht": 5.5
+  },
+  {
+    "section": "DOS LUSIADAS",
+    "producer": "Dos Lusiadas",
+    "appellation": "Portugal, Vallée du Douro",
+    "cuvee": "Eleivera",
+    "color": "blanc",
+    "vintages": [
+      2023,
+      2024
+    ],
+    "prices": {
+      "2023": [
+        "-",
+        "5,50",
+        "-",
+        "-",
+        "5,35",
+        "-",
+        "-",
+        "5,20",
+        "-"
+      ],
+      "2024": [
+        "-",
+        "5,50",
+        "-",
+        "-",
+        "5,35",
+        "-",
+        "-",
+        "5,20",
+        "-"
+      ]
+    },
+    "page": 20,
+    "ref_price_eur_ht": 5.5
+  },
+  {
+    "section": "DOS LUSIADAS",
+    "producer": "Dos Lusiadas",
+    "appellation": "Portugal, Vallée du Douro",
+    "cuvee": "Pinteivera",
+    "color": "rouge",
+    "vintages": [
+      2023,
+      2024
+    ],
+    "prices": {
+      "2023": [
+        "-",
+        "9,70",
+        "-",
+        "-",
+        "9,35",
+        "-",
+        "-",
+        "9,15",
+        "-"
+      ],
+      "2024": [
+        "-",
+        "9,70",
+        "-",
+        "-",
+        "9,35",
+        "-",
+        "-",
+        "9,15",
+        "-"
+      ]
+    },
+    "page": 20,
+    "ref_price_eur_ht": 9.7
+  },
+  {
+    "section": "DOS LUSIADAS",
+    "producer": "Dos Lusiadas",
+    "appellation": "Portugal, Vallée du Douro",
+    "cuvee": "Pinteivera",
+    "color": "blanc",
+    "vintages": [
+      2019,
+      2020
+    ],
+    "prices": {
+      "2019": [
+        "-",
+        "9,70",
+        "-",
+        "-",
+        "9,35",
+        "-",
+        "-",
+        "9,15",
+        "-"
+      ],
+      "2020": [
+        "-",
+        "9,70",
+        "-",
+        "-",
+        "9,35",
+        "-",
+        "-",
+        "9,15",
+        "-"
+      ]
+    },
+    "page": 20,
+    "ref_price_eur_ht": 9.7
+  },
+  {
+    "section": "DOMINIO DEL SOTO",
+    "producer": "Dominio del Soto",
+    "appellation": "Espagne, Ribera Del Duero",
+    "cuvee": "Espagne, Ribera Del Duero",
+    "color": "rouge",
+    "vintages": [
+      2022
+    ],
+    "prices": {
+      "2022": [
+        "-",
+        "19",
+        "-",
+        "-",
+        "19",
+        "-",
+        "-",
+        "19",
+        "-"
+      ]
+    },
+    "page": 21,
+    "ref_price_eur_ht": 19.0
+  },
+  {
+    "section": "DOMINIO DEL SOTO",
+    "producer": "Dominio del Soto",
+    "appellation": "Espagne, Ribera Del Duero",
+    "cuvee": "NOUVEAU !",
+    "color": "rouge",
+    "vintages": [
+      2023
+    ],
+    "prices": {
+      "2023": [
+        "-",
+        "19",
+        "-",
+        "-",
+        "19",
+        "-",
+        "-",
+        "19",
+        "-"
+      ]
+    },
+    "page": 21,
+    "ref_price_eur_ht": 19.0
+  },
+  {
+    "section": "DOMINIO DEL SOTO",
+    "producer": "Dominio del Soto",
+    "appellation": "Espagne, Ribera del Duero",
+    "cuvee": "Bouteille Bourguignonne",
+    "color": "rouge",
+    "vintages": [
+      2021
+    ],
+    "prices": {
+      "2021": [
+        "-",
+        "10,80",
+        "-",
+        "-",
+        "10,40",
+        "-",
+        "-",
+        "10,15",
+        "-"
+      ]
+    },
+    "page": 21,
+    "ref_price_eur_ht": 10.8
+  },
+  {
+    "section": "DOMINIO DEL SOTO",
+    "producer": "Dominio del Soto",
+    "appellation": "Espagne, Ribera del Duero",
+    "cuvee": "Bouteille Bourguignonne",
+    "color": "blanc",
+    "vintages": [
+      2022
+    ],
+    "prices": {
+      "2022": [
+        "-",
+        "8,70",
+        "-",
+        "-",
+        "8,40",
+        "-",
+        "-",
+        "8,20",
+        "-"
+      ]
+    },
+    "page": 21,
+    "ref_price_eur_ht": 8.7
+  },
+  {
+    "section": "DOMINIO DEL SOTO",
+    "producer": "Dominio del Soto",
+    "appellation": "Espagne, Ribera del Duero",
+    "cuvee": "Camino Gumiel",
+    "color": "rouge",
+    "vintages": [
+      2021,
+      2022
+    ],
+    "prices": {
+      "2021": [
+        "-",
+        "22",
+        "-",
+        "-",
+        "22",
+        "-",
+        "-",
+        "22",
+        "-"
+      ],
+      "2022": [
+        "-",
+        "22",
+        "-",
+        "-",
+        "22",
+        "-",
+        "-",
+        "22",
+        "-"
+      ]
+    },
+    "page": 21,
+    "ref_price_eur_ht": 22.0
+  },
+  {
+    "section": "DOMINIO DEL SOTO",
+    "producer": "Dominio del Soto",
+    "appellation": "Espagne, Ribera del Duero",
+    "cuvee": "Crianza",
+    "color": "rouge",
+    "vintages": [
+      2020
+    ],
+    "prices": {
+      "2020": [
+        "-",
+        "10,80",
+        "-",
+        "-",
+        "10,40",
+        "-",
+        "-",
+        "10,15",
+        "-"
+      ]
+    },
+    "page": 21,
+    "ref_price_eur_ht": 10.8
+  },
+  {
+    "section": "DOMINIO DEL SOTO",
+    "producer": "Dominio del Soto",
+    "appellation": "Espagne, Ribera del Duero",
+    "cuvee": "Crianza",
+    "color": "blanc",
+    "vintages": [
+      2023,
+      2024
+    ],
+    "prices": {
+      "2023": [
+        "-",
+        "14,55",
+        "-",
+        "-",
+        "14,00",
+        "-",
+        "-",
+        "13,70",
+        "-"
+      ],
+      "2024": [
+        "-",
+        "14,55",
+        "-",
+        "-",
+        "14,00",
+        "-",
+        "-",
+        "13,70",
+        "-"
+      ]
+    },
+    "page": 21,
+    "ref_price_eur_ht": 14.55
+  },
+  {
+    "section": "DOMINIO DEL SOTO",
+    "producer": "Dominio del Soto",
+    "appellation": "Espagne, Ribera del Duero",
+    "cuvee": "Cépage : Albillo",
+    "color": "blanc",
+    "vintages": [
+      2021
+    ],
+    "prices": {
+      "2021": [
+        "-",
+        "8,70",
+        "-",
+        "-",
+        "8,40",
+        "-",
+        "-",
+        "8,20",
+        "-"
+      ]
+    },
+    "page": 21,
+    "ref_price_eur_ht": 8.7
+  },
+  {
+    "section": "DOMINIO DEL SOTO",
+    "producer": "Dominio del Soto",
+    "appellation": "Espagne, Ribera del Duero",
+    "cuvee": "Cépage : Tempranillo",
+    "color": "rouge",
+    "vintages": [
+      2022,
+      2023
+    ],
+    "prices": {
+      "2022": [
+        "-",
+        "6,75",
+        "-",
+        "-",
+        "6,55",
+        "-",
+        "-",
+        "6,35",
+        "-"
+      ],
+      "2023": [
+        "-",
+        "6,75",
+        "-",
+        "-",
+        "6,55",
+        "-",
+        "-",
+        "6,35",
+        "-"
+      ]
+    },
+    "page": 21,
+    "ref_price_eur_ht": 6.75
+  },
+  {
+    "section": "DOMINIO DEL SOTO",
+    "producer": "Dominio del Soto",
+    "appellation": "Espagne, Ribera del Duero",
+    "cuvee": "Edition limitée \u0010 NOUVEAU !",
+    "color": "rouge",
+    "vintages": [
+      2019
+    ],
+    "prices": {
+      "2019": [
+        "-",
+        "18,25",
+        "-",
+        "-",
+        "17,65",
+        "-",
+        "-",
+        "17,20",
+        "-"
+      ]
+    },
+    "page": 21,
+    "ref_price_eur_ht": 18.25
+  },
+  {
+    "section": "DOMINIO DEL SOTO",
+    "producer": "Dominio del Soto",
+    "appellation": "Espagne, Ribera del Duero",
+    "cuvee": "Gran Reserva",
+    "color": "rouge",
+    "vintages": [
+      2018
+    ],
+    "prices": {
+      "2018": [
+        "-",
+        "18,25",
+        "-",
+        "-",
+        "17,65",
+        "-",
+        "-",
+        "17,20",
+        "-"
+      ]
+    },
+    "page": 21,
+    "ref_price_eur_ht": 18.25
+  },
+  {
+    "section": "DOMINIO DEL SOTO",
+    "producer": "Dominio del Soto",
+    "appellation": "Espagne, Ribera del Duero",
+    "cuvee": "Reserva",
+    "color": "rouge",
+    "vintages": [
+      2019
+    ],
+    "prices": {
+      "2019": [
+        "-",
+        "13,30",
+        "-",
+        "-",
+        "12,80",
+        "-",
+        "-",
+        "12,50",
+        "-"
+      ]
+    },
+    "page": 21,
+    "ref_price_eur_ht": 13.3
+  },
+  {
+    "section": "GAMME DES CHEFS",
+    "producer": "M. Chapoutier",
+    "appellation": "CORNAS",
+    "cuvee": "Anne Sophie Pic & Michel Chapoutier",
+    "color": "rouge",
+    "vintages": [
+      2023,
+      2024
+    ],
+    "prices": {
+      "2023": [
+        "-",
+        "26,35",
+        "-",
+        "-",
+        "25,45",
+        "-",
+        "-",
+        "24,80",
+        "-"
+      ],
+      "2024": [
+        "-",
+        "26,35",
+        "-",
+        "-",
+        "25,45",
+        "-",
+        "-",
+        "24,80",
+        "-"
+      ]
+    },
+    "page": 22,
+    "ref_price_eur_ht": 26.35
+  },
+  {
+    "section": "GAMME DES CHEFS",
+    "producer": "M. Chapoutier",
+    "appellation": "CÔTES-DU-RHÔNE",
+    "cuvee": "Anne Sophie Pic & Michel Chapoutier",
+    "color": "rouge",
+    "vintages": [
+      2024,
+      2025
+    ],
+    "prices": {
+      "2024": [
+        "-",
+        "5,25",
+        "-",
+        "-",
+        "5,05",
+        "-",
+        "-",
+        "4,95",
+        "-"
+      ],
+      "2025": [
+        "-",
+        "5,25",
+        "-",
+        "-",
+        "5,05",
+        "-",
+        "-",
+        "4,95",
+        "-"
+      ]
+    },
+    "page": 22,
+    "ref_price_eur_ht": 5.25
+  },
+  {
+    "section": "GAMME DES CHEFS",
+    "producer": "M. Chapoutier",
+    "appellation": "IGP COLLINES RHODANIENNES",
+    "cuvee": "Anne Sophie Pic & Michel Chapoutier",
+    "color": "rouge",
+    "vintages": [
+      2024
+    ],
+    "prices": {
+      "2024": [
+        "-",
+        "11,25",
+        "-",
+        "-",
+        "10,85",
+        "-",
+        "-",
+        "10,60",
+        "-"
+      ]
+    },
+    "page": 22,
+    "ref_price_eur_ht": 11.25
+  },
+  {
+    "section": "GAMME DES CHEFS",
+    "producer": "M. Chapoutier",
+    "appellation": "IGP COLLINES RHODANIENNES",
+    "cuvee": "Anne Sophie Pic & Michel Chapoutier",
+    "color": "blanc",
+    "vintages": [
+      2024
+    ],
+    "prices": {
+      "2024": [
+        "-",
+        "8,00",
+        "-",
+        "-",
+        "7,75",
+        "-",
+        "-",
+        "7,55",
+        "-"
+      ]
+    },
+    "page": 22,
+    "ref_price_eur_ht": 8.0
+  },
+  {
+    "section": "GAMME DES CHEFS",
+    "producer": "M. Chapoutier",
+    "appellation": "SAINT-PERAY",
+    "cuvee": "Anne Sophie Pic & Michel Chapoutier",
+    "color": "blanc",
+    "vintages": [
+      2024,
+      2025
+    ],
+    "prices": {
+      "2024": [
+        "-",
+        "16,00",
+        "-",
+        "-",
+        "15,45",
+        "-",
+        "-",
+        "15,05",
+        "-"
+      ],
+      "2025": [
+        "-",
+        "16,00",
+        "-",
+        "-",
+        "15,45",
+        "-",
+        "-",
+        "15,05",
+        "-"
+      ]
+    },
+    "page": 22,
+    "ref_price_eur_ht": 16.0
+  },
+  {
+    "section": "GAMME DES CHEFS",
+    "producer": "M. Chapoutier",
+    "appellation": "SAINT-PERAY - Lieu-dit Les Payrolles",
+    "cuvee": "Anne-Sophie Pic & Michel Chapoutier",
+    "color": "blanc",
+    "vintages": [
+      2019,
+      2020
+    ],
+    "prices": {
+      "2019": [
+        "-",
+        "28,15",
+        "-",
+        "-",
+        "28,15",
+        "-",
+        "-",
+        "28,15",
+        "-"
+      ],
+      "2020": [
+        "-",
+        "28,15",
+        "-",
+        "-",
+        "28,15",
+        "-",
+        "-",
+        "28,15",
+        "-"
+      ]
+    },
+    "page": 22,
+    "ref_price_eur_ht": 28.15
+  },
+  {
+    "section": "GAMME DES CHEFS",
+    "producer": "M. Chapoutier",
+    "appellation": "SAINT-PERAY - Lieu-dit Les Payrolles",
+    "cuvee": "Saint-Peray - Lieu-Dit Les Payrolles",
+    "color": "blanc",
+    "vintages": [
+      2018
+    ],
+    "prices": {
+      "2018": [
+        "-",
+        "28,15",
+        "57,75",
+        "-",
+        "28,15",
+        "57,75",
+        "-",
+        "28,15",
+        "57,75"
+      ]
+    },
+    "page": 22,
+    "ref_price_eur_ht": 28.15
+  },
+  {
+    "section": "GAMME DES CHEFS",
+    "producer": "M. Chapoutier",
+    "appellation": "SAINT-PERAY EFFERVESCENT",
+    "cuvee": "Le Pin",
+    "color": "effervescent",
+    "vintages": [
+      2018,
+      2019,
+      2020
+    ],
+    "prices": {
+      "2018": [
+        "-",
+        "Epuisé",
+        "35,30",
+        "-",
+        "Epuisé",
+        "35,30",
+        "-",
+        "Epuisé",
+        "35,30"
+      ],
+      "2019": [
+        "-",
+        "16,90",
+        "35,30",
+        "-",
+        "16,90",
+        "35,30",
+        "-",
+        "16,90",
+        "35,30"
+      ],
+      "2020": [
+        "-",
+        "16,90",
+        "-",
+        "-",
+        "16,90",
+        "-",
+        "-",
+        "16,90",
+        "-"
+      ]
+    },
+    "page": 22,
+    "ref_price_eur_ht": 16.9
+  },
+  {
+    "section": "GAMME DES CHEFS",
+    "producer": "M. Chapoutier",
+    "appellation": "CROZES-HERMITAGE",
+    "cuvee": "Yannick Alléno & Michel Chapoutier",
+    "color": "rouge",
+    "vintages": [
+      2024,
+      2025
+    ],
+    "prices": {
+      "2024": [
+        "-",
+        "12,80",
+        "-",
+        "-",
+        "12,30",
+        "-",
+        "-",
+        "12,05",
+        "-"
+      ],
+      "2025": [
+        "-",
+        "12,80",
+        "-",
+        "-",
+        "12,30",
+        "-",
+        "-",
+        "12,05",
+        "-"
+      ]
+    },
+    "page": 23,
+    "ref_price_eur_ht": 12.8
+  },
+  {
+    "section": "GAMME DES CHEFS",
+    "producer": "M. Chapoutier",
+    "appellation": "CROZES-HERMITAGE",
+    "cuvee": "Yannick Alléno & Michel Chapoutier",
+    "color": "blanc",
+    "vintages": [
+      2024,
+      2025
+    ],
+    "prices": {
+      "2024": [
+        "-",
+        "14,70",
+        "-",
+        "-",
+        "14,20",
+        "-",
+        "-",
+        "13,85",
+        "-"
+      ],
+      "2025": [
+        "-",
+        "14,70",
+        "-",
+        "-",
+        "14,20",
+        "-",
+        "-",
+        "13,85",
+        "-"
+      ]
+    },
+    "page": 23,
+    "ref_price_eur_ht": 14.7
+  },
+  {
+    "section": "GAMME DES CHEFS",
+    "producer": "M. Chapoutier",
+    "appellation": "SAINT-JOSEPH",
+    "cuvee": "SOUS ALLOCATION",
+    "color": "blanc",
+    "vintages": [
+      2020,
+      2021
+    ],
+    "prices": {
+      "2020": [
+        "-",
+        "27,50",
+        "-",
+        "-",
+        "26,55",
+        "-",
+        "-",
+        "25,90",
+        "-"
+      ],
+      "2021": [
+        "-",
+        "27,50",
+        "-",
+        "-",
+        "26,55",
+        "-",
+        "-",
+        "25,90",
+        "-"
+      ]
+    },
+    "page": 23,
+    "ref_price_eur_ht": 27.5
+  },
+  {
+    "section": "GAMME DES CHEFS",
+    "producer": "M. Chapoutier",
+    "appellation": "SAINT-JOSEPH",
+    "cuvee": "Yannick Alléno & Michel Chapoutier",
+    "color": "rouge",
+    "vintages": [
+      2021,
+      2022,
+      2023,
+      2024
+    ],
+    "prices": {
+      "2021": [
+        "-",
+        "Epuisé",
+        "40,50",
+        "-",
+        "Epuisé",
+        "39,15",
+        "-",
+        "Epuisé",
+        "38,20"
+      ],
+      "2022": [
+        "-",
+        "19,50",
+        "40,50",
+        "-",
+        "18,85",
+        "39,15",
+        "-",
+        "18,35",
+        "38,20"
+      ],
+      "2023": [
+        "-",
+        "19,50",
+        "40,50",
+        "-",
+        "18,85",
+        "39,15",
+        "-",
+        "18,35",
+        "38,20"
+      ],
+      "2024": [
+        "-",
+        "13,50",
+        "-",
+        "-",
+        "13,05",
+        "-",
+        "-",
+        "12,70",
+        "-"
+      ]
+    },
+    "page": 23,
+    "ref_price_eur_ht": 13.5
+  },
+  {
+    "section": "GAMME DES CHEFS",
+    "producer": "M. Chapoutier",
+    "appellation": "SAINT-JOSEPH",
+    "cuvee": "Yannick Alléno & Michel Chapoutier",
+    "color": "blanc",
+    "vintages": [
+      2017,
+      2022,
+      2023
+    ],
+    "prices": {
+      "2017": [
+        "-",
+        "27,50",
+        "-",
+        "-",
+        "26,55",
+        "-",
+        "-",
+        "25,90",
+        "-"
+      ],
+      "2022": [
+        "-",
+        "15,05",
+        "-",
+        "-",
+        "14,50",
+        "-",
+        "-",
+        "14,15",
+        "-"
+      ],
+      "2023": [
+        "-",
+        "15,05",
+        "-",
+        "-",
+        "14,50",
+        "-",
+        "-",
+        "14,15",
+        "-"
+      ]
+    },
+    "page": 23,
+    "ref_price_eur_ht": 15.05
+  },
+  {
+    "section": "GAMME DES CHEFS",
+    "producer": "M. Chapoutier",
+    "appellation": "BEAUJOLAIS VILLAGES",
+    "cuvee": "3ème Fleuve",
+    "color": "rouge",
+    "vintages": [
+      2022,
+      2023
+    ],
+    "prices": {
+      "2022": [
+        "-",
+        "7,20",
+        "-",
+        "-",
+        "6,95",
+        "-",
+        "-",
+        "6,80",
+        "-"
+      ],
+      "2023": [
+        "-",
+        "7,20",
+        "-",
+        "-",
+        "6,95",
+        "-",
+        "-",
+        "6,80",
+        "-"
+      ]
+    },
+    "page": 24,
+    "ref_price_eur_ht": 7.2
+  },
+  {
+    "section": "GAMME DES CHEFS",
+    "producer": "M. Chapoutier",
+    "appellation": "BEAUJOLAIS VILLAGES",
+    "cuvee": "Joseph Viola &",
+    "color": "rouge",
+    "vintages": [
+      2024,
+      2025
+    ],
+    "prices": {
+      "2024": [
+        "-",
+        "5,65",
+        "-",
+        "-",
+        "5,45",
+        "-",
+        "-",
+        "5,30",
+        "-"
+      ],
+      "2025": [
+        "-",
+        "5,65",
+        "-",
+        "-",
+        "5,45",
+        "-",
+        "-",
+        "5,30",
+        "-"
+      ]
+    },
+    "page": 24,
+    "ref_price_eur_ht": 5.65
+  },
+  {
+    "section": "GAMME DES CHEFS",
+    "producer": "M. Chapoutier",
+    "appellation": "BEAUJOLAIS VILLAGES",
+    "cuvee": "Joseph Viola &",
+    "color": "blanc",
+    "vintages": [
+      2024,
+      2025
+    ],
+    "prices": {
+      "2024": [
+        "-",
+        "7,40",
+        "-",
+        "-",
+        "7,15",
+        "-",
+        "-",
+        "6,95",
+        "-"
+      ],
+      "2025": [
+        "-",
+        "7,40",
+        "-",
+        "-",
+        "7,15",
+        "-",
+        "-",
+        "6,95",
+        "-"
+      ]
+    },
+    "page": 24,
+    "ref_price_eur_ht": 7.4
+  },
+  {
+    "section": "GAMME DES CHEFS",
+    "producer": "M. Chapoutier",
+    "appellation": "FLEURIE - La Levrattière",
+    "cuvee": "3ème Fleuve",
+    "color": "rouge",
+    "vintages": [
+      2020,
+      2021
+    ],
+    "prices": {
+      "2020": [
+        "-",
+        "10,40",
+        "-",
+        "-",
+        "10,05",
+        "-",
+        "-",
+        "9,80",
+        "-"
+      ],
+      "2021": [
+        "-",
+        "10,40",
+        "-",
+        "-",
+        "10,05",
+        "-",
+        "-",
+        "9,80",
+        "-"
+      ]
+    },
+    "page": 24,
+    "ref_price_eur_ht": 10.4
+  },
+  {
+    "section": "LUCIDI",
+    "producer": "Lucidi & Chapoutier",
+    "appellation": "IGP COLLINES RHODANIENNES",
+    "cuvee": "Lucidus blanc",
+    "color": "blanc",
+    "vintages": [
+      2023,
+      2024
+    ],
+    "prices": {
+      "2023": [
+        "-",
+        "22,40",
+        "-",
+        "-",
+        "21,60",
+        "-",
+        "-",
+        "21,10",
+        "-"
+      ],
+      "2024": [
+        "-",
+        "22,40",
+        "-",
+        "-",
+        "21,60",
+        "-",
+        "-",
+        "21,10",
+        "-"
+      ]
+    },
+    "page": 24,
+    "ref_price_eur_ht": 22.4
+  },
+  {
+    "section": "LUCIDI",
+    "producer": "Lucidi & Chapoutier",
+    "appellation": "IGP COLLINES RHODANIENNES",
+    "cuvee": "Lucidus rouge",
+    "color": "blanc",
+    "vintages": [
+      2023,
+      2024
+    ],
+    "prices": {
+      "2023": [
+        "-",
+        "24,65",
+        "-",
+        "-",
+        "23,80",
+        "-",
+        "-",
+        "23,20",
+        "-"
+      ],
+      "2024": [
+        "-",
+        "24,65",
+        "-",
+        "-",
+        "23,80",
+        "-",
+        "-",
+        "23,20",
+        "-"
+      ]
+    },
+    "page": 24,
+    "ref_price_eur_ht": 24.65
+  },
+  {
+    "section": "GAMME DES CHEFS",
+    "producer": "M. Chapoutier",
+    "appellation": "SAINT-VERAN",
+    "cuvee": "3ème Fleuve",
+    "color": "blanc",
+    "vintages": [
+      2024,
+      2025
+    ],
+    "prices": {
+      "2024": [
+        "-",
+        "13,30",
+        "-",
+        "-",
+        "12,80",
+        "-",
+        "-",
+        "12,50",
+        "-"
+      ],
+      "2025": [
+        "-",
+        "13,30",
+        "-",
+        "-",
+        "12,80",
+        "-",
+        "-",
+        "12,50",
+        "-"
+      ]
+    },
+    "page": 24,
+    "ref_price_eur_ht": 13.3
+  },
+  {
+    "section": "STENOPE",
+    "producer": "Devaux & Chapoutier",
+    "appellation": "CHAMPAGNE",
+    "cuvee": "Caisse bois de 4 bouteilles 75cl",
+    "color": null,
+    "vintages": [
+      2009,
+      2010,
+      2012,
+      2013
+    ],
+    "prices": {
+      "2009": [
+        "55,00"
+      ],
+      "2010": [
+        "55,00"
+      ],
+      "2012": [
+        "53,00"
+      ],
+      "2013": [
+        "53,00"
+      ]
+    },
+    "page": 25,
+    "ref_price_eur_ht": 53.0
+  },
+  {
+    "section": "STENOPE",
+    "producer": "Devaux & Chapoutier",
+    "appellation": "CHAMPAGNE",
+    "cuvee": "Carton de 3 ou 6 bouteilles 75cl",
+    "color": null,
+    "vintages": [
+      2009,
+      2010,
+      2011,
+      2012,
+      2013
+    ],
+    "prices": {
+      "2009": [
+        "49,00"
+      ],
+      "2010": [
+        "49,00"
+      ],
+      "2011": [
+        "49,00"
+      ],
+      "2012": [
+        "46,00"
+      ],
+      "2013": [
+        "46,00"
+      ]
+    },
+    "page": 25,
+    "ref_price_eur_ht": 46.0
+  },
+  {
+    "section": "STENOPE",
+    "producer": "Devaux & Chapoutier",
+    "appellation": "CHAMPAGNE",
+    "cuvee": "Magnum coffret de 150cl",
+    "color": null,
+    "vintages": [
+      2009,
+      2010,
+      2011,
+      2012,
+      2022
+    ],
+    "prices": {
+      "2009": [
+        "135,00"
+      ],
+      "2010": [
+        "135,00"
+      ],
+      "2011": [
+        "135,00"
+      ],
+      "2012": [
+        "130,00"
+      ],
+      "2022": [
+        "26,00"
+      ]
+    },
+    "page": 25,
+    "ref_price_eur_ht": 26.0
+  },
+  {
+    "section": "TERLATO",
+    "producer": "Terlato & Chapoutier",
+    "appellation": "AUSTRALIE, VICTORIA,",
+    "cuvee": "PYRENEES",
+    "color": "rouge",
+    "vintages": [
+      2015,
+      2018
+    ],
+    "prices": {
+      "2015": [
+        "-",
+        "28",
+        "Epuisé",
+        "-",
+        "28",
+        "Epuisé",
+        "-",
+        "28",
+        "Epuisé"
+      ],
+      "2018": [
+        "-",
+        "29",
+        "Epuisé",
+        "-",
+        "29",
+        "Epuisé",
+        "-",
+        "29",
+        "Epuisé"
+      ]
+    },
+    "page": 26,
+    "ref_price_eur_ht": 29.0
+  },
+  {
+    "section": "TERLATO",
+    "producer": "Terlato & Chapoutier",
+    "appellation": "AUSTRALIE, VICTORIA,",
+    "cuvee": "Shiraz",
+    "color": "rouge",
+    "vintages": [
+      2016,
+      2017
+    ],
+    "prices": {
+      "2017": [
+        "-",
+        "24",
+        "Epuisé",
+        "-",
+        "24",
+        "Epuisé",
+        "-",
+        "24",
+        "Epuisé"
+      ],
+      "2016": [
+        "-",
+        "13,80",
+        "-",
+        "-",
+        "13,30",
+        "-",
+        "-",
+        "13,00",
+        "-"
+      ]
+    },
+    "page": 26,
+    "ref_price_eur_ht": 24.0
+  },
+  {
+    "section": "TERLATO",
+    "producer": "Terlato & Chapoutier",
+    "appellation": "AUSTRALIE, VICTORIA,",
+    "cuvee": "Sélection Parcellaire",
+    "color": "rouge",
+    "vintages": [
+      2018,
+      2019,
+      2020,
+      2021
+    ],
+    "prices": {
+      "2018": [
+        "-",
+        "25",
+        "53",
+        "-",
+        "25",
+        "53",
+        "-",
+        "25",
+        "53"
+      ],
+      "2019": [
+        "-",
+        "25",
+        "53",
+        "-",
+        "25",
+        "53",
+        "-",
+        "25",
+        "53"
+      ],
+      "2020": [
+        "-",
+        "26",
+        "55",
+        "-",
+        "26",
+        "55",
+        "-",
+        "26",
+        "55"
+      ],
+      "2021": [
+        "-",
+        "26",
+        "Epuisé",
+        "-",
+        "26",
+        "Epuisé",
+        "-",
+        "26",
+        "Epuisé"
+      ]
+    },
+    "page": 26,
+    "ref_price_eur_ht": 26.0
+  },
+  {
+    "section": "LAUGHTON",
+    "producer": "Laughton & Chapoutier",
+    "appellation": "AUSTRALIE, VICTORIA, HEATHCOTE",
+    "cuvee": "DOMAINE DE CAMBRIEN",
+    "color": "rouge",
+    "vintages": [
+      2013
+    ],
+    "prices": {
+      "2013": [
+        "-",
+        "37",
+        "Epuisé",
+        "-",
+        "37",
+        "Epuisé",
+        "-",
+        "37",
+        "Epuisé"
+      ]
+    },
+    "page": 26,
+    "ref_price_eur_ht": 37.0
+  },
+  {
+    "section": "LAUGHTON",
+    "producer": "Laughton & Chapoutier",
+    "appellation": "CÔTES DU ROUSSILLON",
+    "cuvee": "Rouge",
+    "color": "rouge",
+    "vintages": [
+      2021
+    ],
+    "prices": {
+      "2021": [
+        "-",
+        "10,40",
+        "22,25",
+        "-",
+        "10,05",
+        "21,55",
+        "-",
+        "9,80",
+        "21,05"
+      ]
+    },
+    "page": 26,
+    "ref_price_eur_ht": 10.4
+  },
+  {
+    "section": "LAUGHTON",
+    "producer": "Laughton & Chapoutier",
+    "appellation": "CÔTES DU ROUSSILLON",
+    "cuvee": "VILLAGES",
+    "color": "rouge",
+    "vintages": [
+      2020
+    ],
+    "prices": {
+      "2020": [
+        "-",
+        "10,40",
+        "22,25",
+        "-",
+        "10,05",
+        "21,55",
+        "-",
+        "9,80",
+        "21,05"
+      ]
+    },
+    "page": 26,
+    "ref_price_eur_ht": 10.4
+  },
+  {
+    "section": "TERLATO",
+    "producer": "Terlato & Chapoutier",
+    "appellation": "Shiraz",
+    "cuvee": "Sélection Parcellaire",
+    "color": "rouge",
+    "vintages": [
+      2019,
+      2020,
+      2021,
+      2022
+    ],
+    "prices": {
+      "2019": [
+        "-",
+        "29",
+        "Epuisé",
+        "-",
+        "29",
+        "Epuisé",
+        "-",
+        "29",
+        "Epuisé"
+      ],
+      "2020": [
+        "-",
+        "30",
+        "61",
+        "-",
+        "30",
+        "61",
+        "-",
+        "30",
+        "61"
+      ],
+      "2021": [
+        "-",
+        "30",
+        "Epuisé",
+        "-",
+        "30",
+        "Epuisé",
+        "-",
+        "30",
+        "Epuisé"
+      ],
+      "2022": [
+        "-",
+        "30",
+        "61",
+        "-",
+        "30",
+        "61",
+        "-",
+        "30",
+        "61"
+      ]
+    },
+    "page": 26,
+    "ref_price_eur_ht": 30.0
+  },
+  {
+    "section": "LAUGHTON",
+    "producer": "Laughton & Chapoutier",
+    "appellation": "Shiraz",
+    "cuvee": "Sélection Parcellaire",
+    "color": "rouge",
+    "vintages": [
+      2015,
+      2018
+    ],
+    "prices": {
+      "2015": [
+        "-",
+        "33",
+        "69",
+        "-",
+        "33",
+        "69",
+        "-",
+        "33",
+        "69"
+      ],
+      "2018": [
+        "-",
+        "35",
+        "73",
+        "-",
+        "35",
+        "73",
+        "-",
+        "35",
+        "73"
+      ]
+    },
+    "page": 26,
+    "ref_price_eur_ht": 35.0
+  },
+  {
+    "section": "LAUGHTON",
+    "producer": "Laughton & Chapoutier",
+    "appellation": "AUSTRALIE",
+    "cuvee": "Emily's Paddock Shiraz &",
+    "color": null,
+    "vintages": [
+      2022,
+      2023
+    ],
+    "prices": {
+      "2022": [
+        "-",
+        "57,60",
+        "-",
+        "-",
+        "55,55",
+        "-",
+        "-",
+        "54,20",
+        "-"
+      ],
+      "2023": [
+        "-",
+        "57,60",
+        "-",
+        "-",
+        "55,55",
+        "-",
+        "-",
+        "54,20",
+        "-"
+      ]
+    },
+    "page": 27,
+    "ref_price_eur_ht": 57.6
+  },
+  {
+    "section": "LAUGHTON",
+    "producer": "Laughton & Chapoutier",
+    "appellation": "AUSTRALIE",
+    "cuvee": "Giaconda & Chapoutier",
+    "color": null,
+    "vintages": [
+      2010
+    ],
+    "prices": {
+      "2010": [
+        "-",
+        "45",
+        "Epuisé",
+        "-",
+        "45",
+        "Epuisé",
+        "-",
+        "45",
+        "Epuisé"
+      ]
+    },
+    "page": 27,
+    "ref_price_eur_ht": 45.0
+  },
+  {
+    "section": "LAUGHTON",
+    "producer": "Laughton & Chapoutier",
+    "appellation": "AUSTRALIE",
+    "cuvee": "Ron & Elva Laughton - Jasper Hill",
+    "color": null,
+    "vintages": [
+      2022
+    ],
+    "prices": {
+      "2022": [
+        "-",
+        "34,60",
+        "-",
+        "-",
+        "33,35",
+        "-",
+        "-",
+        "32,55",
+        "-"
+      ]
+    },
+    "page": 27,
+    "ref_price_eur_ht": 34.6
+  },
+  {
+    "section": "LAUGHTON",
+    "producer": "Laughton & Chapoutier",
+    "appellation": "AUSTRALIE",
+    "cuvee": "Ron & Elva Laughton Jasper",
+    "color": null,
+    "vintages": [
+      2019,
+      2022,
+      2023
+    ],
+    "prices": {
+      "2019": [
+        "-",
+        "46,95",
+        "-",
+        "-",
+        "45,30",
+        "-",
+        "-",
+        "44,20",
+        "-"
+      ],
+      "2022": [
+        "-",
+        "42,70",
+        "-",
+        "-",
+        "41,20",
+        "-",
+        "-",
+        "40,20",
+        "-"
+      ],
+      "2023": [
+        "-",
+        "42,70",
+        "-",
+        "-",
+        "41,20",
+        "-",
+        "-",
+        "40,20",
+        "-"
+      ]
+    },
+    "page": 27,
+    "ref_price_eur_ht": 42.7
+  },
+  {
+    "section": "LAUGHTON",
+    "producer": "Laughton & Chapoutier",
+    "appellation": "AUSTRALIE",
+    "cuvee": "Sélection Parcellaire",
+    "color": null,
+    "vintages": [
+      2011,
+      2012
+    ],
+    "prices": {
+      "2011": [
+        "-",
+        "45",
+        "Epuisé",
+        "-",
+        "45",
+        "Epuisé",
+        "-",
+        "45",
+        "Epuisé"
+      ],
+      "2012": [
+        "-",
+        "45",
+        "93",
+        "-",
+        "45",
+        "93",
+        "-",
+        "45",
+        "93"
+      ]
+    },
+    "page": 27,
+    "ref_price_eur_ht": 45.0
+  },
+  {
+    "section": "TRENEL",
+    "producer": "Maison Trenel",
+    "appellation": "BEAUJOLAIS VILLAGES",
+    "cuvee": "Beaujolais Villages",
+    "color": "liqueur",
+    "vintages": [
+      2022,
+      2023
+    ],
+    "prices": {
+      "2022": [
+        "-",
+        "7,20",
+        "-",
+        "-",
+        "6,95",
+        "-",
+        "-",
+        "6,80",
+        "-"
+      ],
+      "2023": [
+        "-",
+        "7,20",
+        "-",
+        "-",
+        "6,95",
+        "-",
+        "-",
+        "6,80",
+        "-"
+      ]
+    },
+    "page": 28,
+    "ref_price_eur_ht": 7.2
+  },
+  {
+    "section": "TRENEL",
+    "producer": "Maison Trenel",
+    "appellation": "FLEURIE",
+    "cuvee": "CÔTE DE BROUILLY",
+    "color": "liqueur",
+    "vintages": [
+      2024,
+      2025
+    ],
+    "prices": {
+      "2024": [
+        "-",
+        "7,55",
+        "-",
+        "-",
+        "7,30",
+        "-",
+        "-",
+        "7,10",
+        "-"
+      ],
+      "2025": [
+        "-",
+        "7,55",
+        "-",
+        "-",
+        "7,30",
+        "-",
+        "-",
+        "7,10",
+        "-"
+      ]
+    },
+    "page": 28,
+    "ref_price_eur_ht": 7.55
+  },
+  {
+    "section": "TRENEL",
+    "producer": "Maison Trenel",
+    "appellation": "FLEURIE",
+    "cuvee": "FLEURIE",
+    "color": "liqueur",
+    "vintages": [
+      2023,
+      2024
+    ],
+    "prices": {
+      "2023": [
+        "-",
+        "8,20",
+        "-",
+        "-",
+        "7,90",
+        "-",
+        "-",
+        "7,70",
+        "-"
+      ],
+      "2024": [
+        "-",
+        "8,20",
+        "-",
+        "-",
+        "7,90",
+        "-",
+        "-",
+        "7,70",
+        "-"
+      ]
+    },
+    "page": 28,
+    "ref_price_eur_ht": 8.2
+  },
+  {
+    "section": "TRENEL",
+    "producer": "Maison Trenel",
+    "appellation": "FLEURIE",
+    "cuvee": "Fleurie",
+    "color": "liqueur",
+    "vintages": [
+      2020,
+      2021
+    ],
+    "prices": {
+      "2021": [
+        "11,00",
+        "-",
+        "-",
+        "10,65",
+        "-",
+        "-",
+        "10,35",
+        "-",
+        "-"
+      ],
+      "2020": [
+        "-",
+        "10,40",
+        "-",
+        "-",
+        "10,05",
+        "-",
+        "-",
+        "9,80",
+        "-"
+      ]
+    },
+    "page": 28,
+    "ref_price_eur_ht": 11.0
+  },
+  {
+    "section": "TRENEL",
+    "producer": "Maison Trenel",
+    "appellation": "FLEURIE",
+    "cuvee": "La Levrattière",
+    "color": "liqueur",
+    "vintages": [
+      2021
+    ],
+    "prices": {
+      "2021": [
+        "-",
+        "10,40",
+        "-",
+        "-",
+        "10,05",
+        "-",
+        "-",
+        "9,80",
+        "-"
+      ]
+    },
+    "page": 28,
+    "ref_price_eur_ht": 10.4
+  },
+  {
+    "section": "TRENEL",
+    "producer": "Maison Trenel",
+    "appellation": "FLEURIE",
+    "cuvee": "La Madone",
+    "color": "liqueur",
+    "vintages": [
+      2022,
+      2023
+    ],
+    "prices": {
+      "2022": [
+        "11,00",
+        "-",
+        "-",
+        "10,65",
+        "-",
+        "-",
+        "10,35",
+        "-",
+        "-"
+      ],
+      "2023": [
+        "11,00",
+        "23,50",
+        "74,00",
+        "10,65",
+        "22,75",
+        "74,00",
+        "10,35",
+        "22,20",
+        "74,00"
+      ]
+    },
+    "page": 28,
+    "ref_price_eur_ht": 11.0
+  },
+  {
+    "section": "TRENEL",
+    "producer": "Maison Trenel",
+    "appellation": "FLEURIE",
+    "cuvee": "MORGON CÔTE DU PY",
+    "color": "liqueur",
+    "vintages": [
+      2022,
+      2024,
+      2025
+    ],
+    "prices": {
+      "2022": [
+        "-",
+        "Epuisé",
+        "19,55",
+        "-",
+        "Epuisé",
+        "18,90",
+        "-",
+        "Epuisé",
+        "18,50"
+      ],
+      "2024": [
+        "-",
+        "9,05",
+        "-",
+        "-",
+        "8,70",
+        "-",
+        "-",
+        "8,50",
+        "-"
+      ],
+      "2025": [
+        "-",
+        "9,05",
+        "-",
+        "-",
+        "8,70",
+        "-",
+        "-",
+        "8,50",
+        "-"
+      ]
+    },
+    "page": 28,
+    "ref_price_eur_ht": 9.05
+  },
+  {
+    "section": "TRENEL",
+    "producer": "Maison Trenel",
+    "appellation": "FLEURIE",
+    "cuvee": "MOULIN A VENT",
+    "color": "liqueur",
+    "vintages": [
+      2024,
+      2025
+    ],
+    "prices": {
+      "2024": [
+        "-",
+        "10,00",
+        "-",
+        "-",
+        "9,65",
+        "-",
+        "-",
+        "9,40",
+        "-"
+      ],
+      "2025": [
+        "-",
+        "10,10",
+        "-",
+        "-",
+        "9,75",
+        "-",
+        "-",
+        "9,50",
+        "-"
+      ]
+    },
+    "page": 28,
+    "ref_price_eur_ht": 10.1
+  },
+  {
+    "section": "TRENEL",
+    "producer": "Maison Trenel",
+    "appellation": "FLEURIE",
+    "cuvee": "SAINT AMOUR",
+    "color": "liqueur",
+    "vintages": [
+      2023,
+      2024,
+      2025
+    ],
+    "prices": {
+      "2023": [
+        "4,90",
+        "Epuisé",
+        "-",
+        "4,75",
+        "Epuisé",
+        "-",
+        "4,65",
+        "Epuisé",
+        "-"
+      ],
+      "2024": [
+        "4,90",
+        "8,75",
+        "-",
+        "4,75",
+        "8,45",
+        "-",
+        "4,65",
+        "8,25",
+        "-"
+      ],
+      "2025": [
+        "4,90",
+        "8,75",
+        "-",
+        "4,75",
+        "8,45",
+        "-",
+        "4,65",
+        "8,25",
+        "-"
+      ]
+    },
+    "page": 28,
+    "ref_price_eur_ht": 4.9
+  },
+  {
+    "section": "TRENEL",
+    "producer": "Maison Trenel",
+    "appellation": "JULIENAS",
+    "cuvee": "Les Capitans",
+    "color": "liqueur",
+    "vintages": [
+      2020
+    ],
+    "prices": {
+      "2020": [
+        "13,70",
+        "28,85",
+        "-",
+        "13,20",
+        "27,85",
+        "-",
+        "12,90",
+        "27,25",
+        "-"
+      ]
+    },
+    "page": 28,
+    "ref_price_eur_ht": 13.7
+  },
+  {
+    "section": "TRENEL",
+    "producer": "Maison Trenel",
+    "appellation": "MORGON CÔTE DU PY",
+    "cuvee": "Les Strates",
+    "color": "liqueur",
+    "vintages": [
+      2023,
+      2024
+    ],
+    "prices": {
+      "2023": [
+        "14,10",
+        "-",
+        "-",
+        "13,60",
+        "-",
+        "-",
+        "13,25",
+        "-",
+        "-"
+      ],
+      "2024": [
+        "14,10",
+        "-",
+        "-",
+        "13,60",
+        "-",
+        "-",
+        "13,25",
+        "-",
+        "-"
+      ]
+    },
+    "page": 28,
+    "ref_price_eur_ht": 14.1
+  },
+  {
+    "section": "TRENEL",
+    "producer": "Maison Trenel",
+    "appellation": "SAINT-VERAN",
+    "cuvee": "Clos de Champgrenon",
+    "color": "liqueur",
+    "vintages": [
+      2022,
+      2023
+    ],
+    "prices": {
+      "2022": [
+        "14,20",
+        "-",
+        "-",
+        "13,70",
+        "-",
+        "-",
+        "13,35",
+        "-",
+        "-"
+      ],
+      "2023": [
+        "14,20",
+        "-",
+        "-",
+        "13,70",
+        "-",
+        "-",
+        "13,35",
+        "-",
+        "-"
+      ]
+    },
+    "page": 28,
+    "ref_price_eur_ht": 14.2
+  },
+  {
+    "section": "TRENEL",
+    "producer": "Maison Trenel",
+    "appellation": "SAINT-VERAN",
+    "cuvee": "L'Homonyme",
+    "color": "liqueur",
+    "vintages": [
+      2022,
+      2023
+    ],
+    "prices": {
+      "2022": [
+        "17,50",
+        "-",
+        "-",
+        "16,85",
+        "-",
+        "-",
+        "16,45",
+        "-",
+        "-"
+      ],
+      "2023": [
+        "17,50",
+        "36,45",
+        "100",
+        "16,85",
+        "35,20",
+        "100",
+        "16,45",
+        "34,40",
+        "100"
+      ]
+    },
+    "page": 28,
+    "ref_price_eur_ht": 17.5
+  },
+  {
+    "section": "TRENEL",
+    "producer": "Maison Trenel",
+    "appellation": "SAINT-VERAN",
+    "cuvee": "Les Thorins",
+    "color": "liqueur",
+    "vintages": [
+      2023,
+      2024
+    ],
+    "prices": {
+      "2023": [
+        "14,70",
+        "30,90",
+        "89",
+        "14,20",
+        "29,85",
+        "89",
+        "13,85",
+        "29,15",
+        "89"
+      ],
+      "2024": [
+        "14,70",
+        "-",
+        "-",
+        "14,20",
+        "-",
+        "-",
+        "13,85",
+        "-",
+        "-"
+      ]
+    },
+    "page": 28,
+    "ref_price_eur_ht": 14.7
+  },
+  {
+    "section": "TRENEL",
+    "producer": "Maison Trenel",
+    "appellation": "BEAUJOLAIS",
+    "cuvee": "BEAUJOLAIS BLANC",
+    "color": null,
+    "vintages": [
+      2023,
+      2024
+    ],
+    "prices": {
+      "2023": [
+        "-",
+        "7,05",
+        "-",
+        "-",
+        "6,80",
+        "-",
+        "-",
+        "6,65",
+        "-"
+      ],
+      "2024": [
+        "-",
+        "7,05",
+        "-",
+        "-",
+        "6,80",
+        "-",
+        "-",
+        "6,65",
+        "-"
+      ]
+    },
+    "page": 29,
+    "ref_price_eur_ht": 7.05
+  },
+  {
+    "section": "TRENEL",
+    "producer": "Maison Trenel",
+    "appellation": "BEAUJOLAIS",
+    "cuvee": "Beaujolais",
+    "color": null,
+    "vintages": [
+      2023
+    ],
+    "prices": {
+      "2023": [
+        "-",
+        "5,80",
+        "-",
+        "-",
+        "5,60",
+        "-",
+        "-",
+        "5,45",
+        "-"
+      ]
+    },
+    "page": 29,
+    "ref_price_eur_ht": 5.8
+  },
+  {
+    "section": "TRENEL",
+    "producer": "Maison Trenel",
+    "appellation": "BEAUJOLAIS",
+    "cuvee": "Cuvée Rochebonne",
+    "color": null,
+    "vintages": [
+      2024
+    ],
+    "prices": {
+      "2024": [
+        "-",
+        "5,80",
+        "-",
+        "-",
+        "5,60",
+        "-",
+        "-",
+        "5,45",
+        "-"
+      ]
+    },
+    "page": 29,
+    "ref_price_eur_ht": 5.8
+  },
+  {
+    "section": "TRENEL",
+    "producer": "Maison Trenel",
+    "appellation": "BEAUJOLAIS BIO",
+    "cuvee": "Beaujolais Bio",
+    "color": null,
+    "vintages": [
+      2022
+    ],
+    "prices": {
+      "2022": [
+        "-",
+        "6,55",
+        "-",
+        "-",
+        "6,30",
+        "-",
+        "-",
+        "6,15",
+        "-"
+      ]
+    },
+    "page": 29,
+    "ref_price_eur_ht": 6.55
+  },
+  {
+    "section": "TRENEL",
+    "producer": "Maison Trenel",
+    "appellation": "BEAUJOLAIS VILLAGES",
+    "cuvee": "Beaujolais Villages",
+    "color": null,
+    "vintages": [
+      2022,
+      2023
+    ],
+    "prices": {
+      "2022": [
+        "3,55",
+        "6,05",
+        "-",
+        "3,40",
+        "5,80",
+        "-",
+        "3,35",
+        "5,70",
+        "-"
+      ],
+      "2023": [
+        "-",
+        "6,05",
+        "-",
+        "-",
+        "5,80",
+        "-",
+        "-",
+        "5,70",
+        "-"
+      ]
+    },
+    "page": 29,
+    "ref_price_eur_ht": 6.05
+  },
+  {
+    "section": "TRENEL",
+    "producer": "Maison Trenel",
+    "appellation": "BOURGOGNE",
+    "cuvee": "Bourgogne",
+    "color": null,
+    "vintages": [
+      2022
+    ],
+    "prices": {
+      "2022": [
+        "-",
+        "13,50",
+        "-",
+        "-",
+        "13,05",
+        "-",
+        "-",
+        "12,70",
+        "-"
+      ]
+    },
+    "page": 29,
+    "ref_price_eur_ht": 13.5
+  },
+  {
+    "section": "TRENEL",
+    "producer": "Maison Trenel",
+    "appellation": "BOURGOGNE",
+    "cuvee": "Bourgogne",
+    "color": "effervescent",
+    "vintages": [
+      2024
+    ],
+    "prices": {
+      "2024": [
+        "-",
+        "9,70",
+        "-",
+        "-",
+        "9,35",
+        "-",
+        "-",
+        "9,15",
+        "-"
+      ]
+    },
+    "page": 29,
+    "ref_price_eur_ht": 9.7
+  },
+  {
+    "section": "TRENEL",
+    "producer": "Maison Trenel",
+    "appellation": "Chardonnay",
+    "cuvee": "Chardonnay",
+    "color": "effervescent",
+    "vintages": [
+      2025
+    ],
+    "prices": {
+      "2025": [
+        "-",
+        "9,70",
+        "-",
+        "-",
+        "9,35",
+        "-",
+        "-",
+        "9,15",
+        "-"
+      ]
+    },
+    "page": 29,
+    "ref_price_eur_ht": 9.7
+  },
+  {
+    "section": "TRENEL",
+    "producer": "Maison Trenel",
+    "appellation": "Chardonnay",
+    "cuvee": "MÂCON VILLAGES",
+    "color": "effervescent",
+    "vintages": [
+      2023,
+      2024,
+      2025
+    ],
+    "prices": {
+      "2023": [
+        "5,15",
+        "Epuisé",
+        "-",
+        "5,00",
+        "Epuisé",
+        "-",
+        "4,90",
+        "Epuisé",
+        "-"
+      ],
+      "2024": [
+        "-",
+        "9,30",
+        "-",
+        "-",
+        "9,00",
+        "-",
+        "-",
+        "8,75",
+        "-"
+      ],
+      "2025": [
+        "5,15",
+        "9,30",
+        "-",
+        "5,00",
+        "9,00",
+        "-",
+        "4,90",
+        "8,75",
+        "-"
+      ]
+    },
+    "page": 29,
+    "ref_price_eur_ht": 5.15
+  },
+  {
+    "section": "TRENEL",
+    "producer": "Maison Trenel",
+    "appellation": "Pinot Noir",
+    "cuvee": "COTEAUX BOURGUIGNONS",
+    "color": null,
+    "vintages": [
+      2024,
+      2025
+    ],
+    "prices": {
+      "2024": [
+        "-",
+        "5,45",
+        "-",
+        "-",
+        "5,25",
+        "-",
+        "-",
+        "5,15",
+        "-"
+      ],
+      "2025": [
+        "-",
+        "5,45",
+        "-",
+        "-",
+        "5,25",
+        "-",
+        "-",
+        "5,15",
+        "-"
+      ]
+    },
+    "page": 29,
+    "ref_price_eur_ht": 5.45
+  },
+  {
+    "section": "TRENEL",
+    "producer": "Maison Trenel",
+    "appellation": "Pinot Noir",
+    "cuvee": "POUILLY FUISSE",
+    "color": "effervescent",
+    "vintages": [
+      2024,
+      2025
+    ],
+    "prices": {
+      "2024": [
+        "-",
+        "17,20",
+        "-",
+        "-",
+        "16,60",
+        "-",
+        "-",
+        "16,20",
+        "-"
+      ],
+      "2025": [
+        "-",
+        "17,20",
+        "-",
+        "-",
+        "16,60",
+        "-",
+        "-",
+        "16,20",
+        "-"
+      ]
+    },
+    "page": 29,
+    "ref_price_eur_ht": 17.2
+  },
+  {
+    "section": "TRENEL",
+    "producer": "Maison Trenel",
+    "appellation": "Pinot Noir",
+    "cuvee": "Pinot Noir",
+    "color": null,
+    "vintages": [
+      2023
+    ],
+    "prices": {
+      "2023": [
+        "-",
+        "13,50",
+        "-",
+        "-",
+        "13,05",
+        "-",
+        "-",
+        "12,70",
+        "-"
+      ]
+    },
+    "page": 29,
+    "ref_price_eur_ht": 13.5
+  },
+  {
+    "section": "TRENEL",
+    "producer": "Maison Trenel",
+    "appellation": "SAINT-VERAN",
+    "cuvee": "SAINT VERAN",
+    "color": "effervescent",
+    "vintages": [
+      2023,
+      2024,
+      2025
+    ],
+    "prices": {
+      "2023": [
+        "Epuisé",
+        "Epuisé",
+        "26,70",
+        "Epuisé",
+        "Epuisé",
+        "25,80",
+        "Epuisé",
+        "Epuisé",
+        "25,20"
+      ],
+      "2024": [
+        "6,80",
+        "12,60",
+        "Epuisé",
+        "6,60",
+        "12,15",
+        "Epuisé",
+        "6,45",
+        "11,85",
+        "Epuisé"
+      ],
+      "2025": [
+        "6,80",
+        "12,60",
+        "-",
+        "6,60",
+        "12,15",
+        "-",
+        "6,45",
+        "11,85",
+        "-"
+      ]
+    },
+    "page": 29,
+    "ref_price_eur_ht": 6.8
+  },
+  {
+    "section": "TRENEL",
+    "producer": "Maison Trenel",
+    "appellation": "SAINT-VERAN",
+    "cuvee": "Saint-Veran",
+    "color": "effervescent",
+    "vintages": [
+      2024,
+      2025
+    ],
+    "prices": {
+      "2024": [
+        "-",
+        "13,30",
+        "-",
+        "-",
+        "12,80",
+        "-",
+        "-",
+        "12,50",
+        "-"
+      ],
+      "2025": [
+        "-",
+        "13,30",
+        "-",
+        "-",
+        "12,80",
+        "-",
+        "-",
+        "12,50",
+        "-"
+      ]
+    },
+    "page": 29,
+    "ref_price_eur_ht": 13.3
+  },
+  {
+    "section": "TRENEL",
+    "producer": "Maison Trenel",
+    "appellation": "SAINT-VERAN",
+    "cuvee": "VIRE CLESSE",
+    "color": "effervescent",
+    "vintages": [
+      2024,
+      2025
+    ],
+    "prices": {
+      "2024": [
+        "-",
+        "11,55",
+        "-",
+        "-",
+        "11,10",
+        "-",
+        "-",
+        "10,85",
+        "-"
+      ],
+      "2025": [
+        "-",
+        "11,55",
+        "-",
+        "-",
+        "11,10",
+        "-",
+        "-",
+        "10,85",
+        "-"
+      ]
+    },
+    "page": 29,
+    "ref_price_eur_ht": 11.55
+  }
+]

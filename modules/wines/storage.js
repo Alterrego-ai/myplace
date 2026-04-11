@@ -523,6 +523,23 @@ function safeJsonParse(str, fallback) {
   }
 }
 
+/**
+ * Supprime tous les vins dont la colonne `source` correspond exactement.
+ * Retourne { deleted: n }. Utilisé par /bulk-import?replace=true pour purger
+ * une source de la base de connaissance avant un ré-import.
+ *
+ * NOTE : les wine_scans / user_cellar référencent wine_id via ON DELETE SET NULL
+ * ou CASCADE selon la table, donc la suppression est safe pour les scans, mais
+ * videra les entrées user_cellar. À n'utiliser que sur des sources auto-insérées
+ * (chapoutier-tarif-2026, bulk-import, etc.), JAMAIS sur une source utilisateur.
+ */
+function deleteWinesBySource(source) {
+  if (!source || typeof source !== 'string') return { deleted: 0 };
+  const db = getDb();
+  const info = db.prepare(`DELETE FROM wines WHERE source = ?`).run(source);
+  return { deleted: info.changes || 0 };
+}
+
 module.exports = {
   init,
   getDb,
@@ -531,6 +548,7 @@ module.exports = {
   linkPhotoToWine,
   insertWine,
   findWineByIdentity,
+  deleteWinesBySource,
   getWineById,
   getWinePhotos,
   searchWines,

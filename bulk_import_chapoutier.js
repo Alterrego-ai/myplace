@@ -17,6 +17,9 @@ const path = require('path');
 
 const args = process.argv.slice(2);
 const DRY_RUN = args.includes('--dry-run');
+// --replace : purge le "source" côté backend avant le 1er batch (via replace=true).
+// Utile quand le parser a été corrigé et qu'on veut nuker l'ancien lot.
+const REPLACE = args.includes('--replace');
 const BASE_URL =
   args.find((a) => a.startsWith('--url='))?.slice(6) ||
   process.env.MYPLACE_URL ||
@@ -88,7 +91,7 @@ function expand(wines) {
   return out;
 }
 
-async function postBatch(batch) {
+async function postBatch(batch, replaceFirst = false) {
   const res = await fetch(`${BASE_URL}/api/wine/bulk-import`, {
     method: 'POST',
     headers: {
@@ -99,6 +102,7 @@ async function postBatch(batch) {
       wines: batch,
       dryRun: DRY_RUN,
       source: 'chapoutier-tarif-2026',
+      replace: replaceFirst,
     }),
   });
   if (!res.ok) {
@@ -122,13 +126,16 @@ async function postBatch(batch) {
   const failures = [];
   const skipped = [];
 
+  let totalPurged = 0;
   for (let i = 0; i < expanded.length; i += BATCH_SIZE) {
     const batch = expanded.slice(i, i + BATCH_SIZE);
+    const isFirst = i === 0;
     process.stdout.write(
-      `  batch ${Math.floor(i / BATCH_SIZE) + 1}/${Math.ceil(expanded.length / BATCH_SIZE)} (${batch.length}) ... `
+      `  batch ${Math.floor(i / BATCH_SIZE) + 1}/${Math.ceil(expanded.length / BATCH_SIZE)} (${batch.length})${isFirst && REPLACE ? ' [REPLACE]' : ''} ... `
     );
     try {
-      const r = await postBatch(batch);
+      const r = await postBatch(batch, isFirst && REPLACE);
+      if (r.purged) totalPurged += r.purged;
       total.total += r.total || 0;
       total.inserted += r.inserted || 0;
       total.skipped += r.skipped || 0;
@@ -146,6 +153,7 @@ async function postBatch(batch) {
 
   console.log('');
   console.log('─── Rapport final ──────────────────────');
+  if (REPLACE) console.log(`  Purgés avant insert    : ${totalPurged}`);
   console.log(`  Total soumis : ${total.total}`);
   console.log(`  ${DRY_RUN ? 'Would insert' : 'Inserés     '} : ${total.inserted}`);
   console.log(`  Skippés (déjà en base) : ${total.skipped}`);

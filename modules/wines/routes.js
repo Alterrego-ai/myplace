@@ -451,7 +451,8 @@ module.exports = function createWinesRouter() {
   // Dedup via findWineByIdentity(name, producer, vintage). Auto-création du
   // producer via producers.findOrCreate. Retourne un rapport détaillé.
   router.post('/bulk-import', express.json({ limit: '4mb' }), (req, res) => {
-    const { wines, dryRun = false, source = 'bulk-import' } = req.body || {};
+    const { wines, dryRun = false, source = 'bulk-import', replace = false } =
+      req.body || {};
     if (!Array.isArray(wines) || wines.length === 0) {
       return res.status(400).json({ error: 'missing_wines_array' });
     }
@@ -460,11 +461,25 @@ module.exports = function createWinesRouter() {
     }
     const userSub = req.user?.sub || null;
 
+    // replace=true → purge tous les vins existants avec ce source avant insert.
+    // Utile pour ré-importer un parser corrigé qui a déjà laissé du garbage.
+    let purged = 0;
+    if (replace && !dryRun) {
+      try {
+        const r = storage.deleteWinesBySource(source);
+        purged = r.deleted;
+        console.log(`[wines] bulk-import replace=true purged ${purged} rows (source=${source})`);
+      } catch (e) {
+        return res.status(500).json({ error: 'purge_failed', message: e.message });
+      }
+    }
+
     const report = {
       total: wines.length,
       inserted: 0,
       skipped: 0,
       failed: 0,
+      purged,
       dryRun: !!dryRun,
       details: [],
     };
