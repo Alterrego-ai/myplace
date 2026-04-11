@@ -25,10 +25,12 @@ const { computeCost } = require('../wines/pricing'); // réutilise le helper tok
 const openfoodfacts = require('../../services/openfoodfacts');
 
 // Cross-routing scan photo : si Claude Vision détecte que c'est en réalité
-// un vin, on appelle le module wines pour relancer l'identification
-// sur la même photo et insérer dans wines.db.
+// un vin, on relance identifyWine sur la même photo, on copie la photo
+// dans wines/uploads, et on renvoie une réponse compatible ScanResponse
+// (status, suggestion, photo) pour que le frontend bascule sur l'onglet
+// Vin et affiche la fiche "Métier" riche avec bouton "Ajouter à ma cave"
+// (confirmWine).
 const winesStorage = require('../wines/storage');
-const winesProducers = require('../wines/producers');
 const { identifyWine, MODEL: WINE_MODEL } = require('../wines/claude');
 
 module.exports = function createSpiritsRouter() {
@@ -128,7 +130,9 @@ module.exports = function createSpiritsRouter() {
     const ean = (req.body?.ean || '').toString().trim() || null;
 
     // CAS 1 : Claude voit un vin → relance identifyWine sur la même photo
-    // et insère silencieusement dans wines.db
+    // et renvoie une ScanResponse pour que le front affiche la fiche "Métier"
+    // riche sur l'onglet Vin (confirmation explicite via confirmWine lors du
+    // tap "Ajouter à ma cave").
     if (detectedCategory === 'wine') {
       try {
         const wineId = await identifyWine(absPath, req.file.mimetype);
@@ -137,63 +141,26 @@ module.exports = function createSpiritsRouter() {
         const wineStatus = wineResult.status || 'unknown';
 
         if ((wineStatus === 'identified' || wineStatus === 'partial') && wineResult.name) {
-          // Auto-insert dans wines.db
-          let producerRow = null;
-          if (wineResult.producer) {
-            producerRow = winesProducers.findOrCreate(
-              {
-                name: wineResult.producer,
-                country: wineResult.country || null,
-                region: wineResult.region || null,
-                appellation_main: wineResult.appellation || null,
-                source: 'scan-cross-spirit',
-              },
-              userSub
-            );
-          }
-          const inserted = winesStorage.insertWine(
-            {
-              ...wineResult,
-              producer_id: producerRow?.id || null,
-              source: 'scan-cross-spirit',
-            },
-            userSub
-          );
-
-          // Copie la photo vers wines/uploads et la lie au vin
+          // Copie la photo vers wines/uploads et la persiste dans wines DB
+          // pour que confirmWine puisse la lier à la fiche créée.
+          let winePhoto = null;
           try {
             const winesPhotosDir = winesStorage.getPhotosDir();
             const destPath = path.join(winesPhotosDir, filename);
             fs.copyFileSync(absPath, destPath);
-            const winePhoto = winesStorage.savePhoto({ filename, uploadedBy: userSub });
-            winesStorage.linkPhotoToWine(winePhoto.id, inserted.id, 1);
+            winePhoto = winesStorage.savePhoto({ filename, uploadedBy: userSub });
           } catch (e) {
-            console.warn('[spirit→wine] photo copy/link failed:', e.message);
-          }
-
-          if (ean) {
-            try {
-              winesStorage.upsertBarcode({
-                ean,
-                wineId: inserted.id,
-                format: req.body?.barcodeFormat || null,
-                userSub,
-              });
-              productsStorage.linkToWine(ean, inserted.id);
-            } catch (e) {
-              console.warn('[spirit→wine] barcode link failed:', e.message);
-            }
+            console.warn('[spirit→wine] photo copy failed:', e.message);
           }
 
           return res.json({
             redirectedTo: 'wine',
             status: wineStatus,
             suggestion: wineResult,
-            wine: winesStorage.getWineById(inserted.id),
-            photo,
-            model: MODEL,
-            durationMs: identification.durationMs,
-            cost: wineCost, // coût de l'identification qui a réussi
+            photo: winePhoto,
+            model: WINE_MODEL,
+            durationMs: wineId.durationMs,
+            cost: wineCost,
             costBreakdown: { spiritDetect: cost, wineIdentify: wineCost },
             observed,
             location: geo.lat != null && geo.lon != null ? geo : null,

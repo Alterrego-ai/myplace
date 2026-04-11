@@ -23,10 +23,12 @@ const { computeCost } = require('./pricing');
 const openfoodfacts = require('../../services/openfoodfacts');
 
 // Cross-routing scan photo : si Claude Vision détecte que c'est en réalité
-// un spiritueux, on appelle le module spirits pour relancer l'identification
-// sur la même photo et insérer dans spirits.db.
+// un spiritueux, on relance identifySpirit sur la même photo, on copie
+// la photo dans spirits/uploads, et on renvoie une réponse compatible
+// SpiritScanResponse (status, suggestion, photo) pour que le frontend
+// bascule sur l'onglet Spiritueux et affiche la fiche "Métier" riche
+// avec bouton "Ajouter à mon bar" (confirmSpirit).
 const spiritsStorage = require('../spirits/storage');
-const spiritsDistilleries = require('../spirits/distilleries');
 const { identifySpirit, MODEL: SPIRIT_MODEL } = require('../spirits/claude');
 
 module.exports = function createWinesRouter() {
@@ -137,7 +139,9 @@ module.exports = function createWinesRouter() {
     const ean = (req.body?.ean || '').toString().trim() || null;
 
     // CAS 1 : Claude voit un spiritueux → relance identifySpirit sur la même
-    // photo et insère silencieusement dans spirits.db
+    // photo et renvoie une SpiritScanResponse pour que le front affiche la
+    // fiche "Métier" riche sur l'onglet Spiritueux (confirmation explicite
+    // via confirmSpirit lors du tap "Ajouter à mon bar").
     if (detectedCategory === 'spirit') {
       try {
         const spiritId = await identifySpirit(absPath, req.file.mimetype);
@@ -146,70 +150,31 @@ module.exports = function createWinesRouter() {
         const spiritStatus = spiritResult.status || 'unknown';
 
         if ((spiritStatus === 'identified' || spiritStatus === 'partial') && spiritResult.name) {
-          // Auto-insert dans spirits.db
-          let distilleryRow = null;
-          if (spiritResult.distillery) {
-            distilleryRow = spiritsDistilleries.findOrCreate(
-              {
-                name: spiritResult.distillery,
-                country: spiritResult.country || null,
-                region: spiritResult.region || null,
-                category: spiritResult.type || null,
-                source: 'scan-cross-wine',
-              },
-              userSub
-            );
-          }
-          const inserted = spiritsStorage.insertSpirit(
-            {
-              ...spiritResult,
-              distillery_id: distilleryRow?.id || null,
-              source: 'scan-cross-wine',
-            },
-            userSub
-          );
-
-          // Copie la photo vers spirits/uploads et la lie au spiritueux
+          // Copie la photo vers spirits/uploads et la persiste dans spirits DB
+          // pour que confirmSpirit puisse la lier à la fiche créée.
+          let spiritPhoto = null;
           try {
             const spiritsPhotosDir = spiritsStorage.getPhotosDir();
             const destPath = path.join(spiritsPhotosDir, filename);
             fs.copyFileSync(absPath, destPath);
-            const spiritPhoto = spiritsStorage.savePhoto({ filename, uploadedBy: userSub });
-            spiritsStorage.linkPhotoToSpirit(spiritPhoto.id, inserted.id, 1);
+            spiritPhoto = spiritsStorage.savePhoto({ filename, uploadedBy: userSub });
           } catch (e) {
-            console.warn('[wines→spirit] photo copy/link failed:', e.message);
-          }
-
-          // Si on a un EAN fourni, on crée aussi le lien barcode
-          if (ean) {
-            try {
-              spiritsStorage.upsertBarcode({
-                ean,
-                spiritId: inserted.id,
-                format: req.body?.barcodeFormat || null,
-                userSub,
-              });
-              productsStorage.linkToSpirit(ean, inserted.id);
-            } catch (e) {
-              console.warn('[wines→spirit] barcode link failed:', e.message);
-            }
+            console.warn('[wines→spirit] photo copy failed:', e.message);
           }
 
           return res.json({
             redirectedTo: 'spirit',
             status: spiritStatus,
             suggestion: spiritResult,
-            spirit: spiritsStorage.getSpiritById(inserted.id),
-            photo,
-            model: MODEL,
-            durationMs: identification.durationMs,
-            cost: spiritCost, // coût de l'identification qui a réussi
+            photo: spiritPhoto,
+            model: SPIRIT_MODEL,
+            durationMs: spiritId.durationMs,
+            cost: spiritCost,
             costBreakdown: { wineDetect: cost, spiritIdentify: spiritCost },
             observed,
             location: geo.lat != null && geo.lon != null ? geo : null,
           });
         }
-        // Si identifySpirit n'a pas réussi à identifier, on tombe en cas neutre
         console.warn('[wines→spirit] identifySpirit status:', spiritStatus);
       } catch (e) {
         console.warn('[wines→spirit] cross-retry failed:', e.message);
