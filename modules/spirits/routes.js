@@ -18,6 +18,14 @@ const path = require('path');
 const fs = require('fs');
 
 const storage = require('./storage');
+
+// Admin check — même logique que server.js (ADMIN_EMAILS env var)
+const _ADMIN_RULES = (process.env.ADMIN_EMAILS || '').split(',').map(e => e.trim().toLowerCase()).filter(Boolean);
+function _isAdminEmail(email) {
+  if (!email) return _ADMIN_RULES.length === 0;
+  const lower = email.toLowerCase();
+  return _ADMIN_RULES.some(rule => rule.startsWith('@') ? lower.endsWith(rule) : lower === rule);
+}
 const distilleries = require('./distilleries');
 const productsStorage = require('../products/storage');
 const { identifySpirit, MODEL } = require('./claude');
@@ -587,17 +595,19 @@ module.exports = function createSpiritsRouter() {
 
   router.get('/bar', (req, res) => {
     const userSub = req.user?.sub || req.query?.user || 'anonymous';
+    const isAdmin = _isAdminEmail(req.user?.email);
     const status = (req.query.status || 'stock').toString();
     const limit = Math.min(parseInt(req.query.limit, 10) || 200, 500);
-    const items = storage.listUserBar(userSub, { status, limit });
-    const count = storage.countUserBar(userSub);
+    const items = storage.listUserBar(userSub, { status, limit, allUsers: isAdmin });
+    const count = storage.countUserBar(userSub, { allUsers: isAdmin });
     res.json({ items, count });
   });
 
   router.delete('/bar/:id(\\d+)', (req, res) => {
     const userSub = req.user?.sub || req.query?.user || 'anonymous';
+    const isAdmin = _isAdminEmail(req.user?.email);
     const barId = parseInt(req.params.id, 10);
-    const result = storage.removeFromBar(barId, userSub);
+    const result = storage.removeFromBar(barId, userSub, { allUsers: isAdmin });
     if (!result?.updated) return res.status(404).json({ error: 'not_found' });
     res.json({ ok: true });
   });

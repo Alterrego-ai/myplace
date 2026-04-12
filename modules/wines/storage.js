@@ -405,27 +405,44 @@ function addToCellar({
 }
 
 /** Liste la cave d'un user (join avec wines pour la fiche complète). */
-function listUserCellar(userSub, { status = 'stock', limit = 200 } = {}) {
-  if (!userSub) return [];
-  const rows = getDb()
-    .prepare(
-      `SELECT
-         uc.id          AS cellar_id,
-         uc.quantity,
-         uc.acquired_at,
-         uc.acquired_price_eur,
-         uc.location,
-         uc.notes,
-         uc.status      AS cellar_status,
-         uc.created_at  AS cellar_created_at,
-         w.*
-       FROM user_cellar uc
-       JOIN wines w ON w.id = uc.wine_id
-       WHERE uc.user_sub = ? AND uc.status = ?
-       ORDER BY uc.created_at DESC
-       LIMIT ?`
-    )
-    .all(userSub, status, limit);
+function listUserCellar(userSub, { status = 'stock', limit = 200, allUsers = false } = {}) {
+  if (!userSub && !allUsers) return [];
+  const db = getDb();
+  const rows = allUsers
+    ? db.prepare(
+        `SELECT
+           uc.id          AS cellar_id,
+           uc.quantity,
+           uc.acquired_at,
+           uc.acquired_price_eur,
+           uc.location,
+           uc.notes,
+           uc.status      AS cellar_status,
+           uc.created_at  AS cellar_created_at,
+           w.*
+         FROM user_cellar uc
+         JOIN wines w ON w.id = uc.wine_id
+         WHERE uc.status = ?
+         ORDER BY uc.created_at DESC
+         LIMIT ?`
+      ).all(status, limit)
+    : db.prepare(
+        `SELECT
+           uc.id          AS cellar_id,
+           uc.quantity,
+           uc.acquired_at,
+           uc.acquired_price_eur,
+           uc.location,
+           uc.notes,
+           uc.status      AS cellar_status,
+           uc.created_at  AS cellar_created_at,
+           w.*
+         FROM user_cellar uc
+         JOIN wines w ON w.id = uc.wine_id
+         WHERE uc.user_sub = ? AND uc.status = ?
+         ORDER BY uc.created_at DESC
+         LIMIT ?`
+      ).all(userSub, status, limit);
   return rows.map((row) => ({
     cellarId: row.cellar_id,
     quantity: row.quantity,
@@ -438,27 +455,35 @@ function listUserCellar(userSub, { status = 'stock', limit = 200 } = {}) {
   }));
 }
 
-/** Compte le nombre total de bouteilles en cave pour un user. */
-function countUserCellar(userSub) {
-  if (!userSub) return 0;
-  const row = getDb()
-    .prepare(
-      `SELECT COALESCE(SUM(quantity), 0) AS total, COUNT(*) AS entries
-       FROM user_cellar WHERE user_sub = ? AND status = 'stock'`
-    )
-    .get(userSub);
+/** Compte le nombre total de bouteilles en cave pour un user (ou toutes si allUsers). */
+function countUserCellar(userSub, { allUsers = false } = {}) {
+  if (!userSub && !allUsers) return 0;
+  const db = getDb();
+  const row = allUsers
+    ? db.prepare(
+        `SELECT COALESCE(SUM(quantity), 0) AS total, COUNT(*) AS entries
+         FROM user_cellar WHERE status = 'stock'`
+      ).get()
+    : db.prepare(
+        `SELECT COALESCE(SUM(quantity), 0) AS total, COUNT(*) AS entries
+         FROM user_cellar WHERE user_sub = ? AND status = 'stock'`
+      ).get(userSub);
   return { total: row.total, entries: row.entries };
 }
 
-function removeFromCellar(cellarId, userSub) {
-  if (!userSub || !cellarId) return null;
+function removeFromCellar(cellarId, userSub, { allUsers = false } = {}) {
+  if ((!userSub && !allUsers) || !cellarId) return null;
   const now = Date.now();
-  const r = getDb()
-    .prepare(
-      `UPDATE user_cellar SET status = 'consumed', consumed_at = ?, updated_at = ?
-       WHERE id = ? AND user_sub = ?`
-    )
-    .run(now, now, cellarId, userSub);
+  const db = getDb();
+  const r = allUsers
+    ? db.prepare(
+        `UPDATE user_cellar SET status = 'consumed', consumed_at = ?, updated_at = ?
+         WHERE id = ?`
+      ).run(now, now, cellarId)
+    : db.prepare(
+        `UPDATE user_cellar SET status = 'consumed', consumed_at = ?, updated_at = ?
+         WHERE id = ? AND user_sub = ?`
+      ).run(now, now, cellarId, userSub);
   return { updated: r.changes };
 }
 

@@ -376,28 +376,46 @@ function addToBar({
   return { id: r.lastInsertRowid, status: 'created', quantity };
 }
 
-function listUserBar(userSub, { status = 'stock', limit = 200 } = {}) {
-  if (!userSub) return [];
-  const rows = getDb()
-    .prepare(
-      `SELECT
-         ub.id          AS bar_id,
-         ub.quantity,
-         ub.acquired_at,
-         ub.acquired_price_eur,
-         ub.location,
-         ub.notes,
-         ub.status      AS bar_status,
-         ub.opened_at,
-         ub.created_at  AS bar_created_at,
-         s.*
-       FROM user_bar ub
-       JOIN spirits s ON s.id = ub.spirit_id
-       WHERE ub.user_sub = ? AND ub.status = ?
-       ORDER BY ub.created_at DESC
-       LIMIT ?`
-    )
-    .all(userSub, status, limit);
+function listUserBar(userSub, { status = 'stock', limit = 200, allUsers = false } = {}) {
+  if (!userSub && !allUsers) return [];
+  const db = getDb();
+  const rows = allUsers
+    ? db.prepare(
+        `SELECT
+           ub.id          AS bar_id,
+           ub.quantity,
+           ub.acquired_at,
+           ub.acquired_price_eur,
+           ub.location,
+           ub.notes,
+           ub.status      AS bar_status,
+           ub.opened_at,
+           ub.created_at  AS bar_created_at,
+           s.*
+         FROM user_bar ub
+         JOIN spirits s ON s.id = ub.spirit_id
+         WHERE ub.status = ?
+         ORDER BY ub.created_at DESC
+         LIMIT ?`
+      ).all(status, limit)
+    : db.prepare(
+        `SELECT
+           ub.id          AS bar_id,
+           ub.quantity,
+           ub.acquired_at,
+           ub.acquired_price_eur,
+           ub.location,
+           ub.notes,
+           ub.status      AS bar_status,
+           ub.opened_at,
+           ub.created_at  AS bar_created_at,
+           s.*
+         FROM user_bar ub
+         JOIN spirits s ON s.id = ub.spirit_id
+         WHERE ub.user_sub = ? AND ub.status = ?
+         ORDER BY ub.created_at DESC
+         LIMIT ?`
+      ).all(userSub, status, limit);
   return rows.map((row) => ({
     barId: row.bar_id,
     quantity: row.quantity,
@@ -411,26 +429,34 @@ function listUserBar(userSub, { status = 'stock', limit = 200 } = {}) {
   }));
 }
 
-function countUserBar(userSub) {
-  if (!userSub) return { total: 0, entries: 0 };
-  const row = getDb()
-    .prepare(
-      `SELECT COALESCE(SUM(quantity), 0) AS total, COUNT(*) AS entries
-       FROM user_bar WHERE user_sub = ? AND status = 'stock'`
-    )
-    .get(userSub);
+function countUserBar(userSub, { allUsers = false } = {}) {
+  if (!userSub && !allUsers) return { total: 0, entries: 0 };
+  const db = getDb();
+  const row = allUsers
+    ? db.prepare(
+        `SELECT COALESCE(SUM(quantity), 0) AS total, COUNT(*) AS entries
+         FROM user_bar WHERE status = 'stock'`
+      ).get()
+    : db.prepare(
+        `SELECT COALESCE(SUM(quantity), 0) AS total, COUNT(*) AS entries
+         FROM user_bar WHERE user_sub = ? AND status = 'stock'`
+      ).get(userSub);
   return { total: row.total, entries: row.entries };
 }
 
-function removeFromBar(barId, userSub) {
-  if (!userSub || !barId) return null;
+function removeFromBar(barId, userSub, { allUsers = false } = {}) {
+  if ((!userSub && !allUsers) || !barId) return null;
   const now = Date.now();
-  const r = getDb()
-    .prepare(
-      `UPDATE user_bar SET status = 'consumed', consumed_at = ?, updated_at = ?
-       WHERE id = ? AND user_sub = ?`
-    )
-    .run(now, now, barId, userSub);
+  const db = getDb();
+  const r = allUsers
+    ? db.prepare(
+        `UPDATE user_bar SET status = 'consumed', consumed_at = ?, updated_at = ?
+         WHERE id = ?`
+      ).run(now, now, barId)
+    : db.prepare(
+        `UPDATE user_bar SET status = 'consumed', consumed_at = ?, updated_at = ?
+         WHERE id = ? AND user_sub = ?`
+      ).run(now, now, barId, userSub);
   return { updated: r.changes };
 }
 

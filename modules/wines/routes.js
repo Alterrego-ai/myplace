@@ -18,6 +18,14 @@ const fs = require('fs');
 const storage = require('./storage');
 const producers = require('./producers');
 const productsStorage = require('../products/storage');
+
+// Admin check — même logique que server.js (ADMIN_EMAILS env var)
+const _ADMIN_RULES = (process.env.ADMIN_EMAILS || '').split(',').map(e => e.trim().toLowerCase()).filter(Boolean);
+function _isAdminEmail(email) {
+  if (!email) return _ADMIN_RULES.length === 0;
+  const lower = email.toLowerCase();
+  return _ADMIN_RULES.some(rule => rule.startsWith('@') ? lower.endsWith(rule) : lower === rule);
+}
 const { identifyWine, identifyWineMulti, MODEL } = require('./claude');
 const { computeCost } = require('./pricing');
 const openfoodfacts = require('../../services/openfoodfacts');
@@ -808,17 +816,19 @@ module.exports = function createWinesRouter() {
 
   router.get('/cellar', (req, res) => {
     const userSub = req.user?.sub || req.query?.user || 'anonymous';
+    const isAdmin = _isAdminEmail(req.user?.email);
     const status = (req.query.status || 'stock').toString();
     const limit = Math.min(parseInt(req.query.limit, 10) || 200, 500);
-    const items = storage.listUserCellar(userSub, { status, limit });
-    const count = storage.countUserCellar(userSub);
+    const items = storage.listUserCellar(userSub, { status, limit, allUsers: isAdmin });
+    const count = storage.countUserCellar(userSub, { allUsers: isAdmin });
     res.json({ items, count });
   });
 
   router.delete('/cellar/:id(\\d+)', (req, res) => {
     const userSub = req.user?.sub || req.query?.user || 'anonymous';
+    const isAdmin = _isAdminEmail(req.user?.email);
     const cellarId = parseInt(req.params.id, 10);
-    const result = storage.removeFromCellar(cellarId, userSub);
+    const result = storage.removeFromCellar(cellarId, userSub, { allUsers: isAdmin });
     if (!result?.updated) return res.status(404).json({ error: 'not_found' });
     res.json({ ok: true });
   });
