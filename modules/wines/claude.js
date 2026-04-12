@@ -3,7 +3,7 @@
  */
 const Anthropic = require('@anthropic-ai/sdk');
 const fs = require('fs');
-const { buildSystemPrompt, USER_INSTRUCTION } = require('./prompts');
+const { buildSystemPrompt, USER_INSTRUCTION, buildMultiSystemPrompt, MULTI_USER_INSTRUCTION } = require('./prompts');
 const { buildEnrichSystemPrompt, buildEnrichUserMessage } = require('./producer-prompts');
 
 const MODEL = process.env.WINES_MODEL || 'claude-sonnet-4-6';
@@ -116,4 +116,57 @@ async function enrichProducer(producer) {
   return { result: parsed, rawText, parseError, durationMs, usage: response.usage };
 }
 
-module.exports = { identifyWine, enrichProducer, MODEL };
+/**
+ * Identifie PLUSIEURS bouteilles sur une même photo.
+ * Renvoie { bottle_count, bottles: [...], more_visible }
+ * @param {string} absPath - chemin absolu vers l'image uploadée
+ * @param {string} mimeType - 'image/jpeg' | 'image/png' | ...
+ */
+async function identifyWineMulti(absPath, mimeType = 'image/jpeg') {
+  const t0 = Date.now();
+  const buffer = fs.readFileSync(absPath);
+  const base64 = buffer.toString('base64');
+
+  const mt = (mimeType || 'image/jpeg').toLowerCase();
+  const allowed = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
+  const media_type = allowed.includes(mt) ? mt : 'image/jpeg';
+
+  const response = await getClient().messages.create({
+    model: MODEL,
+    max_tokens: 16000, // jusqu'à 30 bouteilles
+    system: buildMultiSystemPrompt(),
+    messages: [
+      {
+        role: 'user',
+        content: [
+          {
+            type: 'image',
+            source: { type: 'base64', media_type, data: base64 },
+          },
+          { type: 'text', text: MULTI_USER_INSTRUCTION },
+        ],
+      },
+    ],
+  });
+
+  const durationMs = Date.now() - t0;
+  const textBlock = (response.content || []).find((b) => b.type === 'text');
+  const rawText = textBlock ? textBlock.text : '';
+  let parsed = null;
+  let parseError = null;
+  try {
+    parsed = JSON.parse(extractJson(rawText));
+  } catch (e) {
+    parseError = e.message;
+  }
+
+  return {
+    result: parsed,
+    rawText,
+    parseError,
+    durationMs,
+    usage: response.usage,
+  };
+}
+
+module.exports = { identifyWine, identifyWineMulti, enrichProducer, MODEL };

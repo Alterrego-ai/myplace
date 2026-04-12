@@ -18,7 +18,7 @@ const fs = require('fs');
 const storage = require('./storage');
 const producers = require('./producers');
 const productsStorage = require('../products/storage');
-const { identifyWine, MODEL } = require('./claude');
+const { identifyWine, identifyWineMulti, MODEL } = require('./claude');
 const { computeCost } = require('./pricing');
 const openfoodfacts = require('../../services/openfoodfacts');
 
@@ -365,6 +365,108 @@ module.exports = function createWinesRouter() {
       observed,
       reason: result.reason || null,
       photo,
+      model: MODEL,
+      durationMs: identification.durationMs,
+      cost,
+      location: geo.lat != null && geo.lon != null ? geo : null,
+    });
+  });
+
+  // ─── POST /scan-multi ──────────────────────────────────────────────────────
+  // Scan multi-bouteilles : identifie toutes les bouteilles visibles sur une photo.
+  // Réservé super-admin (user_role === 'super_admin') ou contrôlé par fair use.
+  router.post('/scan-multi', upload.single('photo'), async (req, res) => {
+    if (!req.file) {
+      return res.status(400).json({ error: 'missing_photo', message: 'Aucune image reçue.' });
+    }
+    const userSub = req.user?.sub || req.body?.user || null;
+    const filename = req.file.filename;
+    const absPath = path.join(storage.getPhotosDir(), filename);
+
+    // Fair use : seul le super_admin peut scanner multi pour l'instant
+    const userRole = req.user?.role || req.body?.role || null;
+    const isSuperAdmin = userRole === 'super_admin' || userSub === 'anonymous'; // TODO: vrai auth
+    if (!isSuperAdmin) {
+      return res.status(403).json({
+        error: 'fair_use',
+        message: 'Le scan multi-bouteilles est réservé aux administrateurs pour le moment.',
+        hint: 'Prends une photo avec une seule bouteille visible.',
+      });
+    }
+
+    // Persist photo
+    const photo = storage.savePhoto({ filename, uploadedBy: userSub });
+
+    if (req.file.size > MAX_CLAUDE_IMAGE_BYTES) {
+      return res.status(413).json({
+        error: 'image_too_large',
+        message: `Image trop volumineuse (${(req.file.size / 1024 / 1024).toFixed(1)} Mo). Max : ${(MAX_CLAUDE_IMAGE_BYTES / 1024 / 1024).toFixed(1)} Mo.`,
+        photo,
+      });
+    }
+
+    // Appel Claude Vision multi
+    let identification = null;
+    try {
+      identification = await identifyWineMulti(absPath, req.file.mimetype);
+    } catch (e) {
+      console.error('[wines] identifyWineMulti failed', e);
+      return res.status(500).json({ error: 'ai_error', message: e.message, photo });
+    }
+
+    const cost = identification?.usage ? computeCost(identification.usage, MODEL) : null;
+    const result = identification.result || {};
+    const bottleCount = result.bottle_count || 0;
+    const bottles = Array.isArray(result.bottles) ? result.bottles : [];
+
+    // Géolocalisation
+    const parseNum = (v) => { if (v == null || v === '') return null; const n = parseFloat(v); return Number.isFinite(n) ? n : null; };
+    const geo = {
+      lat: parseNum(req.body?.lat),
+      lon: parseNum(req.body?.lon),
+      locationSource: req.body?.locationSource || null,
+      locationAccuracyM: parseNum(req.body?.locationAccuracyM),
+    };
+
+    // Log
+    storage.logScan({
+      photoId: photo.id,
+      aiRaw: { result, rawText: identification.rawText, parseError: identification.parseError, usage: identification.usage },
+      aiStatus: `multi-${bottleCount}`,
+      matchedWineId: null,
+      userSub,
+      durationMs: identification.durationMs,
+      model: MODEL,
+      inputTokens: cost?.inputTokens || null,
+      outputTokens: cost?.outputTokens || null,
+      costUsd: cost?.costUsd || null,
+      ...geo,
+    });
+
+    // Auto-insert chaque vin identifié dans la base de connaissance
+    const results = bottles.map((bottle, idx) => {
+      const detCat = bottle.detected_category || 'wine';
+      if (detCat !== 'wine') {
+        return { index: idx, status: bottle.status || 'not_wine', detected_category: detCat, observed: bottle.observed, wine: null, autoCreated: false };
+      }
+      if ((bottle.status === 'identified' || bottle.status === 'partial') && bottle.name) {
+        const autoWine = autoInsertWineFromScan({
+          result: bottle,
+          photoId: photo?.id || null,
+          userSub,
+          source: 'scan-multi',
+        });
+        return { index: idx, status: bottle.status, suggestion: bottle, wine: autoWine?.wine || null, autoCreated: autoWine?.created || false };
+      }
+      return { index: idx, status: bottle.status || 'unknown', suggestion: bottle, wine: null, autoCreated: false };
+    });
+
+    return res.json({
+      bottle_count: bottleCount,
+      more_visible: result.more_visible || false,
+      results,
+      photo,
+      parseError: identification.parseError || null,
       model: MODEL,
       durationMs: identification.durationMs,
       cost,

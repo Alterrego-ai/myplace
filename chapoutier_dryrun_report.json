@@ -1,0 +1,411 @@
+{
+  "total": {
+    "total": 421,
+    "inserted": 38,
+    "skipped": 383,
+    "failed": 0
+  },
+  "failures": [],
+  "skipped": [
+    {
+      "idx": 0,
+      "status": "skipped",
+      "wine_id": 23,
+      "name": "Barbe Rac",
+      "producer": "M. Chapoutier",
+      "vintage": 2008
+    },
+    {
+      "idx": 1,
+      "status": "skipped",
+      "wine_id": 24,
+      "name": "Barbe Rac",
+      "producer": "M. Chapoutier",
+      "vintage": 2019
+    },
+    {
+      "idx": 2,
+      "status": "skipped",
+      "wine_id": 25,
+      "name": "Barbe Rac",
+      "producer": "M. Chapoutier",
+      "vintage": 2022
+    },
+    {
+      "idx": 3,
+      "status": "skipped",
+      "wine_id": 26,
+      "name": "Croix de Bois",
+      "producer": "M. Chapoutier",
+      "vintage": 2006
+    },
+    {
+      "idx": 4,
+      "status": "skipped",
+      "wine_id": 27,
+      "name": "Croix de Bois",
+      "producer": "M. Chapoutier",
+      "vintage": 2019
+    },
+    {
+      "idx": 5,
+      "status": "skipped",
+      "wine_id": 28,
+      "name": "Croix de Bois",
+      "producer": "M. Chapoutier",
+      "vintage": 2020
+    },
+    {
+      "idx": 6,
+      "status": "skipped",
+      "wine_id": 31,
+      "name": "Lieu dit Saint Pierre",
+      "producer": "M. Chapoutier",
+      "vintage": 2021
+    },
+    {
+      "idx": 7,
+      "status": "skipped",
+      "wine_id": 32,
+      "name": "Lieu dit Saint Pierre",
+      "producer": "M. Chapoutier",
+      "vintage": 2022
+    },
+    {
+      "idx": 8,
+      "status": "skipped",
+      "wine_id": 33,
+      "name": "Les Varonniers",
+      "producer": "M. Chapoutier",
+      "vintage": 2022
+    },
+    {
+      "idx": 9,
+      "status": "skipped",
+      "wine_id": 34,
+      "name": "La Mordorée",
+      "producer": "M. Chapoutier",
+      "vintage": 2001
+    },
+    {
+      "idx": 10,
+      "status": "skipped",
+      "wine_id": 35,
+      "name": "La Mordorée",
+      "producer": "M. Chapoutier",
+      "vintage": 2022
+    },
+    {
+      "idx": 11,
+      "status": "skipped",
+      "wine_id": 36,
+      "name": "Neve",
+      "producer": "M. Chapoutier",
+      "vintage": 2021
+    },
+    {
+      "idx": 12,
+      "status": "skipped",
+      "wine_id": 37,
+      "name": "Neve",
+      "producer": "M. Chapoutier",
+      "vintage": 2022
+    },
+    {
+      "idx": 13,
+      "status": "skipped",
+      "wine_id": 41,
+      "name": "L'Ermite",
+      "producer": "M. Chapoutier",
+      "vintage": 2006
+    },
+    {
+      "idx": 14,
+      "status": "skipped",
+      "wine_id": 42,
+      "name": "L'Ermite",
+      "producer": "M. Chapoutier",
+      "vintage": 2008
+    },
+    {
+      "idx": 15,
+      "status": "skipped",
+      "wine_id": 43,
+      "name": "L'Ermite",
+      "producer": "M. Chapoutier",
+      "vintage": 2014
+    },
+    {
+      "idx": 16,
+      "status": "skipped",
+      "wine_id": 46,
+      "name": "Le Méal",
+      "producer": "M. Chapoutier",
+      "vintage": 2008
+    },
+    {
+      "idx": 17,
+      "status": "skipped",
+      "wine_id": 47,
+      "name": "Le Méal",
+      "producer": "M. Chapoutier",
+      "vintage": 2011
+    },
+    {
+      "idx": 18,
+      "status": "skipped",
+      "wine_id": 51,
+      "name": "Le Pavillon",
+      "producer": "M. Chapoutier",
+      "vintage": 2009
+    },
+    {
+      "idx": 19,
+      "status": "skipped",
+      "wine_id": 52,
+      "name": "Le Pavillon",
+      "producer": "M. Chapoutier",
+      "vintage": 2014
+    },
+    {
+      "idx": 20,
+      "status": "skipped",
+      "wine_id": 53,
+      "name": "Le Pavillon",
+      "producer": "M. Chapoutier",
+      "vintage": 2015
+    },
+    {
+      "idx": 21,
+      "status": "skipped",
+      "wine_id": 54,
+      "name": "Les Greffieux",
+      "producer": "M. Chapoutier",
+      "vintage": 2007
+    },
+    {
+      "idx": 22,
+      "status": "skipped",
+      "wine_id": 55,
+      "name": "Les Greffieux",
+      "producer": "M. Chapoutier",
+      "vintage": 2015
+    },
+    {
+      "idx": 23,
+      "status": "skipped",
+      "wine_id": 59,
+      "name": "Le Clos",
+      "producer": "M. Chapoutier",
+      "vintage": 2019
+    },
+    {
+      "idx": 24,
+      "status": "skipped",
+      "wine_id": 60,
+      "name": "Le Clos",
+      "producer": "M. Chapoutier",
+      "vintage": 2021
+    },
+    {
+      "idx": 25,
+      "status": "skipped",
+      "wine_id": 61,
+      "name": "Les Granits",
+      "producer": "M. Chapoutier",
+      "vintage": 2021
+    },
+    {
+      "idx": 26,
+      "status": "skipped",
+      "wine_id": 62,
+      "name": "Les Granits",
+      "producer": "M. Chapoutier",
+      "vintage": 2022
+    },
+    {
+      "idx": 27,
+      "status": "skipped",
+      "wine_id": 29,
+      "name": "Coteau de Chery",
+      "producer": "M. Chapoutier",
+      "vintage": 2020
+    },
+    {
+      "idx": 28,
+      "status": "skipped",
+      "wine_id": 30,
+      "name": "Coteau de Chery",
+      "producer": "M. Chapoutier",
+      "vintage": 2022
+    },
+    {
+      "idx": 29,
+      "status": "skipped",
+      "wine_id": 38,
+      "name": "De l'Orée",
+      "producer": "M. Chapoutier",
+      "vintage": 2011
+    },
+    {
+      "idx": 30,
+      "status": "skipped",
+      "wine_id": 39,
+      "name": "De l'Orée",
+      "producer": "M. Chapoutier",
+      "vintage": 2015
+    },
+    {
+      "idx": 31,
+      "status": "skipped",
+      "wine_id": 40,
+      "name": "De l'Orée",
+      "producer": "M. Chapoutier",
+      "vintage": 2017
+    },
+    {
+      "idx": 32,
+      "status": "skipped",
+      "wine_id": 44,
+      "name": "L'Ermite",
+      "producer": "M. Chapoutier",
+      "vintage": 2017
+    },
+    {
+      "idx": 33,
+      "status": "skipped",
+      "wine_id": 45,
+      "name": "L'Ermite",
+      "producer": "M. Chapoutier",
+      "vintage": 2018
+    },
+    {
+      "idx": 34,
+      "status": "skipped",
+      "wine_id": 48,
+      "name": "Le Méal",
+      "producer": "M. Chapoutier",
+      "vintage": 2001
+    },
+    {
+      "idx": 35,
+      "status": "skipped",
+      "wine_id": 49,
+      "name": "Le Méal",
+      "producer": "M. Chapoutier",
+      "vintage": 2012
+    },
+    {
+      "idx": 36,
+      "status": "skipped",
+      "wine_id": 50,
+      "name": "Le Méal",
+      "producer": "M. Chapoutier",
+      "vintage": 2018
+    },
+    {
+      "idx": 37,
+      "status": "skipped",
+      "wine_id": 56,
+      "name": "Vin de Paille",
+      "producer": "M. Chapoutier",
+      "vintage": 1999
+    },
+    {
+      "idx": 38,
+      "status": "skipped",
+      "wine_id": 57,
+      "name": "Vin de Paille",
+      "producer": "M. Chapoutier",
+      "vintage": 2001
+    },
+    {
+      "idx": 39,
+      "status": "skipped",
+      "wine_id": 58,
+      "name": "Vin de Paille",
+      "producer": "M. Chapoutier",
+      "vintage": 2007
+    },
+    {
+      "idx": 40,
+      "status": "skipped",
+      "wine_id": 61,
+      "name": "Les Granits",
+      "producer": "M. Chapoutier",
+      "vintage": 2021
+    },
+    {
+      "idx": 41,
+      "status": "skipped",
+      "wine_id": 62,
+      "name": "Les Granits",
+      "producer": "M. Chapoutier",
+      "vintage": 2022
+    },
+    {
+      "idx": 42,
+      "status": "skipped",
+      "wine_id": 67,
+      "name": "NOUVEAU !",
+      "producer": "M. Chapoutier",
+      "vintage": 2024
+    },
+    {
+      "idx": 43,
+      "status": "skipped",
+      "wine_id": 68,
+      "name": "Pie VI",
+      "producer": "M. Chapoutier",
+      "vintage": 2021
+    },
+    {
+      "idx": 44,
+      "status": "skipped",
+      "wine_id": 69,
+      "name": "Pie VI",
+      "producer": "M. Chapoutier",
+      "vintage": 2022
+    },
+    {
+      "idx": 45,
+      "status": "skipped",
+      "wine_id": 70,
+      "name": "Pie VI",
+      "producer": "M. Chapoutier",
+      "vintage": 2023
+    },
+    {
+      "idx": 46,
+      "status": "skipped",
+      "wine_id": 71,
+      "name": "Pie VI",
+      "producer": "M. Chapoutier",
+      "vintage": 2024
+    },
+    {
+      "idx": 47,
+      "status": "skipped",
+      "wine_id": 72,
+      "name": "Serus Syrah",
+      "producer": "M. Chapoutier",
+      "vintage": 2022
+    },
+    {
+      "idx": 48,
+      "status": "skipped",
+      "wine_id": 73,
+      "name": "Serus Syrah",
+      "producer": "M. Chapoutier",
+      "vintage": 2023
+    },
+    {
+      "idx": 49,
+      "status": "skipped",
+      "wine_id": 78,
+      "name": "Temenos",
+      "producer": "M. Chapoutier",
+      "vintage": 2021
+    }
+  ]
+}

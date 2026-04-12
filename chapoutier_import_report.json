@@ -1,0 +1,355 @@
+{
+  "total": {
+    "total": 421,
+    "inserted": 378,
+    "skipped": 43,
+    "failed": 0
+  },
+  "failures": [],
+  "skipped": [
+    {
+      "idx": 40,
+      "status": "skipped",
+      "wine_id": 659,
+      "name": "Les Granits",
+      "producer": "M. Chapoutier",
+      "vintage": 2021
+    },
+    {
+      "idx": 41,
+      "status": "skipped",
+      "wine_id": 660,
+      "name": "Les Granits",
+      "producer": "M. Chapoutier",
+      "vintage": 2022
+    },
+    {
+      "idx": 56,
+      "status": "skipped",
+      "wine_id": 687,
+      "name": "Sicamor",
+      "producer": "M. Chapoutier",
+      "vintage": 2024
+    },
+    {
+      "idx": 63,
+      "status": "skipped",
+      "wine_id": 693,
+      "name": "EN CAISSE BOIS",
+      "producer": "M. Chapoutier",
+      "vintage": 2022
+    },
+    {
+      "idx": 77,
+      "status": "skipped",
+      "wine_id": 706,
+      "name": "La Bernardine",
+      "producer": "M. Chapoutier",
+      "vintage": 2024
+    },
+    {
+      "idx": 85,
+      "status": "skipped",
+      "wine_id": 712,
+      "name": "Les Meysonniers",
+      "producer": "M. Chapoutier",
+      "vintage": 2023
+    },
+    {
+      "idx": 86,
+      "status": "skipped",
+      "wine_id": 713,
+      "name": "Les Meysonniers",
+      "producer": "M. Chapoutier",
+      "vintage": 2024
+    },
+    {
+      "idx": 93,
+      "status": "skipped",
+      "wine_id": 717,
+      "name": "Les Granilites",
+      "producer": "M. Chapoutier",
+      "vintage": 2022
+    },
+    {
+      "idx": 94,
+      "status": "skipped",
+      "wine_id": 718,
+      "name": "Les Granilites",
+      "producer": "M. Chapoutier",
+      "vintage": 2023
+    },
+    {
+      "idx": 95,
+      "status": "skipped",
+      "wine_id": 719,
+      "name": "Les Granilites",
+      "producer": "M. Chapoutier",
+      "vintage": 2024
+    },
+    {
+      "idx": 8,
+      "status": "skipped",
+      "wine_id": 722,
+      "name": "La Ciboise",
+      "producer": "M. Chapoutier",
+      "vintage": 2024
+    },
+    {
+      "idx": 9,
+      "status": "skipped",
+      "wine_id": 723,
+      "name": "La Ciboise",
+      "producer": "M. Chapoutier",
+      "vintage": 2025
+    },
+    {
+      "idx": 21,
+      "status": "skipped",
+      "wine_id": 724,
+      "name": "Petite Ruche",
+      "producer": "M. Chapoutier",
+      "vintage": 2023
+    },
+    {
+      "idx": 22,
+      "status": "skipped",
+      "wine_id": 725,
+      "name": "Petite Ruche",
+      "producer": "M. Chapoutier",
+      "vintage": 2024
+    },
+    {
+      "idx": 24,
+      "status": "skipped",
+      "wine_id": 726,
+      "name": "Belleruche",
+      "producer": "M. Chapoutier",
+      "vintage": 2024
+    },
+    {
+      "idx": 25,
+      "status": "skipped",
+      "wine_id": 727,
+      "name": "Belleruche",
+      "producer": "M. Chapoutier",
+      "vintage": 2025
+    },
+    {
+      "idx": 26,
+      "status": "skipped",
+      "wine_id": 726,
+      "name": "Belleruche",
+      "producer": "M. Chapoutier",
+      "vintage": 2024
+    },
+    {
+      "idx": 27,
+      "status": "skipped",
+      "wine_id": 727,
+      "name": "Belleruche",
+      "producer": "M. Chapoutier",
+      "vintage": 2025
+    },
+    {
+      "idx": 29,
+      "status": "skipped",
+      "wine_id": 744,
+      "name": "Collection Bio Adunatio",
+      "producer": "M. Chapoutier",
+      "vintage": 2024
+    },
+    {
+      "idx": 30,
+      "status": "skipped",
+      "wine_id": 723,
+      "name": "La Ciboise",
+      "producer": "M. Chapoutier",
+      "vintage": 2025
+    },
+    {
+      "idx": 40,
+      "status": "skipped",
+      "wine_id": 751,
+      "name": "Souffle de Solaure",
+      "producer": "M. Chapoutier",
+      "vintage": 2023
+    },
+    {
+      "idx": 54,
+      "status": "skipped",
+      "wine_id": 865,
+      "name": "DOMAINE TOURNON",
+      "producer": "Domaine Tournon",
+      "vintage": 2018
+    },
+    {
+      "idx": 55,
+      "status": "skipped",
+      "wine_id": 866,
+      "name": "DOMAINE TOURNON",
+      "producer": "Domaine Tournon",
+      "vintage": 2019
+    },
+    {
+      "idx": 62,
+      "status": "skipped",
+      "wine_id": 871,
+      "name": "TOURNON",
+      "producer": "Domaine Tournon",
+      "vintage": 2023
+    },
+    {
+      "idx": 63,
+      "status": "skipped",
+      "wine_id": 872,
+      "name": "TOURNON",
+      "producer": "Domaine Tournon",
+      "vintage": 2024
+    },
+    {
+      "idx": 66,
+      "status": "skipped",
+      "wine_id": 874,
+      "name": "Eleivera",
+      "producer": "Dos Lusiadas",
+      "vintage": 2023
+    },
+    {
+      "idx": 89,
+      "status": "skipped",
+      "wine_id": 896,
+      "name": "Anne Sophie Pic & Michel Chapoutier",
+      "producer": "M. Chapoutier",
+      "vintage": 2024
+    },
+    {
+      "idx": 91,
+      "status": "skipped",
+      "wine_id": 896,
+      "name": "Anne Sophie Pic & Michel Chapoutier",
+      "producer": "M. Chapoutier",
+      "vintage": 2024
+    },
+    {
+      "idx": 92,
+      "status": "skipped",
+      "wine_id": 896,
+      "name": "Anne Sophie Pic & Michel Chapoutier",
+      "producer": "M. Chapoutier",
+      "vintage": 2024
+    },
+    {
+      "idx": 93,
+      "status": "skipped",
+      "wine_id": 896,
+      "name": "Anne Sophie Pic & Michel Chapoutier",
+      "producer": "M. Chapoutier",
+      "vintage": 2024
+    },
+    {
+      "idx": 94,
+      "status": "skipped",
+      "wine_id": 897,
+      "name": "Anne Sophie Pic & Michel Chapoutier",
+      "producer": "M. Chapoutier",
+      "vintage": 2025
+    },
+    {
+      "idx": 3,
+      "status": "skipped",
+      "wine_id": 904,
+      "name": "Yannick Alléno & Michel Chapoutier",
+      "producer": "M. Chapoutier",
+      "vintage": 2024
+    },
+    {
+      "idx": 4,
+      "status": "skipped",
+      "wine_id": 905,
+      "name": "Yannick Alléno & Michel Chapoutier",
+      "producer": "M. Chapoutier",
+      "vintage": 2025
+    },
+    {
+      "idx": 10,
+      "status": "skipped",
+      "wine_id": 904,
+      "name": "Yannick Alléno & Michel Chapoutier",
+      "producer": "M. Chapoutier",
+      "vintage": 2024
+    },
+    {
+      "idx": 12,
+      "status": "skipped",
+      "wine_id": 909,
+      "name": "Yannick Alléno & Michel Chapoutier",
+      "producer": "M. Chapoutier",
+      "vintage": 2022
+    },
+    {
+      "idx": 13,
+      "status": "skipped",
+      "wine_id": 910,
+      "name": "Yannick Alléno & Michel Chapoutier",
+      "producer": "M. Chapoutier",
+      "vintage": 2023
+    },
+    {
+      "idx": 18,
+      "status": "skipped",
+      "wine_id": 914,
+      "name": "Joseph Viola &",
+      "producer": "M. Chapoutier",
+      "vintage": 2024
+    },
+    {
+      "idx": 19,
+      "status": "skipped",
+      "wine_id": 915,
+      "name": "Joseph Viola &",
+      "producer": "M. Chapoutier",
+      "vintage": 2025
+    },
+    {
+      "idx": 53,
+      "status": "skipped",
+      "wine_id": 943,
+      "name": "Sélection Parcellaire",
+      "producer": "Terlato & Chapoutier",
+      "vintage": 2019
+    },
+    {
+      "idx": 54,
+      "status": "skipped",
+      "wine_id": 944,
+      "name": "Sélection Parcellaire",
+      "producer": "Terlato & Chapoutier",
+      "vintage": 2020
+    },
+    {
+      "idx": 55,
+      "status": "skipped",
+      "wine_id": 945,
+      "name": "Sélection Parcellaire",
+      "producer": "Terlato & Chapoutier",
+      "vintage": 2021
+    },
+    {
+      "idx": 1,
+      "status": "skipped",
+      "wine_id": 961,
+      "name": "Beaujolais Villages",
+      "producer": "Maison Trenel",
+      "vintage": 2022
+    },
+    {
+      "idx": 2,
+      "status": "skipped",
+      "wine_id": 962,
+      "name": "Beaujolais Villages",
+      "producer": "Maison Trenel",
+      "vintage": 2023
+    }
+  ]
+}
