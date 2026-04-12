@@ -380,18 +380,6 @@ module.exports = function createWinesRouter() {
     res.json({ stats, recent, model: MODEL });
   });
 
-  // ─── GET /source-stats ────────────────────────────────────────────────────
-  // Diagnostic : breakdown de la colonne `source` dans la table wines.
-  // Utilisé pour débugger les imports en masse (dédup par source).
-  router.get('/source-stats', (req, res) => {
-    try {
-      const out = storage.getSourceStats();
-      res.json(out);
-    } catch (e) {
-      res.status(500).json({ error: 'source_stats_failed', message: e.message });
-    }
-  });
-
   // ─── POST /confirm ────────────────────────────────────────────────────────
   // Body : { wine: {...}, photoId?: number, primary?: boolean, ean?: string, barcodeFormat?: string }
   router.post('/confirm', express.json({ limit: '1mb' }), (req, res) => {

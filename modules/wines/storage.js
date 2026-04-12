@@ -540,20 +540,6 @@ function deleteWinesBySource(source) {
   return { deleted: info.changes || 0 };
 }
 
-function getSourceStats() {
-  const db = getDb();
-  const rows = db
-    .prepare(
-      `SELECT COALESCE(source, '<NULL>') AS source, COUNT(*) AS count
-       FROM wines
-       GROUP BY source
-       ORDER BY count DESC`
-    )
-    .all();
-  const total = db.prepare(`SELECT COUNT(*) AS n FROM wines`).get();
-  return { total: total?.n || 0, sources: rows };
-}
-
 module.exports = {
   init,
   getDb,
@@ -563,7 +549,6 @@ module.exports = {
   insertWine,
   findWineByIdentity,
   deleteWinesBySource,
-  getSourceStats,
   getWineById,
   getWinePhotos,
   searchWines,
