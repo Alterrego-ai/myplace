@@ -440,22 +440,32 @@ module.exports = function createWinesRouter() {
       ...geo,
     });
 
-    // Auto-insert chaque vin identifié dans la base de connaissance
+    // Auto-insert chaque bouteille (vin OU spiritueux) dans la base de connaissance
     const results = bottles.map((bottle, idx) => {
       const detCat = bottle.detected_category || 'wine';
-      if (detCat !== 'wine') {
-        return { index: idx, status: bottle.status || 'not_wine', detected_category: detCat, observed: bottle.observed, wine: null, autoCreated: false };
-      }
-      if ((bottle.status === 'identified' || bottle.status === 'partial') && bottle.name) {
+      const isIdentified = (bottle.status === 'identified' || bottle.status === 'partial') && bottle.name;
+
+      if (detCat === 'wine' && isIdentified) {
         const autoWine = autoInsertWineFromScan({
           result: bottle,
           photoId: photo?.id || null,
           userSub,
           source: 'scan-multi',
         });
-        return { index: idx, status: bottle.status, suggestion: bottle, wine: autoWine?.wine || null, autoCreated: autoWine?.created || false };
+        return { index: idx, status: bottle.status, detected_category: detCat, suggestion: bottle, wine: autoWine?.wine || null, spirit: null, autoCreated: autoWine?.created || false };
       }
-      return { index: idx, status: bottle.status || 'unknown', suggestion: bottle, wine: null, autoCreated: false };
+
+      if (detCat === 'spirit' && isIdentified) {
+        const autoSpirit = autoInsertSpiritFromScan({
+          result: bottle,
+          photoId: null, // photo wine, pas dupliquée dans spirits
+          userSub,
+          source: 'scan-multi',
+        });
+        return { index: idx, status: bottle.status, detected_category: detCat, suggestion: bottle, wine: null, spirit: autoSpirit?.spirit || null, autoCreated: autoSpirit?.created || false };
+      }
+
+      return { index: idx, status: bottle.status || 'unknown', detected_category: detCat, observed: bottle.observed, suggestion: bottle, wine: null, spirit: null, autoCreated: false };
     });
 
     return res.json({
