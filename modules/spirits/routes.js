@@ -612,5 +612,32 @@ module.exports = function createSpiritsRouter() {
     res.json({ spirit, photos, distillery });
   });
 
+  // ─── POST /bar/migrate-anonymous — Transfère les données anonymes vers l'user authentifié
+  router.post('/bar/migrate-anonymous', express.json(), (req, res) => {
+    const userSub = req.user?.sub;
+    if (!userSub || userSub === 'anonymous') {
+      return res.status(401).json({ error: 'auth_required', message: 'Token Bearer requis' });
+    }
+    try {
+      const db = storage.getDb();
+      const barResult = db.prepare(
+        `UPDATE user_bar SET user_sub = ? WHERE user_sub = 'anonymous'`
+      ).run(userSub);
+      const scanResult = db.prepare(
+        `UPDATE spirit_scans SET user_sub = ? WHERE user_sub = 'anonymous' OR user_sub IS NULL`
+      ).run(userSub);
+      res.json({
+        ok: true,
+        migrated: {
+          bar_entries: barResult.changes,
+          scans: scanResult.changes,
+        },
+      });
+    } catch (e) {
+      console.error('[spirits] migrate-anonymous failed', e);
+      res.status(500).json({ error: 'migration_failed', message: e.message });
+    }
+  });
+
   return router;
 };

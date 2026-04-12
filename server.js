@@ -116,6 +116,25 @@ authRoutes(app);
 // ── Sign in with Apple ───────────────────────────────────────────────────────
 const { appleAuthRoutes } = require('./apple-auth');
 appleAuthRoutes(app, sessionDb);
+
+// ── Middleware : Bearer token → req.user (pour l'app mobile) ─────────────────
+// Complète injectUser (session cookie) pour les requêtes API avec token Bearer.
+// Si la session a déjà un user (cookie), on ne touche pas.
+app.use((req, _res, next) => {
+  if (req.user || (req.session && req.session.user)) {
+    // Session cookie déjà active → on expose dans req.user pour les routes wines/spirits
+    if (!req.user && req.session.user) req.user = req.session.user;
+    return next();
+  }
+  const authHeader = req.headers.authorization;
+  if (authHeader && authHeader.startsWith('Bearer ')) {
+    const decoded = verifyUserToken(authHeader.substring(7));
+    if (decoded) {
+      req.user = decoded;
+    }
+  }
+  next();
+});
 if (process.env.OIDC_CLIENT_ID) {
   initOIDC().then(() => console.log('✓ OIDC mySafe initialisé')).catch(e => console.warn('⚠ OIDC init:', e.message));
 } else {

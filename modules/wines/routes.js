@@ -833,5 +833,32 @@ module.exports = function createWinesRouter() {
     res.json({ wine, photos, producer });
   });
 
+  // ─── POST /cellar/migrate-anonymous — Transfère les données anonymes vers l'user authentifié
+  router.post('/cellar/migrate-anonymous', express.json(), (req, res) => {
+    const userSub = req.user?.sub;
+    if (!userSub || userSub === 'anonymous') {
+      return res.status(401).json({ error: 'auth_required', message: 'Token Bearer requis' });
+    }
+    try {
+      const db = storage.getDb();
+      const cellarResult = db.prepare(
+        `UPDATE user_cellar SET user_sub = ? WHERE user_sub = 'anonymous'`
+      ).run(userSub);
+      const scanResult = db.prepare(
+        `UPDATE wine_scans SET user_sub = ? WHERE user_sub = 'anonymous' OR user_sub IS NULL`
+      ).run(userSub);
+      res.json({
+        ok: true,
+        migrated: {
+          cellar_entries: cellarResult.changes,
+          scans: scanResult.changes,
+        },
+      });
+    } catch (e) {
+      console.error('[wines] migrate-anonymous failed', e);
+      res.status(500).json({ error: 'migration_failed', message: e.message });
+    }
+  });
+
   return router;
 };
