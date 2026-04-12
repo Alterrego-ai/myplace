@@ -659,7 +659,7 @@ module.exports = function createWinesRouter() {
 
   // ─── GET / (liste récente) ────────────────────────────────────────────────
   router.get('/', (req, res) => {
-    const limit = Math.min(parseInt(req.query.limit, 10) || 20, 100);
+    const limit = Math.min(parseInt(req.query.limit, 10) || 20, 500);
     const results = storage.searchWines('', limit);
     res.json({ count: results.length, results });
   });
