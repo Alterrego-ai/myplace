@@ -383,16 +383,13 @@ module.exports = function createWinesRouter() {
     const filename = req.file.filename;
     const absPath = path.join(storage.getPhotosDir(), filename);
 
-    // Fair use : seul le super_admin peut scanner multi pour l'instant
-    const userRole = req.user?.role || req.body?.role || null;
-    const isSuperAdmin = userRole === 'super_admin' || userSub === 'anonymous'; // TODO: vrai auth
-    if (!isSuperAdmin) {
-      return res.status(403).json({
-        error: 'fair_use',
-        message: 'Le scan multi-bouteilles est réservé aux administrateurs pour le moment.',
-        hint: 'Prends une photo avec une seule bouteille visible.',
-      });
-    }
+    // Fair use : TODO activer quand auth réelle en place
+    // Pour l'instant ouvert à tous (POC)
+    // const userRole = req.user?.role || req.body?.role || null;
+    // const isSuperAdmin = userRole === 'super_admin';
+    // if (!isSuperAdmin) {
+    //   return res.status(403).json({ error: 'fair_use', message: 'Réservé aux administrateurs.' });
+    // }
 
     // Persist photo
     const photo = storage.savePhoto({ filename, uploadedBy: userSub });
