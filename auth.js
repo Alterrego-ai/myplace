@@ -119,7 +119,9 @@ async function initOIDC() {
     redirect_uris: [process.env.OIDC_REDIRECT_URI],
     post_logout_redirect_uris: [process.env.OIDC_POST_LOGOUT_URI],
     response_types: ['code'],
-    token_endpoint_auth_method: 'client_secret_basic',
+    // mySafe a configuré ce client en public (method 'none') :
+    // PKCE (S256) remplace l'authentification par client_secret
+    token_endpoint_auth_method: 'none',
   });
 
   return client;
