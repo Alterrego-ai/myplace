@@ -4,7 +4,7 @@ const Database = require('better-sqlite3');
 const path = require('path');
 const multer = require('multer');
 const fs = require('fs');
-const { authRoutes, requireAuth, injectUser, initOIDC } = require('./auth');
+const { authRoutes, requireAuth, injectUser, initOIDC, verifyUserToken } = require('./auth');
 const { chatRoutes } = require('./chat');
 
 // ── Stripe (Carte Cadeau) ──
