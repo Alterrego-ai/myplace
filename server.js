@@ -834,11 +834,20 @@ app.get('/api/me', (req, res) => {
     const { verifyUserToken } = require('./auth');
     const user = verifyUserToken(authHeader.substring(7));
     if (user) {
-      const email = user.email || user.name; // fallback: certains OIDC mettent l'email dans name
+      let name = user.name;
+      // Enrichir depuis apple_users si le nom est absent ou = email
+      if (user.sub && user.sub.startsWith('apple:') && (!name || name === user.email)) {
+        try {
+          const appleSub = user.sub.replace(/^apple:/, '');
+          const row = sessionDb.prepare('SELECT name FROM apple_users WHERE sub = ?').get(appleSub);
+          if (row && row.name) name = row.name;
+        } catch {}
+      }
+      const email = user.email || name;
       return res.json({
         authenticated: true,
         isAdmin: isAdminEmail(email),
-        name: user.name,
+        name,
         email: email,
       });
     }
