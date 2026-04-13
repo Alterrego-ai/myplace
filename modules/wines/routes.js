@@ -415,8 +415,9 @@ module.exports = function createWinesRouter() {
     try {
       identification = await identifyWineMulti(absPath, req.file.mimetype);
     } catch (e) {
-      console.error('[wines] identifyWineMulti failed', e);
-      return res.status(500).json({ error: 'ai_error', message: e.message, photo });
+      console.error('[wines] identifyWineMulti failed:', e?.status || '', e?.message || e);
+      const msg = e?.error?.message || e?.message || 'Erreur IA inconnue';
+      return res.status(500).json({ error: 'ai_error', message: msg, photo });
     }
 
     const cost = identification?.usage ? computeCost(identification.usage, MODEL) : null;
