@@ -62,6 +62,32 @@ function createUserToken(user) {
 }
 
 /**
+ * Crée un cookie signé pour stocker les données OIDC pendant le flow.
+ * Utilise un cookie plutôt que la session Express car ASWebAuthenticationSession
+ * (iOS in-app browser) peut perdre la session entre /auth/login et /connected.
+ * Le cookie voyage automatiquement avec le navigateur.
+ */
+function createOidcFlowCookie(data) {
+  const secret = process.env.OIDC_CLIENT_SECRET || 'dev-secret';
+  const payloadB64 = Buffer.from(JSON.stringify(data)).toString('base64url');
+  const sig = crypto.createHmac('sha256', secret).update(payloadB64).digest('base64url');
+  return payloadB64 + '.' + sig;
+}
+
+function verifyOidcFlowCookie(cookie) {
+  if (!cookie || !cookie.includes('.')) return null;
+  const secret = process.env.OIDC_CLIENT_SECRET || 'dev-secret';
+  const [payloadB64, sig] = cookie.split('.');
+  const expectedSig = crypto.createHmac('sha256', secret).update(payloadB64).digest('base64url');
+  if (sig !== expectedSig) return null;
+  try {
+    return JSON.parse(Buffer.from(payloadB64, 'base64url').toString());
+  } catch {
+    return null;
+  }
+}
+
+/**
  * Vérifie et décode un token signé
  */
 function verifyUserToken(token) {
@@ -143,7 +169,8 @@ function authRoutes(router) {
       const codeChallenge = generators.codeChallenge(codeVerifier);
       const state = generators.state();
 
-      // Stocker dans la session pour vérification au callback
+      // Stocker dans la session ET dans un cookie signé (fallback mobile)
+      // ASWebAuthenticationSession (iOS) peut perdre la session Express
       req.session.oidc = { codeVerifier, state };
 
       const authUrl = oidcClient.authorizationUrl({
@@ -153,7 +180,27 @@ function authRoutes(router) {
         code_challenge_method: 'S256',
       });
 
-      res.redirect(authUrl);
+      // Cookie signé contenant les données OIDC + returnTo (survit au round-trip)
+      const flowData = {
+        codeVerifier,
+        state,
+        returnTo: req.session.returnTo || '/',
+      };
+      const flowCookie = createOidcFlowCookie(flowData);
+      res.cookie('oidc_flow', flowCookie, {
+        maxAge: 5 * 60 * 1000, // 5 min (le temps du flow)
+        httpOnly: true,
+        sameSite: 'lax',
+        secure: process.env.NODE_ENV === 'production' || !!process.env.RAILWAY_ENVIRONMENT,
+      });
+
+      // Force save session avant redirect (évite race condition)
+      req.session.save((err) => {
+        if (err) console.error('❌ Session save error:', err);
+        console.log('[auth] returnTo saved:', req.session.returnTo);
+        console.log('[auth] OIDC flow cookie set, redirecting to mySafe...');
+        res.redirect(authUrl);
+      });
     } catch (err) {
       console.error('❌ OIDC login error:', err.message);
       res.redirect('/admin?auth_error=1');
@@ -169,10 +216,34 @@ function authRoutes(router) {
         return res.status(503).json({ error: 'SSO non configuré' });
       }
       const oidcClient = await initOIDC();
-      const oidcSession = req.session.oidc;
+
+      // Essayer la session Express d'abord, puis le cookie signé (fallback mobile)
+      let oidcSession = req.session.oidc;
+      let cookieReturnTo = null;
+
       if (!oidcSession) {
+        console.warn('⚠ Session OIDC perdue, tentative via cookie signé...');
+        // Lire le cookie oidc_flow manuellement (pas de cookie-parser)
+        let flowCookie = null;
+        if (req.headers.cookie) {
+          const match = req.headers.cookie.match(/oidc_flow=([^;]+)/);
+          if (match) flowCookie = decodeURIComponent(match[1]);
+        }
+        const flowData = verifyOidcFlowCookie(flowCookie);
+        if (flowData) {
+          console.log('[auth] OIDC flow récupéré depuis cookie signé ✓');
+          oidcSession = { codeVerifier: flowData.codeVerifier, state: flowData.state };
+          cookieReturnTo = flowData.returnTo;
+        }
+      }
+
+      if (!oidcSession) {
+        console.error('❌ Ni session ni cookie OIDC trouvés');
         return res.redirect('/admin?auth_error=no_session');
       }
+
+      // Nettoyer le cookie OIDC
+      res.clearCookie('oidc_flow');
 
       const params = oidcClient.callbackParams(req);
       const tokenSet = await oidcClient.callback(
@@ -228,7 +299,8 @@ function authRoutes(router) {
       delete req.session.oidc;
 
       // Rediriger vers la page d'origine ou le backoffice
-      const returnTo = req.session.returnTo || '/';
+      // Priorité : session > cookie signé > fallback
+      const returnTo = req.session.returnTo || cookieReturnTo || '/';
       delete req.session.returnTo;
 
       // Si returnTo est une URL externe (cross-domain), envoyer un token signé
