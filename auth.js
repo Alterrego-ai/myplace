@@ -16,6 +16,9 @@ const ALLOWED_RETURN_DOMAINS = [
   'localhost',
 ];
 
+// Schémas d'app mobile autorisés (deep links)
+const ALLOWED_APP_SCHEMES = ['saufimprevu'];
+
 /**
  * Vérifie si une URL returnTo est autorisée (même domaine ou domaine whitelist)
  */
@@ -25,6 +28,9 @@ function isAllowedReturnTo(url) {
   if (url.startsWith('/')) return true;
   try {
     const parsed = new URL(url);
+    // Deep links app mobile (saufimprevu://…)
+    const scheme = parsed.protocol.replace(':', '');
+    if (ALLOWED_APP_SCHEMES.includes(scheme)) return true;
     return ALLOWED_RETURN_DOMAINS.some(d => parsed.hostname === d || parsed.hostname.endsWith('.' + d));
   } catch {
     return false;
@@ -225,11 +231,18 @@ function authRoutes(router) {
       const returnTo = req.session.returnTo || '/';
       delete req.session.returnTo;
 
-      // Si returnTo est une URL externe (cross-domain), envoyer un token signé en hash
+      // Si returnTo est une URL externe (cross-domain), envoyer un token signé
       if (returnTo.startsWith('http')) {
         const token = createUserToken(req.session.user);
         const separator = returnTo.includes('#') ? '&' : '#';
         return res.redirect(returnTo + separator + 'auth=' + token);
+      }
+
+      // Deep link app mobile — query param (hash fragments non fiables en deep link)
+      if (returnTo.includes('://')) {
+        const token = createUserToken(req.session.user);
+        const separator = returnTo.includes('?') ? '&' : '?';
+        return res.redirect(returnTo + separator + 'token=' + encodeURIComponent(token));
       }
 
       res.redirect(returnTo);
