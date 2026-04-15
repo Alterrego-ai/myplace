@@ -44,7 +44,7 @@
         "enabled": true,
         "firstSlot": "12:00",
         "lastSlot": "13:30",
-        "interval": 30,
+        "interval": 10,
         "maxCouverts": 24,
         "zones": ["zone-interieur", "zone-terrasse"],
         "prompt": "Service du midi. Menu du jour à 18€ ou carte. Dernières commandes 13h30. Terrasse disponible si météo favorable. Groupes > 10 : privatisation uniquement, inviter à appeler. Réservation acceptée jusqu'à 1h avant le service. Passé ce délai, inviter à se présenter sur place."
@@ -65,7 +65,7 @@
         "enabled": true,
         "firstSlot": "19:00",
         "lastSlot": "21:30",
-        "interval": 30,
+        "interval": 10,
         "maxCouverts": 24,
         "zones": ["zone-interieur", "zone-terrasse"],
         "prompt": "Service du soir. Carte complète, suggestions du chef selon le marché. Dernières commandes 21h30. Terrasse ouverte jusqu'à 22h. Groupes > 10 : privatisation uniquement, inviter à appeler. Réservation acceptée jusqu'à 1h avant le service. Passé ce délai, inviter à se présenter sur place."
