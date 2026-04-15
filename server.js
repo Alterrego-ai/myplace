@@ -152,17 +152,28 @@ app.get('/api/stripe-config', (req, res) => {
 app.post('/api/create-payment-intent', async (req, res) => {
   if (!stripeEnabled) return res.status(503).json({ error: 'Stripe non configuré' });
   try {
-    const { amount, metadata } = req.body;
+    const { amount, metadata, type } = req.body;
     const amountCents = Math.round(Number(amount) * 100);
-    if (!amountCents || amountCents < 5000 || amountCents > 25000) {
-      return res.status(400).json({ error: 'Montant invalide (50-250€)' });
+    const kind = type === 'table' ? 'table' : 'carte_cadeau';
+
+    // Bornes par type de paiement
+    if (kind === 'carte_cadeau') {
+      if (!amountCents || amountCents < 5000 || amountCents > 25000) {
+        return res.status(400).json({ error: 'Montant invalide (50-250€)' });
+      }
+    } else {
+      // Paiement de table : 1€ min, 1000€ max
+      if (!amountCents || amountCents < 100 || amountCents > 100000) {
+        return res.status(400).json({ error: 'Montant invalide (1-1000€)' });
+      }
     }
+
     const paymentIntent = await stripe.paymentIntents.create({
       amount: amountCents,
       currency: 'eur',
       automatic_payment_methods: { enabled: true },
       metadata: {
-        type: 'carte_cadeau',
+        type: kind,
         recipient: metadata?.recipientName || '',
         sender: metadata?.senderName || '',
         occasion: metadata?.occasion || '',
@@ -486,11 +497,100 @@ try {
 
 const CAPACITE_TOTALE = 42;
 
+// ── Chargement des contraintes de réservation depuis agenda.json ──────────────
+const fs = require('fs');
+const path = require('path');
+function loadAgendaBookingRules() {
+  try {
+    const agenda = JSON.parse(fs.readFileSync(path.join(__dirname, 'public', 'agenda.json'), 'utf8'));
+    const slots = (agenda.services || []).filter(s => s.type === 'slot' && s.booking?.enabled);
+    const rules = {};
+    const DAYMAP = { SU:0, MO:1, TU:2, WE:3, TH:4, FR:5, SA:6 };
+    for (const s of slots) {
+      const isMidi = /(midi|d.?jeuner)/i.test(s.label);
+      const key = isMidi ? 'midi' : 'soir';
+      const rrule = s.recurrence?.rrule || '';
+      const days = (rrule.match(/BYDAY=([A-Z,]+)/)?.[1] || '').split(',').map(d => DAYMAP[d]).filter(d => d !== undefined);
+      rules[key] = {
+        firstSlot: s.booking.firstSlot || s.recurrence.start,
+        lastSlot:  s.booking.lastSlot  || s.recurrence.end,
+        interval:  s.booking.interval  || 30,
+        maxCouverts: s.booking.maxCouverts || CAPACITE_TOTALE,
+        days,
+      };
+    }
+    return rules;
+  } catch (e) {
+    console.warn('⚠️ agenda.json non chargé:', e.message);
+    return null;
+  }
+}
+let BOOKING_RULES = loadAgendaBookingRules();
+
+// Helper : "19h20" / "19:20" → minutes depuis 00:00
+function timeToMin(t) {
+  const m = String(t).replace('h', ':').split(':');
+  return (parseInt(m[0], 10) || 0) * 60 + (parseInt(m[1], 10) || 0);
+}
+
 function getService(heure) {
-  const h = parseInt(heure.replace('h', ':').split(':')[0]);
-  if (h >= 12 && h < 16) return 'midi';
-  if (h >= 17) return 'soir';
+  if (!BOOKING_RULES) {
+    // fallback historique
+    const h = parseInt(String(heure).replace('h', ':').split(':')[0]);
+    if (h >= 12 && h < 16) return 'midi';
+    if (h >= 17) return 'soir';
+    return null;
+  }
+  const m = timeToMin(heure);
+  for (const [name, r] of Object.entries(BOOKING_RULES)) {
+    if (m >= timeToMin(r.firstSlot) && m <= timeToMin(r.lastSlot)) return name;
+  }
   return null;
+}
+
+/**
+ * Valide une demande de réservation (date, heure, couverts) selon agenda.json.
+ * Renvoie { ok: true } ou { ok: false, message }.
+ */
+function validateBookingRequest({ date, heure, couverts }) {
+  const demande = parseInt(couverts, 10);
+  if (!demande || demande < 1) return { ok: false, message: 'Nombre de couverts invalide.' };
+  if (demande >= 10) return { ok: false, message: 'Les groupes de 10 personnes et plus nécessitent une privatisation. Merci de nous contacter directement.' };
+
+  // 1) datetime dans le futur (au moins 1h avant le service)
+  const [y, mo, d] = String(date).split('-').map(n => parseInt(n, 10));
+  if (!y || !mo || !d) return { ok: false, message: 'Date invalide (format attendu YYYY-MM-DD).' };
+  const hm = String(heure).replace('h', ':').split(':');
+  const dt = new Date(y, mo - 1, d, parseInt(hm[0], 10) || 0, parseInt(hm[1], 10) || 0, 0);
+  const now = new Date();
+  const minLead = 60 * 60 * 1000; // 1h
+  if (dt.getTime() - now.getTime() < minLead) {
+    return { ok: false, message: 'Réservation acceptée jusqu\'à 1 heure avant le service. Merci de vous présenter directement sur place ou de nous appeler.' };
+  }
+
+  // 2) jour de la semaine ouvert pour ce service
+  const service = getService(heure);
+  if (!service) {
+    return { ok: false, message: 'Cet horaire ne correspond à aucun service réservable.' };
+  }
+  if (BOOKING_RULES) {
+    const rule = BOOKING_RULES[service];
+    const dow = dt.getDay();
+    if (rule.days.length && !rule.days.includes(dow)) {
+      return { ok: false, message: `Le service du ${service} n'est pas ouvert ce jour-là.` };
+    }
+    // 3) heure dans [firstSlot, lastSlot]
+    const m = timeToMin(heure);
+    if (m < timeToMin(rule.firstSlot) || m > timeToMin(rule.lastSlot)) {
+      return { ok: false, message: `Le service du ${service} accepte des réservations de ${rule.firstSlot} à ${rule.lastSlot}.` };
+    }
+    // 4) cohérence avec l'intervalle (créneau aligné)
+    const startM = timeToMin(rule.firstSlot);
+    if ((m - startM) % rule.interval !== 0) {
+      return { ok: false, message: `Veuillez choisir un créneau toutes les ${rule.interval} minutes (à partir de ${rule.firstSlot}).` };
+    }
+  }
+  return { ok: true, service };
 }
 
 function getTotalService(date, service) {
@@ -720,16 +820,18 @@ app.post('/api/tags/custom', (req, res) => {
 app.get('/disponibilites', (req, res) => {
   const { date, heure, couverts } = req.query;
   if (!date || !heure || !couverts) return res.status(400).json({ erreur: 'Parametres manquants : date, heure, couverts' });
-  const demande = parseInt(couverts);
-  if (demande >= 10) return res.json({ disponible: false, message: "Les groupes de 10 personnes et plus necessitent une privatisation. Merci de nous contacter directement." });
-  const service = getService(heure);
-  if (!service) return res.json({ disponible: false, message: "Cet horaire ne correspond pas a un service. Le midi nous accueillons de 12h a 14h, le soir de 17h a minuit." });
+
+  const v = validateBookingRequest({ date, heure, couverts });
+  if (!v.ok) return res.json({ disponible: false, message: v.message });
+
+  const service = v.service;
+  const demande = parseInt(couverts, 10);
   const total = getTotalService(date, service);
   const couverts_restants = CAPACITE_TOTALE - total;
   if (couverts_restants >= demande) {
-    return res.json({ disponible: true, couverts_restants, service, message: `Oui, nous avons de la place pour ${demande} personne(s) le ${date} a ${heure} (service du ${service}).` });
+    return res.json({ disponible: true, couverts_restants, service, message: `Oui, nous avons de la place pour ${demande} personne(s) le ${date} à ${heure} (service du ${service}).` });
   } else {
-    return res.json({ disponible: false, couverts_restants, service, message: `Desole, le service du ${service} est complet ce jour-la. Il ne reste que ${couverts_restants} place(s).` });
+    return res.json({ disponible: false, couverts_restants, service, message: `Désolé, le service du ${service} est complet ce jour-là.` });
   }
 });
 
@@ -740,11 +842,12 @@ function createReservation(req, res, defaultSource) {
     console.log('❌ Champs manquants');
     return res.status(400).json({ erreur: 'Champs manquants : nom, date, heure, couverts' });
   }
-  const service = getService(heure);
-  if (!service) {
-    console.log(`❌ Horaire hors service: ${heure}`);
-    return res.status(400).json({ erreur: 'Horaire hors service.' });
+  const v = validateBookingRequest({ date, heure, couverts });
+  if (!v.ok) {
+    console.log(`❌ Validation booking: ${v.message}`);
+    return res.status(400).json({ erreur: v.message });
   }
+  const service = v.service;
   const demande = parseInt(couverts);
   const total = getTotalService(date, service);
   const couverts_restants = CAPACITE_TOTALE - total;
