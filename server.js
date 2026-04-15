@@ -774,13 +774,21 @@ function isAdminEmail(email) {
 }
 
 function requireAdmin(req, res, next) {
-  if (!req.session || !req.session.user) {
-    return res.status(401).json({ erreur: 'Non connecté' });
+  // 1) Session cookie (web backoffice)
+  if (req.session && req.session.user) {
+    if (!isAdminEmail(req.session.user.email)) {
+      return res.status(403).json({ erreur: 'Accès réservé aux administrateurs' });
+    }
+    return next();
   }
-  if (!isAdminEmail(req.session.user.email)) {
-    return res.status(403).json({ erreur: 'Accès réservé aux administrateurs' });
+  // 2) Bearer token (app mobile Expo) — req.user injecté par le middleware Bearer en amont
+  if (req.user) {
+    if (!isAdminEmail(req.user.email)) {
+      return res.status(403).json({ erreur: 'Accès réservé aux administrateurs' });
+    }
+    return next();
   }
-  next();
+  return res.status(401).json({ erreur: 'Non connecté' });
 }
 
 app.post('/reservations', requireAdmin, (req, res) => createReservation(req, res, 'backoffice'));
