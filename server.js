@@ -498,8 +498,7 @@ try {
 const CAPACITE_TOTALE = 42;
 
 // ── Chargement des contraintes de réservation depuis agenda.json ──────────────
-const fs = require('fs');
-const path = require('path');
+// (fs et path déjà requis en tête de fichier)
 function loadAgendaBookingRules() {
   try {
     const agenda = JSON.parse(fs.readFileSync(path.join(__dirname, 'public', 'agenda.json'), 'utf8'));
